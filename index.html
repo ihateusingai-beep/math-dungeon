@@ -423,8 +423,83 @@
       border-radius: 10px;
       font-size: 1rem;
       color: var(--primary);
+      cursor: pointer;
     }
     .level-display.active { display: flex; align-items: center; gap: 8px; }
+
+    /* 關卡選擇面板 */
+    .level-panel {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #1a1a2e;
+      border: 2px solid var(--primary);
+      border-radius: 16px;
+      padding: 20px;
+      z-index: 200;
+      min-width: 300px;
+      box-shadow: 0 0 30px rgba(77, 150, 255, 0.3);
+    }
+    .level-panel.active { display: block; }
+    .level-panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      color: var(--primary);
+      font-size: 1.1rem;
+      font-weight: bold;
+    }
+    .level-panel-close {
+      background: none;
+      border: none;
+      color: #888;
+      font-size: 1.5rem;
+      cursor: pointer;
+      line-height: 1;
+    }
+    .level-panel-close:hover { color: #fff; }
+    .level-panel-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+    .level-panel-btn {
+      width: 55px;
+      height: 55px;
+      border-radius: 10px;
+      border: 2px solid var(--primary);
+      background: rgba(77, 150, 255, 0.1);
+      color: var(--primary);
+      font-size: 1.2rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .level-panel-btn:hover:not(.locked) {
+      background: rgba(77, 150, 255, 0.3);
+      transform: scale(1.05);
+    }
+    .level-panel-btn.active {
+      background: var(--primary);
+      color: #fff;
+    }
+    .level-panel-btn.locked {
+      border-color: #444;
+      background: rgba(68, 68, 68, 0.2);
+      color: #555;
+      cursor: not-allowed;
+    }
+    .level-panel-backdrop {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 199;
+    }
+    .level-panel-backdrop.active { display: block; }
 
     /* 連續正確顯示 */
     .streak-display {
@@ -640,6 +715,43 @@
     @keyframes popIn {
       from { transform: scale(0.6); opacity: 0; }
       to { transform: scale(1); opacity: 1; }
+    }
+
+    /* 關卡解鎖通知 */
+    .level-unlock-notification {
+      display: none;
+      position: fixed;
+      top: 20%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(135deg, #1a1a2e 0%, #2d2d44 100%);
+      border: 2px solid #FFD700;
+      border-radius: 16px;
+      padding: 20px 35px;
+      z-index: 300;
+      animation: unlockPop 0.5s ease;
+    }
+    .level-unlock-notification.active { display: block; }
+    .unlock-content {
+      text-align: center;
+    }
+    .unlock-icon {
+      font-size: 2.5rem;
+      margin-bottom: 8px;
+      animation: bounce 0.6s ease infinite;
+    }
+    .unlock-text {
+      color: #FFD700;
+      font-size: 1.2rem;
+      font-weight: bold;
+    }
+    @keyframes unlockPop {
+      from { transform: translateX(-50%) scale(0.5); opacity: 0; }
+      to { transform: translateX(-50%) scale(1); opacity: 1; }
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
     }
 
     .row-col-stat {
@@ -1125,10 +1237,20 @@
   </div>
 
   <!-- 關卡 & Streak -->
-  <div class="level-display" id="levelDisplay">
+  <div class="level-display" id="levelDisplay" onclick="toggleLevelPanel()">
     <span>🔢</span>
     <span>關卡 <span id="currentLevel">1</span>/8</span>
   </div>
+
+  <!-- 關卡選擇面板 -->
+  <div class="level-panel" id="levelPanel">
+    <div class="level-panel-header">
+      <span>選擇乘法表</span>
+      <button class="level-panel-close" onclick="toggleLevelPanel()">×</button>
+    </div>
+    <div class="level-panel-grid" id="levelPanelGrid"></div>
+  </div>
+  <div class="level-panel-backdrop" id="levelPanelBackdrop" onclick="toggleLevelPanel()"></div>
   
   <!-- 三大領域選擇器 -->
   <div class="domain-selector" id="domainSelector">
@@ -1444,6 +1566,14 @@
       </div>
     </div>
 
+    <!-- 關卡解鎖通知 -->
+    <div class="level-unlock-notification" id="levelUnlockNotification">
+      <div class="unlock-content">
+        <div class="unlock-icon">🎉</div>
+        <div class="unlock-text">關卡 <span id="unlockLevelNum">3</span> 已解鎖！</div>
+      </div>
+    </div>
+
       </div>
     </div>
 
@@ -1556,7 +1686,8 @@
     let guidanceHistory = [];
     let currentDomain = 'newbie';  // newbie / veteran / legend
     let domainStats = { newbie: {correct:0, wrong:0}, veteran: {correct:0, wrong:0}, legend: {correct:0, wrong:0} };
-    let level = 1, unlockedLevels = [2];
+    let level = 1, unlockedLevels = [2], selectedLevel = null;
+    let streakForLevel = 0;
     let soundEnabled = true, quizMode = true;
     let timerActive = false, timerTime = 60, timerInterval = null;
 
@@ -1749,11 +1880,22 @@
       total = data.total || 0;
       bestScore = data.bestScore || 0;
       unlockedLevels = data.unlockedLevels || [2];
+      selectedLevel = data.selectedLevel || null;
       wrongStreak = data.wrongStreak || 0;
       guidanceHistory = data.guidanceHistory || [];
       currentDomain = localStorage.getItem('currentDomain') || 'newbie';
       updateScoreDisplay();
-      
+
+      // 更新關卡顯示
+      const currentLevelEl = document.getElementById('currentLevel');
+      if (currentLevelEl) {
+        if (selectedLevel) {
+          currentLevelEl.textContent = getLevelIndex(selectedLevel);
+        } else {
+          currentLevelEl.textContent = '1';
+        }
+      }
+
       // 初始化領域
       setTimeout(() => {
         const btn = document.querySelector(`.domain-btn[data-domain="${currentDomain}"]`);
@@ -1765,10 +1907,10 @@
           else modeLabel.textContent = '👑 深淵';
         }
       }, 100);
-    }function saveData() {
+    }    function saveData() {
       localStorage.setItem('multiplicationData', JSON.stringify({
-        correct, wrong, total, bestScore, unlockedLevels,
-        wrongStreak, guidanceHistory  // 儲存指引系統數據
+        correct, wrong, total, bestScore, unlockedLevels, selectedLevel,
+        wrongStreak, guidanceHistory
       }));
     }
 
@@ -1790,8 +1932,13 @@
 
     // Random 題目
     function randomQuestion() {
-      num1 = Math.floor(Math.random() * 8) + 2;
-      num2 = Math.floor(Math.random() * 8) + 2;
+      if (selectedLevel) {
+        num1 = selectedLevel;
+        num2 = Math.floor(Math.random() * 8) + 2;
+      } else {
+        num1 = Math.floor(Math.random() * 8) + 2;
+        num2 = Math.floor(Math.random() * 8) + 2;
+      }
       update();
       if (timerActive) speak(`${num1} 乘於 ${num2}`);
     }
@@ -2282,11 +2429,25 @@
           localStorage.setItem('mulErrorLog', JSON.stringify(log));
         } catch(e) {}
 
+        // 關卡解鎖機制：連續答對 5 題解鎖下一關
+        if (selectedLevel && streakForLevel < 5) {
+          streakForLevel++;
+          if (streakForLevel >= 5) {
+            const nextLevel = selectedLevel + 1;
+            if (nextLevel <= 9 && !unlockedLevels.includes(nextLevel)) {
+              unlockedLevels.push(nextLevel);
+              saveData();
+              showLevelUnlockNotification(nextLevel);
+            }
+          }
+        }
+
         if (timerActive) speak('正確');
       } else {
         wrong++;
         wrongStreak++;
         streak = 0;
+        streakForLevel = 0;
         btn.classList.add('wrong');
         document.querySelectorAll('.quiz-btn').forEach(b => {
           if (parseInt(b.textContent) === quizAnswer) b.classList.add('correct');
@@ -2415,11 +2576,53 @@
     function autoRecommendDomain() {
       const totalAttempts = correct + wrong;
       if (totalAttempts < 5) return 'newbie';
-      
+
       const accuracy = correct / totalAttempts;
       if (accuracy >= 0.85) return 'legend';
       if (accuracy >= 0.65) return 'veteran';
       return 'newbie';
+    }
+
+    // 關卡選擇系統
+    function toggleLevelPanel() {
+      const panel = document.getElementById('levelPanel');
+      const backdrop = document.getElementById('levelPanelBackdrop');
+      panel.classList.toggle('active');
+      backdrop.classList.toggle('active');
+      if (panel.classList.contains('active')) {
+        renderLevelPanel();
+      }
+    }
+
+    function renderLevelPanel() {
+      const grid = document.getElementById('levelPanelGrid');
+      grid.innerHTML = '';
+      for (let lvl = 2; lvl <= 9; lvl++) {
+        const isUnlocked = unlockedLevels.includes(lvl);
+        const isSelected = selectedLevel === lvl;
+        const btn = document.createElement('button');
+        btn.className = 'level-panel-btn' + (isSelected ? ' active' : '') + (!isUnlocked ? ' locked' : '');
+        btn.textContent = isUnlocked ? lvl : '🔒';
+        if (isUnlocked) {
+          btn.onclick = () => selectLevel(lvl);
+        }
+        grid.appendChild(btn);
+      }
+    }
+
+    function selectLevel(lvl) {
+      if (!unlockedLevels.includes(lvl)) return;
+      selectedLevel = selectedLevel === lvl ? null : lvl;
+      document.getElementById('currentLevel').textContent = selectedLevel ? getLevelIndex(lvl) : '1';
+      toggleLevelPanel();
+      saveData();
+      if (selectedLevel) {
+        speak(`已選擇 ${lvl} 乘法表`);
+      }
+    }
+
+    function getLevelIndex(lvl) {
+      return unlockedLevels.indexOf(lvl) + 1;
     }
     
     function updateDomainRecommendation() {
@@ -2446,7 +2649,7 @@
     function showReward(type) {
       // 先隱藏所有
       document.querySelectorAll('.reward-item').forEach(el => el.classList.remove('active'));
-      
+
       if (type === 'chest') {
         document.getElementById('rewardChest').classList.add('active');
         document.getElementById('rewardSword').classList.add('active');
@@ -2459,6 +2662,18 @@
         setTimeout(() => {
           document.getElementById('rewardMonster').classList.remove('active');
         }, 2000);
+      }
+    }
+
+    function showLevelUnlockNotification(level) {
+      const notification = document.getElementById('levelUnlockNotification');
+      if (notification) {
+        document.getElementById('unlockLevelNum').textContent = level;
+        notification.classList.add('active');
+        SoundManager.play('victory');
+        setTimeout(() => {
+          notification.classList.remove('active');
+        }, 3000);
       }
     }
 
@@ -2579,6 +2794,7 @@
       battleState.active = false;
       battleState.inBattle = false;
       battleState.combo = 0;
+      streakForLevel = 0;
       document.getElementById('comboDisplay').classList.remove('active');
       const hero = heroes[battleState.heroKey];
       const heroEl = document.getElementById('heroBattleStatus');
@@ -2704,8 +2920,13 @@
     function generateBattleQuestion() {
       const ranges = { newbie: [2, 5], veteran: [2, 9], legend: [2, 12] };
       const [min, max] = ranges[currentDomain] || ranges.veteran;
-      num1 = Math.floor(Math.random() * (max - min + 1)) + min;
-      num2 = Math.floor(Math.random() * (max - min + 1)) + min;
+      if (selectedLevel) {
+        num1 = selectedLevel;
+        num2 = Math.floor(Math.random() * 8) + 2;
+      } else {
+        num1 = Math.floor(Math.random() * (max - min + 1)) + min;
+        num2 = Math.floor(Math.random() * (max - min + 1)) + min;
+      }
       battleState.battleAnswer = num1 * num2;
 
       document.getElementById('battleQuestion').textContent = `${num1} × ${num2} = ?`;
@@ -2791,6 +3012,7 @@
       } else {
         wrong++;
         streak = 0;
+        streakForLevel = 0;
         battleState.combo = 0;
         updateComboDisplay();
 
@@ -2925,6 +3147,7 @@
       } else {
         wrong++;
         streak = 0;
+        streakForLevel = 0;
         battleState.combo = 0;
         updateComboDisplay();
 
