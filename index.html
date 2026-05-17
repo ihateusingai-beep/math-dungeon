@@ -1,0 +1,3105 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>乘法小鎮 ⭐ 全攻略</title>
+  <link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --bg-dark: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      --bg-light: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      --bg-high-contrast: #000;
+      --primary: #4D96FF;
+      --accent: #FFD93D;
+      --success: #6BCB77;
+      --danger: #FF6B6B;
+      --text-dark: #333;
+      --text-light: #fff;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'ZCOOL KuaiLe', 'PingFang HK', 'Microsoft JhengHei', cursive, sans-serif;
+      background: var(--bg-dark);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 15px;
+      color: var(--text-light);
+      transition: all 0.3s;
+    }
+
+    body.light-mode { background: var(--bg-light); color: var(--text-dark); }
+    body.high-contrast { background: var(--bg-high-contrast); color: #fff; }
+    body.large-text { font-size: 150%; }
+    body.fullscreen-app { padding: 0; position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 9999; background: var(--bg-dark); }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 10px;
+      text-shadow: 0 0 20px rgba(255, 217, 61, 0.5);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    h1 .subtitle { font-size: 1rem; color: #aaa; }
+
+    /* 操作欄 */
+    .action-bar {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .action-bar .action-btn {
+      padding: 8px 15px;
+      border: none;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      font-family: inherit;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .action-btn.speak { background: var(--primary); color: #fff; }
+    .action-btn.random { background: #FF8C42; color: #fff; }
+    .action-btn.timer { background: var(--danger); color: #fff; }
+    .action-btn.fullscreen { background: #666; color: #fff; }
+    .action-btn.settings { background: #aaa; color: #333; }
+    .action-btn.reset { background: var(--danger); color: #fff; }
+    .action-btn.battle { background: linear-gradient(135deg, #a855f7, #6366f1); color: #fff; }
+    .action-btn:hover { transform: scale(1.02); }
+
+    .action-btn.active { box-shadow: 0 0 15px currentColor; }
+
+    .action-btn:focus {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    /* 計時器 */
+    .timer-display {
+      display: none;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 15px;
+      background: rgba(255, 107, 107, 0.2);
+      border-radius: 10px;
+      font-size: 1.2rem;
+      color: var(--danger);
+    }
+
+    .timer-display.active { display: flex; }
+    .timer-display .time { font-weight: bold; font-size: 1.5rem; min-width: 60px; }
+    .timer-display .best { font-size: 0.9rem; color: #aaa; }
+
+    /* 控制區 */
+    .control-panel {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255,255,255,0.1);
+      padding: 12px 20px;
+      border-radius: 18px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    body.light-mode .control-panel { background: rgba(0,0,0,0.08); }
+    body.high-contrast .control-panel { background: #222; border: 2px solid #fff; }
+
+    .num-selector { text-align: center; }
+    .num-selector .label { font-size: 0.9rem; color: #999; margin-bottom: 5px; }
+
+    .num-btn-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      justify-content: center;
+    }
+
+    .num-btn {
+      width: 44px;
+      height: 44px;
+      border: none;
+      border-radius: 12px;
+      font-size: 1.4rem;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+
+    .num-btn:hover { transform: scale(1.02); }
+    .num-btn.active { animation: pulse 1.5s ease-in-out infinite; }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1.1); box-shadow: 0 0 15px currentColor; }
+      50% { transform: scale(1.15); box-shadow: 0 0 25px currentColor, 0 0 35px currentColor; }
+    }
+    .num-btn:disabled { opacity: 0.3; cursor: not-allowed; transform: none; }
+    .num-btn:focus {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    .num-btn[data-n="2"] { background: #FFD93D; color: #333; }
+    .num-btn[data-n="3"] { background: #FF6B6B; color: #fff; }
+    .num-btn[data-n="4"] { background: #6BCB77; color: #333; }
+    .num-btn[data-n="5"] { background: var(--primary); color: #fff; }
+    .num-btn[data-n="6"] { background: #E74C3C; color: #fff; }
+    .num-btn[data-n="7"] { background: #C9B1FF; color: #333; }
+    .num-btn[data-n="8"] { background: #FF8C42; color: #fff; }
+    .num-btn[data-n="9"] { background: #9B59B6; color: #fff; }
+
+    .operator { font-size: 1.8rem; color: var(--accent); }
+    .equals { font-size: 1.8rem; color: var(--success); }
+
+    .result-display { text-align: center; min-width: 70px; }
+    .result-display .num { font-size: 2.2rem; color: var(--accent); font-weight: bold; }
+    .result-display .label { font-size: 0.9rem; color: #999; }
+
+    /* Tab */
+    .tab-nav {
+      display: flex;
+      gap: 5px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .tab-btn {
+      padding: 10px 14px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-family: inherit;
+      cursor: pointer;
+      background: rgba(255,255,255,0.15);
+      color: #ddd;
+      transition: all 0.2s;
+    }
+
+    .tab-btn:hover { background: rgba(255,255,255,0.25); }
+    .tab-btn.active { background: var(--primary); color: #fff; }
+    .tab-btn:focus {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    /* 顯示區 */
+    .display-area {
+      width: 100%;
+      max-width: 550px;
+      background: rgba(0,0,0,0.3);
+      border-radius: 18px;
+      padding: 15px;
+      margin-bottom: 10px;
+      min-height: 260px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    body.light-mode .display-area { background: rgba(255,255,255,0.8); }
+    body.high-contrast .display-area { background: #111; border: 2px solid #fff; }
+
+    .viz-section { display: none; width: 100%; flex-direction: column; align-items: center; }
+    .viz-section.active { display: flex; }
+
+    .viz-title { font-size: 1.2rem; color: var(--primary); margin-bottom: 12px; }
+
+    /* 點陣 */
+    .dot-container { display: flex; flex-wrap: wrap; gap: 5px; width: 100%; justify-content: center; }
+    .dot-row { display: flex; gap: 5px; }
+    .dot-row + .dot-row { border-top: none; padding-top: 0; margin-top: 0; }
+    .dot { width: 22px; height: 22px; border-radius: 50%; animation: dotAppear 0.4s ease forwards; opacity: 0; transform: scale(0); }
+    @keyframes dotAppear { 0% { opacity: 0; transform: scale(0); } 100% { opacity: 1; transform: scale(1); } }
+
+    /* 數線 */
+    .number-line { position: relative; width: 100%; height: 70px; margin: 15px 0; }
+    .line-track { position: absolute; top: 50%; left: 5%; right: 5%; height: 3px; background: rgba(255,255,255,0.3); border-radius: 2px; }
+    .line-mark { position: absolute; top: calc(50% + 12px); width: 2px; height: 15px; background: rgba(255,255,255,0.4); }
+    .line-number { position: absolute; top: calc(50% + 32px); font-size: 0.9rem; color: #ccc; left: 50%; transform: translateX(-50%); }
+    .jump-arrow { position: absolute; top: calc(50% - 20px); font-size: 1.3rem; animation: jumpMove 0.5s ease forwards; opacity: 0; }
+    @keyframes jumpMove { 0% { top: calc(50% - 35px); opacity: 1; } 50% { top: calc(50% - 45px); } 100% { top: calc(50% - 20px); opacity: 1; } }
+
+    /* 實物 */
+    .object-group { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; max-width: 450px; }
+    .group-stack { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 8px 12px; background: rgba(255,255,255,0.1); border-radius: 12px; animation: popIn 0.3s ease forwards; opacity: 0; transform: scale(0); }
+    @keyframes popIn { 0% { opacity: 0; transform: scale(0); } 100% { opacity: 1; transform: scale(1); } }
+    .group-items { display: flex; gap: 2px; font-size: 1.6rem; }
+    .group-label { font-size: 0.8rem; color: #aaa; }
+
+    /* 動物 */
+    .animal-farm { display: flex; flex-direction: column; gap: 8px; align-items: center; }
+    .farm-row { display: flex; gap: 8px; padding: 6px 12px; background: rgba(46, 204, 113, 0.2); border-radius: 12px; animation: slideIn 0.4s ease forwards; opacity: 0; transform: translateX(-15px); }
+    @keyframes slideIn { 0% { opacity: 0; transform: translateX(-15px); } 100% { opacity: 1; transform: translateX(0); } }
+    .farm-animal { font-size: 1.8rem; }
+
+    /* 積木 */
+    .block-view { perspective: 400px; }
+    .block-layer { display: flex; gap: 3px; margin-bottom: 3px; }
+    .block { width: 26px; height: 26px; border-radius: 5px; animation: blockDrop 0.5s ease forwards; opacity: 0; transform: translateY(-40px); }
+    @keyframes blockDrop { 0% { opacity: 0; transform: translateY(-40px); } 100% { opacity: 1; transform: translateY(0); } }
+    .block-top { position: absolute; top: -6px; left: 6px; width: 18px; height: 18px; background: rgba(255,255,255,0.4); border-radius: 3px; }
+    .block-face { position: relative; }
+
+    /* 故事 */
+    .story-panel { text-align: center; padding: 15px; }
+    .story-title { font-size: 1.2rem; color: var(--accent); margin-bottom: 12px; }
+    .story-scene { font-size: 1rem; line-height: 1.7; color: #ddd; max-width: 360px; }
+    .story-highlight { color: var(--primary); font-weight: bold; }
+    .story-items { display: flex; gap: 8px; justify-content: center; margin: 15px 0; flex-wrap: wrap; }
+    .story-item { font-size: 1.8rem; animation: bounce 0.6s ease infinite; }
+    @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+
+    /* 手指 */
+    .finger-display { display: flex; flex-direction: column; gap: 15px; align-items: center; }
+    .finger-row { display: flex; gap: 12px; align-items: flex-end; }
+    .finger-hand { position: relative; width: 50px; height: 60px; }
+    .finger-palm { width: 42px; height: 34px; background: #ffdbac; border-radius: 8px 8px 12px 12px; position: absolute; bottom: 0; left: 4px; }
+    .finger-digit { position: absolute; width: 10px; height: 28px; background: #ffdbac; border-radius: 5px; bottom: 28px; animation: fingerUp 0.3s ease forwards; opacity: 0; }
+    .finger-digit.extended { height: 32px; bottom: 31px; }
+    .finger-digit::before { content: ''; position: absolute; top: -6px; left: 0; width: 10px; height: 8px; background: #ffdbac; border-radius: 5px 5px 0 0; }
+    .d1 { left: 4px; animation-delay: 0s; } .d2 { left: 15px; animation-delay: 0.04s; } .d3 { left: 26px; animation-delay: 0.08s; } .d4 { left: 37px; animation-delay: 0.12s; } .d5 { left: 50px; animation-delay: 0.16s; }
+    @keyframes fingerUp { 0% { opacity: 0; transform: translateY(8px); } 100% { opacity: 1; transform: translateY(0); } }
+
+    
+
+    /* 錢幣 */
+    .coin-display { display: flex; flex-direction: column; gap: 12px; align-items: center; }
+    .coin-row { display: flex; gap: 8px; padding: 8px 15px; background: rgba(255,215,0,0.2); border-radius: 12px; animation: slideIn 0.4s ease forwards; opacity: 0; }
+    .coin { width: 34px; height: 34px; background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; font-weight: bold; color: #8B4513; box-shadow: inset 0 2px 3px rgba(255,255,255,0.5), 0 2px 3px rgba(0,0,0,0.3); }
+
+    /* 說明 */
+    .explanation { text-align: center; font-size: 1rem; color: #bbb; margin-top: 8px; }
+    .explanation .highlight { color: var(--accent); font-weight: bold; }
+
+    /* 計分板 */
+    .score-board {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 10px;
+      font-size: 1rem;
+    }
+    .score-item { display: flex; align-items: center; gap: 5px; }
+    .score-item .icon { font-size: 1.3rem; }
+    .score-item .value { font-size: 1.3rem; font-weight: bold; color: var(--accent); }
+    .score-item .label { font-size: 0.9rem; color: #999; margin-left: 2px; }
+
+    /* 練習建議橫幅 */
+    .suggestion-banner {
+      display: none;
+      background: rgba(255, 217, 61, 0.15);
+      border: 2px solid var(--accent);
+      padding: 10px 20px;
+      border-radius: 15px;
+      margin-bottom: 10px;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.95rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .suggestion-banner.active { display: flex; }
+    .suggestion-banner span { color: var(--accent); }
+    .suggestion-btn {
+      padding: 6px 14px;
+      background: var(--accent);
+      color: #333;
+      border: none;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      font-family: inherit;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .suggestion-btn:hover { transform: scale(1.05); }
+
+    /* 乘法表 */
+    .table-btn { padding: 8px 16px; font-size: 1rem; background: var(--accent); color: #333; border: none; border-radius: 20px; cursor: pointer; font-family: inherit; margin-bottom: 10px; }
+    .table-panel { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(20, 20, 50, 0.95); padding: 20px; border-radius: 16px; z-index: 1000; max-width: 350px; width: 90%; box-shadow: 0 0 30px rgba(0,0,0,0.5); }
+    .table-panel.active { display: block; }
+    .table-backdrop { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 999; }
+    .table-backdrop.active { display: block; }
+    .table-title { font-size: 1.3rem; color: var(--accent); text-align: center; margin-bottom: 5px; }
+    .table-nav { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 12px 0; }
+    .table-num-btn { width: 42px; height: 42px; font-size: 1.2rem; border: none; border-radius: 10px; background: var(--primary); color: #fff; cursor: pointer; font-family: inherit; transition: transform 0.2s; }
+    .table-num-btn:hover { transform: scale(1.1); }
+    .table-num-btn.active { background: var(--accent); color: #333; animation: pulse 1.5s ease-in-out infinite; }
+    .table-close { display: block; margin: 10px auto 0; padding: 6px 16px; background: rgba(255,255,255,0.2); border: none; border-radius: 15px; color: #aaa; cursor: pointer; font-family: inherit; }
+    .table-content { font-size: 1.3rem; text-align: center; padding: 15px 10px; background: rgba(255,255,255,0.1); border-radius: 12px; line-height: 1.8; min-height: 200px; }
+    @keyframes pulse { 0%, 100% { transform: scale(1.1); box-shadow: 0 0 15px currentColor; } 50% { transform: scale(1.15); box-shadow: 0 0 25px currentColor, 0 0 35px currentColor; } }
+
+    /* 豎式乘法 */
+    .vertical-mult {
+      display: none;
+      flex-direction: column;
+      align-items: flex-end;
+      padding: 15px 20px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 12px;
+      margin-bottom: 15px;
+      font-size: 1.8rem;
+      min-width: 120px;
+    }
+    .vertical-mult.active { display: flex; }
+    .v-multiplicand, .v-result { color: var(--accent); font-weight: bold; }
+    .v-times { color: #aaa; margin-right: 5px; }
+    .v-factor { color: var(--primary); }
+    .v-line { width: 100%; height: 3px; background: var(--accent); margin: 5px 0; }
+
+    /* 練習模式 */
+    .practice-panel { display: none; flex-direction: column; align-items: center; gap: 15px; width: 100%; }
+    .practice-panel.active { display: flex; }
+    .quiz-card { background: rgba(255,255,255,0.1); padding: 25px; border-radius: 18px; text-align: center; width: 100%; max-width: 360px; }
+    .quiz-question { font-size: 1.8rem; margin-bottom: 15px; }
+    .quiz-options { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; width: 100%; }
+    .quiz-btn { padding: 15px; border: none; border-radius: 12px; font-size: 1.3rem; font-family: inherit; cursor: pointer; background: rgba(255,255,255,0.15); color: #fff; transition: all 0.2s; }
+    .quiz-btn:hover { transform: scale(1.05); }
+    .quiz-btn.correct { background: var(--success); }
+    .quiz-btn.wrong { background: var(--danger); }
+    .quiz-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .quiz-result { margin-top: 15px; font-size: 1.1rem; }
+    .quiz-result.success { color: var(--success); }
+    .quiz-result.fail { color: var(--danger); }
+
+    /* 獎勵 */
+    .badge-display { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+    .badge { padding: 6px 12px; border-radius: 15px; font-size: 0.8rem; display: flex; align-items: center; gap: 4px; animation: badgePop 0.5s ease; }
+    .badge.earned { background: var(--accent); color: #333; }
+    .badge.locked { background: rgba(255,255,255,0.1); color: #666; }
+    @keyframes badgePop { 0% { transform: scale(0); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
+
+    /* 設置面板 */
+    .settings-panel {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.95);
+      z-index: 100;
+      padding: 25px;
+      flex-direction: column;
+      align-items: center;
+      overflow-y: auto;
+    }
+    .settings-panel.active { display: flex; }
+    .settings-title { font-size: 1.4rem; margin-bottom: 25px; color: var(--accent); }
+    .settings-group { width: 100%; max-width: 360px; margin-bottom: 15px; }
+    .settings-toggle { display: flex; align-items: center; justify-content: space-between; padding: 12px; background: rgba(255,255,255,0.1); border-radius: 10px; }
+    .toggle-switch { width: 54px; height: 30px; background: #666; border-radius: 15px; position: relative; cursor: pointer; }
+    .toggle-switch.on { background: var(--primary); }
+    .toggle-switch::after { content: ''; position: absolute; top: 3px; left: 3px; width: 24px; height: 24px; background: #fff; border-radius: 50%; transition: 0.3s; }
+    .toggle-switch.on::after { left: 27px; }
+    .close-settings { position: absolute; top: 15px; right: 15px; font-size: 1.8rem; cursor: pointer; color: #aaa; }
+
+    /* 關卡顯示 */
+    .level-display {
+      display: none;
+      padding: 8px 15px;
+      background: rgba(77, 150, 255, 0.2);
+      border-radius: 10px;
+      font-size: 1rem;
+      color: var(--primary);
+    }
+    .level-display.active { display: flex; align-items: center; gap: 8px; }
+
+    /* 連續正確顯示 */
+    .streak-display {
+      display: none;
+      padding: 6px 12px;
+      background: rgba(255, 140, 66, 0.2);
+      border-radius: 8px;
+      font-size: 0.9rem;
+      color: #FF8C42;
+    }
+    .streak-display.active { display: flex; align-items: center; gap: 5px; }
+
+    /* 學習報告 */
+    .report-panel {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.95);
+      z-index: 100;
+      padding: 25px;
+      flex-direction: column;
+      align-items: center;
+      overflow-y: auto;
+    }
+    .report-panel.active { display: flex; }
+    .report-card { background: rgba(255,255,255,0.1); padding: 20px; border-radius: 15px; width: 100%; max-width: 360px; margin-bottom: 15px; }
+    .report-stat { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .report-stat:last-child { border-bottom: none; }
+    .export-btn { width: 100%; padding: 12px; background: var(--primary); color: #fff; border: none; border-radius: 10px; font-size: 1rem; cursor: pointer; }
+
+    /* 發聲動畫 */
+    .speaking { animation: speakPulse 0.5s ease infinite; }
+    @keyframes speakPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+    
+    /* 力量指引系統 */
+    .guidance-panel {
+      display: none;
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(135deg, rgba(30,30,60,0.95), rgba(20,20,40,0.98));
+      border: 2px solid var(--primary);
+      border-radius: 16px;
+      padding: 16px 24px;
+      max-width: 90%;
+      width: 400px;
+      z-index: 50;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.5), 0 0 60px rgba(77,150,255,0.3);
+      animation: guidanceSlideIn 0.4s ease-out;
+    }
+    .guidance-panel.active { display: block; }
+    .guidance-panel.level1 { border-color: #4D96FF; }
+    .guidance-panel.level2 { border-color: #FFD93D; }
+    .guidance-panel.level3 { border-color: #a855f7; box-shadow: 0 8px 32px rgba(0,0,0,0.5), 0 0 80px rgba(168,85,247,0.4); }
+    
+    @keyframes guidanceSlideIn {
+      from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+      to { opacity: 1; transform: translateX(-50%) translateY(0); }
+    }
+    
+    .guidance-title {
+      font-size: 0.85rem;
+      color: var(--primary);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .guidance-title.level1 { color: #4D96FF; }
+    .guidance-title.level2 { color: #FFD93D; }
+    .guidance-title.level3 { color: #a855f7; }
+    
+    .guidance-text {
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+    
+    .guidance-hint {
+      margin-top: 10px;
+      padding: 8px 12px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 8px;
+      font-size: 0.9rem;
+      color: #aaa;
+    }
+    
+    .guidance-stats {
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+    }
+    .guidance-stats .resilience { color: #6BCB77; }
+    .guidance-stats .streak-info { color: #FF8C42; }
+    
+    /* 致命一擊特效 */
+    .crit-effect {
+      animation: critBurst 0.5s ease-out;
+    }
+    @keyframes critBurst {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.15); filter: brightness(1.3); }
+      100% { transform: scale(1); filter: brightness(1); }
+    }
+  
+    /* 三大領域選擇器 */
+    .domain-selector {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      margin: 12px 0;
+      flex-wrap: wrap;
+    }
+    .domain-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      background: rgba(255,255,255,0.08);
+      border: 2px solid rgba(255,255,255,0.15);
+      border-radius: 20px;
+      color: #fff;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .domain-btn:hover {
+      background: rgba(255,255,255,0.15);
+      transform: translateY(-2px);
+    }
+    .domain-btn.active {
+      background: linear-gradient(135deg, #4D96FF, #6366f1);
+      border-color: #4D96FF;
+      box-shadow: 0 0 20px rgba(77,150,255,0.5);
+    }
+    .domain-btn[data-domain="veteran"].active {
+      background: linear-gradient(135deg, #FF8C42, #f97316);
+      border-color: #FF8C42;
+    }
+    .domain-btn[data-domain="legend"].active {
+      background: linear-gradient(135deg, #a855f7, #7c3aed);
+      border-color: #a855f7;
+      box-shadow: 0 0 25px rgba(168,85,247,0.6);
+    }
+    .domain-icon { font-size: 1.1rem; }
+
+  
+    /* 英雄展示卡 */
+    .hero-display {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      margin: 15px auto;
+      padding: 12px 20px;
+      background: linear-gradient(135deg, rgba(30,30,60,0.6), rgba(20,20,40,0.8));
+      border: 2px solid #4a90e2;
+      border-radius: 16px;
+      max-width: 420px;
+    }
+    .hero-display img {
+      width: 90px;
+      height: 90px;
+      object-fit: contain;
+      border-radius: 12px;
+      border: 2px solid #5e6ad2;
+      background: #0a0a12;
+    }
+    .hero-info h3 {
+      margin: 0 0 4px 0;
+      color: #4a90e2;
+      font-size: 1.1rem;
+    }
+    .hero-info p {
+      margin: 0;
+      color: #aaa;
+      font-size: 0.85rem;
+    }
+
+  
+    /* 獎勵區 */
+    .reward-area {
+      min-height: 90px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 15px;
+      margin: 15px 0;
+      padding: 10px;
+    }
+    .reward-item {
+      display: none;
+      text-align: center;
+      animation: popIn 0.4s ease;
+    }
+    .reward-item.active { display: block; }
+    .reward-item img {
+      width: 70px;
+      height: 70px;
+      object-fit: contain;
+    }
+    .reward-text {
+      font-size: 0.85rem;
+      color: #ddd;
+      margin-top: 6px;
+    }
+    @keyframes popIn {
+      from { transform: scale(0.6); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .row-col-stat {
+      position: absolute;
+      top: 8px;
+      right: 10px;
+      font-size: 1rem;
+      color: var(--accent);
+      background: rgba(0,0,0,0.3);
+      padding: 4px 10px;
+      border-radius: 12px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation: none !important;
+        transition: none !important;
+      }
+    }
+
+    /* ========== 戰鬥系統 ========== */
+    .battle-section {
+      display: none;
+      width: 100%;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+    }
+    .battle-section.active { display: flex; }
+
+    .battle-arena {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      width: 100%;
+      padding: 15px;
+      background: rgba(0,0,0,0.3);
+      border-radius: 18px;
+    }
+
+    .monster-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      padding: 15px 25px;
+      background: linear-gradient(135deg, rgba(80,20,20,0.8), rgba(40,10,10,0.9));
+      border: 2px solid #FF6B6B;
+      border-radius: 16px;
+      min-width: 200px;
+    }
+    .monster-card.boss { border-color: #a855f7; box-shadow: 0 0 30px rgba(168,85,247,0.5); }
+
+    .monster-emoji {
+      font-size: 4rem;
+      animation: monsterFloat 2s ease-in-out infinite;
+    }
+    @keyframes monsterFloat {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-8px) scale(1.05); }
+    }
+
+    .monster-name {
+      font-size: 1.3rem;
+      color: #FF6B6B;
+      font-weight: bold;
+    }
+    .monster-card.boss .monster-name { color: #a855f7; }
+
+    .monster-hp-container { width: 100%; max-width: 180px; }
+    .hp-bar-bg {
+      width: 100%;
+      height: 18px;
+      background: rgba(0,0,0,0.5);
+      border-radius: 9px;
+      overflow: hidden;
+      border: 2px solid rgba(255,255,255,0.2);
+    }
+    .hp-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #FF6B6B, #FF8C42);
+      border-radius: 9px;
+      transition: width 0.4s ease;
+    }
+    .hp-bar-fill.high { background: linear-gradient(90deg, #6BCB77, #4D96FF); }
+    .hp-bar-fill.medium { background: linear-gradient(90deg, #FFD93D, #FF8C42); }
+    .hp-bar-fill.low { background: linear-gradient(90deg, #FF6B6B, #FF4444); animation: hpPulse 0.5s ease infinite; }
+    @keyframes hpPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
+
+    .hp-text {
+      font-size: 0.85rem;
+      color: #aaa;
+      margin-top: 4px;
+      text-align: center;
+    }
+
+    .battle-question-card {
+      background: rgba(255,255,255,0.1);
+      padding: 20px 30px;
+      border-radius: 16px;
+      text-align: center;
+    }
+    .battle-question {
+      font-size: 2rem;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+    .battle-options {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+    .battle-option {
+      padding: 12px 20px;
+      font-size: 1.3rem;
+      border: none;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.15);
+      color: #fff;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+    .battle-option:hover { transform: scale(1.05); background: rgba(255,255,255,0.25); }
+    .battle-option.correct { background: var(--success); }
+    .battle-option.wrong { background: var(--danger); }
+    .battle-option:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .hero-battle-status {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 12px 20px;
+      background: rgba(30,30,80,0.8);
+      border: 2px solid #4a90e2;
+      border-radius: 14px;
+    }
+    .hero-battle-avatar {
+      width: 60px;
+      height: 60px;
+      border-radius: 10px;
+      border: 2px solid #5e6ad2;
+    }
+    .hero-battle-info { flex: 1; }
+    .hero-battle-name {
+      font-size: 1rem;
+      color: #4a90e2;
+      margin-bottom: 6px;
+    }
+    .hero-hp-bar { width: 100%; }
+    .hero-hp-fill {
+      height: 12px;
+      background: linear-gradient(90deg, #6BCB77, #4D96FF);
+      border-radius: 6px;
+      transition: width 0.3s;
+    }
+    .hero-hp-fill.low { background: linear-gradient(90deg, #FF6B6B, #FF4444); animation: hpPulse 0.5s ease infinite; }
+
+    .combo-display {
+      padding: 8px 16px;
+      background: linear-gradient(135deg, rgba(255,140,66,0.3), rgba(255,217,61,0.3));
+      border: 2px solid var(--accent);
+      border-radius: 20px;
+      font-size: 1rem;
+      color: var(--accent);
+      display: none;
+      align-items: center;
+      gap: 8px;
+    }
+    .combo-display.active { display: flex; animation: comboGlow 0.5s ease; }
+    .combo-display.level-high {
+      background: linear-gradient(135deg, rgba(255,80,80,0.4), rgba(255,200,50,0.4));
+      border-color: #ff5050;
+      animation: comboGlowHigh 0.5s ease;
+    }
+    .combo-display.level-max {
+      background: linear-gradient(135deg, rgba(255,0,128,0.5), rgba(128,0,255,0.5));
+      border-color: #ff0080;
+      animation: comboGlowMax 0.5s ease, comboMaxPulse 0.8s ease infinite 0.5s;
+    }
+    @keyframes comboGlow {
+      0% { transform: scale(0.8); box-shadow: 0 0 0 rgba(255,217,61,0); }
+      50% { transform: scale(1.1); box-shadow: 0 0 30px rgba(255,217,61,0.8); }
+      100% { transform: scale(1); box-shadow: 0 0 15px rgba(255,217,61,0.4); }
+    }
+    @keyframes comboGlowHigh {
+      0% { transform: scale(0.8); box-shadow: 0 0 0 rgba(255,80,80,0); }
+      50% { transform: scale(1.15); box-shadow: 0 0 40px rgba(255,80,80,0.9); }
+      100% { transform: scale(1); box-shadow: 0 0 20px rgba(255,80,80,0.5); }
+    }
+    @keyframes comboGlowMax {
+      0% { transform: scale(0.8); box-shadow: 0 0 0 rgba(255,0,128,0); }
+      50% { transform: scale(1.2); box-shadow: 0 0 50px rgba(255,0,128,1); }
+      100% { transform: scale(1); box-shadow: 0 0 25px rgba(255,0,128,0.6); }
+    }
+    @keyframes comboMaxPulse {
+      0%, 100% { box-shadow: 0 0 25px rgba(255,0,128,0.6); }
+      50% { box-shadow: 0 0 40px rgba(255,0,128,0.9), 0 0 60px rgba(128,0,255,0.5); }
+    }
+    #comboCount { transition: transform 0.2s; }
+    #comboCount.pulse { animation: comboPulse 0.3s ease; }
+    @keyframes comboPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.4); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .combo-display.active,
+      .combo-display.level-high,
+      .combo-display.level-max { animation: none; box-shadow: none; }
+      #comboCount.pulse { animation: none; }
+    }
+
+    .damage-number {
+      position: absolute;
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: var(--accent);
+      text-shadow: 0 0 10px currentColor, 2px 2px 0 rgba(0,0,0,0.5);
+      animation: damageFloat 1s ease-out forwards;
+      pointer-events: none;
+      z-index: 100;
+    }
+    .damage-number.heal { color: #6BCB77; }
+    .damage-number.crit { color: #FF6B6B; font-size: 2.2rem; }
+    @keyframes damageFloat {
+      0% { opacity: 1; transform: translateY(0) scale(1); }
+      50% { opacity: 1; transform: translateY(-30px) scale(1.2); }
+      100% { opacity: 0; transform: translateY(-60px) scale(0.8); }
+    }
+
+    .battle-reward-popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(20,20,50,0.98);
+      border: 3px solid var(--accent);
+      border-radius: 20px;
+      padding: 25px 35px;
+      text-align: center;
+      z-index: 200;
+      display: none;
+      animation: popIn 0.4s ease;
+    }
+    .battle-reward-popup.active { display: block; }
+    .battle-reward-popup h3 { color: var(--accent); margin-bottom: 15px; font-size: 1.4rem; }
+    .reward-row { display: flex; gap: 20px; justify-content: center; margin: 10px 0; }
+    .reward-icon { font-size: 1.5rem; }
+    .reward-value { color: var(--accent); font-size: 1.2rem; }
+
+    .battle-start-btn {
+      padding: 15px 40px;
+      font-size: 1.3rem;
+      background: linear-gradient(135deg, #FF6B6B, #FF8C42);
+      color: #fff;
+      border: none;
+      border-radius: 25px;
+      cursor: pointer;
+      font-family: inherit;
+      font-weight: bold;
+      transition: all 0.3s;
+      box-shadow: 0 5px 20px rgba(255,107,107,0.4);
+    }
+    .battle-start-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 30px rgba(255,107,107,0.6);
+    }
+
+    .hero-select-grid {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin: 10px 0;
+    }
+    .hero-select-card {
+      padding: 10px 15px;
+      background: rgba(255,255,255,0.1);
+      border: 2px solid rgba(255,255,255,0.2);
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+    }
+    .hero-select-card:hover { background: rgba(255,255,255,0.2); }
+    .hero-select-card.selected {
+      border-color: var(--primary);
+      background: rgba(77,150,255,0.2);
+      box-shadow: 0 0 15px rgba(77,150,255,0.4);
+    }
+    .hero-select-card img { width: 50px; height: 50px; }
+    .hero-select-card .name { font-size: 0.8rem; margin-top: 4px; }
+    .hero-skill-desc { font-size: 0.7rem; color: #aaa; margin-top: 4px; }
+
+    .battle-stats-bar {
+      display: flex;
+      gap: 15px;
+      font-size: 0.9rem;
+      color: #aaa;
+    }
+    .battle-stat { display: flex; align-items: center; gap: 4px; }
+    .battle-stat .val { color: var(--accent); font-weight: bold; }
+
+    .hero-hit { animation: heroHit 0.3s ease; }
+    @keyframes heroHit {
+      0%, 100% { transform: translateX(0); filter: brightness(1); }
+      25% { transform: translateX(-5px); filter: brightness(1.5) hue-rotate(-20deg); }
+      75% { transform: translateX(5px); filter: brightness(1.3); }
+    }
+
+    .hero-shield { animation: heroShield 0.6s ease-out; }
+    @keyframes heroShield {
+      0% { box-shadow: 0 0 0 0 rgba(100, 200, 255, 0.8); }
+      50% { box-shadow: 0 0 30px 15px rgba(100, 200, 255, 0.4); }
+      100% { box-shadow: 0 0 0 0 rgba(100, 200, 255, 0); }
+    }
+
+    .crit-magic { animation: critMagic 0.5s ease-out; }
+    @keyframes critMagic {
+      0% { text-shadow: 0 0 5px #FFD700, 0 0 10px #9b59b6; transform: scale(1); }
+      50% { text-shadow: 0 0 20px #FFD700, 0 0 40px #9b59b6, 0 0 60px #fff; transform: scale(1.3); }
+      100% { text-shadow: 0 0 5px #FFD700, 0 0 10px #9b59b6; transform: scale(1); }
+    }
+
+    .berserker-mode { animation: berserkerPulse 0.8s ease-in-out infinite; }
+    @keyframes berserkerPulse {
+      0%, 100% { box-shadow: 0 0 10px rgba(231, 76, 60, 0.5); }
+      50% { box-shadow: 0 0 30px rgba(231, 76, 60, 0.9), 0 0 50px rgba(255, 100, 50, 0.5); }
+    }
+
+    .monster-hit { animation: monsterHit 0.4s ease; }
+    @keyframes monsterHit {
+      0%, 100% { transform: translateY(0) scale(1); }
+      30% { transform: translateY(-10px) scale(1.1); filter: brightness(1.5); }
+      60% { transform: translateY(5px) scale(0.95); }
+    }
+
+    .victory-overlay, .defeat-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.9);
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 300;
+    }
+    .victory-overlay.active, .defeat-overlay.active { display: flex; }
+    .victory-overlay h2 { color: var(--accent); font-size: 2.5rem; margin-bottom: 20px; }
+    .defeat-overlay h2 { color: var(--danger); font-size: 2.5rem; margin-bottom: 20px; }
+    .victory-overlay .rewards-summary { color: #ddd; font-size: 1.2rem; margin: 10px 0; }
+
+    .battle-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: linear-gradient(135deg, #1a0a2e 0%, #16213e 50%, #0f0f1a 100%);
+      z-index: 200;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      overflow-y: auto;
+    }
+    .battle-overlay.active {
+      display: flex;
+      animation: battleFadeIn 0.4s ease-out;
+    }
+    @keyframes battleFadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .battle-answer-input {
+      margin-top: 15px;
+      padding: 12px 20px;
+      font-size: 1.8rem;
+      width: 140px;
+      text-align: center;
+      border: 2px solid var(--accent);
+      border-radius: 12px;
+      background: rgba(0,0,0,0.5);
+      color: #fff;
+      font-family: inherit;
+    }
+    .battle-answer-input:focus { outline: none; border-color: #fff; }
+
+    .battle-submit-btn {
+      margin-left: 10px;
+      padding: 12px 25px;
+      font-size: 1.2rem;
+      background: var(--accent);
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-family: inherit;
+      transition: transform 0.2s;
+    }
+    .battle-submit-btn:hover { transform: scale(1.05); }
+
+    .battle-close-btn {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,0.3);
+      background: rgba(0,0,0,0.5);
+      color: #fff;
+      font-size: 1.2rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .battle-close-btn:hover { background: var(--danger); border-color: var(--danger); }
+  </style>
+</head>
+<body>
+  <h1>
+    乘法小鎮 ⭐
+    <span class="subtitle" id="modeLabel"></span>
+  </h1>
+
+  <!-- 計時器 -->
+  <div class="timer-display" id="timerDisplay">
+    <span>⏱️</span>
+    <span class="time" id="timerTime">60</span>
+    <span class="best">最好: <span id="bestScore">0</span>題</span>
+  </div>
+
+  <!-- 操作欄 -->
+  <div class="action-bar">
+    <button class="action-btn speak" id="speakBtn" onclick="speakResult()">
+      <i class="fas fa-volume-up"></i> 發聲
+    </button>
+    <button class="action-btn random" onclick="randomQuestion()">
+      <i class="fas fa-dice"></i> Random
+    </button>
+    <button class="action-btn timer" id="timerBtn" onclick="toggleTimer()">
+      <i class="fas fa-stopwatch"></i> 計時
+    </button>
+    <button class="action-btn settings" onclick="toggleSettings()">
+      <i class="fas fa-cog"></i> 設置
+    </button>
+    <button class="action-btn reset" onclick="resetAll()">
+      <i class="fas fa-redo"></i> 重置
+    </button>
+  </div>
+
+  <div class="action-bar">
+    <button class="action-btn" onclick="toggleFullscreen()" title="全熒幕">
+      <i class="fas fa-expand"></i>
+    </button>
+    <button class="action-btn" onclick="toggleReport()" title="學習報告">
+      <i class="fas fa-chart-line"></i> 報告
+    </button>
+  </div>
+
+
+  <!-- 我的英雄 -->
+
+  <!-- 我的英雄隊伍 -->
+  <div style="text-align:center; margin: 15px 0;">
+    <div style="color:#4a90e2; font-size:0.9rem; margin-bottom:8px;">★ 我的英雄隊伍 ★</div>
+    <div style="display:flex; justify-content:center; gap:15px; flex-wrap:wrap;">
+      <div style="text-align:center;">
+        <img src="assets/images/knight-hero.png" style="width:75px;height:75px;object-fit:contain;border:2px solid #4a90e2;border-radius:10px;background:#0a0a12;">
+        <div style="font-size:0.75rem;color:#ddd;margin-top:4px;">銀藍騎士</div>
+      </div>
+      <div style="text-align:center;">
+        <img src="assets/images/mage-hero.png" style="width:75px;height:75px;object-fit:contain;border:2px solid #9b59b6;border-radius:10px;background:#0a0a12;">
+        <div style="font-size:0.75rem;color:#ddd;margin-top:4px;">銀月法師</div>
+      </div>
+      <div style="text-align:center;">
+        <img src="assets/images/berserker-hero.png" style="width:75px;height:75px;object-fit:contain;border:2px solid #e74c3c;border-radius:10px;background:#0a0a12;">
+        <div style="font-size:0.75rem;color:#ddd;margin-top:4px;">烈焰狂戰</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 關卡 & Streak -->
+  <div class="level-display" id="levelDisplay">
+    <span>🔢</span>
+    <span>關卡 <span id="currentLevel">1</span>/8</span>
+  </div>
+  
+  <!-- 三大領域選擇器 -->
+  <div class="domain-selector" id="domainSelector">
+    <div class="domain-btn" data-domain="newbie" onclick="switchDomain('newbie')">
+      <span class="domain-icon">🌱</span>
+      <span>新手村</span>
+    </div>
+    <div class="domain-btn" data-domain="veteran" onclick="switchDomain('veteran')">
+      <span class="domain-icon">⚔️</span>
+      <span>黑暗森林</span>
+    </div>
+    <div class="domain-btn" data-domain="legend" onclick="switchDomain('legend')">
+      <span class="domain-icon">👑</span>
+      <span>深淵</span>
+    </div>
+  </div>
+
+  <div class="streak-display" id="streakDisplay">
+    <span>🔥</span>
+    <span>連續 <span id="streakCount">0</span></span>
+  </div>
+
+  <div class="action-bar">
+    <button class="action-btn battle" onclick="openBattleFromCurrentSelection()">
+      <i class="fas fa-sword"></i> 開始戰鬥
+    </button>
+  </div>
+
+  <!-- 控制區 -->
+  <div class="control-panel">
+    <div class="num-selector">
+      <div class="label">被乘數</div>
+      <div class="num-btn-group" id="btns1">
+        <button class="num-btn active" data-n="2">2</button>
+        <button class="num-btn" data-n="3">3</button>
+        <button class="num-btn" data-n="4">4</button>
+        <button class="num-btn" data-n="5">5</button>
+        <button class="num-btn" data-n="6">6</button>
+        <button class="num-btn" data-n="7">7</button>
+        <button class="num-btn" data-n="8">8</button>
+        <button class="num-btn" data-n="9">9</button>
+      </div>
+    </div>
+
+    <span class="operator">×</span>
+
+    <div class="num-selector">
+      <div class="label">乘數</div>
+      <div class="num-btn-group" id="btns2">
+        <button class="num-btn" data-n="2">2</button>
+        <button class="num-btn" data-n="3">3</button>
+        <button class="num-btn" data-n="4">4</button>
+        <button class="num-btn" data-n="5">5</button>
+        <button class="num-btn" data-n="6">6</button>
+        <button class="num-btn" data-n="7">7</button>
+        <button class="num-btn" data-n="8">8</button>
+        <button class="num-btn" data-n="9">9</button>
+      </div>
+    </div>
+
+    <span class="equals">=</span>
+
+    <div class="result-display">
+      <div class="num" id="result">12</div>
+      <div class="label">結果</div>
+    </div>
+  </div>
+
+  <!-- Tab 導航 -->
+  <div class="tab-nav">
+    <button class="tab-btn active" data-tab="dots">📍點</button>
+    <button class="tab-btn" data-tab="numberline">📏線</button>
+    <button class="tab-btn" data-tab="objects">🍎實</button>
+    <button class="tab-btn" data-tab="animals">🦆動</button>
+    <button class="tab-btn" data-tab="blocks">🧱木</button>
+    <button class="tab-btn" data-tab="story">📖故</button>
+<button class="tab-btn" data-tab="fingers">✋手</button>
+
+    <button class="tab-btn" data-tab="coins">💰錢</button>
+  </div>
+
+  <!-- 乘法表按鈕 -->
+  <button class="table-btn" onclick="showTablePanel()">📋 乘法表</button>
+  <div class="table-backdrop" id="tableBackdrop" onclick="hideTablePanel()"></div>
+
+  <!-- 計分板 -->
+  <div class="score-board">
+    <div class="score-item"><span>✅</span><span class="value" id="correctScore">0</span><span class="label">正確</span></div>
+    <div class="score-item"><span>❌</span><span class="value" id="wrongScore">0</span><span class="label">錯誤</span></div>
+    <div class="score-item"><span>🎖️</span><span class="value" id="badgeCount">0</span></div>
+  </div>
+
+  <!-- 練習建議橫幅 -->
+  <div class="suggestion-banner" id="suggestionBanner">
+    <span>📚 需要加強練習：</span>
+    <div id="suggestionBtns"></div>
+  </div>
+
+  <!-- 豎式乘法 -->
+  <div class="vertical-mult" id="verticalMult">
+    <div class="v-multiplicand" id="vMultiplicand">3</div>
+    <div class="v-multiplier">
+      <span class="v-times">×</span>
+      <span class="v-factor" id="vFactor">5</span>
+    </div>
+    <div class="v-line"></div>
+    <div class="v-result" id="vResult">15</div>
+  </div>
+
+  <!-- 顯示區 -->
+  <div class="display-area">
+    
+    <!-- 點陣 -->
+    <div class="viz-section active" id="dots" style="position:relative;">
+      <div class="row-col-stat" id="statDots">2 × 4 = 8</div>
+      <div class="viz-title">📍 點陣圖</div>
+      <div class="dot-container" id="dotContainer"></div>
+      <div class="explanation" id="dotExpl">2行 × 4列 = <span class="highlight">12</span>點</div>
+    </div>
+
+    <!-- 數線 -->
+    <div class="viz-section" id="numberline" style="position:relative;">
+      <div class="row-col-stat" id="statLine">3 × 4 = 12</div>
+      <div class="viz-title">📏 數線跳躍</div>
+      <div class="number-line" id="numberLine"></div>
+      <div class="explanation" id="lineExpl">由 0 跳<span class="highlight">3</span>格，跳<span class="highlight">4</span>次</div>
+    </div>
+
+    <!-- 實物 -->
+    <div class="viz-section" id="objects" style="position:relative;">
+      <div class="row-col-stat" id="statObjects">2 × 4 = 8</div>
+      <div class="viz-title">🍎 實物分組</div>
+      <div class="object-group" id="objectGroup"></div>
+      <div class="explanation" id="objExpl"></div>
+    </div>
+
+    <!-- 動物 -->
+    <div class="viz-section" id="animals" style="position:relative;">
+      <div class="row-col-stat" id="statAnimals">2 × 4 = 8</div>
+      <div class="viz-title">🦆 動物農場</div>
+      <div class="animal-farm" id="animalFarm"></div>
+      <div class="explanation" id="farmExpl"></div>
+    </div>
+
+    <!-- 積木 -->
+    <div class="viz-section" id="blocks" style="position:relative;">
+      <div class="row-col-stat" id="statBlocks">2 × 4 = 8</div>
+      <div class="viz-title">🧱 積木疊疊</div>
+      <div class="block-view" id="blockView"></div>
+      <div class="explanation" id="blockExpl"></div>
+    </div>
+
+    <!-- 故事 -->
+    <div class="viz-section" id="story" style="position:relative;">
+      <div class="row-col-stat" id="statStory">2 × 4 = 8</div>
+      <div class="viz-title">📖 乘法故事</div>
+      <div class="story-panel">
+        <div class="story-title" id="storyTitle"></div>
+        <div class="story-scene" id="storyScene"></div>
+        <div class="story-items" id="storyItems"></div>
+      </div>
+      <div class="explanation" id="storyExpl"></div>
+    </div>
+
+    <!-- 手指 -->
+    <div class="viz-section" id="fingers" style="position:relative;">
+      <div class="row-col-stat" id="statFingers">2 × 4 = 8</div>
+      <div class="viz-title">✋ 手指計數</div>
+      <div class="finger-display" id="fingerDisplay"></div>
+      <div class="explanation" id="fingerExpl">每隻手<span class="highlight">5</span>指，<span class="highlight">3</span>隻手</div>
+    </div>
+
+    
+
+    <!-- 錢幣 -->
+    <div class="viz-section" id="coins" style="position:relative;">
+      <div class="row-col-stat" id="statCoins">2 × 4 = 8</div>
+      <div class="viz-title">💰 錢幣排列</div>
+      <div class="coin-display" id="coinDisplay"></div>
+      <div class="explanation" id="coinExpl"></div>
+    </div>
+
+    <!-- 乘法表面板 -->
+  <div id="tablePanel" class="table-panel">
+    <div class="table-title">📋 乘法表</div>
+    <div class="table-nav">
+      <button class="table-num-btn" data-n="2">2</button>
+      <button class="table-num-btn" data-n="3">3</button>
+      <button class="table-num-btn" data-n="4">4</button>
+      <button class="table-num-btn" data-n="5">5</button>
+      <button class="table-num-btn" data-n="6">6</button>
+      <button class="table-num-btn" data-n="7">7</button>
+      <button class="table-num-btn" data-n="8">8</button>
+      <button class="table-num-btn" data-n="9">9</button>
+    </div>
+    <button class="table-close" onclick="hideTablePanel()">✕ 關閉</button>
+    <div class="table-content" id="tableContent">請選擇數字</div>
+  </div>
+
+  <!-- 戰鬥 Overlay -->
+  <div class="battle-overlay" id="battleOverlay">
+    <button class="battle-close-btn" onclick="closeBattleOverlay()">✕</button>
+
+    <div class="battle-arena">
+      <div class="combo-display" id="comboDisplay">
+        <span>🔥</span>
+        <span>COMBO <span id="comboCount">0</span></span>
+        <span id="comboSkill"></span>
+      </div>
+
+      <div class="monster-card" id="monsterCard">
+        <div class="monster-emoji" id="monsterEmoji">🐺</div>
+        <div class="monster-name" id="monsterName">狼人</div>
+        <div class="monster-hp-container">
+          <div class="hp-bar-bg">
+            <div class="hp-bar-fill" id="monsterHpFill" style="width: 100%"></div>
+          </div>
+          <div class="hp-text" id="monsterHpText">15 / 15 HP</div>
+        </div>
+      </div>
+
+      <div class="battle-question-card">
+        <div class="battle-question" id="battleQuestion">3 × 4 = ?</div>
+        <div class="battle-options" id="battleOptions"></div>
+      </div>
+
+      <div class="hero-battle-status" id="heroBattleStatus">
+        <img src="assets/images/knight-hero.png" class="hero-battle-avatar" id="heroBattleAvatar">
+        <div class="hero-battle-info">
+          <div class="hero-battle-name" id="heroBattleName">銀藍騎士</div>
+          <div class="hero-hp-bar">
+            <div class="hero-hp-fill" id="heroHpFill" style="width: 100%"></div>
+          </div>
+          <div class="hp-text" id="heroHpText">100 / 100 HP</div>
+        </div>
+      </div>
+
+      <div class="battle-stats-bar">
+        <div class="battle-stat">💰 <span class="val" id="goldCount">0</span> 金幣</div>
+        <div class="battle-stat">🏆 <span class="val" id="monstersDefeated">0</span> 殺敵</div>
+      </div>
+
+      <div class="hero-select-grid" id="heroSelectGrid">
+        <div class="hero-select-card" data-hero="knight" onclick="selectHero('knight')">
+          <img src="assets/images/knight-hero.png">
+          <div class="name">銀藍騎士</div>
+          <div class="hero-skill-desc">格擋(20%機率免傷) · 暴擊率 10%</div>
+        </div>
+        <div class="hero-select-card" data-hero="mage" onclick="selectHero('mage')">
+          <img src="assets/images/mage-hero.png">
+          <div class="name">銀月法師</div>
+          <div class="hero-skill-desc">暴擊加成(+10%暴擊率) · 高攻擊</div>
+        </div>
+        <div class="hero-select-card" data-hero="berserker" onclick="selectHero('berserker')">
+          <img src="assets/images/berserker-hero.png">
+          <div class="name">烈焰狂戰</div>
+          <div class="hero-skill-desc">低血量增傷(HP<30%時+50%攻擊)</div>
+        </div>
+      </div>
+
+      <button class="battle-start-btn" id="battleStartBtnOverlay" onclick="startBattle()">
+        ⚔️ 開始戰鬥
+      </button>
+    </div>
+  </div>
+
+  <!-- 練習 -->
+    <div class="practice-panel" id="practicePanel">
+      <div class="quiz-card">
+        
+    <!-- 概念解釋 -->
+    <div style="text-align:center; margin: 8px 0;">
+      <button onclick="showConcept()" style="padding:6px 14px; font-size:0.85rem; background:#5e6ad2; color:white; border:none; border-radius:20px; cursor:pointer;">
+        💡 點解要乘？
+      </button>
+    </div>
+    
+    <div id="conceptPanel" style="display:none; max-width:420px; margin:0 auto; background:rgba(30,30,60,0.8); padding:12px 16px; border-radius:12px; font-size:0.9rem; color:#ddd;">
+      <div style="color:#4a90e2; margin-bottom:6px;">乘法 = 快速加法</div>
+      <div id="conceptText"></div>
+    </div>
+
+    <div class="quiz-question" id="quizQuestion">3 × 4 = ?</div>
+        <div class="quiz-options" id="quizOptions"></div>
+        <div class="quiz-result" id="quizResult"></div>
+
+    <!-- 生活應用題 -->
+    <div style="margin: 15px auto; max-width: 420px;">
+      <div style="text-align:center; margin-bottom:8px;">
+        <button onclick="showLifeProblem()" style="padding:6px 14px; font-size:0.85rem; background:#FF8C42; color:white; border:none; border-radius:20px; cursor:pointer;">
+          🏠 生活應用題
+        </button>
+      </div>
+      <div id="lifeProblem" style="display:none; background:rgba(40,30,20,0.6); padding:14px; border-radius:12px; font-size:0.95rem;">
+        <div id="lifeQuestion" style="margin-bottom:10px;"></div>
+        <div id="lifeOptions" style="display:flex; flex-direction:column; gap:6px;"></div>
+      </div>
+    </div>
+
+
+    <div class="reward-area" id="rewardArea">
+      <div class="reward-item" id="rewardChest">
+        <img src="assets/images/treasure-chest.png" alt="寶箱">
+        <div class="reward-text">獲得戰利品！</div>
+      </div>
+      <div class="reward-item" id="rewardSword">
+        <img src="assets/images/glowing-sword.png" alt="發光劍">
+        <div class="reward-text">致命一擊！</div>
+      </div>
+      <div class="reward-item" id="rewardMonster">
+        <img src="assets/images/cute-monster.png" alt="小怪物">
+        <div class="reward-text" id="monsterText">我們再試一次吧！</div>
+      </div>
+    </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 獎勵 -->
+  <div class="badge-display" id="badgeDisplay"></div>
+  
+  <!-- 力量指引系統 -->
+  <div class="guidance-panel" id="guidancePanel">
+    <div class="guidance-title" id="guidanceTitle">
+      <span>💪</span> 力量指引
+    </div>
+    <div class="guidance-text" id="guidanceText"></div>
+    <div class="guidance-hint" id="guidanceHint"></div>
+    <div class="guidance-stats">
+      <span class="resilience">韌性: <span id="resilienceScore">0</span></span>
+      <span class="streak-info">連續錯: <span id="wrongStreakCount">0</span></span>
+    </div>
+  </div>
+
+  <!-- 設置 -->
+  <div class="settings-panel" id="settingsPanel">
+    <div class="close-settings" onclick="toggleSettings()">✕</div>
+    <h2 class="settings-title">⚙️ 設置</h2>
+    
+    <div class="settings-group">
+      <div class="settings-toggle" onclick="toggleDarkMode()">
+        <span>🌙 深色/淺色</span>
+        <div class="toggle-switch" id="darkModeToggle"></div>
+      </div>
+    </div>
+
+    <div class="settings-group">
+      <div class="settings-toggle" onclick="toggleLargeText()">
+        <span>🔤 特大字體</span>
+        <div class="toggle-switch" id="largeTextToggle"></div>
+      </div>
+    </div>
+
+    <div class="settings-group">
+      <div class="settings-toggle" onclick="toggleHighContrast()">
+        <span>⚫ 高對比</span>
+        <div class="toggle-switch" id="highContrastToggle"></div>
+      </div>
+    </div>
+
+    <div class="settings-group">
+      <div class="settings-toggle" onclick="toggleSound()">
+        <span>🔊 發聲提示</span>
+        <div class="toggle-switch on" id="soundToggle"></div>
+      </div>
+    </div>
+
+    <div class="settings-group">
+      <div class="settings-toggle" onclick="toggleVoice()">
+        <span>🎤 語音輸入</span>
+        <div class="toggle-switch" id="voiceToggle"></div>
+      </div>
+    </div>
+
+    <div class="settings-group">
+      <div class="settings-toggle" onclick="toggleQuiz()">
+        <span>🧠 練習模式</span>
+        <div class="toggle-switch on" id="quizToggle"></div>
+      </div>
+    </div>
+
+    <div class="settings-group">
+      <div class="settings-toggle" onclick="BGM.toggle()">
+        <span>🎵 背景音樂</span>
+        <button class="suggestion-btn" id="bgmToggle" style="padding:4px 10px;font-size:0.8rem;">🎵 音樂: 關</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 報告 -->
+  <div class="report-panel" id="reportPanel">
+    <div class="close-settings" onclick="toggleReport()">✕</div>
+    <h2 class="settings-title">📊 學習報告</h2>
+    
+    <div class="report-card">
+      <div class="report-stat"><span>總正確</span><span id="reportCorrect">0</span></div>
+      <div class="report-stat"><span>總錯誤</span><span id="reportWrong">0</span></div>
+      <div class="report-stat"><span>準確率</span><span id="reportAccuracy">0%</span></div>
+      <div class="report-stat"><span>最佳計時</span><span id="reportBest">0</span>題</div>
+      <div class="report-stat"><span>總題目</span><span id="reportTotal">0</span></div>
+    </div>
+
+    <button class="export-btn" onclick="exportReport()">
+      <i class="fas fa-download"></i> 匯出報告
+    </button>
+  </div>
+
+  <script>
+    const config = {
+      2: { icon: '🦆', color: '#FFD93D', obj: '🍎', story: '小熊維尼', storyIcon: '🍯' },
+      3: { icon: '🌸', color: '#FF6B6B', obj: '🌸', story: '園丁澆花', storyIcon: '🌸' },
+      4: { icon: '🍀', color: '#6BCB77', obj: '🍀', story: '幸運草', storyIcon: '🍀' },
+      5: { icon: '⭐', color: '#4D96FF', obj: '⭐', story: '星星收集', storyIcon: '⭐' },
+      6: { icon: '🐞', color: '#FF6B6B', obj: '🍄', story: '小蟲搬菇', storyIcon: '🐞' },
+      7: { icon: '🌈', color: '#C9B1FF', obj: '🌈', story: '彩虹橋', storyIcon: '🌈' },
+      8: { icon: '🐙', color: '#FF8C42', obj: '🐙', story: '章魚聚會', storyIcon: '🐙' },
+      9: { icon: '🍇', color: '#9B59B6', obj: '🍇', story: '葡萄成熟', storyIcon: '🍇' }
+    };
+
+    let num1 = 2, num2 = 4;
+    let correct = 0, wrong = 0, total = 0, streak = 0, bestScore = 0;
+    let wrongStreak = 0, guidanceLevel = 0;
+    let guidanceHistory = [];
+    let currentDomain = 'newbie';  // newbie / veteran / legend
+    let domainStats = { newbie: {correct:0, wrong:0}, veteran: {correct:0, wrong:0}, legend: {correct:0, wrong:0} };
+    let level = 1, unlockedLevels = [2];
+    let soundEnabled = true, quizMode = true;
+    let timerActive = false, timerTime = 60, timerInterval = null;
+
+    // Forward declarations to avoid TDZ issues
+    let battleState = {
+      active: false,
+      inBattle: false,
+      heroKey: 'knight',
+      heroHp: 100,
+      heroMaxHp: 100,
+      monsterHp: 0,
+      monsterMaxHp: 0,
+      monsterName: '',
+      monsterEmoji: '',
+      monsterGold: 0,
+      monsterExp: 0,
+      isBoss: false,
+      combo: 0,
+      gold: 0,
+      monstersDefeated: 0,
+      battleAnswer: 0
+    };
+    const SoundManager = {
+      ctx: null,
+      enabled: true,
+      _initialized: false,
+      init() {
+        if (this._initialized) return;
+        try {
+          this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+          this._initialized = true;
+        } catch(e) { console.warn('Web Audio API not supported'); }
+      },
+      ensureInit() {
+        if (!this._initialized) this.init();
+      },
+      play(type) {
+        this.ensureInit();
+        if (!this.ctx || !this.enabled) return;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        const now = this.ctx.currentTime;
+        switch(type) {
+          case 'correct':
+            osc.frequency.setValueAtTime(523.25, now);
+            osc.frequency.setValueAtTime(659.25, now + 0.1);
+            gain.gain.setValueAtTime(0.3, now);
+            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+            osc.start(now); osc.stop(now + 0.2);
+            break;
+          case 'wrong':
+            osc.frequency.setValueAtTime(200, now);
+            osc.type = 'sawtooth';
+            gain.gain.setValueAtTime(0.2, now);
+            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+            osc.start(now); osc.stop(now + 0.3);
+            break;
+          case 'crit':
+            osc.type = 'square';
+            osc.frequency.setValueAtTime(880, now);
+            osc.frequency.exponentialRampToValueAtTime(1760, now + 0.15);
+            gain.gain.setValueAtTime(0.4, now);
+            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+            osc.start(now); osc.stop(now + 0.3);
+            break;
+          case 'hurt':
+            osc.frequency.setValueAtTime(200, now);
+            osc.type = 'sawtooth';
+            gain.gain.setValueAtTime(0.2, now);
+            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+            osc.start(now); osc.stop(now + 0.3);
+            break;
+          case 'defeat':
+            osc.frequency.setValueAtTime(150, now);
+            osc.frequency.exponentialRampToValueAtTime(50, now + 0.5);
+            gain.gain.setValueAtTime(0.3, now);
+            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
+            osc.start(now); osc.stop(now + 0.5);
+            break;
+          case 'victory':
+            osc.frequency.setValueAtTime(523.25, now);
+            osc.frequency.setValueAtTime(659.25, now + 0.15);
+            osc.frequency.setValueAtTime(783.99, now + 0.3);
+            osc.frequency.setValueAtTime(1046.5, now + 0.45);
+            gain.gain.setValueAtTime(0.3, now);
+            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.6);
+            osc.start(now); osc.stop(now + 0.6);
+            break;
+          case 'milestone':
+            osc.frequency.setValueAtTime(523.25, now);
+            osc.frequency.setValueAtTime(659.25, now + 0.1);
+            osc.frequency.setValueAtTime(783.99, now + 0.2);
+            osc.frequency.setValueAtTime(1046.5, now + 0.3);
+            osc.frequency.setValueAtTime(1318.5, now + 0.4);
+            gain.gain.setValueAtTime(0.35, now);
+            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.7);
+            osc.start(now); osc.stop(now + 0.7);
+            break;
+          case 'levelup':
+            osc.frequency.setValueAtTime(392, now);
+            osc.frequency.setValueAtTime(523.25, now + 0.1);
+            osc.frequency.setValueAtTime(659.25, now + 0.2);
+            osc.frequency.setValueAtTime(783.99, now + 0.3);
+            gain.gain.setValueAtTime(0.35, now);
+            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
+            osc.start(now); osc.stop(now + 0.5);
+            break;
+        }
+      }
+    };
+    const BGM = {
+      ctx: null,
+      playing: false,
+      intervalId: null,
+
+      init() {
+        if (!this.ctx) {
+          this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+      },
+
+      start() {
+        if (this.playing) return;
+        this.init();
+        this.playing = true;
+        const progression = [261.63, 392, 220, 349.23];
+        let idx = 0;
+        const playChord = () => {
+          if (!this.playing) return;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.frequency.setValueAtTime(progression[idx % 4], this.ctx.currentTime);
+          gain.gain.setValueAtTime(0.05, this.ctx.currentTime);
+          osc.start();
+          osc.stop(this.ctx.currentTime + 1.9);
+          idx++;
+          this.intervalId = setTimeout(playChord, 2000);
+        };
+        playChord();
+      },
+
+      stop() {
+        this.playing = false;
+        if (this.intervalId) {
+          clearTimeout(this.intervalId);
+          this.intervalId = null;
+        }
+      },
+
+      toggle() {
+        if (this.playing) this.stop();
+        else this.start();
+        updateBGMDisplay();
+      }
+    };
+
+    function updateBGMDisplay() {
+      const btn = document.getElementById('bgmToggle');
+      if (btn) btn.textContent = BGM.playing ? '🎵 音樂: 開' : '🎵 音樂: 關';
+    }
+    const heroes = {
+      knight: { name: '銀藍騎士', hp: 100, atkMin: 8, atkMax: 12, crit: 0.1, img: 'assets/images/knight-hero.png', color: '#4a90e2', passive: 'block' },
+      mage: { name: '銀月法師', hp: 80, atkMin: 12, atkMax: 18, crit: 0.15, img: 'assets/images/mage-hero.png', color: '#9b59b6', passive: 'critBoost' },
+      berserker: { name: '烈焰狂戰', hp: 120, atkMin: 15, atkMax: 25, crit: 0.25, img: 'assets/images/berserker-hero.png', color: '#e74c3c', passive: 'rage' }
+    };
+    const monsters = {
+      newbie: [
+        { name: '青蛙', emoji: '🐸', hpMin: 5, hpMax: 8, gold: 10, exp: 5 },
+        { name: '兔子怪', emoji: '🐰', hpMin: 7, hpMax: 10, gold: 15, exp: 8 }
+      ],
+      veteran: [
+        { name: '狼人', emoji: '🐺', hpMin: 12, hpMax: 18, gold: 25, exp: 15 },
+        { name: '蝙蝠王', emoji: '🦇', hpMin: 15, hpMax: 20, gold: 30, exp: 20 }
+      ],
+      legend: [
+        { name: '幼龍', emoji: '🐉', hpMin: 25, hpMax: 35, gold: 50, exp: 40, boss: true },
+        { name: '骨法師', emoji: '💀', hpMin: 20, hpMax: 30, gold: 45, exp: 35, boss: true }
+      ]
+    };
+
+    // 加載保存的數據
+    function loadData() {
+      const data = JSON.parse(localStorage.getItem('multiplicationData') || '{}');
+      correct = data.correct || 0;
+      wrong = data.wrong || 0;
+      total = data.total || 0;
+      bestScore = data.bestScore || 0;
+      unlockedLevels = data.unlockedLevels || [2];
+      wrongStreak = data.wrongStreak || 0;
+      guidanceHistory = data.guidanceHistory || [];
+      currentDomain = localStorage.getItem('currentDomain') || 'newbie';
+      updateScoreDisplay();
+      
+      // 初始化領域
+      setTimeout(() => {
+        const btn = document.querySelector(`.domain-btn[data-domain="${currentDomain}"]`);
+        if (btn) btn.classList.add('active');
+        const modeLabel = document.getElementById('modeLabel');
+        if (modeLabel) {
+          if (currentDomain === 'newbie') modeLabel.textContent = '🌱 新手村';
+          else if (currentDomain === 'veteran') modeLabel.textContent = '⚔️ 黑暗森林';
+          else modeLabel.textContent = '👑 深淵';
+        }
+      }, 100);
+    }function saveData() {
+      localStorage.setItem('multiplicationData', JSON.stringify({
+        correct, wrong, total, bestScore, unlockedLevels,
+        wrongStreak, guidanceHistory  // 儲存指引系統數據
+      }));
+    }
+
+    // TTS
+    function speak(text) {
+      if (!soundEnabled) return;
+      const utter = new SpeechSynthesisUtterance(text);
+      utter.lang = 'zh-HK';
+      utter.rate = 0.8;
+      speechSynthesis.speak(utter);
+    }
+
+    function speakResult() {
+      const btn = document.getElementById('speakBtn');
+      btn.classList.add('speaking');
+      setTimeout(() => btn.classList.remove('speaking'), 1000);
+      speak(`${num1} 乘於 ${num2} 等於 ${num1 * num2}`);
+    }
+
+    // Random 題目
+    function randomQuestion() {
+      num1 = Math.floor(Math.random() * 8) + 2;
+      num2 = Math.floor(Math.random() * 8) + 2;
+      update();
+      if (timerActive) speak(`${num1} 乘於 ${num2}`);
+    }
+
+    // 計時模式
+    function toggleTimer() {
+      timerActive = !timerActive;
+      document.getElementById('timerDisplay').classList.toggle('active', timerActive);
+      document.getElementById('timerBtn').classList.toggle('active', timerActive);
+      
+      if (timerActive) {
+        timerTime = 60;
+        document.getElementById('timerTime').textContent = timerTime;
+        document.getElementById('bestScore').textContent = bestScore;
+        timerInterval = setInterval(() => {
+          timerTime--;
+          document.getElementById('timerTime').textContent = timerTime;
+          if (timerTime <= 0) {
+            stopTimer();
+          }
+        }, 1000);
+      } else {
+        clearInterval(timerInterval);
+      }
+    }
+
+    function stopTimer() {
+      clearInterval(timerInterval);
+      timerActive = false;
+      document.getElementById('timerDisplay').classList.remove('active');
+      document.getElementById('timerBtn').classList.remove('active');
+      const score = correct;
+      if (score > bestScore) {
+        bestScore = score;
+        document.getElementById('bestScore').textContent = bestScore;
+        speak(`恭喜你！今次攞到${bestScore}題`);
+      }
+      saveData();
+    }
+
+    // 全熒幕
+    function toggleFullscreen() {
+      document.body.classList.toggle('fullscreen-app');
+    }
+
+    // 設置 & 報告
+    function toggleSettings() {
+      document.getElementById('settingsPanel').classList.toggle('active');
+    }
+
+    function toggleReport() {
+      updateReport();
+      document.getElementById('reportPanel').classList.toggle('active');
+    }
+
+    function updateReport() {
+      document.getElementById('reportCorrect').textContent = correct;
+      document.getElementById('reportWrong').textContent = wrong;
+      document.getElementById('reportTotal').textContent = total;
+      document.getElementById('reportBest').textContent = bestScore;
+      const acc = total > 0 ? Math.round(correct / total * 100) : 0;
+      document.getElementById('reportAccuracy').textContent = acc + '%';
+    }
+
+    function exportReport() {
+      const report = `乘法小鎮 學習報告
+====================
+總正確: ${correct}
+總錯誤: ${wrong}
+準確率: ${total > 0 ? Math.round(correct / total * 100) : 0}%
+最佳計時: ${bestScore}題
+總題目: ${total}
+日期: ${new Date().toLocaleDateString('zh-HK')}`;
+      
+      const blob = new Blob([report], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'multiplication-report.txt';
+      a.click();
+      speak('報告已匯出');
+    }
+
+    // UI 設置
+    function toggleDarkMode() {
+      document.body.classList.toggle('light-mode');
+      document.getElementById('darkModeToggle').classList.toggle('on');
+    }
+
+    function toggleLargeText() {
+      document.body.classList.toggle('large-text');
+      document.getElementById('largeTextToggle').classList.toggle('on');
+    }
+
+    function toggleHighContrast() {
+      document.body.classList.toggle('high-contrast');
+      document.getElementById('highContrastToggle').classList.toggle('on');
+    }
+
+    function toggleSound() {
+      soundEnabled = !soundEnabled;
+      SoundManager.enabled = soundEnabled;
+      document.getElementById('soundToggle').classList.toggle('on', soundEnabled);
+    }
+
+    function toggleVoice() {
+      if (!('webkitSpeechRecognition' in window)) {
+        alert('呢個瀏覽器唔支援語音輸入');
+        return;
+      }
+      const rec = new webkitSpeechRecognition();
+      rec.lang = 'zh-HK';
+      rec.start();
+      rec.onresult = (e) => {
+        const text = e.results[0][0].transcript;
+        // 簡單解析數字
+        const match = text.match(/(\d+)\s*[乘x]\s*(\d+)/);
+        if (match) {
+          num1 = parseInt(match[1]);
+          num2 = parseInt(match[2]);
+          update();
+        }
+      };
+    }
+
+    function toggleQuiz() {
+      quizMode = !quizMode;
+      document.getElementById('quizToggle').classList.toggle('on', quizMode);
+      if (quizMode) {
+        switchTab('dots');
+      } else {
+        document.getElementById('practicePanel').classList.add('active');
+        document.querySelectorAll('.viz-section').forEach(s => s.classList.remove('active'));
+        generateQuiz();
+      }
+    }
+
+    // 重置
+    function resetAll() {
+      correct = wrong = total = streak = 0;
+      updateScoreDisplay();
+      speak('已重置');
+      saveData();
+    }
+
+    // Tab 切換
+    function switchTab(tabName) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.viz-section, .practice-panel, .battle-section').forEach(s => s.classList.remove('active'));
+      document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+      document.getElementById(tabName).classList.add('active');
+    }
+
+    // 更新
+    function update() {
+      const result = num1 * num2;
+      const conf = config[num1];
+
+      document.querySelectorAll('#btns1 .num-btn').forEach(b => b.classList.toggle('active', b.dataset.n == num1));
+      document.querySelectorAll('#btns2 .num-btn').forEach(b => b.classList.toggle('active', b.dataset.n == num2));
+      document.getElementById('result').textContent = result;
+
+      updateVerticalMath(num1, num2);
+      updateStats(num1, num2);
+      updateDots(num1, num2, conf.color);
+      updateNumberLine(num1, num2);
+      updateObjects(num1, num2, conf.obj);
+      updateAnimals(num1, num2, conf.icon);
+      updateBlocks(num1, num2, conf.color);
+      updateStory(num1, num2, conf.story, conf.storyIcon);
+      updateFingers(num1, num2);
+      
+      updateCoins(num1, num2);
+    }
+
+    function updateVerticalMath(n1, n2) {
+      const vm = document.getElementById('verticalMult');
+      vm.classList.add('active');
+      document.getElementById('vMultiplicand').textContent = n1;
+      document.getElementById('vFactor').textContent = n2;
+      document.getElementById('vResult').textContent = n1 * n2;
+    }
+
+    function updateStats(n1, n2) {
+      const total = n1 * n2;
+      document.getElementById('statDots').textContent = `${n1} × ${n2} = ${total}`;
+      document.getElementById('statLine').textContent = `${n1} × ${n2} = ${total}`;
+      document.getElementById('statObjects').textContent = `${n1} × ${n2} = ${total}`;
+      document.getElementById('statAnimals').textContent = `${n1} × ${n2} = ${total}`;
+      document.getElementById('statBlocks').textContent = `${n1} × ${n2} = ${total}`;
+      document.getElementById('statStory').textContent = `${n1} × ${n2} = ${total}`;
+      document.getElementById('statFingers').textContent = `${n1} × ${n2} = ${total}`;
+      document.getElementById('statCoins').textContent = `${n1} × ${n2} = ${total}`;
+    }
+
+    function updateScoreDisplay() {
+      document.getElementById('correctScore').textContent = correct;
+      document.getElementById('wrongScore').textContent = wrong;
+      document.getElementById('streakCount').textContent = streak;
+      updatePracticeSuggestion();
+    }
+
+    // 視圖函數
+    function updateDots(n1, n2, color) {
+      const c = document.getElementById('dotContainer');
+      c.innerHTML = '';
+      c.style.gridTemplateColumns = `repeat(${n2}, 22px)`;
+      for (let r = 0; r < n1; r++) {
+        const row = document.createElement('div');
+        row.className = 'dot-row';
+        for (let col = 0; col < n2; col++) {
+          const dot = document.createElement('div');
+          dot.className = 'dot';
+          dot.style.background = color;
+          dot.style.boxShadow = `0 0 6px ${color}80`;
+          dot.style.animationDelay = `${(r * n2 + col) * 0.025}s`;
+          row.appendChild(dot);
+        }
+        c.appendChild(row);
+      }
+      document.getElementById('dotExpl').innerHTML = `${n1}行 × ${n2}列 = <span class="highlight">${n1 * n2}</span>點`;
+    }
+
+    function updateNumberLine(step, times) {
+      const c = document.getElementById('numberLine');
+      c.innerHTML = '';
+      const line = document.createElement('div');
+      line.className = 'line-track';
+      c.appendChild(line);
+
+      const max = step * times;
+      const totalMarks = times + 1;  // Only mark the landing points: 0, step, 2*step, ..., max
+
+      for (let i = 0; i < totalMarks; i++) {
+        const value = i * step;
+        const pos = 5 + (i / times) * 90;  // Spread evenly from 5% to 95%
+
+        const mark = document.createElement('div');
+        mark.className = 'line-mark';
+        mark.style.left = `${pos}%`;
+        c.appendChild(mark);
+
+        const num = document.createElement('div');
+        num.className = 'line-number';
+        num.style.left = `${pos}%`;
+        num.textContent = value;
+        c.appendChild(num);
+      }
+
+      for (let j = 0; j < times; j++) {
+        const arrow = document.createElement('div');
+        arrow.className = 'jump-arrow';
+        arrow.textContent = '➤';
+        const arrowPos = 5 + ((j + 0.5) / times) * 90;
+        arrow.style.left = `${arrowPos - 2}%`;
+        arrow.style.color = config[step].color;
+        arrow.style.animationDelay = `${j * 0.35}s`;
+        c.appendChild(arrow);
+      }
+      document.getElementById('lineExpl').innerHTML = `由 0 跳<span class="highlight">${step}</span>格，跳<span class="highlight">${times}</span>次`;
+    }
+
+    function updateObjects(n1, n2, obj) {
+      const c = document.getElementById('objectGroup');
+      c.innerHTML = '';
+      for (let i = 0; i < n2; i++) {
+        const stack = document.createElement('div');
+        stack.className = 'group-stack';
+        stack.style.animationDelay = `${i * 0.08}s`;
+        const items = document.createElement('div');
+        items.className = 'group-items';
+        items.textContent = obj.repeat(n1);
+        const label = document.createElement('div');
+        label.className = 'group-label';
+        label.textContent = `堆${i + 1}`;
+        stack.appendChild(items);
+        stack.appendChild(label);
+        c.appendChild(stack);
+      }
+      document.getElementById('objExpl').innerHTML = `<span class="highlight">${n2}</span>堆 × <span class="highlight">${n1}</span>個`;
+    }
+
+    function updateAnimals(n1, n2, animal) {
+      const c = document.getElementById('animalFarm');
+      c.innerHTML = '';
+      for (let i = 0; i < n1; i++) {
+        const row = document.createElement('div');
+        row.className = 'farm-row';
+        row.style.animationDelay = `${i * 0.12}s`;
+        for (let j = 0; j < n2; j++) {
+          const a = document.createElement('span');
+          a.className = 'farm-animal';
+          a.textContent = animal;
+          row.appendChild(a);
+        }
+        c.appendChild(row);
+      }
+      document.getElementById('farmExpl').innerHTML = `<span class="highlight">${n1}</span>行 × <span class="highlight">${n2}</span>隻`;
+    }
+
+    function updateBlocks(n1, n2, color) {
+      const c = document.getElementById('blockView');
+      c.innerHTML = '';
+      for (let l = 0; l < n1; l++) {
+        const layer = document.createElement('div');
+        layer.className = 'block-layer';
+        for (let i = 0; i < n2; i++) {
+          const block = document.createElement('div');
+          block.className = 'block block-face';
+          block.style.background = color;
+          block.style.animationDelay = `${(l * n2 + i) * 0.04}s`;
+          const top = document.createElement('div');
+          top.className = 'block-top';
+          block.appendChild(top);
+          layer.appendChild(block);
+        }
+        c.appendChild(layer);
+      }
+      document.getElementById('blockExpl').innerHTML = `${n1}層 × ${n2}粒`;
+    }
+
+    function updateStory(n1, n2, title, icon) {
+      const stories = [
+        { title: '水果分發', scene: `有<span class="story-highlight">${n1}</span>位小朋友，每位分到<span class="story-highlight">${n2}</span>個水果` },
+        { title: '積木堆疊', scene: `每疊有<span class="story-highlight">${n1}</span>粒積木，要堆<span class="story-highlight">${n2}</span>疊` },
+        { title: '汽水包裝', scene: `每盒有<span class="story-highlight">${n1}</span>罐汽水，買了<span class="story-highlight">${n2}</span>盒` },
+        { title: '蘋果分配', scene: `老師有<span class="story-highlight">${n1}</span>籃蘋果，每籃<span class="story-highlight">${n2}</span>個` },
+        { title: '氣球紮裝', scene: `每束有<span class="story-highlight">${n1}</span>個氣球，要紮<span class="story-highlight">${n2}</span>束` },
+        { title: '星星貼紙', scene: `每位同學獎勵<span class="story-highlight">${n1}</span>張星星貼紙，<span class="story-highlight">${n2}</span>位同學` }
+      ];
+      const story = stories[Math.floor(Math.random() * stories.length)];
+      document.getElementById('storyTitle').textContent = story.title;
+      document.getElementById('storyScene').innerHTML = story.scene;
+      const items = document.getElementById('storyItems');
+      items.innerHTML = '';
+      for (let i = 0; i < n2; i++) {
+        for (let j = 0; j < n1; j++) {
+          const it = document.createElement('span');
+          it.className = 'story-item';
+          it.textContent = icon;
+          it.style.animationDelay = `${(i * n1 + j) * 0.08}s`;
+          items.appendChild(it);
+        }
+        if (i < n2 - 1) items.appendChild(document.createElement('br'));
+      }
+      document.getElementById('storyExpl').innerHTML = `一共有 <span class="highlight">${n1 * n2}</span>個`;
+    }
+
+    function updateFingers(n1, n2) {
+      const c = document.getElementById('fingerDisplay');
+      c.innerHTML = '';
+      const total = n1 * n2;
+      for (let g = 0; g < Math.ceil(total / 5); g++) {
+        const row = document.createElement('div');
+        row.className = 'finger-row';
+        const count = Math.min(5, total - g * 5);
+        for (let i = 0; i < count; i++) {
+          const hand = document.createElement('div');
+          hand.className = 'finger-hand';
+          hand.innerHTML = `<div class="finger-palm"></div>`;
+          for (let d = 0; d < 5; d++) {
+            const digit = document.createElement('div');
+            digit.className = `finger-digit d${d+1}`;
+            if (d < count) digit.classList.add('extended');
+            digit.style.animationDelay = `${d * 0.04}s`;
+            hand.appendChild(digit);
+          }
+          row.appendChild(hand);
+        }
+        c.appendChild(row);
+      }
+      const hands = Math.ceil(total / 5);
+      const remainder = total % 5;
+      const expl = remainder > 0
+        ? `每手<span class="highlight">5</span>指，<span class="highlight">${hands}</span>隻手，還餘<span class="highlight">${remainder}</span>指`
+        : `每手<span class="highlight">5</span>指，<span class="highlight">${hands}</span>隻手`;
+      document.getElementById('fingerExpl').innerHTML = expl;
+    }
+
+    
+
+    function updateCoins(n1, n2) {
+      const c = document.getElementById('coinDisplay');
+      c.innerHTML = '';
+      for (let i = 0; i < n2; i++) {
+        const row = document.createElement('div');
+        row.className = 'coin-row';
+        row.style.animationDelay = `${i * 0.08}s`;
+        for (let j = 0; j < n1; j++) {
+          const coin = document.createElement('div');
+          coin.className = 'coin';
+          coin.textContent = '$';
+          row.appendChild(coin);
+        }
+        c.appendChild(row);
+      }
+      document.getElementById('coinExpl').innerHTML = `<span class="highlight">${n2}</span>疊 × <span class="highlight">${n1}</span>個`;
+    }
+
+    // Quiz
+    let quizAnswer = 0;
+    function generateQuizWithPair(n1, n2) {
+      num1 = n1;
+      num2 = n2;
+      quizAnswer = num1 * num2;
+      document.getElementById('quizQuestion').textContent = `${num1} × ${num2} = ?`;
+      
+      const options = [quizAnswer];
+      while (options.length < 4) {
+        const r = Math.floor(Math.random() * 20) + 2;
+        if (!options.includes(r)) options.push(r);
+      }
+      options.sort(() => Math.random() - 0.5);
+      
+      const container = document.getElementById('quizOptions');
+      container.innerHTML = '';
+      options.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = 'quiz-btn';
+        btn.textContent = opt;
+        btn.onclick = () => checkAnswer(opt, btn);
+        container.appendChild(btn);
+      });
+      
+      document.getElementById('quizResult').textContent = '';
+    }
+
+    function generateQuiz() {
+      num1 = Math.floor(Math.random() * 8) + 2;
+      num2 = Math.floor(Math.random() * 8) + 2;
+      quizAnswer = num1 * num2;
+      document.getElementById('quizQuestion').textContent = `${num1} × ${num2} = ?`;
+      
+      const options = [quizAnswer];
+      while (options.length < 4) {
+        const r = Math.floor(Math.random() * 20) + 2;
+        if (!options.includes(r)) options.push(r);
+      }
+      options.sort(() => Math.random() - 0.5);
+      
+      const container = document.getElementById('quizOptions');
+      container.innerHTML = '';
+      options.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = 'quiz-btn';
+        btn.textContent = opt;
+        btn.onclick = () => checkAnswer(opt, btn);
+        container.appendChild(btn);
+      });
+      
+      document.getElementById('quizResult').textContent = '';
+    }
+
+    function checkAnswer(val, btn) {
+      total++;
+      if (val === quizAnswer) {
+        correct++;
+        streak++;
+        wrongStreak = 0;  // 重置錯題連續
+        btn.classList.add('correct');
+        
+        // 致命一擊特效
+        const quizCardEl = document.querySelector('.quiz-card');
+        quizCardEl.classList.add('crit-effect');
+        setTimeout(()=>quizCardEl.classList.remove('crit-effect'), 500);
+        
+        // 如果上次錯過，顯示感謝訊息
+        if (guidanceLevel > 0) {
+          document.getElementById('guidanceText').textContent = '🎯 致命一擊！呢下勁！多謝你既指引，我記住咗！';
+          speak('勁');
+        }
+        
+        document.getElementById('quizResult').textContent = '✅ ' + getEpicFeedback();
+        document.getElementById('quizResult').className = 'quiz-result success';
+        
+        // 顯示寶箱 + 劍
+        showReward('chest');
+        
+        // 領域統計
+        domainStats[currentDomain].correct++;
+
+        // 追蹤正確
+        try {
+          let log = JSON.parse(localStorage.getItem('mulErrorLog') || '{}');
+          const key = `${num1}x${num2}`;
+          if (!log[key]) log[key] = { correct: 0, wrong: 0 };
+          log[key].correct++;
+          localStorage.setItem('mulErrorLog', JSON.stringify(log));
+        } catch(e) {}
+
+        if (timerActive) speak('正確');
+      } else {
+        wrong++;
+        wrongStreak++;
+        streak = 0;
+        btn.classList.add('wrong');
+        document.querySelectorAll('.quiz-btn').forEach(b => {
+          if (parseInt(b.textContent) === quizAnswer) b.classList.add('correct');
+        });
+        document.getElementById('quizResult').textContent = `❌ 正確係 ${quizAnswer}`;
+        
+        // 顯示可愛小怪物
+        showReward('monster');
+        document.getElementById('quizResult').className = 'quiz-result fail';
+
+        // 追蹤錯誤
+        try {
+          let log = JSON.parse(localStorage.getItem('mulErrorLog') || '{}');
+          const key = `${num1}x${num2}`;
+          if (!log[key]) log[key] = { correct: 0, wrong: 0 };
+          log[key].wrong++;
+          localStorage.setItem('mulErrorLog', JSON.stringify(log));
+        } catch(e) {}
+
+        // 觸發力量指引系統
+        showGuidance();
+        
+        if (timerActive) speak('錯誤');
+      }
+      updateScoreDisplay();
+      saveData();
+      
+      setTimeout(() => {
+        document.getElementById('guidancePanel').classList.remove('active');
+        generateQuiz();
+      }, 3000);
+    }
+    
+    // 力量指引系統 - 顯示指引
+    function showGuidance() {
+      const panel = document.getElementById('guidancePanel');
+      const title = document.getElementById('guidanceTitle');
+      const text = document.getElementById('guidanceText');
+      const hint = document.getElementById('guidanceHint');
+      
+      // 計算指引等級 (3次錯 = Level 3, 2次 = Level 2, 1次 = Level 1)
+      guidanceLevel = Math.min(3, wrongStreak);
+      
+      // 移除舊有class
+      panel.classList.remove('level1', 'level2', 'level3');
+      title.classList.remove('level1', 'level2', 'level3');
+      panel.classList.add('active', 'level' + guidanceLevel);
+      title.classList.add('level' + guidanceLevel);
+      
+      // 更新統計
+      document.getElementById('resilienceScore').textContent = wrong;
+      document.getElementById('wrongStreakCount').textContent = wrongStreak;
+      
+      // 三層指引内容
+      if (wrongStreak >= 3) {
+        // Level 3: 終極視野 - 視覺 + 文字 + 動畫
+        title.innerHTML = '<span>⚡</span> 終極視野';
+        text.innerHTML = `<div style="color:#a855f7;font-weight:bold;">${num1} × ${num2} = ${num1 * num2}</div>`;
+        hint.innerHTML = `<div>💡 記憶法：${num1}個${num2}，總共${num1 * num2}個！</div>
+          <div style="margin-top:8px;color:#FFD93D;">✨ 用視覺化方式再睇多次！</div>`;
+        speak(num1 + '乘' + num2);
+      } else if (wrongStreak == 2) {
+        // Level 2: 進階指引 - 更多文字
+        title.innerHTML = '<span>🔮</span> 進階指引';
+        text.textContent = `諗諗吓：${num1}加${num1}加${num1}... 加${num2}次？`;
+        hint.textContent = `💡 或者用數線：跳${num1}格，跳${num2}次，到`;
+        speak('再試多次');
+      } else {
+        // Level 1: 基礎指引 - 簡單文字
+        title.innerHTML = '<span>💭</span> 基礎指引';
+        text.textContent = '注意核心要素：';
+        hint.textContent = `💡 被乘數 × 乘數 = 總數`;
+      }
+      
+      // 記錄指引歷史
+      guidanceHistory.push({
+        question: `${num1}×${num2}`,
+        level: guidanceLevel,
+        timestamp: Date.now()
+      });
+    }
+
+    // 綁定
+    document.querySelectorAll('#btns1 .num-btn').forEach(b => b.addEventListener('click', () => { num1 = parseInt(b.dataset.n); update(); }));
+    document.querySelectorAll('#btns2 .num-btn').forEach(b => b.addEventListener('click', () => { num2 = parseInt(b.dataset.n); update(); }));
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.addEventListener('click', () => switchTab(btn.dataset.tab)));
+
+    // 初始化
+    loadData();
+    loadBattleData();
+    update();
+
+    // 初始化英雄選擇
+    const defaultHero = localStorage.getItem('battleData') ? JSON.parse(localStorage.getItem('battleData')).heroKey : 'knight';
+    selectHero(defaultHero);
+    document.querySelector(`.hero-select-card[data-hero="${defaultHero}"]`).classList.add('selected');
+  
+    // 三大領域系統
+    function switchDomain(domain) {
+      currentDomain = domain;
+      
+      // 更新UI
+      document.querySelectorAll('.domain-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.dataset.domain === domain) btn.classList.add('active');
+      });
+      
+      // 根據領域調整難度提示
+      const modeLabel = document.getElementById('modeLabel');
+      if (domain === 'newbie') {
+        modeLabel.textContent = '🌱 新手村';
+        modeLabel.style.color = '#6BCB77';
+      } else if (domain === 'veteran') {
+        modeLabel.textContent = '⚔️ 黑暗森林';
+        modeLabel.style.color = '#FF8C42';
+      } else {
+        modeLabel.textContent = '👑 深淵';
+        modeLabel.style.color = '#a855f7';
+      }
+      
+      // 儲存
+      localStorage.setItem('currentDomain', domain);
+      speak(domain === 'newbie' ? '新手村' : domain === 'veteran' ? '黑暗森林' : '深淵');
+    }
+    
+    function autoRecommendDomain() {
+      const totalAttempts = correct + wrong;
+      if (totalAttempts < 5) return 'newbie';
+      
+      const accuracy = correct / totalAttempts;
+      if (accuracy >= 0.85) return 'legend';
+      if (accuracy >= 0.65) return 'veteran';
+      return 'newbie';
+    }
+    
+    function updateDomainRecommendation() {
+      const recommended = autoRecommendDomain();
+      // 可選：顯示推薦提示
+      console.log('推薦領域:', recommended);
+    }
+
+  
+    // 史詩回饋系統
+    const epicMessages = [
+      "致命一擊！你的邏輯直接秒殺Boss！",
+      "傳奇連擊！史詩寶箱開啟！",
+      "神級表現！你獲得強大力量爆發！",
+      "完美計算！Boss已被你擊敗！",
+      "連擊王者！你就是數學傳奇！"
+    ];
+    
+    function getEpicFeedback() {
+      return epicMessages[Math.floor(Math.random() * epicMessages.length)];
+    }
+
+  
+    function showReward(type) {
+      // 先隱藏所有
+      document.querySelectorAll('.reward-item').forEach(el => el.classList.remove('active'));
+      
+      if (type === 'chest') {
+        document.getElementById('rewardChest').classList.add('active');
+        document.getElementById('rewardSword').classList.add('active');
+        setTimeout(() => {
+          document.getElementById('rewardChest').classList.remove('active');
+          document.getElementById('rewardSword').classList.remove('active');
+        }, 2200);
+      } else if (type === 'monster') {
+        document.getElementById('rewardMonster').classList.add('active');
+        setTimeout(() => {
+          document.getElementById('rewardMonster').classList.remove('active');
+        }, 2000);
+      }
+    }
+
+  
+    function showConcept() {
+      const panel = document.getElementById('conceptPanel');
+      const text = document.getElementById('conceptText');
+      panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
+      
+      if (panel.style.display === 'block') {
+        text.innerHTML = `${num1} × ${num2} 就係將 <b>${num1}</b> 加 <b>${num2}</b> 次<br>例如：3 × 4 = 3 + 3 + 3 + 3`;
+      }
+    }
+
+  
+    const lifeProblems = [
+      { q: "小明每人送 3 個蘋果，有 5 個小朋友，一共要幾多個蘋果？", a: 15, opts: [12, 15, 18] },
+      { q: "每盒有 4 枝筆，老師買咗 6 盒，一共有幾多枝筆？", a: 24, opts: [20, 24, 28] },
+      { q: "每張桌子坐 6 個人，有 4 張桌子，一共可以坐幾多人？", a: 24, opts: [20, 24, 30] },
+      { q: "阿寶每日做 7 個俯臥撐，做咗 5 日，一共做咗幾多個？", a: 35, opts: [30, 35, 42] }
+    ];
+
+    function showTablePanel() {
+      document.getElementById('tablePanel').classList.add('active');
+      document.getElementById('tableBackdrop').classList.add('active');
+    }
+    function hideTablePanel() {
+      document.getElementById('tablePanel').classList.remove('active');
+      document.getElementById('tableBackdrop').classList.remove('active');
+    }
+    function showTable(n) {
+      document.querySelectorAll('.table-num-btn').forEach(b => b.classList.remove('active'));
+      document.querySelector(`.table-num-btn[data-n="${n}"]`).classList.add('active');
+      let html = `<div style="color:var(--accent)">${n} 的乘法表</div>`;
+      for (let i = 1; i <= 9; i++) html += `<div>${n} × ${i} = <span style="color:var(--success)">${n*i}</span></div>`;
+      document.getElementById('tableContent').innerHTML = html;
+    }
+    document.querySelectorAll('.table-num-btn').forEach(btn => btn.addEventListener('click', () => showTable(parseInt(btn.dataset.n))));
+    
+    function showLifeProblem() {
+      const container = document.getElementById('lifeProblem');
+      const qDiv = document.getElementById('lifeQuestion');
+      const optsDiv = document.getElementById('lifeOptions');
+
+      container.style.display = container.style.display === 'block' ? 'none' : 'block';
+
+      if (container.style.display === 'block') {
+        const prob = lifeProblems[Math.floor(Math.random() * lifeProblems.length)];
+        qDiv.innerHTML = `<b>📖 情境題：</b><br>${prob.q}`;
+        optsDiv.innerHTML = '';
+
+        prob.opts.forEach(opt => {
+          const btn = document.createElement('button');
+          btn.textContent = opt;
+          btn.style.cssText = 'padding:8px; background:#3a3a4a; color:#fff; border:none; border-radius:8px; cursor:pointer;';
+          btn.onclick = () => {
+            if (opt === prob.a) {
+              qDiv.innerHTML = `✅ 正確！好叻呀！`;
+              speak('勁');
+            } else {
+              qDiv.innerHTML = `❌ 唔係呀，再諗諗？答案係 ${prob.a}`;
+              speak('再試多次');
+            }
+            setTimeout(() => {
+              container.style.display = 'none';
+            }, 2200);
+          };
+          optsDiv.appendChild(btn);
+        });
+      }
+    }
+
+    // ========== SoundManager already initialized above ==========
+
+    // ========== 背景音樂系統已初始化於上方 ==========
+
+    // ========== 戰鬥系統 (使用上方已初始化的 heroes, monsters, battleState) ==========
+    // heroes 和 monsters 已在上方初始化，此處直接使用
+
+    function loadBattleData() {
+      const data = JSON.parse(localStorage.getItem('battleData') || '{}');
+      battleState.gold = data.gold || 0;
+      battleState.monstersDefeated = data.monstersDefeated || 0;
+      battleState.heroKey = data.heroKey || 'knight';
+      updateBattleStatsBar();
+    }
+
+    function saveBattleData() {
+      localStorage.setItem('battleData', JSON.stringify({
+        gold: battleState.gold,
+        monstersDefeated: battleState.monstersDefeated,
+        heroKey: battleState.heroKey
+      }));
+    }
+
+    function updateBattleStatsBar() {
+      document.getElementById('goldCount').textContent = battleState.gold;
+      document.getElementById('monstersDefeated').textContent = battleState.monstersDefeated;
+    }
+
+    function selectHero(key) {
+      battleState.heroKey = key;
+      const hero = heroes[key];
+      battleState.heroHp = hero.hp;
+      battleState.heroMaxHp = hero.hp;
+      document.getElementById('heroBattleAvatar').src = hero.img;
+      document.getElementById('heroBattleName').textContent = hero.name;
+      updateHeroHpBar();
+      document.querySelectorAll('.hero-select-card').forEach(c => c.classList.remove('selected'));
+      document.querySelector(`.hero-select-card[data-hero="${key}"]`).classList.add('selected');
+      saveBattleData();
+    }
+
+    function openBattleFromCurrentSelection() {
+      SoundManager.ensureInit();
+      document.getElementById('battleOverlay').classList.add('active');
+      document.getElementById('battleStartBtnOverlay').style.display = 'block';
+      battleState.active = false;
+      battleState.inBattle = false;
+      battleState.combo = 0;
+      document.getElementById('comboDisplay').classList.remove('active');
+      const hero = heroes[battleState.heroKey];
+      const heroEl = document.getElementById('heroBattleStatus');
+      if (heroEl) heroEl.classList.remove('berserker-mode');
+      battleState.heroHp = hero.hp;
+      battleState.heroMaxHp = hero.hp;
+      document.getElementById('heroBattleAvatar').src = hero.img;
+      document.getElementById('heroBattleName').textContent = hero.name;
+      updateHeroHpBar();
+    }
+
+    function closeBattleOverlay() {
+      document.getElementById('battleOverlay').classList.remove('active');
+      battleState.active = false;
+      battleState.inBattle = false;
+    }
+
+    function startBattle() {
+      if (battleState.inBattle) {
+        spawnMonster();
+        return;
+      }
+
+      battleState.active = true;
+      battleState.inBattle = true;
+      battleState.combo = 0;
+
+      const hero = heroes[battleState.heroKey];
+      battleState.heroHp = hero.hp;
+      battleState.heroMaxHp = hero.hp;
+
+      document.getElementById('heroBattleAvatar').src = hero.img;
+      document.getElementById('heroBattleName').textContent = hero.name;
+      updateHeroHpBar();
+
+      document.getElementById('battleStartBtnOverlay').style.display = 'none';
+
+      document.getElementById('battleQuestion').innerHTML = '<span style="font-size:1.5rem">⚔️ 戰鬥開始！</span>';
+      document.getElementById('battleOptions').innerHTML = '';
+      setTimeout(() => {
+        spawnMonster();
+        generateBattleQuestion();
+      }, 1500);
+    }
+
+    function spawnMonster() {
+      const domain = currentDomain;
+      const monsterList = monsters[domain];
+      const template = monsterList[Math.floor(Math.random() * monsterList.length)];
+
+      battleState.monsterName = template.name;
+      battleState.monsterEmoji = template.emoji;
+      battleState.monsterMaxHp = Math.floor(Math.random() * (template.hpMax - template.hpMin + 1)) + template.hpMin;
+      battleState.monsterHp = battleState.monsterMaxHp;
+      battleState.monsterGold = template.gold;
+      battleState.monsterExp = template.exp;
+      battleState.isBoss = template.boss || false;
+
+      document.getElementById('monsterEmoji').textContent = template.emoji;
+      document.getElementById('monsterName').textContent = template.name;
+      document.getElementById('monsterCard').classList.toggle('boss', battleState.isBoss);
+      updateMonsterHpBar();
+
+      battleState.combo = 0;
+      updateComboDisplay();
+    }
+
+    function updateMonsterHpBar() {
+      const pct = (battleState.monsterHp / battleState.monsterMaxHp) * 100;
+      const fill = document.getElementById('monsterHpFill');
+      fill.style.width = pct + '%';
+      fill.className = 'hp-bar-fill';
+      if (pct > 60) fill.classList.add('high');
+      else if (pct > 30) fill.classList.add('medium');
+      else fill.classList.add('low');
+      document.getElementById('monsterHpText').textContent = `${battleState.monsterHp} / ${battleState.monsterMaxHp} HP`;
+    }
+
+    function updateHeroHpBar() {
+      const pct = (battleState.heroHp / battleState.heroMaxHp) * 100;
+      const fill = document.getElementById('heroHpFill');
+      fill.style.width = pct + '%';
+      fill.className = 'hero-hp-fill';
+      if (pct <= 30) fill.classList.add('low');
+      document.getElementById('heroHpText').textContent = `${battleState.heroHp} / ${battleState.heroMaxHp} HP`;
+    }
+
+    function updateComboDisplay() {
+      const display = document.getElementById('comboDisplay');
+      const count = document.getElementById('comboCount');
+      const skill = document.getElementById('comboSkill');
+
+      count.textContent = battleState.combo;
+
+      if (battleState.combo >= 10) {
+        skill.textContent = '⚡ 終極大招';
+      } else if (battleState.combo >= 5) {
+        skill.textContent = '🔥 技能攻擊';
+      } else if (battleState.combo >= 3) {
+        skill.textContent = '💥 普通攻擊';
+      } else {
+        skill.textContent = '';
+      }
+
+      display.classList.remove('level-high', 'level-max');
+      if (battleState.combo >= 10) {
+        display.classList.add('level-max');
+      } else if (battleState.combo >= 5) {
+        display.classList.add('level-high');
+      } else {
+        display.classList.remove('level-high', 'level-max');
+      }
+
+      display.classList.toggle('active', battleState.combo >= 3);
+
+      if (battleState.combo >= 3) {
+        count.classList.remove('pulse');
+        void count.offsetWidth;
+        count.classList.add('pulse');
+      }
+    }
+
+    function generateBattleQuestion() {
+      const ranges = { newbie: [2, 5], veteran: [2, 9], legend: [2, 12] };
+      const [min, max] = ranges[currentDomain] || ranges.veteran;
+      num1 = Math.floor(Math.random() * (max - min + 1)) + min;
+      num2 = Math.floor(Math.random() * (max - min + 1)) + min;
+      battleState.battleAnswer = num1 * num2;
+
+      document.getElementById('battleQuestion').textContent = `${num1} × ${num2} = ?`;
+
+      const container = document.getElementById('battleOptions');
+      container.innerHTML = '';
+
+      if (currentDomain === 'legend') {
+        container.innerHTML = `
+          <input type="number" id="battleAnswerInput" class="battle-answer-input" placeholder="?" autocomplete="off">
+          <button class="battle-submit-btn" onclick="battleSubmitAnswer()">確認</button>
+        `;
+        const input = document.getElementById('battleAnswerInput');
+        input.focus();
+        input.addEventListener('keypress', (e) => {
+          if (e.key === 'Enter') battleSubmitAnswer();
+        });
+      } else {
+        const optionCount = currentDomain === 'newbie' ? 3 : 4;
+        const options = [battleState.battleAnswer];
+        while (options.length < optionCount) {
+          const r = Math.floor(Math.random() * 30) + 4;
+          if (!options.includes(r)) options.push(r);
+        }
+        options.sort(() => Math.random() - 0.5);
+
+        options.forEach(opt => {
+          const btn = document.createElement('button');
+          btn.className = 'battle-option';
+          btn.textContent = opt;
+          btn.onclick = () => battleCheckAnswer(opt, btn);
+          container.appendChild(btn);
+        });
+      }
+    }
+
+    function battleSubmitAnswer() {
+      const input = document.getElementById('battleAnswerInput');
+      const val = parseInt(input.value);
+      if (isNaN(val)) return;
+
+      total++;
+      const container = document.getElementById('battleOptions');
+      container.querySelectorAll('.battle-option').forEach(b => b.disabled = true);
+      input.disabled = true;
+
+      if (val === battleState.battleAnswer) {
+        correct++;
+        trackCorrect(num1, num2);
+        streak++;
+        battleState.combo++;
+        updateComboDisplay();
+
+        const { damage, isCrit } = calculateDamage();
+        battleState.monsterHp = Math.max(0, battleState.monsterHp - damage);
+
+        showDamageNumber(damage, isCrit, false);
+
+        const monsterCard = document.getElementById('monsterCard');
+        monsterCard.classList.add('monster-hit');
+        setTimeout(() => monsterCard.classList.remove('monster-hit'), 400);
+
+        updateMonsterHpBar();
+
+        if (battleState.monsterHp <= 0) {
+          if (isCrit) {
+            SoundManager.play('crit');
+            if (heroes[battleState.heroKey].passive === 'critBoost') {
+              const dmgEls = document.querySelectorAll('.damage-number');
+              const lastDmg = dmgEls[dmgEls.length - 1];
+              if (lastDmg) lastDmg.classList.add('crit-magic');
+            }
+          }
+          SoundManager.play('victory');
+          monsterDefeated();
+        } else {
+          if (isCrit) SoundManager.play('crit');
+          else SoundManager.play('correct');
+          setTimeout(() => {
+            generateBattleQuestion();
+          }, 600);
+        }
+      } else {
+        wrong++;
+        streak = 0;
+        battleState.combo = 0;
+        updateComboDisplay();
+
+        input.style.borderColor = 'var(--danger)';
+        SoundManager.play('wrong');
+        trackError(num1, num2);
+        setTimeout(() => heroTakeDamage(), 400);
+        setTimeout(() => {
+          generateBattleQuestion();
+        }, 1000);
+      }
+    }
+
+    function trackError(n1, n2) {
+      try {
+        let log = JSON.parse(localStorage.getItem('mulErrorLog') || '{}');
+        const key = `${n1}x${n2}`;
+        if (!log[key]) log[key] = { correct: 0, wrong: 0 };
+        log[key].wrong++;
+        localStorage.setItem('mulErrorLog', JSON.stringify(log));
+      } catch(e) {}
+    }
+
+    function trackCorrect(n1, n2) {
+      try {
+        let log = JSON.parse(localStorage.getItem('mulErrorLog') || '{}');
+        const key = `${n1}x${n2}`;
+        if (!log[key]) log[key] = { correct: 0, wrong: 0 };
+        log[key].correct++;
+        localStorage.setItem('mulErrorLog', JSON.stringify(log));
+      } catch(e) {}
+    }
+
+    function updatePracticeSuggestion() {
+      try {
+        const log = JSON.parse(localStorage.getItem('mulErrorLog') || '{}');
+        const weakPairs = Object.entries(log)
+          .filter(([k, v]) => v.wrong >= 3 && v.wrong > v.correct)
+          .sort((a, b) => (b[1].wrong / (b[1].correct + b[1].wrong)) - (a[1].wrong / (a[1].correct + a[1].wrong)))
+          .slice(0, 3);
+        
+        const banner = document.getElementById('suggestionBanner');
+        const btns = document.getElementById('suggestionBtns');
+        if (!banner || !btns) return;
+        
+        if (weakPairs.length > 0) {
+          btns.innerHTML = weakPairs.map(([k]) => {
+            const [n1, n2] = k.split('x');
+            return `<button class="suggestion-btn" onclick="startFocusedPractice(${n1}, ${n2})">${n1}×${n2}</button>`;
+          }).join('');
+          banner.classList.add('active');
+        } else {
+          banner.classList.remove('active');
+        }
+      } catch(e) {}
+    }
+
+    function startFocusedPractice(n1, n2) {
+      const banner = document.getElementById('suggestionBanner');
+      if (banner) banner.classList.remove('active');
+      quizMode = true;
+      document.getElementById('quizToggle').classList.add('on');
+      switchTab('dots');
+      document.getElementById('practicePanel').classList.remove('active');
+      document.querySelectorAll('.viz-section').forEach(s => s.classList.remove('active'));
+      generateQuizWithPair(n1, n2);
+    }
+
+    function getComboMultiplier() {
+      if (battleState.combo >= 10) return 2.0;
+      if (battleState.combo >= 5) return 1.5;
+      if (battleState.combo >= 3) return 1.2;
+      return 1.0;
+    }
+
+    function calculateDamage() {
+      const hero = heroes[battleState.heroKey];
+      const base = Math.floor(Math.random() * (hero.atkMax - hero.atkMin + 1)) + hero.atkMin;
+      let critChance = hero.crit;
+      if (hero.passive === 'critBoost') critChance += 0.1;
+      const crit = Math.random() < critChance ? 2 : 1;
+      let damage = Math.floor(base * crit * getComboMultiplier());
+      if (hero.passive === 'rage' && battleState.heroHp / battleState.heroMaxHp < 0.3) {
+        damage = Math.floor(damage * 1.5);
+      }
+      return { damage, isCrit: crit > 1 };
+    }
+
+    function battleCheckAnswer(val, btn) {
+      total++;
+      const container = document.getElementById('battleOptions');
+      container.querySelectorAll('.battle-option').forEach(b => b.disabled = true);
+
+      if (val === battleState.battleAnswer) {
+        correct++;
+        trackCorrect(num1, num2);
+        streak++;
+        battleState.combo++;
+        updateComboDisplay();
+
+        const { damage, isCrit } = calculateDamage();
+        battleState.monsterHp = Math.max(0, battleState.monsterHp - damage);
+
+        btn.classList.add('correct');
+        showDamageNumber(damage, isCrit, false);
+
+        const monsterCard = document.getElementById('monsterCard');
+        monsterCard.classList.add('monster-hit');
+        setTimeout(() => monsterCard.classList.remove('monster-hit'), 400);
+
+        updateMonsterHpBar();
+
+        if (battleState.monsterHp <= 0) {
+          if (isCrit) {
+            SoundManager.play('crit');
+            if (heroes[battleState.heroKey].passive === 'critBoost') {
+              const dmgEls = document.querySelectorAll('.damage-number');
+              const lastDmg = dmgEls[dmgEls.length - 1];
+              if (lastDmg) lastDmg.classList.add('crit-magic');
+            }
+          }
+          SoundManager.play('victory');
+          monsterDefeated();
+        } else {
+          if (isCrit) SoundManager.play('crit');
+          else SoundManager.play('correct');
+          setTimeout(() => {
+            container.querySelectorAll('.battle-option').forEach(b => b.disabled = false);
+            generateBattleQuestion();
+          }, 600);
+        }
+      } else {
+        wrong++;
+        streak = 0;
+        battleState.combo = 0;
+        updateComboDisplay();
+
+        btn.classList.add('wrong');
+        container.querySelectorAll('.battle-option').forEach(b => {
+          if (parseInt(b.textContent) === battleState.battleAnswer) b.classList.add('correct');
+        });
+
+        SoundManager.play('wrong');
+        trackError(num1, num2);
+        heroTakeDamage();
+        setTimeout(() => {
+          container.querySelectorAll('.battle-option').forEach(b => b.disabled = false);
+          generateBattleQuestion();
+        }, 800);
+      }
+      updateScoreDisplay();
+      saveData();
+    }
+
+    function showDamageNumber(damage, isCrit, isHeal) {
+      const el = document.createElement('div');
+      el.className = 'damage-number' + (isHeal ? ' heal' : '') + (isCrit ? ' crit' : '');
+      el.textContent = (isHeal ? '+' : '-') + damage;
+
+      const monsterCard = document.getElementById('monsterCard');
+      const rect = monsterCard.getBoundingClientRect();
+      el.style.left = (rect.left + rect.width / 2 + (Math.random() - 0.5) * 40) + 'px';
+      el.style.top = (rect.top + 20) + 'px';
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 1000);
+    }
+
+    function heroTakeDamage() {
+      const hero = document.getElementById('heroBattleStatus');
+      const heroData = heroes[battleState.heroKey];
+
+      if (heroData.passive === 'block' && Math.random() < 0.2) {
+        hero.classList.add('hero-shield');
+        setTimeout(() => hero.classList.remove('hero-shield'), 600);
+        const el = document.createElement('div');
+        el.className = 'damage-number';
+        el.style.color = '#64c8ff';
+        el.textContent = '格擋!';
+        const rect = hero.getBoundingClientRect();
+        el.style.left = (rect.left + rect.width / 2 - 30) + 'px';
+        el.style.top = (rect.top - 20) + 'px';
+        document.body.appendChild(el);
+        setTimeout(() => el.remove(), 1000);
+        SoundManager.play('crit');
+        return;
+      }
+
+      hero.classList.add('hero-hit');
+      setTimeout(() => hero.classList.remove('hero-hit'), 300);
+
+      if (heroData.passive === 'rage' && battleState.heroHp / battleState.heroMaxHp < 0.3) {
+        hero.classList.add('berserker-mode');
+      } else {
+        hero.classList.remove('berserker-mode');
+      }
+
+      let damage = 5 + Math.floor(Math.random() * 5);
+      if (currentDomain === 'veteran') damage = 8 + Math.floor(Math.random() * 8);
+      if (currentDomain === 'legend') damage = 12 + Math.floor(Math.random() * 12);
+
+      battleState.heroHp = Math.max(0, battleState.heroHp - damage);
+      updateHeroHpBar();
+
+      const el = document.createElement('div');
+      el.className = 'damage-number';
+      el.textContent = '-' + damage;
+      const rect = hero.getBoundingClientRect();
+      el.style.left = (rect.left + rect.width / 2) + 'px';
+      el.style.top = rect.top + 'px';
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 1000);
+
+      SoundManager.play('hurt');
+
+      if (battleState.heroHp <= 0) {
+        battleDefeat();
+      }
+    }
+
+    function monsterDefeated() {
+      battleState.gold += battleState.monsterGold;
+      battleState.monstersDefeated++;
+      updateBattleStatsBar();
+      saveBattleData();
+
+      const monsterCard = document.getElementById('monsterCard');
+      monsterCard.style.transition = 'transform 0.5s, opacity 0.5s';
+      monsterCard.style.transform = 'scale(1.2)';
+      monsterCard.style.opacity = '0';
+
+      const popup = document.createElement('div');
+      popup.className = 'battle-reward-popup active';
+      popup.innerHTML = `
+        <h3>🏆 怪物被擊敗！</h3>
+        <div class="reward-row">
+          <span class="reward-icon">💰</span>
+          <span class="reward-value">+${battleState.monsterGold} 金幣</span>
+        </div>
+        <div class="reward-row">
+          <span class="reward-icon">⭐</span>
+          <span class="reward-value">+${battleState.monsterExp} 經驗</span>
+        </div>
+      `;
+      document.body.appendChild(popup);
+
+      const milestones = [5, 15, 30, 50];
+      const titles = ['初露頭角', '小有名氣', '聲名遠播', '傳說級勇士'];
+      const idx = milestones.indexOf(battleState.monstersDefeated);
+      if (idx !== -1) {
+        setTimeout(() => {
+          SoundManager.play('milestone');
+          const milestonePopup = document.createElement('div');
+          milestonePopup.className = 'battle-reward-popup active';
+          milestonePopup.innerHTML = `<h3 style="color:var(--accent)">🏆 ${titles[idx]}</h3>`;
+          document.body.appendChild(milestonePopup);
+          setTimeout(() => {
+            milestonePopup.classList.remove('active');
+            setTimeout(() => milestonePopup.remove(), 300);
+          }, 1500);
+        }, 500);
+      }
+
+      const rect = monsterCard.getBoundingClientRect();
+      const floatScore = document.createElement('div');
+      floatScore.className = 'damage-number';
+      floatScore.textContent = `+${battleState.monsterGold}`;
+      floatScore.style.color = '#FFD700';
+      floatScore.style.left = (rect.left + rect.width / 2) + 'px';
+      floatScore.style.top = (rect.top + rect.height / 2) + 'px';
+      document.body.appendChild(floatScore);
+      setTimeout(() => floatScore.remove(), 1000);
+
+      setTimeout(() => {
+        popup.classList.remove('active');
+        setTimeout(() => popup.remove(), 300);
+        monsterCard.style.transition = 'none';
+        monsterCard.style.transform = 'scale(1)';
+        monsterCard.style.opacity = '1';
+        spawnMonster();
+        generateBattleQuestion();
+      }, 3000);
+    }
+
+    function battleDefeat() {
+      battleState.inBattle = false;
+      const hero = heroes[battleState.heroKey];
+      const heroEl = document.getElementById('heroBattleStatus');
+      if (heroEl) heroEl.classList.remove('berserker-mode');
+      battleState.heroHp = hero.hp;
+      battleState.heroMaxHp = hero.hp;
+      document.getElementById('battleStartBtnOverlay').style.display = 'block';
+      document.getElementById('battleStartBtnOverlay').textContent = '🔄 再試一次';
+
+      SoundManager.play('defeat');
+
+      const overlay = document.createElement('div');
+      overlay.className = 'defeat-overlay active';
+      overlay.innerHTML = `
+        <h2>💀 英雄倒下！</h2>
+        <div class="rewards-summary">今次擊敗了 <span style="color:var(--accent)">${battleState.monstersDefeated}</span> 隻怪物</div>
+        <div class="rewards-summary">獲得 <span style="color:var(--accent)">${battleState.gold}</span> 金幣</div>
+        <button onclick="this.parentElement.classList.remove('active'); this.parentElement.remove();" 
+                style="margin-top:20px; padding:12px 30px; font-size:1.1rem; background:var(--danger); color:#fff; border:none; border-radius:20px; cursor:pointer; font-family:inherit;">
+          繼續努力
+        </button>
+      `;
+      document.body.appendChild(overlay);
+    }
+
+  </script>
+</body>
+</html>
