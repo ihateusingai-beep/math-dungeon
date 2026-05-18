@@ -652,8 +652,535 @@
     }
     .domain-icon { font-size: 1.1rem; }
 
-  
-    /* 英雄展示卡 */
+    /* ========== NEW: 計時器條 ========== */
+    .battle-timer-container {
+      display: none;
+      width: 100%;
+      max-width: 300px;
+      margin: 0 auto 10px;
+      text-align: center;
+    }
+    .battle-timer-container.active { display: block; }
+    .battle-timer-bar-bg {
+      width: 100%;
+      height: 14px;
+      background: rgba(0,0,0,0.4);
+      border-radius: 7px;
+      overflow: hidden;
+      border: 2px solid rgba(255,255,255,0.2);
+    }
+    .battle-timer-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #6BCB77, #FFD93D, #FF6B6B);
+      border-radius: 5px;
+      transition: width 0.1s linear;
+      width: 100%;
+    }
+    .battle-timer-bar-fill.danger { background: linear-gradient(90deg, #FF6B6B, #FF0000); animation: timerPulse 0.3s ease infinite; }
+    @keyframes timerPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
+    .battle-timer-label { font-size: 0.9rem; color: #FFD93D; margin-top: 4px; font-weight: bold; }
+    .speed-multiplier { font-size: 0.85rem; color: #aaa; margin-top: 2px; }
+    .speed-multiplier span { color: #6BCB77; font-weight: bold; }
+
+    /* ========== NEW: 護盾顯示 ========== */
+    .shield-display {
+      display: none;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      background: rgba(100, 200, 255, 0.2);
+      border: 2px solid #64c8ff;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      color: #64c8ff;
+    }
+    .shield-display.active { display: flex; }
+
+    /* ========== NEW: 題目類型顯示 ========== */
+    .question-type-badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      margin-bottom: 8px;
+    }
+    .question-type-badge.normal { background: rgba(77,150,255,0.3); color: #4D96FF; }
+    .question-type-badge.missing { background: rgba(255,217,61,0.3); color: #FFD93D; }
+    .question-type-badge.application { background: rgba(168,85,247,0.3); color: #C9B1FF; }
+
+    /* ========== NEW: 增強Combo視覺 ========== */
+    .combo-display {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      padding: 8px 16px;
+      background: rgba(0,0,0,0.6);
+      border: 2px solid #FF8C42;
+      border-radius: 12px;
+      transition: all 0.3s;
+    }
+    .combo-display.active { display: flex; }
+    .combo-display.level-high { border-color: #FFD93D; background: rgba(255,217,61,0.2); box-shadow: 0 0 20px rgba(255,217,61,0.4); }
+    .combo-display.level-max { border-color: #a855f7; background: rgba(168,85,247,0.3); box-shadow: 0 0 30px rgba(168,85,247,0.6); animation: comboMaxPulse 0.5s ease infinite; }
+    @keyframes comboMaxPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+    .combo-fire { font-size: 1.5rem; }
+    .combo-count { font-size: 1.8rem; font-weight: bold; color: #FF8C42; }
+    .combo-display.level-high .combo-count { color: #FFD93D; }
+    .combo-display.level-max .combo-count { color: #a855f7; }
+    .combo-skill { font-size: 0.8rem; color: #aaa; }
+    @keyframes comboPopIn { 0% { transform: scale(0.5); opacity: 0; } 50% { transform: scale(1.3); } 100% { transform: scale(1); opacity: 1; } }
+    .combo-display.pulse .combo-fire { animation: comboPopIn 0.4s ease; }
+
+    /* ========== NEW: 進化動畫Overlay ========== */
+    .evolution-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.9);
+      z-index: 300;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+    }
+    .evolution-overlay.active { display: flex; }
+    .evolution-title { font-size: 2rem; color: #FFD93D; text-shadow: 0 0 20px rgba(255,217,61,0.8); animation: evolveText 1s ease infinite; }
+    @keyframes evolveText { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+    .evolution-stars { font-size: 3rem; animation: starBurst 0.8s ease infinite; }
+    @keyframes starBurst { 0% { transform: scale(1) rotate(0deg); opacity: 1; } 50% { transform: scale(1.3) rotate(180deg); opacity: 0.8; } 100% { transform: scale(1) rotate(360deg); opacity: 1; } }
+    .evolution-old-name { font-size: 1.2rem; color: #aaa; text-decoration: line-through; }
+    .evolution-arrow { font-size: 2rem; color: #FFD93D; }
+    .evolution-new-name { font-size: 1.8rem; color: #FFD93D; font-weight: bold; }
+    .evolution-stats { display: flex; gap: 20px; margin-top: 10px; }
+    .evolution-stat { padding: 8px 16px; background: rgba(255,255,255,0.1); border-radius: 10px; text-align: center; }
+    .evolution-stat .value { font-size: 1.5rem; font-weight: bold; color: #6BCB77; }
+    .evolution-stat .label { font-size: 0.8rem; color: #aaa; }
+
+    /* ========== NEW: 魔法大爆發特效 ========== */
+    .magic-burst {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 5rem;
+      z-index: 250;
+      pointer-events: none;
+      display: none;
+    }
+    .magic-burst.active { display: block; animation: magicBurstAnim 1s ease-out forwards; }
+    @keyframes magicBurstAnim { 0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; } 30% { transform: translate(-50%, -50%) scale(1.5); opacity: 1; } 100% { transform: translate(-50%, -50%) scale(2); opacity: 0; } }
+
+    /* ========== NEW: Hero HP升級顯示 ========== */
+    .hero-level-badge {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      background: linear-gradient(135deg, #FFD93D, #FF8C42);
+      color: #333;
+      font-size: 0.7rem;
+      font-weight: bold;
+      padding: 2px 6px;
+      border-radius: 10px;
+      border: 2px solid #fff;
+    }
+
+
+    /* ========== NEW: Stage Map System ========== */
+    .stage-map-container {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      z-index: 500;
+      flex-direction: column;
+      padding: 20px;
+      overflow-y: auto;
+    }
+    .stage-map-container.active { display: flex; }
+    .stage-map-title {
+      text-align: center;
+      font-size: 1.8rem;
+      color: var(--accent);
+      margin-bottom: 20px;
+      text-shadow: 0 0 20px rgba(255, 217, 61, 0.5);
+    }
+    .stage-map-back { position: absolute; top: 20px; left: 20px; }
+    .stage-map-back button {
+      padding: 10px 20px;
+      background: rgba(255,255,255,0.1);
+      border: none;
+      border-radius: 10px;
+      color: #fff;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    .stage-map-back button:hover { background: rgba(255,255,255,0.2); }
+    
+    .stage-worlds {
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+      max-width: 800px;
+      margin: 0 auto;
+      width: 100%;
+    }
+    .stage-world {
+      background: rgba(255,255,255,0.05);
+      border-radius: 16px;
+      padding: 20px;
+      border: 2px solid rgba(255,255,255,0.1);
+    }
+    .stage-world-name {
+      font-size: 1.3rem;
+      color: #fff;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .stage-world-name .emoji { font-size: 1.5rem; }
+    .stage-world-name.locked { color: #666; }
+    .stage-world-bg {
+      width: 100%;
+      height: 150px;
+      background-size: cover;
+      background-position: center;
+      border-radius: 12px;
+      margin-bottom: 15px;
+      position: relative;
+      overflow: hidden;
+    }
+    .stage-world-bg::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: linear-gradient(transparent 50%, rgba(0,0,0,0.5));
+    }
+    .stage-world-bg.locked {
+      filter: grayscale(1) brightness(0.5);
+    }
+    .stage-world-bg.locked::before {
+      content: '🔒';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 3rem;
+      z-index: 1;
+    }
+    .stage-levels {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+    }
+    .stage-level-btn {
+      padding: 15px 10px;
+      background: rgba(255,255,255,0.1);
+      border: 2px solid rgba(255,255,255,0.2);
+      border-radius: 12px;
+      color: #fff;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+    }
+    .stage-level-btn:hover:not(.locked):not(.completed) {
+      transform: scale(1.05);
+      background: rgba(255, 217, 61, 0.2);
+      border-color: var(--accent);
+    }
+    .stage-level-btn.completed {
+      background: rgba(107, 203, 119, 0.2);
+      border-color: #6BCB77;
+    }
+    .stage-level-btn.completed::after {
+      content: '✅';
+      font-size: 0.8rem;
+    }
+    .stage-level-btn.locked {
+      background: rgba(0,0,0,0.3);
+      border-color: rgba(255,255,255,0.1);
+      color: #666;
+      cursor: not-allowed;
+    }
+    .stage-level-btn.current {
+      background: rgba(255, 217, 61, 0.3);
+      border-color: var(--accent);
+      animation: currentPulse 1.5s ease infinite;
+    }
+    @keyframes currentPulse {
+      0%, 100% { box-shadow: 0 0 10px rgba(255, 217, 61, 0.3); }
+      50% { box-shadow: 0 0 25px rgba(255, 217, 61, 0.6); }
+    }
+    .stage-level-btn .stars { font-size: 0.8rem; }
+    .stage-boss-btn {
+      grid-column: span 5;
+      padding: 15px;
+      background: linear-gradient(135deg, rgba(168, 85, 247, 0.3), rgba(231, 76, 60, 0.3));
+      border: 2px solid #a855f7;
+      border-radius: 12px;
+      color: #fff;
+      font-size: 1.2rem;
+      cursor: pointer;
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    .stage-boss-btn:hover:not(.locked) {
+      transform: scale(1.02);
+      box-shadow: 0 0 20px rgba(168, 85, 247, 0.4);
+    }
+    .stage-boss-btn.locked {
+      background: rgba(0,0,0,0.3);
+      border-color: #666;
+      color: #666;
+      cursor: not-allowed;
+    }
+    .stage-progress-bar {
+      width: 100%;
+      height: 8px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 4px;
+      margin-top: 15px;
+      overflow: hidden;
+    }
+    .stage-progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #6BCB77, #FFD93D);
+      border-radius: 4px;
+      transition: width 0.5s;
+    }
+
+    /* ========== NEW: Adaptive Difficulty ========== */
+    .difficulty-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 12px;
+      font-size: 0.75rem;
+      margin-left: 8px;
+    }
+    .difficulty-indicator.easy { color: #6BCB77; border: 1px solid #6BCB77; }
+    .difficulty-indicator.normal { color: #4D96FF; border: 1px solid #4D96FF; }
+    .difficulty-indicator.hard { color: #FF6B6B; border: 1px solid #FF6B6B; }
+    .difficulty-indicator.adjusting { animation: diffPulse 0.5s ease infinite; }
+    @keyframes diffPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+    .hint-box {
+      display: none;
+      padding: 10px 15px;
+      background: rgba(255, 217, 61, 0.2);
+      border: 2px solid #FFD93D;
+      border-radius: 10px;
+      margin: 10px auto;
+      max-width: 300px;
+      text-align: center;
+      color: #FFD93D;
+      font-size: 0.9rem;
+    }
+    .hint-box.active { display: block; animation: hintPopIn 0.3s ease; }
+    @keyframes hintPopIn { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+    .hint-icon { font-size: 1.2rem; margin-right: 5px; }
+    .accuracy-meter {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.75rem;
+      color: #aaa;
+      padding: 4px 8px;
+      background: rgba(0,0,0,0.3);
+      border-radius: 8px;
+    }
+    .accuracy-bar { width: 50px; height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden; }
+    .accuracy-fill { height: 100%; background: linear-gradient(90deg, #FF6B6B, #FFD93D, #6BCB77); border-radius: 3px; transition: width 0.3s; }
+    .boost-indicator {
+      display: none;
+      padding: 3px 8px;
+      background: rgba(107, 203, 119, 0.3);
+      border: 1px solid #6BCB77;
+      border-radius: 8px;
+      font-size: 0.7rem;
+      color: #6BCB77;
+    }
+    .boost-indicator.active { display: inline-block; animation: boostPop 0.5s ease; }
+    @keyframes boostPop { 0% { transform: scale(1.3); } 100% { transform: scale(1); } }
+    .streak-hint {
+      display: inline-block;
+      padding: 2px 8px;
+      background: rgba(255, 140, 66, 0.3);
+      border-radius: 8px;
+      font-size: 0.7rem;
+      color: #FF8C42;
+      margin-left: 5px;
+    }
+
+    /* ========== NEW: Achievement System ========== */
+    .achievement-btn {
+      position: fixed;
+      bottom: 80px;
+      right: 20px;
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(135deg, #FFD93D, #FF8C42);
+      border: none;
+      border-radius: 50%;
+      font-size: 1.5rem;
+      cursor: pointer;
+      z-index: 100;
+      box-shadow: 0 4px 15px rgba(255, 217, 61, 0.4);
+      transition: transform 0.3s;
+    }
+    .achievement-btn:hover { transform: scale(1.1); }
+    .achievement-btn.has-new {
+      animation: achievementGlow 1s ease infinite;
+    }
+    @keyframes achievementGlow {
+      0%, 100% { box-shadow: 0 4px 15px rgba(255, 217, 61, 0.4); }
+      50% { box-shadow: 0 4px 30px rgba(255, 217, 61, 0.8); }
+    }
+    .achievement-notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: linear-gradient(135deg, rgba(50, 50, 80, 0.98), rgba(30, 30, 60, 0.98));
+      border: 2px solid #FFD93D;
+      border-radius: 16px;
+      padding: 15px 20px;
+      z-index: 200;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      animation: notifSlideIn 0.5s ease, notifSlideOut 0.5s ease 3s forwards;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    }
+    .achievement-notification.show {
+      display: flex;
+    }
+    @keyframes notifSlideIn {
+      0% { transform: translateX(120%); opacity: 0; }
+      100% { transform: translateX(0); opacity: 1; }
+    }
+    @keyframes notifSlideOut {
+      0% { transform: translateX(0); opacity: 1; }
+      100% { transform: translateX(120%); opacity: 0; }
+    }
+    .notif-icon { font-size: 2.5rem; }
+    .notif-title { color: #FFD93D; font-size: 0.8rem; }
+    .notif-name { color: #fff; font-size: 1rem; font-weight: bold; }
+    .notif-desc { color: #aaa; font-size: 0.75rem; }
+    .achievement-panel {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.9);
+      z-index: 300;
+      flex-direction: column;
+      padding: 20px;
+      overflow-y: auto;
+    }
+    .achievement-panel.active { display: flex; }
+    .achievement-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .achievement-header h2 { color: #FFD93D; margin: 0; }
+    .achievement-close {
+      background: rgba(255,255,255,0.1);
+      border: none;
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+    .achievement-close:hover { background: rgba(255,255,255,0.2); }
+    .achievement-stats {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 20px;
+      justify-content: center;
+    }
+    .achievement-stat {
+      background: rgba(255,255,255,0.1);
+      padding: 10px 20px;
+      border-radius: 12px;
+      text-align: center;
+    }
+    .achievement-stat .value { font-size: 1.5rem; color: #FFD93D; font-weight: bold; }
+    .achievement-stat .label { font-size: 0.75rem; color: #aaa; }
+    .achievement-categories { display: flex; gap: 10px; margin-bottom: 20px; justify-content: center; flex-wrap: wrap; }
+    .achievement-cat-btn {
+      padding: 8px 16px;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 20px;
+      color: #fff;
+      cursor: pointer;
+      font-size: 0.85rem;
+    }
+    .achievement-cat-btn.active { background: rgba(255, 217, 61, 0.3); border-color: #FFD93D; }
+    .achievement-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 15px;
+      max-width: 1000px;
+      margin: 0 auto;
+      width: 100%;
+    }
+    .achievement-card {
+      background: rgba(255,255,255,0.05);
+      border: 2px solid rgba(255,255,255,0.1);
+      border-radius: 16px;
+      padding: 15px;
+      display: flex;
+      gap: 15px;
+      align-items: center;
+      transition: all 0.3s;
+    }
+    .achievement-card.unlocked {
+      border-color: #FFD93D;
+      background: rgba(255, 217, 61, 0.1);
+    }
+    .achievement-card.locked { opacity: 0.5; }
+    .achievement-card:hover:not(.locked) { transform: scale(1.02); }
+    .achievement-icon {
+      font-size: 2.5rem;
+      width: 60px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255,255,255,0.1);
+      border-radius: 12px;
+    }
+    .achievement-card.unlocked .achievement-icon { background: rgba(255, 217, 61, 0.2); }
+    .achievement-info { flex: 1; }
+    .achievement-name { color: #fff; font-size: 1rem; font-weight: bold; margin-bottom: 4px; }
+    .achievement-desc { color: #aaa; font-size: 0.8rem; margin-bottom: 6px; }
+    .achievement-progress {
+      width: 100%;
+      height: 6px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .achievement-progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #FFD93D, #FF8C42);
+      border-radius: 3px;
+      transition: width 0.5s;
+    }
+    .achievement-progress-text { font-size: 0.7rem; color: #888; margin-top: 4px; }
+  /* 英雄展示卡 */
     .hero-display {
       display: flex;
       align-items: center;
@@ -1171,9 +1698,75 @@
       justify-content: center;
     }
     .battle-close-btn:hover { background: var(--danger); border-color: var(--danger); }
-  </style>
+  
+  /* === IMMERSIVE EFFECTS === */
+  .screen-flash {
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    pointer-events: none; z-index: 9999; opacity: 0;
+  }
+  .screen-flash.correct {
+    background: radial-gradient(circle, rgba(46,204,113,0.4) 0%, transparent 70%);
+    animation: flashCorrect 0.5s ease-out;
+  }
+  .screen-flash.wrong {
+    background: rgba(231,76,60,0.3);
+    animation: flashWrong 0.4s ease-out;
+  }
+  .screen-flash.combo {
+    background: radial-gradient(circle, rgba(243,156,18,0.5) 0%, rgba(241,196,15,0.2) 50%, transparent 70%);
+    animation: flashCombo 0.8s ease-out;
+  }
+  .screen-flash.crit {
+    background: radial-gradient(circle, rgba(155,89,182,0.6) 0%, rgba(142,68,173,0.3) 50%, transparent 70%);
+    animation: flashCrit 1s ease-out;
+  }
+  @keyframes flashCorrect { 0% { opacity: 1; } 100% { opacity: 0; } }
+  @keyframes flashWrong { 0%, 100% { opacity: 0; transform: translateX(0); } 10%, 30%, 50% { opacity: 1; transform: translateX(-5px); } 20%, 40% { opacity: 1; transform: translateX(5px); } }
+  @keyframes flashCombo { 0% { opacity: 0; transform: scale(0.5); } 30% { opacity: 1; transform: scale(1.2); } 100% { opacity: 0; transform: scale(2); } }
+  @keyframes flashCrit { 0% { opacity: 0; transform: scale(0.8); } 20% { opacity: 1; transform: scale(1.5); } 100% { opacity: 0; transform: scale(2.5); } }
+  .screen-shake { animation: shake 0.3s ease-out; }
+  @keyframes shake { 0%, 100% { transform: translateX(0); } 20% { transform: translateX(-8px) rotate(-1deg); } 40% { transform: translateX(8px) rotate(1deg); } 60% { transform: translateX(-5px); } 80% { transform: translateX(5px); } }
+  .monster-death { animation: monsterDie 0.8s ease-out forwards; }
+  @keyframes monsterDie { 0% { transform: scale(1); opacity: 1; filter: brightness(1); } 30% { transform: scale(1.3); filter: brightness(3); } 100% { transform: scale(0); opacity: 0; filter: brightness(5); } }
+  .monster-hit-anim { animation: monsterHit 0.3s ease-out; }
+  @keyframes monsterHit { 0%, 100% { transform: translateX(0); filter: brightness(1); } 25% { transform: translateX(-15px); filter: brightness(2); } 75% { transform: translateX(15px); filter: brightness(1.5); } }
+  .hero-attack-anim { animation: heroAttack 0.4s ease-out; }
+  @keyframes heroAttack { 0% { transform: translateX(0); } 40% { transform: translateX(80px) scale(1.2); } 100% { transform: translateX(0); } }
+  .damage-number { position: absolute; font-size: 1.8em; font-weight: bold; pointer-events: none; z-index: 1000; text-shadow: 2px 2px 4px rgba(0,0,0,0.8), -1px -1px 0 #fff; animation: floatUp 1s ease-out forwards; }
+  .damage-number.crit { font-size: 2.5em; color: #f39c12; text-shadow: 0 0 20px #f39c12, 2px 2px 4px rgba(0,0,0,0.8); }
+  .damage-number.heal { color: #27ae60; }
+  @keyframes floatUp { 0% { opacity: 1; transform: translateY(0) scale(1); } 50% { opacity: 1; transform: translateY(-40px) scale(1.3); } 100% { opacity: 0; transform: translateY(-80px) scale(0.8); } }
+  .particle-container { position: fixed; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none; z-index: 998; overflow: hidden; }
+  .particle { position: absolute; width: 8px; height: 8px; border-radius: 50%; pointer-events: none; animation: particleFade 1s ease-out forwards; }
+  .particle.gold { background: radial-gradient(circle, #f1c40f, #f39c12); box-shadow: 0 0 10px #f39c12; }
+  .particle.magic { background: radial-gradient(circle, #9b59b6, #8e44ad); box-shadow: 0 0 10px #9b59b6; }
+  .particle.spark { background: radial-gradient(circle, #fff, #f39c12); box-shadow: 0 0 15px #fff; }
+  @keyframes particleFade { 0% { opacity: 1; transform: scale(1); } 100% { opacity: 0; transform: scale(0) translateY(-100px); } }
+  .floating-text { position: fixed; font-size: 1.5em; font-weight: bold; color: #f39c12; text-shadow: 2px 2px 4px rgba(0,0,0,0.8); pointer-events: none; z-index: 1001; animation: floatText 1.5s ease-out forwards; }
+  @keyframes floatText { 0% { opacity: 1; transform: translateY(0) scale(1); } 50% { opacity: 1; transform: translateY(-30px) scale(1.2); } 100% { opacity: 0; transform: translateY(-60px); } }
+  .monster-intent-display { position: absolute; top: -60px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.8); border: 2px solid; border-radius: 20px; padding: 8px 16px; font-size: 1em; white-space: nowrap; z-index: 100; animation: intentPulse 2s ease-in-out infinite; }
+  .monster-intent-display.attack { border-color: #e74c3c; color: #e74c3c; }
+  .monster-intent-display.defend { border-color: #3498db; color: #3498db; }
+  .monster-intent-display.buff { border-color: #f39c12; color: #f39c12; }
+  .monster-intent-display.special { border-color: #9b59b6; color: #9b59b6; }
+  @keyframes intentPulse { 0%, 100% { transform: translateX(-50%) scale(1); } 50% { transform: translateX(-50%) scale(1.05); } }
+  .boss-entrance { animation: bossEnter 1.5s ease-out; }
+  @keyframes bossEnter { 0% { transform: scale(0) rotate(-180deg); opacity: 0; } 50% { transform: scale(1.5) rotate(10deg); opacity: 0.5; } 70% { transform: scale(0.9) rotate(-5deg); opacity: 1; } 100% { transform: scale(1) rotate(0deg); opacity: 1; } }
+  .victory-celebration { position: fixed; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none; z-index: 999; background: radial-gradient(circle at center, rgba(243,156,18,0.3) 0%, transparent 70%); animation: victoryFlash 1s ease-out; }
+  @keyframes victoryFlash { 0% { opacity: 0; } 30% { opacity: 1; } 100% { opacity: 0; } }
+  .level-up-glow { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 300px; height: 300px; background: radial-gradient(circle, rgba(243,156,18,0.8) 0%, transparent 70%); pointer-events: none; z-index: 1000; animation: levelUpGlow 1.5s ease-out; }
+  @keyframes levelUpGlow { 0% { transform: translate(-50%, -50%) scale(0); opacity: 1; } 100% { transform: translate(-50%, -50%) scale(3); opacity: 0; } }
+  .ambient-particles { position: fixed; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none; z-index: 1; }
+  .ambient-particle { position: absolute; width: 4px; height: 4px; background: rgba(255,255,255,0.3); border-radius: 50%; animation: ambientFloat 10s linear infinite; }
+  @keyframes ambientFloat { 0% { transform: translateY(100vh) rotate(0deg); opacity: 0; } 10% { opacity: 0.5; } 90% { opacity: 0.5; } 100% { transform: translateY(-100px) rotate(360deg); opacity: 0; } }
+</style>
 </head>
 <body>
+  <!-- Immersive Effects Container -->
+  <div id="screenFlash" class="screen-flash"></div>
+  <div id="particleContainer" class="particle-container"></div>
+  <div id="ambientParticles" class="ambient-particles"></div>
+  
   <h1>
     乘法小鎮 ⭐
     <span class="subtitle" id="modeLabel"></span>
@@ -1334,6 +1927,7 @@
 
   <!-- 乘法表按鈕 -->
   <button class="table-btn" onclick="showTablePanel()">📋 乘法表</button>
+  <button class="table-btn" onclick="openStageMap()" style="background: linear-gradient(135deg, #667eea, #764ba2);">🗺️ 關卡地圖</button>
   <div class="table-backdrop" id="tableBackdrop" onclick="hideTablePanel()"></div>
 
   <!-- 計分板 -->
@@ -1455,10 +2049,25 @@
     <button class="battle-close-btn" onclick="closeBattleOverlay()">✕</button>
 
     <div class="battle-arena">
+      <!-- 計時器 -->
+      <div class="battle-timer-container" id="battleTimerContainer">
+        <div class="battle-timer-bar-bg">
+          <div class="battle-timer-bar-fill" id="battleTimerFill"></div>
+        </div>
+        <div class="battle-timer-label">⏱️ <span id="battleTimerText">3.0</span>秒</div>
+        <div class="speed-multiplier">速度倍率: <span id="speedMultiplier">1.0x</span></div>
+        <div class="accuracy-meter">
+          準確率: <div class="accuracy-bar"><div class="accuracy-fill" id="accuracyFill" style="width: 100%"></div></div>
+          <span id="accuracyText">100%</span>
+        </div>
+        <span class="boost-indicator" id="speedBoostIndicator">⚡ 加速中</span>
+      </div>
+
+      <!-- 增強Combo顯示 -->
       <div class="combo-display" id="comboDisplay">
-        <span>🔥</span>
-        <span>COMBO <span id="comboCount">0</span></span>
-        <span id="comboSkill"></span>
+        <span class="combo-fire">🔥</span>
+        <span>COMBO <span class="combo-count" id="comboCount">0</span></span>
+        <span class="combo-skill" id="comboSkill"></span>
       </div>
 
       <div class="monster-card" id="monsterCard">
@@ -1485,6 +2094,10 @@
             <div class="hero-hp-fill" id="heroHpFill" style="width: 100%"></div>
           </div>
           <div class="hp-text" id="heroHpText">100 / 100 HP</div>
+          <div class="shield-display" id="shieldDisplay">
+            <span class="shield-icon">🛡️</span>
+            <span id="shieldCount">0</span>層
+          </div>
         </div>
       </div>
 
@@ -1517,6 +2130,80 @@
     </div>
   </div>
 
+  <!-- 魔法大爆發特效 -->
+  <div class="magic-burst" id="magicBurst">✨</div>
+
+  <!-- 進化動畫Overlay -->
+  <div class="evolution-overlay" id="evolutionOverlay">
+    <div class="evolution-stars">⭐🌟⭐🌟⭐</div>
+    <div class="evolution-title" id="evolutionTitle">💫 進化！</div>
+    <div class="evolution-old-name" id="evolutionOldName">銀藍騎士</div>
+    <div class="evolution-arrow" id="evolutionArrow">⬇️</div>
+    <div class="evolution-new-name" id="evolutionNewName">初級魔法師</div>
+    <div class="evolution-stats">
+      <div class="evolution-stat">
+        <div class="value" id="evoHpBonus">+20</div>
+        <div class="label">HP</div>
+      </div>
+      <div class="evolution-stat">
+        <div class="value" id="evoAtkBonus">+5</div>
+        <div class="label">攻擊</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 關卡地圖 -->
+  <div class="stage-map-container" id="stageMap">
+    <div class="stage-map-back">
+      <button onclick="closeStageMap()">← 返回</button>
+    </div>
+    <div class="stage-map-title">🗺️ 世界地圖</div>
+    <div class="stage-worlds" id="stageWorlds">
+      <!-- Dynamically generated -->
+    </div>
+  </div>
+  <!-- 成就按鈕 -->
+  <button class="achievement-btn" id="achievementBtn" onclick="openAchievementPanel()">🏆</button>
+  
+  <!-- 錯題本按鈕 -->
+  <button class="wrongbook-btn" id="wrongbookBtn" onclick="openWrongBookPanel()">📖</button>
+  <button class="daily-tasks-btn" id="dailyTasksBtn" onclick="openDailyTasksPanel()">📋</button>
+
+  <!-- 成就通知 -->
+  <div class="achievement-notification" id="achievementNotif">
+    <div class="notif-icon" id="notifIcon">🏆</div>
+    <div class="notif-title">成就解鎖！</div>
+    <div class="notif-name" id="notifName">初露頭角</div>
+    <div class="notif-desc" id="notifDesc">完成首場戰鬥</div>
+  </div>
+
+  <!-- 成就面板 -->
+  <div class="achievement-panel" id="achievementPanel">
+    <div class="achievement-header">
+      <h2>🏆 成就系統</h2>
+      <button class="achievement-close" onclick="closeAchievementPanel()">關閉</button>
+    </div>
+    <div class="achievement-stats">
+      <div class="achievement-stat">
+        <div class="value" id="totalAchievements">0</div>
+        <div class="label">已解鎖</div>
+      </div>
+      <div class="achievement-stat">
+        <div class="value" id="totalAchievementPoints">0</div>
+        <div class="label">成就積分</div>
+      </div>
+    </div>
+    <div class="achievement-categories">
+      <button class="achievement-cat-btn active" onclick="filterAchievements('all')">全部</button>
+      <button class="achievement-cat-btn" onclick="filterAchievements('battle')">⚔️ 戰鬥</button>
+      <button class="achievement-cat-btn" onclick="filterAchievements('combo')">🔥 Combo</button>
+      <button class="achievement-cat-btn" onclick="filterAchievements('study')">📚 學習</button>
+      <button class="achievement-cat-btn" onclick="filterAchievements('special')">⭐ 特殊</button>
+    </div>
+    <div class="achievement-grid" id="achievementGrid">
+      <!-- Dynamically generated -->
+    </div>
+  </div>
   <!-- 練習 -->
     <div class="practice-panel" id="practicePanel">
       <div class="quiz-card">
@@ -1688,6 +2375,122 @@
     let domainStats = { newbie: {correct:0, wrong:0}, veteran: {correct:0, wrong:0}, legend: {correct:0, wrong:0} };
     let level = 1, unlockedLevels = [2], selectedLevel = null;
     let streakForLevel = 0;
+    
+    // === WRONG ANSWERS TRACKING ===
+    let wrongAnswers = JSON.parse(localStorage.getItem('mt_wrongAnswers') || '[]');
+    let weakTables = JSON.parse(localStorage.getItem('mt_weakTables') || '{}');
+
+    function saveWrongAnswer(question, correct, userAnswer) {
+        wrongAnswers.push({
+            question: question,
+            correct: correct,
+            userAnswer: userAnswer,
+            timestamp: Date.now(),
+            table: correct.split('×')[0].trim()
+        });
+        if (wrongAnswers.length > 100) wrongAnswers.shift();
+        localStorage.setItem('mt_wrongAnswers', JSON.stringify(wrongAnswers));
+        let table = correct.split('×')[0].trim();
+        if (!weakTables[table]) weakTables[table] = {wrong: 0, total: 0};
+        weakTables[table].wrong++;
+        weakTables[table].total++;
+        localStorage.setItem('mt_weakTables', JSON.stringify(weakTables));
+    }
+
+    function recordCorrectAnswer(correct) {
+        let table = correct.split('×')[0].trim();
+        if (!weakTables[table]) weakTables[table] = {wrong: 0, total: 0};
+        weakTables[table].total++;
+        localStorage.setItem('mt_weakTables', JSON.stringify(weakTables));
+    }
+
+    // === DAILY TASKS ===
+    const DAILY_TASKS_KEY = 'mt_dailyTasks';
+    const LAST_CLAIM_KEY = 'mt_lastDailyClaim';
+    let dailyTasks = JSON.parse(localStorage.getItem(DAILY_TASKS_KEY) || '[]');
+    let lastDailyReset = localStorage.getItem(LAST_CLAIM_KEY) || '';
+
+    function getDailyTasks() {
+        return [
+            { id: 'questions10', desc: '完成 10 道題目', target: 10, type: 'questions', reward: 50, rewardType: 'gold', icon: '📝' },
+            { id: 'battle3', desc: '打敗 3 個怪物', target: 3, type: 'battle', reward: 30, rewardType: 'gold', icon: '⚔️' },
+            { id: 'perfect5', desc: '完美通關 1 關（5星）', target: 1, type: 'perfect', reward: 100, rewardType: 'exp', icon: '⭐' },
+            { id: 'combo10', desc: '達成 10 連Combo', target: 10, type: 'combo', reward: 40, rewardType: 'gold', icon: '🔥' },
+            { id: 'practice1', desc: '練習錯題本 1 次', target: 1, type: 'practice', reward: 20, rewardType: 'gold', icon: '📖' }
+        ];
+    }
+
+    function checkDailyReset() {
+        const today = new Date().toDateString();
+        if (lastDailyReset !== today) {
+            dailyTasks = getDailyTasks().map(t => ({ ...t, progress: 0, claimed: false }));
+            lastDailyReset = today;
+            localStorage.setItem(DAILY_TASKS_KEY, JSON.stringify(dailyTasks));
+            localStorage.setItem(LAST_CLAIM_KEY, today);
+        } else if (dailyTasks.length === 0) {
+            dailyTasks = getDailyTasks().map(t => ({ ...t, progress: 0, claimed: false }));
+            localStorage.setItem(DAILY_TASKS_KEY, JSON.stringify(dailyTasks));
+        }
+    }
+
+    function updateDailyProgress(type, amount) {
+        checkDailyReset();
+        dailyTasks.forEach(task => {
+            if (task.type === type && !task.claimed) {
+                task.progress = Math.min(task.progress + amount, task.target);
+            }
+        });
+        localStorage.setItem(DAILY_TASKS_KEY, JSON.stringify(dailyTasks));
+        updateDailyTasksUI();
+    }
+
+    function updateDailyTasksUI() {
+        const container = document.getElementById('dailyTasksList');
+        if (!container) return;
+        checkDailyReset();
+        let html = '';
+        dailyTasks.forEach((task, idx) => {
+            const pct = Math.round((task.progress / task.target) * 100);
+            const done = task.progress >= task.target;
+            html += `<div class="daily-task-item ${done ? 'done' : ''}" onclick="claimDailyReward(${idx})">
+                <div class="task-icon">${task.icon}</div>
+                <div class="task-info">
+                    <div class="task-desc">${task.desc}</div>
+                    <div class="task-progress-bar"><div class="task-progress-fill" style="width:${pct}%"></div></div>
+                    <div class="task-progress-text">${task.progress}/${task.target}</div>
+                </div>
+                <div class="task-reward">+${task.reward}🪙</div>
+            </div>`;
+        });
+        container.innerHTML = html;
+    }
+
+    function claimDailyReward(idx) {
+        const task = dailyTasks[idx];
+        if (task.progress < task.target || task.claimed) return;
+        task.claimed = true;
+        if (task.rewardType === 'gold') {
+            battleState.gold = (battleState.gold || 0) + task.reward;
+            updateGoldDisplay();
+        } else if (task.rewardType === 'exp') {
+            addHeroExp(task.reward);
+        }
+        localStorage.setItem(DAILY_TASKS_KEY, JSON.stringify(dailyTasks));
+        showFloatingText(`+${task.reward}${task.rewardType === 'gold' ? '🪙' : '⭐'}`, '#f39c12');
+        updateDailyTasksUI();
+        saveData();
+    }
+
+    function openDailyTasksPanel() {
+        document.getElementById('dailyTasksPanel').style.display = 'block';
+        checkDailyReset();
+        updateDailyTasksUI();
+    }
+
+    function closeDailyTasksPanel() {
+        document.getElementById('dailyTasksPanel').style.display = 'none';
+    }
+
     let soundEnabled = true, quizMode = true;
     let timerActive = false, timerTime = 60, timerInterval = null;
 
@@ -1708,7 +2511,17 @@
       combo: 0,
       gold: 0,
       monstersDefeated: 0,
-      battleAnswer: 0
+      battleAnswer: 0,
+      // === NEW FIELDS ===
+      shield: 0,
+      heroLevel: 1,
+      heroExp: 0,
+      expToNextLevel: 100,
+      answerStartTime: 0,
+      questionType: 'normal',
+      battleTimerInterval: null,
+      timeLeft: 3.0,
+      maxTime: 3.0
     };
     const SoundManager = {
       ctx: null,
@@ -1853,22 +2666,22 @@
       if (btn) btn.textContent = BGM.playing ? '🎵 音樂: 開' : '🎵 音樂: 關';
     }
     const heroes = {
-      knight: { name: '銀藍騎士', hp: 100, atkMin: 8, atkMax: 12, crit: 0.1, img: 'assets/images/knight-hero.png', color: '#4a90e2', passive: 'block' },
-      mage: { name: '銀月法師', hp: 80, atkMin: 12, atkMax: 18, crit: 0.15, img: 'assets/images/mage-hero.png', color: '#9b59b6', passive: 'critBoost' },
-      berserker: { name: '烈焰狂戰', hp: 120, atkMin: 15, atkMax: 25, crit: 0.25, img: 'assets/images/berserker-hero.png', color: '#e74c3c', passive: 'rage' }
+      knight: { name: '銀藍騎士', hp: 100, atkMin: 8, atkMax: 12, crit: 0.1, img: 'assets/images/characters/wizard_boy.png', color: '#4a90e2', passive: 'block' },
+      mage: { name: '銀月法師', hp: 80, atkMin: 12, atkMax: 18, crit: 0.15, img: 'assets/images/characters/wizard_boy.png', color: '#9b59b6', passive: 'critBoost' },
+      berserker: { name: '烈焰狂戰', hp: 120, atkMin: 15, atkMax: 25, crit: 0.25, img: 'assets/images/characters/wizard_boy.png', color: '#e74c3c', passive: 'rage' }
     };
     const monsters = {
       newbie: [
-        { name: '青蛙', emoji: '🐸', hpMin: 5, hpMax: 8, gold: 10, exp: 5 },
-        { name: '兔子怪', emoji: '🐰', hpMin: 7, hpMax: 10, gold: 15, exp: 8 }
+        { name: '史萊姆', emoji: '🟢', img: 'assets/images/monsters/slime.png', hpMin: 5, hpMax: 8, gold: 10, exp: 5 },
+        { name: '小狼', emoji: '🐺', img: 'assets/images/monsters/wolf.png', hpMin: 7, hpMax: 10, gold: 15, exp: 8 }
       ],
       veteran: [
-        { name: '狼人', emoji: '🐺', hpMin: 12, hpMax: 18, gold: 25, exp: 15 },
-        { name: '蝙蝠王', emoji: '🦇', hpMin: 15, hpMax: 20, gold: 30, exp: 20 }
+        { name: '狼人', emoji: '🐺', img: 'assets/images/monsters/wolf.png', hpMin: 12, hpMax: 18, gold: 25, exp: 15 },
+        { name: '蝙蝠王', emoji: '🦇', img: 'assets/images/monsters/bat.png', hpMin: 15, hpMax: 20, gold: 30, exp: 20 }
       ],
       legend: [
-        { name: '幼龍', emoji: '🐉', hpMin: 25, hpMax: 35, gold: 50, exp: 40, boss: true },
-        { name: '骨法師', emoji: '💀', hpMin: 20, hpMax: 30, gold: 45, exp: 35, boss: true }
+        { name: '幼龍', emoji: '🐉', img: 'assets/images/monsters/dragon.png', hpMin: 25, hpMax: 35, gold: 50, exp: 40, boss: true },
+        { name: '骨法師', emoji: '💀', img: 'assets/images/monsters/skeleton_mage.png', hpMin: 20, hpMax: 30, gold: 45, exp: 35, boss: true }
       ]
     };
 
@@ -1911,6 +2724,12 @@
       localStorage.setItem('multiplicationData', JSON.stringify({
         correct, wrong, total, bestScore, unlockedLevels, selectedLevel,
         wrongStreak, guidanceHistory
+      }));
+      // Save hero battle data
+      localStorage.setItem('mathTownHero', JSON.stringify({
+        heroLevel: battleState.heroLevel,
+        heroExp: battleState.heroExp,
+        expToNextLevel: battleState.expToNextLevel
       }));
     }
 
@@ -2807,6 +3626,10 @@
     }
 
     function closeBattleOverlay() {
+      if (battleState.battleTimerInterval) {
+        clearInterval(battleState.battleTimerInterval);
+        battleState.battleTimerInterval = null;
+      }
       document.getElementById('battleOverlay').classList.remove('active');
       battleState.active = false;
       battleState.inBattle = false;
@@ -2821,14 +3644,34 @@
       battleState.active = true;
       battleState.inBattle = true;
       battleState.combo = 0;
+      battleState.shield = 0;
+      battleState.monsterTurnCount = 0;
+      battleState.monsterBuffs = [];
+      battleState.monsterAction = null;
+
+      // Load saved hero level if exists
+      const savedData = JSON.parse(localStorage.getItem('mathTownHero') || '{}');
+      if (savedData.heroLevel) {
+        battleState.heroLevel = savedData.heroLevel;
+        battleState.heroExp = savedData.heroExp || 0;
+        battleState.expToNextLevel = savedData.expToNextLevel || 100;
+      } else {
+        battleState.heroLevel = 1;
+        battleState.heroExp = 0;
+        battleState.expToNextLevel = 100;
+      }
 
       const hero = heroes[battleState.heroKey];
-      battleState.heroHp = hero.hp;
-      battleState.heroMaxHp = hero.hp;
+      // Apply level bonuses
+      battleState.heroMaxHp = hero.hp + (battleState.heroLevel - 1) * 20;
+      battleState.heroHp = battleState.heroMaxHp;
 
       document.getElementById('heroBattleAvatar').src = hero.img;
       document.getElementById('heroBattleName').textContent = hero.name;
       updateHeroHpBar();
+      updateShieldDisplay();
+      updateHeroLevelDisplay();
+      document.getElementById('battleTimerContainer').classList.remove('active');
 
       document.getElementById('battleStartBtnOverlay').style.display = 'none';
 
@@ -2852,6 +3695,9 @@
       battleState.monsterGold = template.gold;
       battleState.monsterExp = template.exp;
       battleState.isBoss = template.boss || false;
+      battleState.monsterTurnCount = 0;
+      battleState.monsterBuffs = [];
+      battleState.monsterAction = null;
 
       document.getElementById('monsterEmoji').textContent = template.emoji;
       document.getElementById('monsterName').textContent = template.name;
@@ -2917,19 +3763,109 @@
       }
     }
 
+    // ========== NEW: 題目類型系統 ==========
+    const questionTypes = ['normal', 'missing', 'application'];
+    
     function generateBattleQuestion() {
+      // Clear any existing timer
+      if (battleState.battleTimerInterval) {
+        clearInterval(battleState.battleTimerInterval);
+      }
+      
+      // Record start time for speed calculation
+      battleState.answerStartTime = Date.now();
+      
+      // 20% chance for application, 30% for missing, 50% for normal
+      const rand = Math.random();
+      if (rand < 0.2) {
+        battleState.questionType = 'application';
+      } else if (rand < 0.5) {
+        battleState.questionType = 'missing';
+      } else {
+        battleState.questionType = 'normal';
+      }
+      
+      // Apply adaptive difficulty
       const ranges = { newbie: [2, 5], veteran: [2, 9], legend: [2, 12] };
-      const [min, max] = ranges[currentDomain] || ranges.veteran;
+      let [min, max] = ranges[currentDomain] || ranges.veteran;
+      
       if (selectedLevel) {
         num1 = selectedLevel;
         num2 = Math.floor(Math.random() * 8) + 2;
       } else {
+        // Use adaptive ranges if not in specific level mode
+        const adaptive = applyAdaptiveToQuestion();
+        min = adaptive.min;
+        max = adaptive.max;
         num1 = Math.floor(Math.random() * (max - min + 1)) + min;
         num2 = Math.floor(Math.random() * (max - min + 1)) + min;
       }
       battleState.battleAnswer = num1 * num2;
 
-      document.getElementById('battleQuestion').textContent = `${num1} × ${num2} = ?`;
+      // Generate question text based on type
+      let questionText = '';
+      let typeBadge = '';
+      
+      if (battleState.questionType === 'missing') {
+        // 缺數題: 7 × ? = 42 或 ? × 8 = 56
+        if (Math.random() < 0.5) {
+          questionText = `${num1} × ? = ${num1 * num2}`;
+          battleState.battleAnswer = num2;
+        } else {
+          questionText = `? × ${num2} = ${num1 * num2}`;
+          battleState.battleAnswer = num1;
+        }
+        typeBadge = '<span class="question-type-badge missing">🔍 缺數題</span>';
+      } else if (battleState.questionType === 'application') {
+        // 應用題
+        const applications = [
+          `有 ${num1} 群怪物，每群 ${num2} 隻，總共幾多隻？`,
+          `每個寶箱有 ${num1} 個金幣，開咗 ${num2} 個寶箱，共幾多金幣？`,
+          `小明每秒攻擊 ${num1} 點，攻擊 ${num2} 秒，共幾多點？`
+        ];
+        questionText = applications[Math.floor(Math.random() * applications.length)];
+        typeBadge = '<span class="question-type-badge application">📖 應用題</span>';
+      } else {
+        questionText = `${num1} × ${num2} = ?`;
+        typeBadge = '<span class="question-type-badge normal">⚔️ 基礎題</span>';
+      }
+
+      // Set question with type badge
+      document.getElementById('battleQuestion').innerHTML = typeBadge + '<div style="margin-top:8px;font-size:1.5rem;">' + questionText + '</div>';
+
+      // Start timer with adaptive time
+      const adaptiveTime = getAdaptiveTimer();
+      battleState.timeLeft = adaptiveTime;
+      battleState.maxTime = adaptiveTime;
+      document.getElementById('battleTimerContainer').classList.add('active');
+      document.getElementById('battleTimerFill').style.width = '100%';
+      document.getElementById('battleTimerFill').classList.remove('danger');
+      document.getElementById('battleTimerText').textContent = '3.0';
+      updateSpeedMultiplierDisplay();
+      
+      // Start timer interval
+      battleState.battleTimerInterval = setInterval(() => {
+        battleState.timeLeft -= 0.1;
+        const pct = (battleState.timeLeft / battleState.maxTime) * 100;
+        document.getElementById('battleTimerFill').style.width = pct + '%';
+        document.getElementById('battleTimerText').textContent = Math.max(0, battleState.timeLeft).toFixed(1);
+        
+        if (battleState.timeLeft <= 1) {
+          document.getElementById('battleTimerFill').classList.add('danger');
+        }
+        
+        // Update accuracy text
+        const accText = document.getElementById('accuracyText');
+        if (accText) {
+          accText.textContent = Math.round(getRecentAccuracy() * 100) + '%';
+        }
+        
+        if (battleState.timeLeft <= 0) {
+          clearInterval(battleState.battleTimerInterval);
+          battleState.timeLeft = 0;
+          battleTimeUp();
+        }
+      }, 100);
 
       const container = document.getElementById('battleOptions');
       container.innerHTML = '';
@@ -2963,7 +3899,42 @@
       }
     }
 
+    function battleTimeUp() {
+      wrong++;
+      streak = 0;
+      streakForLevel = 0;
+      battleState.combo = 0;
+      updateComboDisplay();
+      
+      document.getElementById('battleOptions').querySelectorAll('.battle-option').forEach(b => b.disabled = true);
+      
+      showDamageNumber(0, false, false, true); // Show timeout indicator
+      
+      SoundManager.play('wrong');
+      heroTakeDamage();
+      
+      setTimeout(() => {
+        document.getElementById('battleOptions').querySelectorAll('.battle-option').forEach(b => b.disabled = false);
+        generateBattleQuestion();
+      }, 1000);
+    }
+
+    function updateSpeedMultiplierDisplay() {
+      document.getElementById('speedMultiplier').textContent = '1.0x';
+    }
+
+    function getSpeedMultiplier() {
+      const elapsed = (Date.now() - battleState.answerStartTime) / 1000;
+      let multiplier = 1.5 - (elapsed / 3.0) * 0.7;
+      return Math.max(0.8, Math.min(1.5, multiplier));
+    }
+
     function battleSubmitAnswer() {
+      // Stop the timer
+      if (battleState.battleTimerInterval) {
+        clearInterval(battleState.battleTimerInterval);
+      }
+      
       const input = document.getElementById('battleAnswerInput');
       const val = parseInt(input.value);
       if (isNaN(val)) return;
@@ -2979,8 +3950,11 @@
         streak++;
         battleState.combo++;
         updateComboDisplay();
+        updateAdaptiveState(true);
+        updateAdaptiveUI();
 
-        const { damage, isCrit } = calculateDamage();
+        const speedMult = getSpeedMultiplier();
+        const { damage, isCrit } = calculateDamage(speedMult);
         battleState.monsterHp = Math.max(0, battleState.monsterHp - damage);
 
         showDamageNumber(damage, isCrit, false);
@@ -2988,6 +3962,22 @@
         const monsterCard = document.getElementById('monsterCard');
         monsterCard.classList.add('monster-hit');
         setTimeout(() => monsterCard.classList.remove('monster-hit'), 400);
+
+        // Accumulate shield
+        if (battleState.combo >= 3) {
+          battleState.shield = Math.min(battleState.shield + 1, 5);
+          updateShieldDisplay();
+          showShieldGain();
+        }
+
+        // Magic Burst
+        if (battleState.combo >= 5 && battleState.combo % 5 === 0) {
+          triggerMagicBurst();
+          if (battleState.combo >= 10) updateDailyProgress('combo', 1);
+        }
+
+        // Add experience
+        addHeroExp(10 + battleState.combo * 2);
 
         updateMonsterHpBar();
 
@@ -3001,9 +3991,12 @@
             }
           }
           SoundManager.play('victory');
+          triggerVictoryCelebration();
           monsterDefeated();
         } else {
-          if (isCrit) SoundManager.play('crit');
+          if (isCrit) {
+            SoundManager.play('crit');
+          }
           else SoundManager.play('correct');
           setTimeout(() => {
             generateBattleQuestion();
@@ -3015,6 +4008,8 @@
         streakForLevel = 0;
         battleState.combo = 0;
         updateComboDisplay();
+        updateAdaptiveState(false);
+        updateAdaptiveUI();
 
         input.style.borderColor = 'var(--danger)';
         SoundManager.play('wrong');
@@ -3081,6 +4076,1060 @@
       generateQuizWithPair(n1, n2);
     }
 
+// ========== NEW: 護盾系統 ==========
+    function updateShieldDisplay() {
+      const shieldDisplay = document.getElementById('shieldDisplay');
+      const shieldCount = document.getElementById('shieldCount');
+      if (shieldDisplay && shieldCount) {
+        if (battleState.shield > 0) {
+          shieldDisplay.classList.add('active');
+          shieldCount.textContent = battleState.shield;
+        } else {
+          shieldDisplay.classList.remove('active');
+        }
+      }
+    }
+
+    function showShieldGain() {
+      const shieldEl = document.getElementById('shieldDisplay');
+      shieldEl.style.animation = 'none';
+      shieldEl.offsetHeight;
+      shieldEl.style.animation = 'comboPopIn 0.4s ease';
+    }
+
+    // ========== NEW: 魔法大爆發 ==========
+    function triggerMagicBurst() {
+      const burst = document.getElementById('magicBurst');
+      burst.classList.add('active');
+      SoundManager.play('victory');
+      checkMagicBurstAchievement();
+      if (battleState.combo >= 10) updateDailyProgress('combo', 1);
+      setTimeout(() => burst.classList.remove('active'), 1000);
+    }
+
+    // ========== NEW: 英雄等級與進化系統 ==========
+    const evolutionNames = {
+      knight: ['見習騎士', '銀藍騎士', '皇家騎士', '聖殿騎士', '傳說聖騎'],
+      mage: ['魔法學徒', '見習法師', '元素法師', '大法師', '魔法宗師'],
+      berserker: ['狂戰士', '烈焰狂戰', '毀滅者', '深淵魔戰', '毀滅之王']
+    };
+
+    function addHeroExp(amount) {
+      battleState.heroExp += amount;
+      
+      while (battleState.heroExp >= battleState.expToNextLevel) {
+        battleState.heroExp -= battleState.expToNextLevel;
+        battleState.heroLevel++;
+        battleState.expToNextLevel = Math.floor(battleState.expToNextLevel * 1.5);
+        
+        const hero = heroes[battleState.heroKey];
+        hero.maxHp += 20;
+        hero.atkMin += 3;
+        hero.atkMax += 5;
+        
+        if (battleState.heroLevel % 5 === 0) {
+          showEvolution(hero);
+        } else {
+          showLevelUp();
+        }
+      }
+      
+      updateHeroLevelDisplay();
+    }
+
+    function showLevelUp() {
+      const overlay = document.getElementById('evolutionOverlay');
+      document.getElementById('evolutionTitle').textContent = '⬆️ 升級！';
+      document.getElementById('evolutionOldName').textContent = 'Lv.' + (battleState.heroLevel - 1);
+      document.getElementById('evolutionOldName').style.textDecoration = 'none';
+      document.getElementById('evolutionArrow').style.display = 'none';
+      document.getElementById('evolutionNewName').textContent = 'Lv.' + battleState.heroLevel;
+      document.getElementById('evoHpBonus').textContent = '+20';
+      document.getElementById('evoAtkBonus').textContent = '+5';
+      overlay.classList.add('active');
+      
+      setTimeout(() => overlay.classList.remove('active'), 1500);
+    }
+
+    function showEvolution(hero) {
+      const evoIndex = Math.min(Math.floor(battleState.heroLevel / 5), evolutionNames[battleState.heroKey].length - 1);
+      const oldName = evolutionNames[battleState.heroKey][Math.max(0, evoIndex - 1)] || hero.name;
+      const newName = evolutionNames[battleState.heroKey][evoIndex];
+      
+      document.getElementById('evolutionTitle').textContent = '💫 進化！';
+      document.getElementById('evolutionOldName').textContent = oldName;
+      document.getElementById('evolutionOldName').style.display = '';
+      document.getElementById('evolutionArrow').style.display = '';
+      document.getElementById('evolutionNewName').textContent = newName;
+      document.getElementById('evoHpBonus').textContent = '+20';
+      document.getElementById('evoAtkBonus').textContent = '+5';
+      document.getElementById('evolutionOverlay').classList.add('active');
+      
+      setTimeout(() => document.getElementById('evolutionOverlay').classList.remove('active'), 3000);
+    }
+
+    function updateHeroLevelDisplay() {
+      const heroBattleStatus = document.getElementById('heroBattleStatus');
+      if (!heroBattleStatus) return;
+      
+      let badge = document.getElementById('heroLevelBadge');
+      if (!badge) {
+        badge = document.createElement('div');
+        badge.className = 'hero-level-badge';
+        badge.id = 'heroLevelBadge';
+        heroBattleStatus.style.position = 'relative';
+        heroBattleStatus.appendChild(badge);
+      }
+      badge.textContent = 'Lv.' + battleState.heroLevel;
+    }
+
+
+    // ========== NEW: Stage Map System ==========
+    const worlds = [
+      {
+        id: 'newbie',
+        name: '🌲 魔法森林',
+        bg: 'assets/images/backgrounds/forest.png',
+        levels: [
+          { id: 1, table: 2, unlocked: true, completed: false, stars: 0 },
+          { id: 2, table: 3, unlocked: false, completed: false, stars: 0 },
+          { id: 3, table: 4, unlocked: false, completed: false, stars: 0 },
+          { id: 4, table: 5, unlocked: false, completed: false, stars: 0 },
+          { id: 5, table: 0, unlocked: false, completed: false, stars: 0 }
+        ],
+        bossUnlocked: false,
+        boss: { name: '🐸 沼澤之王', table: 0, unlocked: false, completed: false }
+      },
+      {
+        id: 'veteran',
+        name: '⛰️ 雲端山谷',
+        bg: 'assets/images/backgrounds/valley.png',
+        levels: [
+          { id: 6, table: 6, unlocked: false, completed: false, stars: 0 },
+          { id: 7, table: 7, unlocked: false, completed: false, stars: 0 },
+          { id: 8, table: 8, unlocked: false, completed: false, stars: 0 },
+          { id: 9, table: 9, unlocked: false, completed: false, stars: 0 },
+          { id: 10, table: 0, unlocked: false, completed: false, stars: 0 }
+        ],
+        bossUnlocked: false,
+        boss: { name: '🦇 蝙蝠魔王', table: 0, unlocked: false, completed: false }
+      },
+      {
+        id: 'legend',
+        name: '🏰 暗黑城堡',
+        bg: 'assets/images/backgrounds/castle.png',
+        levels: [
+          { id: 11, table: 11, unlocked: false, completed: false, stars: 0 },
+          { id: 12, table: 12, unlocked: false, completed: false, stars: 0 },
+          { id: 13, table: 0, unlocked: false, completed: false, stars: 0 },
+          { id: 14, table: 0, unlocked: false, completed: false, stars: 0 },
+          { id: 15, table: 0, unlocked: false, completed: false, stars: 0 }
+        ],
+        bossUnlocked: false,
+        boss: { name: '💀 骨魂魔王', table: 0, unlocked: false, completed: false }
+      },
+      {
+        id: 'boss',
+        name: '👹 魔王廳',
+        bg: 'assets/images/backgrounds/boss_room.png',
+        levels: [],
+        bossUnlocked: false,
+        boss: { name: '🐉 深淵魔王', table: 0, unlocked: false, completed: false }
+      }
+    ];
+
+    function openStageMap() {
+      loadWorldProgress();
+      renderStageMap();
+      document.getElementById('stageMap').classList.add('active');
+    }
+
+    function closeStageMap() {
+      document.getElementById('stageMap').classList.remove('active');
+    }
+
+    function loadWorldProgress() {
+      const saved = JSON.parse(localStorage.getItem('mathTownProgress') || '{}');
+      worlds.forEach(world => {
+        const worldData = saved[world.id] || {};
+        world.levels.forEach(level => {
+          const levelData = worldData.levels?.[level.id] || {};
+          level.completed = levelData.completed || false;
+          level.stars = levelData.stars || 0;
+          level.unlocked = levelData.unlocked || level.unlocked;
+        });
+        if (worldData.boss) {
+          world.boss.completed = worldData.boss.completed || false;
+          world.boss.unlocked = worldData.boss.unlocked || false;
+        }
+        world.bossUnlocked = world.levels.slice(-1)[0]?.completed || false;
+      });
+    }
+
+    function saveWorldProgress() {
+      const saved = {};
+      worlds.forEach(world => {
+        saved[world.id] = {
+          levels: {},
+          boss: {}
+        };
+        world.levels.forEach(level => {
+          saved[world.id].levels[level.id] = {
+            completed: level.completed,
+            stars: level.stars,
+            unlocked: level.unlocked
+          };
+        });
+        saved[world.id].boss = {
+          completed: world.boss.completed,
+          unlocked: world.boss.unlocked
+        };
+      });
+      localStorage.setItem('mathTownProgress', JSON.stringify(saved));
+    }
+
+    function renderStageMap() {
+      const container = document.getElementById('stageWorlds');
+      container.innerHTML = '';
+      
+      worlds.forEach(world => {
+        const worldEl = document.createElement('div');
+        worldEl.className = 'stage-world';
+        
+        const allLevelsComplete = world.levels.every(l => l.completed);
+        const isUnlocked = world.id === 'newbie' || world.levels.some(l => l.unlocked) || allLevelsComplete;
+        
+        let levelsHTML = world.levels.map(level => {
+          let cls = 'stage-level-btn';
+          if (level.completed) cls += ' completed';
+          else if (!level.unlocked) cls += ' locked';
+          else if (isCurrentStage(level.id)) cls += ' current';
+          
+          const tableText = level.table === 0 ? '綜合' : level.table + '乘法';
+          const starsText = level.stars > 0 ? '⭐'.repeat(level.stars) : '';
+          
+          return `<button class="${cls}" ${!level.unlocked ? 'disabled' : ''} onclick="selectStage(${world.id === 'newbie' ? 0 : world.id === 'veteran' ? 1 : world.id === 'legend' ? 2 : 3}, ${level.id})">
+            ${level.id}
+            <span class="stars">${starsText}</span>
+            ${tableText}
+          </button>`;
+        }).join('');
+        
+        const bossBtnClass = 'stage-boss-btn' + (world.boss.unlocked ? '' : ' locked');
+        const bossHTML = world.boss.unlocked ? 
+          `<button class="${bossBtnClass}" onclick="selectBossStage('${world.id}')">👹 Boss: ${world.boss.name}</button>` :
+          `<button class="${bossBtnClass}" disabled>🔒 Boss: ${world.boss.name}</button>`;
+        
+        const bgClass = isUnlocked ? '' : 'locked';
+        
+        worldEl.innerHTML = `
+          <div class="stage-world-name ${isUnlocked ? '' : 'locked'}">${world.name}</div>
+          <div class="stage-world-bg ${bgClass}" style="background-image: url('${world.bg}')"></div>
+          <div class="stage-levels">${levelsHTML}</div>
+          ${bossHTML}
+          <div class="stage-progress-bar">
+            <div class="stage-progress-fill" style="width: ${calculateWorldProgress(world)}%"></div>
+          </div>
+        `;
+        
+        container.appendChild(worldEl);
+      });
+    }
+
+    function calculateWorldProgress(world) {
+      const completed = world.levels.filter(l => l.completed).length + (world.boss.completed ? 1 : 0);
+      const total = world.levels.length + 1;
+      return (completed / total) * 100;
+    }
+
+    function isCurrentStage(levelId) {
+      // Could implement current stage tracking
+      return false;
+    }
+
+    function selectStage(worldIndex, levelId) {
+      const world = worlds[worldIndex];
+      const level = world.levels.find(l => l.id === levelId);
+      if (!level || !level.unlocked) return;
+      
+      // Set domain based on world
+      if (worldIndex === 0) currentDomain = 'newbie';
+      else if (worldIndex === 1) currentDomain = 'veteran';
+      else if (worldIndex === 2) currentDomain = 'legend';
+      
+      // Set selected level for specific table practice
+      if (level.table > 0) {
+        selectedLevel = level.table;
+      } else {
+        selectedLevel = null; // Mixed
+      }
+      
+      closeStageMap();
+      document.getElementById('domainBtns').querySelectorAll('.domain-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById('domainBtn' + currentDomain.charAt(0).toUpperCase() + currentDomain.slice(1))?.classList.add('active');
+      
+      // Show practice area
+      showSection('practice');
+    }
+
+    function selectBossStage(worldId) {
+      const world = worlds.find(w => w.id === worldId);
+      if (!world || !world.boss.unlocked) return;
+      
+      currentDomain = worldId === 'boss' ? 'legend' : worldId;
+      closeStageMap();
+      
+      // Start battle for boss
+      showSection('practice');
+      setTimeout(() => {
+        document.getElementById('battleStartBtn').click();
+      }, 300);
+    }
+
+    function completeLevel(levelId, stars) {
+      // Find and update the level
+      for (const world of worlds) {
+        const level = world.levels.find(l => l.id === levelId);
+        if (level) {
+          level.completed = true;
+          level.stars = Math.max(level.stars, stars);
+          
+          // Unlock next level
+          const nextLevel = world.levels.find(l => l.id === levelId + 1);
+          if (nextLevel) nextLevel.unlocked = true;
+          
+          // Check if boss should unlock
+          if (world.levels.filter(l => l.completed).length >= world.levels.length) {
+            world.boss.unlocked = true;
+          }
+          
+          break;
+        }
+      }
+      
+      saveWorldProgress();
+    }
+
+    function completeBoss(worldId) {
+      const world = worlds.find(w => w.id === worldId);
+      if (world) {
+        world.boss.completed = true;
+        saveWorldProgress();
+      }
+    }
+
+
+    // ========== NEW: Adaptive Difficulty System ==========
+    const ADAPTIVE_WINDOW = 10;      // Check last 10 questions
+    const ERROR_THRESHOLD = 2;       // 2 errors = give hint
+    const EASY_THRESHOLD = 0.5;       // <50% accuracy = easier
+    const HARD_THRESHOLD = 0.9;       // >90% accuracy = harder
+
+    function updateAdaptiveState(correct) {
+      battleState.recentAccuracy.push(correct);
+      if (battleState.recentAccuracy.length > ADAPTIVE_WINDOW) {
+        battleState.recentAccuracy.shift();
+      }
+      
+      const accuracy = getRecentAccuracy();
+      const errors = battleState.recentAccuracy.filter(x => !x).length;
+      
+      battleState.consecutiveErrors = correct ? 0 : battleState.consecutiveErrors + 1;
+      
+      // Determine difficulty adjustment
+      let oldDiff = battleState.difficultyLevel;
+      
+      if (accuracy < EASY_THRESHOLD && battleState.consecutiveErrors >= ERROR_THRESHOLD) {
+        battleState.difficultyLevel = Math.max(-2, battleState.difficultyLevel - 1);
+        battleState.currentDifficulty = 'easy';
+        battleState.speedBoost = false;
+      } else if (accuracy > HARD_THRESHOLD && battleState.recentAccuracy.length >= 5) {
+        battleState.difficultyLevel = Math.min(2, battleState.difficultyLevel + 1);
+        battleState.currentDifficulty = 'hard';
+        battleState.speedBoost = true;
+      } else if (accuracy >= 0.6 && accuracy <= 0.8) {
+        battleState.currentDifficulty = 'normal';
+        battleState.speedBoost = false;
+      }
+      
+      // Show hint if struggling
+      if (battleState.consecutiveErrors >= ERROR_THRESHOLD && !battleState.hintActive) {
+        showDifficultyHint();
+      }
+    }
+
+    function getRecentAccuracy() {
+      if (battleState.recentAccuracy.length === 0) return 1;
+      const correct = battleState.recentAccuracy.filter(x => x).length;
+      return correct / battleState.recentAccuracy.length;
+    }
+
+    function getDifficultyLabel() {
+      if (battleState.currentDifficulty === 'easy') return '📉 簡化模式';
+      if (battleState.currentDifficulty === 'hard') return '📈 挑戰模式';
+      return '⚖️ 正常模式';
+    }
+
+    function showDifficultyHint() {
+      battleState.hintActive = true;
+      const hintBox = document.getElementById('difficultyHint');
+      if (!hintBox) return;
+      
+      // Generate hint based on context
+      const hints = [
+        '💡 提示：試下用手指分組數！',
+        '💡 提示：想像你有 ' + num1 + ' 組，每組 ' + num2 + ' 樣嘢！',
+        '💡 提示：可以試下拆細啲計算！',
+        '💡 提示：記住 ' + num1 + ' × ' + num2 + ' = ? 係之前做過嘅題目！'
+      ];
+      
+      hintBox.innerHTML = '<span class="hint-icon">💡</span>' + hints[Math.floor(Math.random() * hints.length)];
+      hintBox.classList.add('active');
+      
+      setTimeout(() => {
+        hintBox.classList.remove('active');
+        battleState.hintActive = false;
+      }, 4000);
+    }
+
+    function getAdaptiveTimer() {
+      // Base timer modified by difficulty
+      const baseTime = 3.0;
+      let modifier = 0;
+      
+      // Doing well = less time (challenge)
+      if (battleState.currentDifficulty === 'hard') modifier = -0.5;
+      // Struggling = more time (support)
+      if (battleState.currentDifficulty === 'easy') modifier = +1.0;
+      // Very easy mode = even more time
+      if (battleState.difficultyLevel <= -2) modifier = +1.5;
+      
+      return Math.max(2.0, baseTime + modifier);
+    }
+
+    function applyAdaptiveToQuestion() {
+      // Modify number ranges based on difficulty
+      const ranges = {
+        newbie: { min: 2, max: 5 },
+        veteran: { min: 2, max: 9 },
+        legend: { min: 2, max: 12 }
+      };
+      
+      const base = ranges[currentDomain] || ranges.veteran;
+      const adjustment = battleState.difficultyLevel;
+      
+      // Easy mode: restrict to smaller numbers
+      let min = Math.max(2, base.min - adjustment);
+      let max = Math.max(min, base.max - adjustment * 2);
+      
+      // Hard mode: expand to larger numbers
+      if (adjustment > 0) {
+        min = base.min;
+        max = Math.min(12, base.max + adjustment);
+      }
+      
+      return { min, max };
+    }
+
+    function updateAdaptiveUI() {
+      // Update difficulty indicator
+      const indicator = document.getElementById('difficultyIndicator');
+      if (indicator) {
+        indicator.className = 'difficulty-indicator ' + battleState.currentDifficulty;
+        indicator.innerHTML = getDifficultyLabel();
+      }
+      
+      // Update accuracy meter
+      const accuracyFill = document.getElementById('accuracyFill');
+      if (accuracyFill) {
+        accuracyFill.style.width = (getRecentAccuracy() * 100) + '%';
+      }
+      
+      // Update speed boost indicator
+      const boostIndicator = document.getElementById('speedBoostIndicator');
+      if (boostIndicator) {
+        if (battleState.speedBoost) {
+          boostIndicator.classList.add('active');
+          boostIndicator.textContent = '⚡ 加速中';
+        } else {
+          boostIndicator.classList.remove('active');
+        }
+      }
+    }
+
+    function resetAdaptiveState() {
+      battleState.recentAccuracy = [];
+      battleState.currentDifficulty = 'normal';
+      battleState.difficultyLevel = 0;
+      battleState.consecutiveErrors = 0;
+      battleState.hintActive = false;
+      battleState.speedBoost = false;
+    }
+
+
+    // ========== NEW: Achievement System ==========
+    const achievements = [
+      // Battle achievements
+      { id: 'first_blood', name: '初露頭角', desc: '打敗第一個怪物', icon: '⚔️', category: 'battle', points: 10, condition: 'monstersDefeated', target: 1 },
+      { id: 'monster_slayer', name: '怪物獵人', desc: '打敗10個怪物', icon: '🗡️', category: 'battle', points: 50, condition: 'monstersDefeated', target: 10 },
+      { id: 'boss_hunter', name: 'Boss獵人', desc: '打敗3個Boss', icon: '💀', category: 'battle', points: 100, condition: 'bossesDefeated', target: 3 },
+      { id: 'survivor', name: '生存者', desc: '剩餘50% HP戰勝', icon: '❤️', category: 'battle', points: 30, condition: 'lowHpVictory', target: 1 },
+      { id: 'unstoppable', name: '無敵', desc: '一口氣打敗20個怪物', icon: '🌟', category: 'battle', points: 150, condition: 'monstersDefeated', target: 20 },
+      
+      // Combo achievements
+      { id: 'combo_starter', name: 'Combo起動', desc: '達成3連Combo', icon: '🔥', category: 'combo', points: 15, condition: 'maxCombo', target: 3 },
+      { id: 'combo_master', name: 'Combo達人', desc: '達成10連Combo', icon: '⚡', category: 'combo', points: 50, condition: 'maxCombo', target: 10 },
+      { id: 'combo_legend', name: 'Combo傳說', desc: '達成20連Combo', icon: '💫', category: 'combo', points: 100, condition: 'maxCombo', target: 20 },
+      { id: 'magic_burst', name: '魔法大爆發', desc: '觸發魔法大爆發', icon: '✨', category: 'combo', points: 30, condition: 'magicBurst', target: 1 },
+      { id: 'perfect_combo', name: '完美Combo', desc: '一次戰鬥全部答對', icon: '💎', category: 'combo', points: 80, condition: 'perfectBattle', target: 1 },
+      
+      // Study achievements
+      { id: 'first_step', name: '第一步', desc: '完成10道題目', icon: '📖', category: 'study', points: 10, condition: 'totalQuestions', target: 10 },
+      { id: 'study_master', name: '學習大師', desc: '完成100道題目', icon: '📚', category: 'study', points: 50, condition: 'totalQuestions', target: 100 },
+      { id: 'question_master', name: '答題王', desc: '完成500道題目', icon: '🏅', category: 'study', points: 100, condition: 'totalQuestions', target: 500 },
+      { id: 'perfect_score', name: '滿分', desc: '單關100%正確率', icon: '💯', category: 'study', points: 40, condition: 'perfectStage', target: 1 },
+      { id: 'speed_demon', name: '速度之星', desc: '10道題全部2秒內完成', icon: '⏱️', category: 'study', points: 60, condition: 'speedStreak', target: 10 },
+      
+      // Special achievements
+      { id: 'dedicated', name: '堅持不懈', desc: '連續遊玩3天', icon: '📅', category: 'special', points: 50, condition: 'loginStreak', target: 3 },
+      { id: 'collector', name: '收藏家', desc: '解鎖5個成就', icon: '🎨', category: 'special', points: 30, condition: 'totalAchievements', target: 5 },
+      { id: 'veteran', name: '老手', desc: '解鎖15個成就', icon: '🎖️', category: 'special', points: 80, condition: 'totalAchievements', target: 15 },
+      { id: 'champion', name: '冠軍', desc: '解鎖全部成就', icon: '👑', category: 'special', points: 500, condition: 'totalAchievements', target: 999 },
+      { id: 'multiplication_master', name: '乘法大師', desc: '所有乘法表正確率>90%', icon: '🧮', category: 'special', points: 200, condition: 'allTablesMastered', target: 1 }
+    ];
+
+    let unlockedAchievements = JSON.parse(localStorage.getItem('mathTownAchievements') || '{}');
+    let totalAchievementPoints = parseInt(localStorage.getItem('mathTownAchievementPoints') || '0');
+    let maxComboEver = parseInt(localStorage.getItem('mathTownMaxCombo') || '0');
+    let bossesDefeatedEver = parseInt(localStorage.getItem('mathTownBossesDefeated') || '0');
+    let magicBurstCount = parseInt(localStorage.getItem('mathTownMagicBurst') || '0');
+    let loginStreak = parseInt(localStorage.getItem('mathTownLoginStreak') || '0');
+    let lastPlayDate = localStorage.getItem('mathTownLastPlayDate') || '';
+
+    function checkAchievements(trigger, value) {
+      let newUnlocks = [];
+      
+      achievements.forEach(ach => {
+        if (unlockedAchievements[ach.id]) return; // Already unlocked
+        
+        let progress = 0;
+        let met = false;
+        
+        switch(ach.condition) {
+          case 'monstersDefeated':
+            progress = value;
+            met = value >= ach.target;
+            break;
+          case 'bossesDefeated':
+            progress = bossesDefeatedEver;
+            met = bossesDefeatedEver >= ach.target;
+            break;
+          case 'maxCombo':
+            progress = Math.max(maxComboEver, battleState.combo);
+            met = progress >= ach.target;
+            if (battleState.combo > maxComboEver) {
+              maxComboEver = battleState.combo;
+              localStorage.setItem('mathTownMaxCombo', maxComboEver);
+            }
+            break;
+          case 'magicBurst':
+            if (trigger === 'magicBurst') {
+              magicBurstCount++;
+              localStorage.setItem('mathTownMagicBurst', magicBurstCount);
+              progress = magicBurstCount;
+              met = magicBurstCount >= ach.target;
+            }
+            break;
+          case 'totalQuestions':
+            progress = total + correct + wrong;
+            met = progress >= ach.target;
+            break;
+          case 'lowHpVictory':
+            if (trigger === 'battleWin' && battleState.heroHp > battleState.heroMaxHp * 0.5) {
+              progress = 1;
+              met = true;
+            }
+            break;
+          case 'totalAchievements':
+            progress = Object.keys(unlockedAchievements).length;
+            met = progress >= ach.target;
+            break;
+          case 'loginStreak':
+            updateLoginStreak();
+            progress = loginStreak;
+            met = loginStreak >= ach.target;
+            break;
+        }
+        
+        if (met && !unlockedAchievements[ach.id]) {
+          unlockAchievement(ach);
+          newUnlocks.push(ach);
+        }
+      });
+      
+      return newUnlocks;
+    }
+
+    function unlockAchievement(ach) {
+      unlockedAchievements[ach.id] = { unlockedAt: Date.now() };
+      totalAchievementPoints += ach.points;
+      
+      localStorage.setItem('mathTownAchievements', JSON.stringify(unlockedAchievements));
+      localStorage.setItem('mathTownAchievementPoints', totalAchievementPoints);
+      
+      showAchievementNotification(ach);
+    }
+
+    function showAchievementNotification(ach) {
+      const notif = document.getElementById('achievementNotif');
+      document.getElementById('notifIcon').textContent = ach.icon;
+      document.getElementById('notifName').textContent = ach.name;
+      document.getElementById('notifDesc').textContent = ach.desc;
+      
+      notif.classList.remove('show');
+      void notif.offsetWidth; // Force reflow
+      notif.classList.add('show');
+      
+      setTimeout(() => notif.classList.remove('show'), 4000);
+      
+      // Update button to show it has new
+      document.getElementById('achievementBtn').classList.add('has-new');
+      setTimeout(() => {
+        document.getElementById('achievementBtn').classList.remove('has-new');
+      }, 5000);
+    }
+
+    function updateLoginStreak() {
+      const today = new Date().toDateString();
+      const yesterday = new Date(Date.now() - 86400000).toDateString();
+      
+      if (lastPlayDate === today) return;
+      
+      if (lastPlayDate === yesterday) {
+        loginStreak++;
+      } else if (lastPlayDate !== today) {
+        loginStreak = 1;
+      }
+      
+      lastPlayDate = today;
+      localStorage.setItem('mathTownLoginStreak', loginStreak);
+      localStorage.setItem('mathTownLastPlayDate', lastPlayDate);
+    }
+
+    
+// === WRONGBOOK FUNCTIONS ===
+function openWrongBookPanel() {
+    document.getElementById('wrongbookPanel').style.display = 'block';
+    renderWeakAnalysis();
+    renderWrongHistory();
+}
+
+function closeWrongBookPanel() {
+    document.getElementById('wrongbookPanel').style.display = 'none';
+}
+
+function switchWrongTab(tab) {
+    // Update tab buttons
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    event.target.classList.add('active');
+    
+    // Show/hide content
+    document.getElementById('weakAnalysis').style.display = tab === 'weak' ? 'block' : 'none';
+    document.getElementById('historyList').style.display = tab === 'history' ? 'block' : 'none';
+    document.getElementById('practiceMode').style.display = tab === 'practice' ? 'block' : 'none';
+    
+    if (tab === 'practice') {
+        renderPracticeMode();
+    }
+}
+
+function renderWeakAnalysis() {
+    const container = document.getElementById('weakTablesList');
+    let html = '';
+    
+    for (let i = 1; i <= 9; i++) {
+        const data = weakTables[i] || {wrong: 0, total: 0};
+        const total = data.total || 0;
+        const wrong = data.wrong || 0;
+        const rate = total > 0 ? Math.round(((total - wrong) / total) * 100) : 0;
+        
+        let className = 'good';
+        if (rate < 60) className = 'weak';
+        else if (rate < 80) className = 'medium';
+        
+        html += `<div class="weak-table-item ${className}">
+            <div class="table-number">${i}×</div>
+            <div class="table-rate">${rate}%正確</div>
+            <div style="font-size:0.75em;color:#bdc3c7;">錯${wrong}題/共${total}題</div>
+        </div>`;
+    }
+    
+    container.innerHTML = html;
+}
+
+function renderWrongHistory() {
+    const container = document.getElementById('wrongHistoryList');
+    if (wrongAnswers.length === 0) {
+        container.innerHTML = '<p style="text-align:center;color:#27ae60;">🎉 暫無錯題記錄，太棒了！</p>';
+        return;
+    }
+    
+    let html = '';
+    const recent = wrongAnswers.slice(-10).reverse();
+    recent.forEach((item, idx) => {
+        html += `<div class="wrong-history-item">
+            <div class="wrong-question">${item.question} = ?</div>
+            <div class="wrong-details">
+                你的答案：<span class="wrong-answer">${item.userAnswer}</span>，
+                正確答案：<span class="correct-answer">${item.correct}</span>
+            </div>
+        </div>`;
+    });
+    
+    container.innerHTML = html;
+}
+
+function renderPracticeMode() {
+    // Show practice mode UI
+}
+
+function startWeakPractice() {
+    // Find weakest table
+    let weakest = 1;
+    let highestWrong = 0;
+    for (let i = 1; i <= 9; i++) {
+        const data = weakTables[i] || {wrong: 0};
+        if (data.wrong > highestWrong) {
+            highestWrong = data.wrong;
+            weakest = i;
+        }
+    }
+    
+    closeWrongBookPanel();
+    alert(`🎯 開始練習 ${weakest}× 乘法表！`);
+    // Could trigger practice mode here
+    startPracticeModeForTable(weakest);
+}
+
+function startPracticeModeForTable(table) {
+    // Generate 10 questions for this table
+    // This could be integrated with battle system in practice mode
+}
+
+let practiceModeActive = false;
+let practiceCorrect = 0;
+let practiceTotal = 0;
+
+function startPracticeMode() {
+    if (wrongAnswers.length === 0) {
+        document.getElementById('practiceStats').innerHTML = 
+            '<p style="color:#27ae60;">🎉 你沒有錯題記錄！</p>';
+        return;
+    }
+    
+    practiceModeActive = true;
+    practiceCorrect = 0;
+    practiceTotal = 0;
+    
+    document.getElementById('practiceStats').innerHTML = 
+        '<p>🎯 練習模式準備中...</p><button onclick="startPracticeQuestions()">開始10題練習</button>';
+}
+
+function startPracticeQuestions() {
+    updateDailyProgress('practice', 1);
+    // This could open a simple practice modal
+    let questions = [];
+    for (let i = 0; i < 10; i++) {
+        if (wrongAnswers.length > 0) {
+            let q = wrongAnswers[Math.floor(Math.random() * wrongAnswers.length)];
+            questions.push(q);
+        }
+    }
+    
+    if (questions.length === 0) {
+        document.getElementById('practiceStats').innerHTML = 
+            '<p style="color:#27ae60;">🎉 所有錯題已掌握！</p>';
+        return;
+    }
+    
+    // Show practice UI
+    showPracticeQuiz(questions);
+}
+
+function showPracticeQuiz(questions) {
+    // Simple practice quiz modal
+    alert('🎯 練習模式：回答10道錯題');
+}
+
+
+function openAchievementPanel() {
+      updateLoginStreak();
+      checkAchievements('loginStreak', loginStreak);
+      renderAchievements();
+      document.getElementById('achievementPanel').classList.add('active');
+    }
+
+    function closeAchievementPanel() {
+      document.getElementById('achievementPanel').classList.remove('active');
+    }
+
+    function renderAchievements(filter = 'all') {
+      const grid = document.getElementById('achievementGrid');
+      const unlocked = Object.keys(unlockedAchievements).length;
+      
+      document.getElementById('totalAchievements').textContent = unlocked + '/' + achievements.length;
+      document.getElementById('totalAchievementPoints').textContent = totalAchievementPoints;
+      
+      let filtered = achievements;
+      if (filter !== 'all') {
+        filtered = achievements.filter(a => a.category === filter);
+      }
+      
+      grid.innerHTML = filtered.map(ach => {
+        const isUnlocked = !!unlockedAchievements[ach.id];
+        let progress = 0;
+        let progressText = '';
+        
+        switch(ach.condition) {
+          case 'monstersDefeated':
+            progress = Math.min(100, (battleState.monstersDefeated / ach.target) * 100);
+            progressText = battleState.monstersDefeated + '/' + ach.target;
+            break;
+          case 'maxCombo':
+            progress = Math.min(100, (maxComboEver / ach.target) * 100);
+            progressText = maxComboEver + '/' + ach.target;
+            break;
+          case 'totalQuestions':
+            const totalQ = total + correct + wrong;
+            progress = Math.min(100, (totalQ / ach.target) * 100);
+            progressText = totalQ + '/' + ach.target;
+            break;
+          case 'totalAchievements':
+            progress = Math.min(100, (unlocked / ach.target) * 100);
+            progressText = unlocked + '/' + ach.target;
+            break;
+          case 'loginStreak':
+            progress = Math.min(100, (loginStreak / ach.target) * 100);
+            progressText = loginStreak + '/' + ach.target;
+            break;
+          default:
+            progress = isUnlocked ? 100 : 0;
+            progressText = isUnlocked ? '完成' : '0/' + ach.target;
+        }
+        
+        const cls = isUnlocked ? 'unlocked' : 'locked';
+        
+        return `
+          <div class="achievement-card ${cls}">
+            <div class="achievement-icon">${ach.icon}</div>
+            <div class="achievement-info">
+              <div class="achievement-name">${ach.name}</div>
+              <div class="achievement-desc">${ach.desc}</div>
+              <div class="achievement-progress">
+                <div class="achievement-progress-fill" style="width: ${progress}%"></div>
+              </div>
+              <div class="achievement-progress-text">${progressText} · ${ach.points}分</div>
+            </div>
+          </div>
+        `;
+      }).join('');
+      
+      // Update category buttons
+      document.querySelectorAll('.achievement-cat-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.textContent.includes(filter) || (filter === 'all' && btn.textContent === '全部'));
+      });
+    }
+
+    function filterAchievements(filter) {
+      renderAchievements(filter);
+    }
+
+    function checkBattleAchievements() {
+      checkAchievements('monstersDefeated', battleState.monstersDefeated);
+      checkAchievements('battleWin', 1);
+      
+      // Check combo achievements
+      if (battleState.combo >= 3) checkAchievements('combo', battleState.combo);
+    }
+
+    function checkMagicBurstAchievement() {
+      checkAchievements('magicBurst', 1);
+    }
+    // ========== NEW: Monster AI System ==========
+    const monsterActions = [
+      { type: 'attack', weight: 60, minDmg: 8, maxDmg: 15, desc: '普通攻擊' },
+      { type: 'attack', weight: 20, minDmg: 15, maxDmg: 25, desc: '猛烈攻擊' },
+      { type: 'heal', weight: 15, minHeal: 10, maxHeal: 20, desc: '自我修復' },
+      { type: 'buff', weight: 5, buff: 'enrage', desc: '激怒' }
+    ];
+
+    function selectMonsterAction() {
+      const hpPercent = battleState.monsterHp / battleState.monsterMaxHp;
+      const actions = monsterActions.filter(a => {
+        if (a.type === 'heal' && hpPercent > 0.7) return false;
+        if (a.type === 'buff' && battleState.monsterBuffs.includes('enrage')) return false;
+        return true;
+      });
+      
+      let totalWeight = 0;
+      const adjustedActions = actions.map(a => {
+        let w = a.weight;
+        if (a.type === 'heal' && hpPercent < 0.3) w *= 2;
+        if (a.type === 'attack' && hpPercent < 0.3) w *= 1.5;
+        totalWeight += w;
+        return { ...a, adjustedWeight: w };
+      });
+
+      let rand = Math.random() * totalWeight;
+      for (const action of adjustedActions) {
+        rand -= action.adjustedWeight;
+        if (rand <= 0) return action;
+      }
+      return adjustedActions[0];
+    }
+
+    function showMonsterIntent(action) {
+      const intent = document.getElementById('monsterIntent');
+      const icon = document.getElementById('monsterIntentIcon');
+      const text = document.getElementById('monsterIntentText');
+      const actionText = document.getElementById('monsterActionText');
+      
+      if (!action) {
+        intent.style.display = 'none';
+        return;
+      }
+      
+      intent.style.display = 'flex';
+      intent.className = 'monster-intent';
+      intent.classList.remove('heal-intent', 'buff-intent');
+      
+      if (action.type === 'attack') {
+        icon.textContent = '⚔️';
+        text.textContent = '準備攻擊 (' + action.minDmg + '-' + action.maxDmg + ')';
+        if (actionText) actionText.textContent = action.desc;
+      } else if (action.type === 'heal') {
+        icon.textContent = '💚';
+        text.textContent = '準備修復 (+' + action.minHeal + '-' + action.maxHeal + ')';
+        intent.classList.add('heal-intent');
+        if (actionText) actionText.textContent = action.desc;
+      } else if (action.type === 'buff') {
+        icon.textContent = '🔥';
+        text.textContent = '準備激怒！';
+        intent.classList.add('buff-intent');
+        if (actionText) actionText.textContent = action.desc;
+      }
+    }
+
+    function executeMonsterAction(action) {
+      const monsterCard = document.getElementById('monsterCard');
+      const turnIndicator = document.getElementById('monsterAttackTurn');
+      
+      if (action.type === 'attack') {
+        turnIndicator.classList.add('active');
+        SoundManager.play('hurt');
+        
+        setTimeout(() => {
+          turnIndicator.classList.remove('active');
+          heroTakeDamage();
+        }, 800);
+        
+      } else if (action.type === 'heal') {
+        const healAmount = Math.floor(Math.random() * (action.maxHeal - action.minHeal + 1)) + action.minHeal;
+        battleState.monsterHp = Math.min(battleState.monsterMaxHp, battleState.monsterHp + healAmount);
+        updateMonsterHpBar();
+        
+        const el = document.createElement('div');
+        el.className = 'damage-number';
+        el.style.color = '#6BCB77';
+        el.textContent = '+' + healAmount;
+        const rect = monsterCard.getBoundingClientRect();
+        el.style.left = (rect.left + rect.width / 2) + 'px';
+        el.style.top = rect.top + 'px';
+        document.body.appendChild(el);
+        setTimeout(() => el.remove(), 1000);
+        
+        SoundManager.play('correct');
+        
+      } else if (action.type === 'buff') {
+        battleState.monsterBuffs.push('enrage');
+        battleState.monsterMaxHp = Math.floor(battleState.monsterMaxHp * 1.2);
+        battleState.monsterHp = Math.floor(battleState.monsterHp * 1.2);
+        updateMonsterHpBar();
+        
+        monsterCard.classList.add('monster-enraged');
+        
+        const el = document.createElement('div');
+        el.className = 'damage-number';
+        el.style.color = '#FFD93D';
+        el.textContent = '💪 +20%HP';
+        const rect = monsterCard.getBoundingClientRect();
+        el.style.left = (rect.left + rect.width / 2) + 'px';
+        el.style.top = rect.top + 'px';
+        document.body.appendChild(el);
+        setTimeout(() => el.remove(), 1000);
+        
+        SoundManager.play('victory');
+      }
+    }
+
+    function prepareMonsterTurn() {
+      battleState.monsterTurnCount++;
+      
+      if (battleState.monsterTurnCount >= 2 + Math.floor(Math.random() * 2)) {
+        battleState.monsterTurnCount = 0;
+        const action = selectMonsterAction();
+        battleState.monsterAction = action;
+        showMonsterIntent(action);
+        return true;
+      } else {
+        showMonsterIntent({ type: 'attack', minDmg: 0, maxDmg: 0, desc: '準備中...' });
+        return false;
+      }
+    }
+
+    function handleMonsterTurn() {
+      if (battleState.monsterAction) {
+        executeMonsterAction(battleState.monsterAction);
+        battleState.monsterAction = null;
+        showMonsterIntent(null);
+        
+        setTimeout(() => {
+          if (battleState.inBattle) {
+            generateBattleQuestion();
+          }
+        }, 1200);
+      }
+    }
+
+    // ========== ENHANCED: Combo顯示 ==========
+    function updateComboDisplay() {
+      const comboEl = document.getElementById('comboDisplay');
+      const countEl = document.getElementById('comboCount');
+      const skillEl = document.getElementById('comboSkill');
+      
+      countEl.textContent = battleState.combo;
+      
+      comboEl.classList.remove('level-high', 'level-max');
+      
+      if (battleState.combo >= 10) {
+        comboEl.classList.add('active', 'level-max');
+        skillEl.textContent = '🔥 魔法大爆發！';
+        comboEl.classList.add('pulse');
+        setTimeout(() => comboEl.classList.remove('pulse'), 400);
+      } else if (battleState.combo >= 5) {
+        comboEl.classList.add('active', 'level-high');
+        skillEl.textContent = '⚡ 元素轟炸！';
+        comboEl.classList.add('pulse');
+        setTimeout(() => comboEl.classList.remove('pulse'), 400);
+      } else if (battleState.combo >= 3) {
+        comboEl.classList.add('active');
+        skillEl.textContent = '✨ 力量凝聚';
+      } else {
+        comboEl.classList.remove('active');
+        skillEl.textContent = '';
+      }
+    }
+
     function getComboMultiplier() {
       if (battleState.combo >= 10) return 2.0;
       if (battleState.combo >= 5) return 1.5;
@@ -3088,13 +5137,13 @@
       return 1.0;
     }
 
-    function calculateDamage() {
+    function calculateDamage(speedMult = 1.0) {
       const hero = heroes[battleState.heroKey];
       const base = Math.floor(Math.random() * (hero.atkMax - hero.atkMin + 1)) + hero.atkMin;
       let critChance = hero.crit;
       if (hero.passive === 'critBoost') critChance += 0.1;
       const crit = Math.random() < critChance ? 2 : 1;
-      let damage = Math.floor(base * crit * getComboMultiplier());
+      let damage = Math.floor(base * crit * getComboMultiplier() * speedMult);
       if (hero.passive === 'rage' && battleState.heroHp / battleState.heroMaxHp < 0.3) {
         damage = Math.floor(damage * 1.5);
       }
@@ -3102,6 +5151,12 @@
     }
 
     function battleCheckAnswer(val, btn) {
+      updateDailyProgress('questions', 1);
+      // Stop the timer immediately
+      if (battleState.battleTimerInterval) {
+        clearInterval(battleState.battleTimerInterval);
+      }
+      
       total++;
       const container = document.getElementById('battleOptions');
       container.querySelectorAll('.battle-option').forEach(b => b.disabled = true);
@@ -3109,19 +5164,57 @@
       if (val === battleState.battleAnswer) {
         correct++;
         trackCorrect(num1, num2);
+        recordCorrectAnswer(`${num1} × ${num2}`);
         streak++;
         battleState.combo++;
         updateComboDisplay();
+        updateAdaptiveState(true);
+        updateAdaptiveUI();
 
-        const { damage, isCrit } = calculateDamage();
+        // Apply speed multiplier
+        const speedMult = getSpeedMultiplier();
+        const { damage, isCrit } = calculateDamage(speedMult);
         battleState.monsterHp = Math.max(0, battleState.monsterHp - damage);
 
         btn.classList.add('correct');
+        triggerHeroAttackAnimation();
         showDamageNumber(damage, isCrit, false);
+        
+        // Immersive feedback
+        if (isCrit) {
+            showScreenFlash('crit');
+            spawnParticles(window.innerWidth/2, window.innerHeight/2, 'spark', 15);
+        } else if (battleState.combo >= 5) {
+            showScreenFlash('combo');
+        } else {
+            showScreenFlash('correct');
+        }
 
         const monsterCard = document.getElementById('monsterCard');
-        monsterCard.classList.add('monster-hit');
-        setTimeout(() => monsterCard.classList.remove('monster-hit'), 400);
+        if (monsterCard) {
+            monsterCard.classList.add('monster-hit-anim');
+            setTimeout(() => monsterCard.classList.remove('monster-hit-anim'), 300);
+            
+            // Hit particles
+            const rect = monsterCard.getBoundingClientRect();
+            spawnParticles(rect.left + rect.width/2, rect.top + rect.height/2, 'magic', 8);
+        }
+
+        // Accumulate shield (combo >= 3)
+        if (battleState.combo >= 3) {
+          battleState.shield = Math.min(battleState.shield + 1, 5);
+          updateShieldDisplay();
+          showShieldGain();
+        }
+
+        // Magic Burst on combo >= 5
+        if (battleState.combo >= 5 && battleState.combo % 5 === 0) {
+          triggerMagicBurst();
+          if (battleState.combo >= 10) updateDailyProgress('combo', 1);
+        }
+
+        // Add hero experience
+        addHeroExp(10 + battleState.combo * 2);
 
         updateMonsterHpBar();
 
@@ -3135,9 +5228,12 @@
             }
           }
           SoundManager.play('victory');
+          triggerVictoryCelebration();
           monsterDefeated();
         } else {
-          if (isCrit) SoundManager.play('crit');
+          if (isCrit) {
+            SoundManager.play('crit');
+          }
           else SoundManager.play('correct');
           setTimeout(() => {
             container.querySelectorAll('.battle-option').forEach(b => b.disabled = false);
@@ -3150,6 +5246,9 @@
         streakForLevel = 0;
         battleState.combo = 0;
         updateComboDisplay();
+        updateAdaptiveState(false);
+        updateAdaptiveUI();
+        saveWrongAnswer(`${num1} × ${num2}`, battleState.battleAnswer, val);
 
         btn.classList.add('wrong');
         container.querySelectorAll('.battle-option').forEach(b => {
@@ -3158,6 +5257,8 @@
 
         SoundManager.play('wrong');
         trackError(num1, num2);
+        showScreenFlash('wrong');
+        screenShake();
         heroTakeDamage();
         setTimeout(() => {
           container.querySelectorAll('.battle-option').forEach(b => b.disabled = false);
@@ -3172,6 +5273,121 @@
       const el = document.createElement('div');
       el.className = 'damage-number' + (isHeal ? ' heal' : '') + (isCrit ? ' crit' : '');
       el.textContent = (isHeal ? '+' : '-') + damage;
+      
+      // Position near monster
+      const monsterCard = document.getElementById('monsterCard');
+      if (monsterCard) {
+        const rect = monsterCard.getBoundingClientRect();
+        el.style.left = (rect.left + rect.width/2 + (Math.random() - 0.5) * 60) + 'px';
+        el.style.top = (rect.top + Math.random() * 40) + 'px';
+      }
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 1000);
+    }
+
+    // === IMMERSIVE EFFECTS ===
+    function showScreenFlash(type) {
+      const flash = document.getElementById('screenFlash');
+      flash.className = 'screen-flash ' + type;
+      setTimeout(() => flash.className = 'screen-flash', 1000);
+    }
+
+    function screenShake() {
+      document.body.classList.add('screen-shake');
+      setTimeout(() => document.body.classList.remove('screen-shake'), 300);
+    }
+
+    function spawnParticles(x, y, type, count) {
+      const container = document.getElementById('particleContainer');
+      for (let i = 0; i < count; i++) {
+        const p = document.createElement('div');
+        p.className = 'particle ' + type;
+        p.style.left = (x + (Math.random() - 0.5) * 100) + 'px';
+        p.style.top = (y + (Math.random() - 0.5) * 100) + 'px';
+        p.style.animationDelay = (Math.random() * 0.3) + 's';
+        container.appendChild(p);
+        setTimeout(() => p.remove(), 1000);
+      }
+    }
+
+    function showFloatingText(text, color) {
+      const el = document.createElement('div');
+      el.className = 'floating-text';
+      el.textContent = text;
+      el.style.color = color;
+      el.style.left = '50%';
+      el.style.top = '40%';
+      el.style.transform = 'translateX(-50%)';
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 1500);
+    }
+
+    function showMonsterIntent(type, text) {
+      const monsterCard = document.getElementById('monsterCard');
+      if (!monsterCard) return;
+      
+      // Remove existing intent
+      const existing = monsterCard.querySelector('.monster-intent-display');
+      if (existing) existing.remove();
+      
+      if (!type) return;
+      
+      const intent = document.createElement('div');
+      intent.className = 'monster-intent-display ' + type;
+      intent.textContent = text;
+      monsterCard.style.position = 'relative';
+      monsterCard.appendChild(intent);
+    }
+
+    function triggerMonsterDeathAnimation() {
+      const monsterCard = document.getElementById('monsterCard');
+      if (monsterCard) {
+        monsterCard.classList.add('monster-death');
+        // Spawn death particles
+        const rect = monsterCard.getBoundingClientRect();
+        spawnParticles(rect.left + rect.width/2, rect.top + rect.height/2, 'spark', 20);
+      }
+    }
+
+    function triggerHeroAttackAnimation() {
+      const heroCard = document.getElementById('heroCard');
+      if (heroCard) {
+        heroCard.classList.add('hero-attack-anim');
+        setTimeout(() => heroCard.classList.remove('hero-attack-anim'), 400);
+      }
+    }
+
+    function triggerVictoryCelebration() {
+      const celebration = document.createElement('div');
+      celebration.className = 'victory-celebration';
+      document.body.appendChild(celebration);
+      setTimeout(() => celebration.remove(), 1000);
+      
+      // Gold particles
+      spawnParticles(window.innerWidth/2, window.innerHeight/2, 'gold', 30);
+    }
+
+    function triggerLevelUpGlow() {
+      const glow = document.createElement('div');
+      glow.className = 'level-up-glow';
+      document.body.appendChild(glow);
+      setTimeout(() => glow.remove(), 1500);
+    }
+
+    function initAmbientParticles() {
+      const container = document.getElementById('ambientParticles');
+      for (let i = 0; i < 15; i++) {
+        const p = document.createElement('div');
+        p.className = 'ambient-particle';
+        p.style.left = (Math.random() * 100) + '%';
+        p.style.animationDelay = (Math.random() * 10) + 's';
+        p.style.animationDuration = (8 + Math.random() * 6) + 's';
+        container.appendChild(p);
+      }
+    }
+
+    function showDamageNumber_Original(damage, isCrit, isHeal) {
+      const el = document.createElement('div');
 
       const monsterCard = document.getElementById('monsterCard');
       const rect = monsterCard.getBoundingClientRect();
@@ -3184,6 +5400,25 @@
     function heroTakeDamage() {
       const hero = document.getElementById('heroBattleStatus');
       const heroData = heroes[battleState.heroKey];
+
+      // Check shield first
+      if (battleState.shield > 0) {
+        battleState.shield--;
+        updateShieldDisplay();
+        hero.classList.add('hero-shield');
+        setTimeout(() => hero.classList.remove('hero-shield'), 600);
+        const el = document.createElement('div');
+        el.className = 'damage-number';
+        el.style.color = '#64c8ff';
+        el.textContent = '🛡️ 抵擋!';
+        const rect = hero.getBoundingClientRect();
+        el.style.left = (rect.left + rect.width / 2 - 30) + 'px';
+        el.style.top = (rect.top - 20) + 'px';
+        document.body.appendChild(el);
+        setTimeout(() => el.remove(), 1000);
+        SoundManager.play('crit');
+        return;
+      }
 
       if (heroData.passive === 'block' && Math.random() < 0.2) {
         hero.classList.add('hero-shield');
@@ -3234,15 +5469,21 @@
     }
 
     function monsterDefeated() {
+        updateDailyProgress('battle', 1);
       battleState.gold += battleState.monsterGold;
       battleState.monstersDefeated++;
+      battleState.monsterTurnCount = 0;
+      battleState.monsterBuffs = [];
+      showMonsterIntent(null);
       updateBattleStatsBar();
       saveBattleData();
+      checkBattleAchievements();
 
       const monsterCard = document.getElementById('monsterCard');
       monsterCard.style.transition = 'transform 0.5s, opacity 0.5s';
       monsterCard.style.transform = 'scale(1.2)';
       monsterCard.style.opacity = '0';
+      triggerMonsterDeathAnimation();
 
       const popup = document.createElement('div');
       popup.className = 'battle-reward-popup active';
@@ -3324,5 +5565,64 @@
     }
 
   </script>
+
+<!-- Wrong Answers Panel -->
+<div id="wrongbookPanel" class="wrongbook-panel" style="display:none;">
+    <div class="wrongbook-header">
+        <h2>📖 錯題本</h2>
+        <button class="close-btn" onclick="closeWrongBookPanel()">✕</button>
+    </div>
+    <div class="wrongbook-tabs">
+        <button class="tab-btn active" onclick="switchWrongTab('weak')">💪 弱點分析</button>
+        <button class="tab-btn" onclick="switchWrongTab('history')">📜 錯題記錄</button>
+        <button class="tab-btn" onclick="switchWrongTab('practice')">🎯 針對練習</button>
+    </div>
+    <div id="weakAnalysis" class="wrongbook-content">
+        <h3>乘法表弱點</h3>
+        <div id="weakTablesList" class="weak-tables-grid"></div>
+        <button class="practice-btn" onclick="startWeakPractice()">🎯 針對練習最弱項</button>
+    </div>
+    <div id="historyList" class="wrongbook-content" style="display:none;">
+        <h3>最近錯題</h3>
+        <div id="wrongHistoryList"></div>
+    </div>
+    <div id="practiceMode" class="wrongbook-content" style="display:none;">
+        <h3>針對練習模式</h3>
+        <p>專門練習你最弱的乘法</p>
+        <button class="start-practice-btn" onclick="startPracticeMode()">▶️ 開始練習</button>
+        <div id="practiceStats"></div>
+    </div>
+</div>
+
+<!-- Daily Tasks Panel -->
+<div id="dailyTasksPanel" class="daily-tasks-panel" style="display:none;">
+    <div class="daily-tasks-header">
+        <h2>📋 每日任務</h2>
+        <button class="close-btn" onclick="closeDailyTasksPanel()">✕</button>
+    </div>
+    <div class="daily-tasks-content">
+        <p style="text-align:center;color:#f39c12;margin-bottom:15px;">🌟 每天重置，完成領取獎勵！</p>
+        <div id="dailyTasksList" class="daily-tasks-list"></div>
+    </div>
+</div>
+
+<!-- Achievement Panel -->
+<div id="achievementPanel" class="achievement-panel" style="display:none;">
+    <div class="achievement-header">
+        <h2>🏆 成就系統</h2>
+        <button class="close-btn" onclick="closeAchievementPanel()">✕</button>
+    </div>
+    <div class="achievement-progress">
+        <span>已解鎖：<span id="achievementCount">0</span>/10</span>
+        <span>總積分：<span id="achievementPoints">0</span></span>
+    </div>
+    <div class="achievement-filters">
+        <button class="filter-btn active" onclick="filterAchievements('all')">全部</button>
+        <button class="filter-btn" onclick="filterAchievements('battle')">⚔️ 戰鬥</button>
+        <button class="filter-btn" onclick="filterAchievements('combo')">🔥 Combo</button>
+        <button class="filter-btn" onclick="filterAchievements('learning')">📚 學習</button>
+        <button class="filter-btn" onclick="filterAchievements('special')">⭐ 特殊</button>
+    </div>
+    <div class="achievement-list" id="achievementList"></div>
+</div>
 </body>
-</html>
