@@ -4,9 +4,18 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>乘法小鎮 ⭐ 全攻略</title>
-  <link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
+    .skip-link {
+      position: absolute;
+      top: -40px;
+      left: 0;
+      background: var(--primary);
+      color: #fff;
+      padding: 8px 16px;
+      z-index: 9999;
+      transition: top 0.3s;
+    }
+    .skip-link:focus { top: 0; }
     :root {
       --bg-dark: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
       --bg-light: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
@@ -270,7 +279,7 @@
     .story-highlight { color: var(--primary); font-weight: bold; }
     .story-items { display: flex; gap: 8px; justify-content: center; margin: 15px 0; flex-wrap: wrap; }
     .story-item { font-size: 1.8rem; animation: bounce 0.6s ease infinite; }
-    @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+    
 
     /* 手指 */
     .finger-display { display: flex; flex-direction: column; gap: 15px; align-items: center; }
@@ -610,7 +619,7 @@
       50% { transform: scale(1.15); filter: brightness(1.3); }
       100% { transform: scale(1); filter: brightness(1); }
     }
-  
+
     /* 三大領域選擇器 */
     .domain-selector {
       display: flex;
@@ -1521,10 +1530,6 @@
       50% { transform: scale(1.2); box-shadow: 0 0 50px rgba(255,0,128,1); }
       100% { transform: scale(1); box-shadow: 0 0 25px rgba(255,0,128,0.6); }
     }
-    @keyframes comboMaxPulse {
-      0%, 100% { box-shadow: 0 0 25px rgba(255,0,128,0.6); }
-      50% { box-shadow: 0 0 40px rgba(255,0,128,0.9), 0 0 60px rgba(128,0,255,0.5); }
-    }
     #comboCount { transition: transform 0.2s; }
     #comboCount.pulse { animation: comboPulse 0.3s ease; }
     @keyframes comboPulse {
@@ -1775,7 +1780,6 @@
   .monster-death { animation: monsterDie 0.8s ease-out forwards; }
   @keyframes monsterDie { 0% { transform: scale(1); opacity: 1; filter: brightness(1); } 30% { transform: scale(1.3); filter: brightness(3); } 100% { transform: scale(0); opacity: 0; filter: brightness(5); } }
   .monster-hit-anim { animation: monsterHit 0.3s ease-out; }
-  @keyframes monsterHit { 0%, 100% { transform: translateX(0); filter: brightness(1); } 25% { transform: translateX(-15px); filter: brightness(2); } 75% { transform: translateX(15px); filter: brightness(1.5); } }
   .hero-attack-anim { animation: heroAttack 0.4s ease-out; }
   @keyframes heroAttack { 0% { transform: translateX(0); } 40% { transform: translateX(80px) scale(1.2); } 100% { transform: translateX(0); } }
   .damage-number { position: absolute; font-size: 1.8em; font-weight: bold; pointer-events: none; z-index: 1000; text-shadow: 2px 2px 4px rgba(0,0,0,0.8), -1px -1px 0 #fff; animation: floatUp 1s ease-out forwards; }
@@ -2011,15 +2015,17 @@
 </style>
 </head>
 <body>
+  <a href="#main-content" class="skip-link">跳至主要內容</a>
+
   <!-- Immersive Effects Container -->
   <div id="screenFlash" class="screen-flash"></div>
   <div id="particleContainer" class="particle-container"></div>
   <div id="ambientParticles" class="ambient-particles"></div>
   
-  <h1>
-    乘法小鎮 ⭐
-    <span class="subtitle" id="modeLabel"></span>
-  </h1>
+<h1>
+      ⭐ 乘法小鎮
+      <span class="subtitle" id="modeLabel"></span>
+    </h1>
 
   <!-- 計時器 -->
   <div class="timer-display" id="timerDisplay">
@@ -2030,30 +2036,17 @@
 
   <!-- 操作欄 -->
   <div class="action-bar">
-    <button class="action-btn speak" id="speakBtn" onclick="speakResult()">
-      <i class="fas fa-volume-up"></i> 發聲
-    </button>
-    <button class="action-btn random" onclick="randomQuestion()">
-      <i class="fas fa-dice"></i> Random
-    </button>
-    <button class="action-btn timer" id="timerBtn" onclick="toggleTimer()">
-      <i class="fas fa-stopwatch"></i> 計時
-    </button>
-    <button class="action-btn settings" onclick="toggleSettings()">
-      <i class="fas fa-cog"></i> 設置
-    </button>
-    <button class="action-btn reset" onclick="resetAll()">
-      <i class="fas fa-redo"></i> 重置
-    </button>
+    <button class="action-btn speak" id="speakBtn" onclick="speakResult()">🔊 發聲</button>
+    <button class="action-btn" id="voiceBtn" onclick="toggleVoice()" title="語音輸入">🎤 語音</button>
+    <button class="action-btn random" onclick="randomQuestion()">🎲 Random</button>
+    <button class="action-btn timer" id="timerBtn" onclick="toggleTimer()">⏱️ 計時</button>
+    <button class="action-btn settings" onclick="toggleSettings()">⚙️ 設置</button>
+    <button class="action-btn reset" onclick="resetAll()">↻ 重置</button>
   </div>
 
   <div class="action-bar">
-    <button class="action-btn" onclick="toggleFullscreen()" title="全熒幕">
-      <i class="fas fa-expand"></i>
-    </button>
-    <button class="action-btn" onclick="toggleReport()" title="學習報告">
-      <i class="fas fa-chart-line"></i> 報告
-    </button>
+    <button class="action-btn" onclick="toggleFullscreen()" title="全熒幕">⛶</button>
+    <button class="action-btn" onclick="toggleReport()" title="學習報告">📊 報告</button>
   </div>
 
 
@@ -2141,9 +2134,7 @@
   </div>
 
   <div class="action-bar">
-    <button class="action-btn battle" onclick="openBattleFromCurrentSelection()">
-      <i class="fas fa-sword"></i> 開始戰鬥
-    </button>
+    <button class="action-btn battle" onclick="openBattleFromCurrentSelection()">⚔️ 開始戰鬥</button>
   </div>
 
   <!-- 控制區 -->
@@ -2151,14 +2142,14 @@
     <div class="num-selector">
       <div class="label">被乘數</div>
       <div class="num-btn-group" id="btns1">
-        <button class="num-btn active" data-n="2">2</button>
-        <button class="num-btn" data-n="3">3</button>
-        <button class="num-btn" data-n="4">4</button>
-        <button class="num-btn" data-n="5">5</button>
-        <button class="num-btn" data-n="6">6</button>
-        <button class="num-btn" data-n="7">7</button>
-        <button class="num-btn" data-n="8">8</button>
-        <button class="num-btn" data-n="9">9</button>
+        <button class="num-btn" data-n="2" aria-label="選擇 2">2</button>
+        <button class="num-btn" data-n="3" aria-label="選擇 3">3</button>
+        <button class="num-btn" data-n="4" aria-label="選擇 4">4</button>
+        <button class="num-btn" data-n="5" aria-label="選擇 5">5</button>
+        <button class="num-btn" data-n="6" aria-label="選擇 6">6</button>
+        <button class="num-btn" data-n="7" aria-label="選擇 7">7</button>
+        <button class="num-btn" data-n="8" aria-label="選擇 8">8</button>
+        <button class="num-btn" data-n="9" aria-label="選擇 9">9</button>
       </div>
     </div>
 
@@ -2166,15 +2157,15 @@
 
     <div class="num-selector">
       <div class="label">乘數</div>
-      <div class="num-btn-group" id="btns2">
-        <button class="num-btn" data-n="2">2</button>
-        <button class="num-btn" data-n="3">3</button>
-        <button class="num-btn" data-n="4">4</button>
-        <button class="num-btn" data-n="5">5</button>
-        <button class="num-btn" data-n="6">6</button>
-        <button class="num-btn" data-n="7">7</button>
-        <button class="num-btn" data-n="8">8</button>
-        <button class="num-btn" data-n="9">9</button>
+      <div class="num-btn-group" id="btns2" role="group" aria-label="乘數選擇">
+        <button class="num-btn" data-n="2" aria-label="乘以 2">2</button>
+        <button class="num-btn" data-n="3" aria-label="乘以 3">3</button>
+        <button class="num-btn" data-n="4" aria-label="乘以 4">4</button>
+        <button class="num-btn" data-n="5" aria-label="乘以 5">5</button>
+        <button class="num-btn" data-n="6" aria-label="乘以 6">6</button>
+        <button class="num-btn" data-n="7" aria-label="乘以 7">7</button>
+        <button class="num-btn" data-n="8" aria-label="乘以 8">8</button>
+        <button class="num-btn" data-n="9" aria-label="乘以 9">9</button>
       </div>
     </div>
 
@@ -2229,7 +2220,7 @@
   </div>
 
   <!-- 顯示區 -->
-  <div class="display-area">
+  <div class="display-area" id="main-content" role="main" aria-label="乘法學習區">
     
     <!-- 點陣 -->
     <div class="viz-section active" id="dots" style="position:relative;">
@@ -2632,9 +2623,7 @@
       <div class="report-stat"><span>總題目</span><span id="reportTotal">0</span></div>
     </div>
 
-    <button class="export-btn" onclick="exportReport()">
-      <i class="fas fa-download"></i> 匯出報告
-    </button>
+    <button class="export-btn" onclick="exportReport()">📥 匯出報告</button>
   </div>
 
   <script>
@@ -3193,24 +3182,54 @@
       document.getElementById('soundToggle').classList.toggle('on', soundEnabled);
     }
 
+    let voiceActive = false;
+    let recognition = null;
+
     function toggleVoice() {
+      const btn = document.getElementById('voiceBtn');
       if (!('webkitSpeechRecognition' in window)) {
         alert('呢個瀏覽器唔支援語音輸入');
         return;
       }
-      const rec = new webkitSpeechRecognition();
-      rec.lang = 'zh-HK';
-      rec.start();
-      rec.onresult = (e) => {
-        const text = e.results[0][0].transcript;
-        // 簡單解析數字
-        const match = text.match(/(\d+)\s*[乘x]\s*(\d+)/);
-        if (match) {
-          num1 = parseInt(match[1]);
-          num2 = parseInt(match[2]);
-          update();
-        }
-      };
+      if (voiceActive) {
+        // Stop
+        if (recognition) { recognition.stop(); recognition = null; }
+        voiceActive = false;
+        btn.style.background = '';
+        btn.textContent = '🎤 語音';
+      } else {
+        // Start
+        recognition = new webkitSpeechRecognition();
+        recognition.lang = 'zh-HK';
+        recognition.continuous = true;
+        recognition.interimResults = false;
+        btn.style.background = 'var(--danger)';
+        btn.textContent = '🔴 停止';
+        voiceActive = true;
+        recognition.start();
+        recognition.onresult = (e) => {
+          for (let i = e.results.length - 1; i >= 0; i--) {
+            const text = e.results[i][0].transcript;
+            const match = text.match(/(\d+)\s*[乘x]\s*(\d+)/);
+            if (match) {
+              num1 = parseInt(match[1]);
+              num2 = parseInt(match[2]);
+              update();
+              speak(`${num1} 乘 ${num2} 等於 ${num1 * num2}`);
+              break;
+            }
+          }
+        };
+        recognition.onend = () => {
+          if (voiceActive) { recognition.start(); }
+          else { btn.style.background = ''; btn.textContent = '🎤 語音'; }
+        };
+        recognition.onerror = () => {
+          voiceActive = false;
+          btn.style.background = '';
+          btn.textContent = '🎤 語音';
+        };
+      }
     }
 
     function toggleQuiz() {
