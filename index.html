@@ -957,6 +957,52 @@
     }
 
     /* ========== NEW: Adaptive Difficulty ========== */
+    .difficulty-step {
+      display: block;
+      background: rgba(0,0,0,0.3);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 15px;
+      max-width: 500px;
+      width: 100%;
+    }
+    .difficulty-step.hidden { display: none; }
+    .difficulty-selector {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .difficulty-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 15px 20px;
+      background: rgba(255,255,255,0.1);
+      border: 2px solid rgba(255,255,255,0.2);
+      border-radius: 16px;
+      color: #fff;
+      cursor: pointer;
+      transition: all 0.2s;
+      min-width: 100px;
+    }
+    .difficulty-btn:hover {
+      background: rgba(255,255,255,0.2);
+      transform: translateY(-3px);
+    }
+    .difficulty-btn.selected {
+      border-color: var(--accent);
+      background: rgba(255, 217, 61, 0.2);
+      box-shadow: 0 0 20px rgba(255, 217, 61, 0.3);
+    }
+    .difficulty-btn[data-diff="easy"].selected { border-color: #6BCB77; background: rgba(107,203,119,0.2); }
+    .difficulty-btn[data-diff="medium"].selected { border-color: #4D96FF; background: rgba(77,150,255,0.2); }
+    .difficulty-btn[data-diff="hard"].selected { border-color: #a855f7; background: rgba(168,85,247,0.2); }
+    .diff-icon { font-size: 1.8rem; }
+    .diff-label { font-size: 1.1rem; font-weight: bold; }
+    .diff-desc { font-size: 0.75rem; color: #aaa; }
+
     .difficulty-indicator {
       display: inline-flex;
       align-items: center;
@@ -1759,6 +1805,209 @@
   .ambient-particles { position: fixed; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none; z-index: 1; }
   .ambient-particle { position: absolute; width: 4px; height: 4px; background: rgba(255,255,255,0.3); border-radius: 50%; animation: ambientFloat 10s linear infinite; }
   @keyframes ambientFloat { 0% { transform: translateY(100vh) rotate(0deg); opacity: 0; } 10% { opacity: 0.5; } 90% { opacity: 0.5; } 100% { transform: translateY(-100px) rotate(360deg); opacity: 0; } }
+
+  /* ========== 森林兵團新UI (Phase 1) ========== */
+  .battle-arena.forest-duel {
+    background: linear-gradient(#0a2a1f, #0f3d2e);
+    background-image: 
+      radial-gradient(circle at 20% 30%, rgba(80,200,120,0.15) 0%, transparent 50%),
+      radial-gradient(circle at 80% 70%, rgba(120,80,200,0.12) 0%, transparent 50%);
+    position: relative;
+    overflow: hidden;
+  }
+  .battle-arena.forest-duel::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: 
+      url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22300%22><rect width=%22300%22 height=%22300%22 fill=%22none%22/><circle cx=%2250%22 cy=%2280%22 r=%223%22 fill=%22%2355ffaa%22 opacity=%220.4%22/><circle cx=%22220%22 cy=%22150%22 r=%222%22 fill=%22%23aaffcc%22 opacity=%220.3%22/></svg>') repeat;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .battle-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 8px 16px;
+    background: rgba(0, 20, 15, 0.85);
+    border-radius: 12px;
+    border: 2px solid #3a8f6f;
+    margin-bottom: 8px;
+    z-index: 2;
+  }
+  .battle-header .level-name {
+    font-size: 1.1rem;
+    color: #a5ffcc;
+    font-weight: bold;
+  }
+  .battle-header .timer-center {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .timer-bar {
+    width: 180px;
+    height: 14px;
+    background: #112c22;
+    border: 2px solid #4ade80;
+    border-radius: 999px;
+    overflow: hidden;
+  }
+  .timer-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #4ade80, #22c55e);
+    transition: width 0.1s linear;
+  }
+  .timer-text {
+    font-size: 1.1rem;
+    color: #4ade80;
+    font-weight: bold;
+    min-width: 55px;
+    text-align: right;
+  }
+  .battle-header .score {
+    color: #ffd700;
+    font-weight: bold;
+  }
+
+  .battle-attributes {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+    width: 100%;
+    padding: 6px 12px;
+    background: rgba(0,0,0,0.4);
+    border-radius: 10px;
+    font-size: 0.9rem;
+    z-index: 2;
+  }
+  .battle-attributes > div {
+    background: rgba(20,60,45,0.8);
+    padding: 4px 12px;
+    border-radius: 8px;
+    border: 1px solid #3a8f6f;
+  }
+
+  .battle-duel {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    width: 100%;
+    gap: 15px;
+    padding: 15px;
+    z-index: 2;
+    position: relative;
+  }
+
+  .player-side, .enemy-side {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 140px;
+  }
+  .player-character {
+    width: 110px;
+    height: 110px;
+    object-fit: contain;
+    filter: drop-shadow(0 0 12px #4ade80) drop-shadow(0 4px 8px rgba(0,0,0,0.4));
+    z-index: 2;
+    border-radius: 16px;
+    background: rgba(255,255,255,0.05);
+    padding: 8px;
+    transition: transform 0.3s ease, filter 0.3s ease;
+  }
+  .player-character:hover {
+    transform: scale(1.05);
+    filter: drop-shadow(0 0 20px #4ade80) drop-shadow(0 6px 12px rgba(0,0,0,0.5));
+  }
+  .player-platform {
+    width: 130px;
+    height: 18px;
+    background: radial-gradient(circle, #4ade80 0%, transparent 70%);
+    border-radius: 50%;
+    margin-top: -10px;
+    z-index: 1;
+  }
+  .enemy-character {
+    width: 120px;
+    height: 120px;
+    object-fit: contain;
+    filter: drop-shadow(0 0 15px #ff5555);
+  }
+
+  .hp-bar {
+    width: 100%;
+    height: 16px;
+    background: #112c22;
+    border: 2px solid #4ade80;
+    border-radius: 999px;
+    overflow: hidden;
+    margin-top: 6px;
+  }
+  .hp-fill.green { background: linear-gradient(#4ade80, #22c55e); }
+  .hp-fill.red { background: linear-gradient(#ff5555, #c02626); }
+
+  .question-center {
+    flex: 1;
+    text-align: center;
+    padding: 10px;
+  }
+  .math-question {
+    font-size: 3.2rem;
+    font-weight: bold;
+    color: #fff;
+    text-shadow: 0 0 20px #a5ffcc, 0 0 40px #4ade80;
+    background: rgba(0,30,20,0.6);
+    padding: 20px 40px;
+    border-radius: 20px;
+    border: 3px solid #4ade80;
+    display: inline-block;
+    min-width: 280px;
+  }
+
+  .arcane-energy {
+    width: 100%;
+    margin: 10px 0;
+    padding: 8px 16px;
+    background: rgba(0,0,0,0.5);
+    border-radius: 12px;
+    border: 2px solid #a855f7;
+  }
+  .arcane-bar {
+    height: 18px;
+    background: linear-gradient(#a855f7, #7e22ce);
+    border-radius: 999px;
+    transition: width 0.3s;
+  }
+
+  .number-pad {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    width: 100%;
+    max-width: 380px;
+    margin: 0 auto;
+  }
+  .num-btn {
+    padding: 18px 0;
+    font-size: 1.6rem;
+    background: rgba(20,40,35,0.9);
+    color: #fff;
+    border: 2px solid #3a8f6f;
+    border-radius: 12px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.1s;
+  }
+  .num-btn:active { transform: scale(0.95); background: #3a8f6f; }
+  .num-btn.special {
+    background: #581c87;
+    border-color: #c026d3;
+    font-weight: bold;
+  }
 </style>
 </head>
 <body>
@@ -1845,8 +2094,33 @@
   </div>
   <div class="level-panel-backdrop" id="levelPanelBackdrop" onclick="toggleLevelPanel()"></div>
   
-  <!-- 三大領域選擇器 -->
-  <div class="domain-selector" id="domainSelector">
+  <!-- 難度選擇步驟 -->
+  <div class="difficulty-step" id="difficultyStep">
+    <div style="text-align:center; margin-bottom:15px;">
+      <div style="color:var(--accent); font-size:1.1rem; margin-bottom:10px;">請先選擇難度</div>
+      <div class="difficulty-selector">
+        <button class="difficulty-btn" data-diff="easy" onclick="selectDifficulty('easy')">
+          <span class="diff-icon">🌱</span>
+          <span class="diff-label">簡單</span>
+          <span class="diff-desc">2-5乘法表</span>
+        </button>
+        <button class="difficulty-btn" data-diff="medium" onclick="selectDifficulty('medium')">
+          <span class="diff-icon">⚔️</span>
+          <span class="diff-label">中等</span>
+          <span class="diff-desc">2-7乘法表</span>
+        </button>
+        <button class="difficulty-btn" data-diff="hard" onclick="selectDifficulty('hard')">
+          <span class="diff-icon">👑</span>
+          <span class="diff-label">困難</span>
+          <span class="diff-desc">2-9乘法表</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 三大領域選擇器 (先隱藏，等難度選完後顯示) -->
+  <div class="domain-selector" id="domainSelector" style="display:none;">
+    <div style="text-align:center; margin-bottom:10px; color:#aaa; font-size:0.9rem;">選擇領域</div>
     <div class="domain-btn" data-domain="newbie" onclick="switchDomain('newbie')">
       <span class="domain-icon">🌱</span>
       <span>新手村</span>
@@ -2048,85 +2322,93 @@
   <div class="battle-overlay" id="battleOverlay">
     <button class="battle-close-btn" onclick="closeBattleOverlay()">✕</button>
 
-    <div class="battle-arena">
-      <!-- 計時器 -->
-      <div class="battle-timer-container" id="battleTimerContainer">
-        <div class="battle-timer-bar-bg">
-          <div class="battle-timer-bar-fill" id="battleTimerFill"></div>
+    <div class="battle-arena forest-duel">
+      <!-- 森林兵團 Header -->
+      <div class="battle-header">
+        <div>
+          <span class="level-name">第 1 關 - 森林兵團</span>
+          <span id="waveInfo" style="color:#a5ffcc; font-weight:bold;">1/2</span>
         </div>
-        <div class="battle-timer-label">⏱️ <span id="battleTimerText">3.0</span>秒</div>
-        <div class="speed-multiplier">速度倍率: <span id="speedMultiplier">1.0x</span></div>
-        <div class="accuracy-meter">
-          準確率: <div class="accuracy-bar"><div class="accuracy-fill" id="accuracyFill" style="width: 100%"></div></div>
-          <span id="accuracyText">100%</span>
-        </div>
-        <span class="boost-indicator" id="speedBoostIndicator">⚡ 加速中</span>
-      </div>
-
-      <!-- 增強Combo顯示 -->
-      <div class="combo-display" id="comboDisplay">
-        <span class="combo-fire">🔥</span>
-        <span>COMBO <span class="combo-count" id="comboCount">0</span></span>
-        <span class="combo-skill" id="comboSkill"></span>
-      </div>
-
-      <div class="monster-card" id="monsterCard">
-        <div class="monster-emoji" id="monsterEmoji">🐺</div>
-        <div class="monster-name" id="monsterName">狼人</div>
-        <div class="monster-hp-container">
-          <div class="hp-bar-bg">
-            <div class="hp-bar-fill" id="monsterHpFill" style="width: 100%"></div>
+        <div class="timer-center">
+          <div class="timer-bar">
+            <div class="timer-fill" id="battleTimerFill" style="width: 100%"></div>
           </div>
-          <div class="hp-text" id="monsterHpText">15 / 15 HP</div>
+          <span class="timer-text" id="battleTimerText">2.65s</span>
+        </div>
+        <div class="score">
+          🪙 <span id="goldCount">118</span> 分數: <span id="waveScore">0</span>
         </div>
       </div>
 
-      <div class="battle-question-card">
-        <div class="battle-question" id="battleQuestion">3 × 4 = ?</div>
-        <div class="battle-options" id="battleOptions"></div>
+      <!-- 屬性列 -->
+      <div class="battle-attributes">
+        <div>波次: <span id="waveInfo2">1/2</span></div>
+        <div>法力: <span id="manaPercent">0</span>%</div>
+        <div>護盾: <span id="shieldCount">20</span></div>
+        <div>命中率: <span id="accuracyText">0</span>%</div>
       </div>
 
-      <div class="hero-battle-status" id="heroBattleStatus">
-        <img src="assets/images/knight-hero.png" class="hero-battle-avatar" id="heroBattleAvatar">
-        <div class="hero-battle-info">
-          <div class="hero-battle-name" id="heroBattleName">銀藍騎士</div>
-          <div class="hero-hp-bar">
-            <div class="hero-hp-fill" id="heroHpFill" style="width: 100%"></div>
+      <!-- 左右對戰 Duel -->
+      <div class="battle-duel">
+        <!-- 玩家左側 -->
+        <div class="player-side">
+          <div style="position:relative;">
+            <img src="assets/images/wizard-hero.jpeg" class="player-character" id="heroBattleAvatar" alt="魔法師">
+            <div class="player-platform"></div>
           </div>
-          <div class="hp-text" id="heroHpText">100 / 100 HP</div>
-          <div class="shield-display" id="shieldDisplay">
-            <span class="shield-icon">🛡️</span>
-            <span id="shieldCount">0</span>層
+          <div style="margin-top:8px; text-align:center;">
+            <div style="color:#4ade80; font-weight:bold; font-size:0.95rem;">玩家回合</div>
+            <div class="hp-bar">
+              <div class="hp-fill green" id="heroHpFill" style="width: 100%"></div>
+            </div>
+            <div style="font-size:0.75rem; color:#a5ffcc;" id="heroHpText">100 / 100</div>
           </div>
         </div>
-      </div>
 
-      <div class="battle-stats-bar">
-        <div class="battle-stat">💰 <span class="val" id="goldCount">0</span> 金幣</div>
-        <div class="battle-stat">🏆 <span class="val" id="monstersDefeated">0</span> 殺敵</div>
-      </div>
+        <!-- 中央數學題 -->
+        <div class="question-center">
+          <div class="math-question" id="battleQuestion">2 × 6 = ?</div>
+        </div>
 
-      <div class="hero-select-grid" id="heroSelectGrid">
-        <div class="hero-select-card" data-hero="knight" onclick="selectHero('knight')">
-          <img src="assets/images/knight-hero.png">
-          <div class="name">銀藍騎士</div>
-          <div class="hero-skill-desc">格擋(20%機率免傷) · 暴擊率 10%</div>
-        </div>
-        <div class="hero-select-card" data-hero="mage" onclick="selectHero('mage')">
-          <img src="assets/images/mage-hero.png">
-          <div class="name">銀月法師</div>
-          <div class="hero-skill-desc">暴擊加成(+10%暴擊率) · 高攻擊</div>
-        </div>
-        <div class="hero-select-card" data-hero="berserker" onclick="selectHero('berserker')">
-          <img src="assets/images/berserker-hero.png">
-          <div class="name">烈焰狂戰</div>
-          <div class="hero-skill-desc">低血量增傷(HP<30%時+50%攻擊)</div>
+        <!-- 敵人右側 -->
+        <div class="enemy-side" id="monsterCard">
+          <img src="assets/images/slime-monster.jpeg" class="enemy-character" id="monsterImg" alt="森林怪物">
+          <div style="margin-top:6px; text-align:center; width:100%;">
+            <div style="color:#ff5555; font-weight:bold;" id="monsterName">森林哨兵</div>
+            <div class="hp-bar">
+              <div class="hp-fill red" id="monsterHpFill" style="width: 100%"></div>
+            </div>
+            <div style="font-size:0.75rem; color:#ff8888;" id="monsterHpText">15 / 15</div>
+          </div>
         </div>
       </div>
 
-      <button class="battle-start-btn" id="battleStartBtnOverlay" onclick="startBattle()">
-        ⚔️ 開始戰鬥
-      </button>
+      <!-- 奧術爆發能量槽 -->
+      <div class="arcane-energy">
+        <div style="display:flex; justify-content:space-between; font-size:0.85rem; margin-bottom:4px;">
+          <span style="color:#c026d3;">⚡ 奧術爆發</span>
+          <span id="energyText">0/100</span>
+        </div>
+        <div class="hp-bar" style="border-color:#a855f7; background:#2a1a3a;">
+          <div class="arcane-bar" id="arcaneBar" style="width:0%"></div>
+        </div>
+      </div>
+
+      <!-- 數字鍵盤 -->
+      <div class="number-pad" id="numberPad">
+        <button class="num-btn" data-num="1">1</button>
+        <button class="num-btn" data-num="2">2</button>
+        <button class="num-btn" data-num="3">3</button>
+        <button class="num-btn" data-num="4">4</button>
+        <button class="num-btn" data-num="5">5</button>
+        <button class="num-btn" data-num="6">6</button>
+        <button class="num-btn" data-num="7">7</button>
+        <button class="num-btn" data-num="8">8</button>
+        <button class="num-btn" data-num="9">9</button>
+        <button class="num-btn special" data-num="C">C</button>
+        <button class="num-btn" data-num="0">0</button>
+        <button class="num-btn special" data-num="E">E</button>
+      </div>
     </div>
   </div>
 
@@ -2372,6 +2654,8 @@
     let wrongStreak = 0, guidanceLevel = 0;
     let guidanceHistory = [];
     let currentDomain = 'newbie';  // newbie / veteran / legend
+    let currentDifficulty = null; // easy / medium / hard
+    let difficultyStepComplete = false;
     let domainStats = { newbie: {correct:0, wrong:0}, veteran: {correct:0, wrong:0}, legend: {correct:0, wrong:0} };
     let level = 1, unlockedLevels = [2], selectedLevel = null;
     let streakForLevel = 0;
@@ -2521,7 +2805,16 @@
       questionType: 'normal',
       battleTimerInterval: null,
       timeLeft: 3.0,
-      maxTime: 3.0
+      maxTime: 3.0,
+      // === ADAPTIVE DIFFICULTY FIELDS ===
+      difficultyLevel: 0,
+      recentAccuracy: [],
+      consecutiveErrors: 0,
+      currentDifficulty: 'normal',
+      hintActive: false,
+      speedBoost: false,
+      // === INITIALIZE DOMAIN (for range calculations) ===
+      domain: 'newbie'
     };
     const SoundManager = {
       ctx: null,
@@ -2666,21 +2959,21 @@
       if (btn) btn.textContent = BGM.playing ? '🎵 音樂: 開' : '🎵 音樂: 關';
     }
     const heroes = {
-      knight: { name: '銀藍騎士', hp: 100, atkMin: 8, atkMax: 12, crit: 0.1, img: 'assets/images/characters/wizard_boy.png', color: '#4a90e2', passive: 'block' },
-      mage: { name: '銀月法師', hp: 80, atkMin: 12, atkMax: 18, crit: 0.15, img: 'assets/images/characters/wizard_boy.png', color: '#9b59b6', passive: 'critBoost' },
-      berserker: { name: '烈焰狂戰', hp: 120, atkMin: 15, atkMax: 25, crit: 0.25, img: 'assets/images/characters/wizard_boy.png', color: '#e74c3c', passive: 'rage' }
+      knight: { name: '銀藍騎士', hp: 100, atkMin: 8, atkMax: 12, crit: 0.1, img: 'assets/images/wizard-hero.jpeg', color: '#4a90e2', passive: 'block' },
+      mage: { name: '銀月法師', hp: 80, atkMin: 12, atkMax: 18, crit: 0.15, img: 'assets/images/wizard-hero.jpeg', color: '#9b59b6', passive: 'critBoost' },
+      berserker: { name: '烈焰狂戰', hp: 120, atkMin: 15, atkMax: 25, crit: 0.25, img: 'assets/images/wizard-hero.jpeg', color: '#e74c3c', passive: 'rage' }
     };
     const monsters = {
       newbie: [
-        { name: '史萊姆', emoji: '🟢', img: 'assets/images/monsters/slime.png', hpMin: 5, hpMax: 8, gold: 10, exp: 5 },
-        { name: '小狼', emoji: '🐺', img: 'assets/images/monsters/wolf.png', hpMin: 7, hpMax: 10, gold: 15, exp: 8 }
+        { name: '森林史萊姆', emoji: '🟢', img: 'assets/images/slime-monster.jpeg', hpMin: 5, hpMax: 8, gold: 10, exp: 5 },
+        { name: '草原小狼', emoji: '🐺', img: 'assets/images/monsters/wolf.png', hpMin: 7, hpMax: 10, gold: 15, exp: 8 }
       ],
       veteran: [
-        { name: '狼人', emoji: '🐺', img: 'assets/images/monsters/wolf.png', hpMin: 12, hpMax: 18, gold: 25, exp: 15 },
+        { name: '城堡守衛', emoji: '⚔️', img: 'assets/images/castle-guard.jpeg', hpMin: 12, hpMax: 18, gold: 25, exp: 15 },
         { name: '蝙蝠王', emoji: '🦇', img: 'assets/images/monsters/bat.png', hpMin: 15, hpMax: 20, gold: 30, exp: 20 }
       ],
       legend: [
-        { name: '幼龍', emoji: '🐉', img: 'assets/images/monsters/dragon.png', hpMin: 25, hpMax: 35, gold: 50, exp: 40, boss: true },
+        { name: '暗黑惡魔', emoji: '👹', img: 'assets/images/demon-boss.jpeg', hpMin: 25, hpMax: 35, gold: 50, exp: 40, boss: true },
         { name: '骨法師', emoji: '💀', img: 'assets/images/monsters/skeleton_mage.png', hpMin: 20, hpMax: 30, gold: 45, exp: 35, boss: true }
       ]
     };
@@ -2697,6 +2990,14 @@
       wrongStreak = data.wrongStreak || 0;
       guidanceHistory = data.guidanceHistory || [];
       currentDomain = localStorage.getItem('currentDomain') || 'newbie';
+      battleState.domain = currentDomain; // Initialize battleState.domain
+      
+      // Load difficulty preference
+      const savedDifficulty = localStorage.getItem('currentDifficulty');
+      if (savedDifficulty) {
+        currentDifficulty = savedDifficulty;
+        difficultyStepComplete = true;
+      }
       
       // Set num1/num2 based on selectedLevel
       if (selectedLevel) {
@@ -2718,6 +3019,23 @@
           currentLevelEl.textContent = '1';
         }
       }
+
+      // 初始化難度步驟 UI
+      setTimeout(() => {
+        const diffStep = document.getElementById('difficultyStep');
+        const domainSel = document.getElementById('domainSelector');
+        if (difficultyStepComplete && currentDifficulty) {
+          diffStep.classList.add('hidden');
+          domainSel.style.display = 'flex';
+          // Highlight selected difficulty
+          document.querySelectorAll('.difficulty-btn').forEach(b => b.classList.remove('selected'));
+          const selectedDiffBtn = document.querySelector(`.difficulty-btn[data-diff="${currentDifficulty}"]`);
+          if (selectedDiffBtn) selectedDiffBtn.classList.add('selected');
+        } else {
+          diffStep.classList.remove('hidden');
+          domainSel.style.display = 'none';
+        }
+      }, 100);
 
       // 初始化領域
       setTimeout(() => {
@@ -2911,6 +3229,8 @@
     function resetAll() {
       correct = wrong = total = streak = 0;
       updateScoreDisplay();
+      // Reset difficulty flow so user must re-select
+      resetDifficultyFlow();
       speak('已重置');
       saveData();
     }
@@ -3386,6 +3706,7 @@
     // 三大領域系統
     function switchDomain(domain) {
       currentDomain = domain;
+      battleState.domain = domain; // Sync for safe access
       
       // 更新UI
       document.querySelectorAll('.domain-btn').forEach(btn => {
@@ -3409,6 +3730,62 @@
       // 儲存
       localStorage.setItem('currentDomain', domain);
       speak(domain === 'newbie' ? '新手村' : domain === 'veteran' ? '黑暗森林' : '深淵');
+    }
+    
+    // 難度選擇
+    function selectDifficulty(diff) {
+      currentDifficulty = diff;
+      difficultyStepComplete = true;
+      
+      // Update UI - hide difficulty step, show domain selector
+      document.getElementById('difficultyStep').classList.add('hidden');
+      document.getElementById('domainSelector').style.display = 'flex';
+      
+      // Highlight selected difficulty button
+      document.querySelectorAll('.difficulty-btn').forEach(b => b.classList.remove('selected'));
+      document.querySelector(`.difficulty-btn[data-diff="${diff}"]`).classList.add('selected');
+      
+      // Update level panel based on difficulty
+      updateUnlockedLevelsForDifficulty(diff);
+      
+      // Save preference
+      localStorage.setItem('currentDifficulty', diff);
+      
+      // Speak the selection
+      const diffNames = { easy: '簡單', medium: '中等', hard: '困難' };
+      speak(diffNames[diff] + '難度');
+    }
+    
+    function updateUnlockedLevelsForDifficulty(diff) {
+      // Based on difficulty, limit which multiplication tables are accessible
+      if (diff === 'easy') {
+        // Easy: only 2-5 available, others locked
+        unlockedLevels = [2];
+        selectedLevel = null;
+      } else if (diff === 'medium') {
+        // Medium: 2-7 available
+        unlockedLevels = [2];
+        selectedLevel = null;
+      } else {
+        // Hard: all 2-9 available
+        unlockedLevels = [2];
+        selectedLevel = null;
+      }
+      
+      // Update level display
+      const levelDisplay = document.getElementById('levelDisplay');
+      if (levelDisplay) {
+        levelDisplay.style.display = 'flex';
+      }
+    }
+    
+    function resetDifficultyFlow() {
+      currentDifficulty = null;
+      difficultyStepComplete = false;
+      document.getElementById('difficultyStep').classList.remove('hidden');
+      document.getElementById('domainSelector').style.display = 'none';
+      document.querySelectorAll('.difficulty-btn').forEach(b => b.classList.remove('selected'));
+      localStorage.removeItem('currentDifficulty');
     }
     
     function autoRecommendDomain() {
@@ -3435,8 +3812,16 @@
     function renderLevelPanel() {
       const grid = document.getElementById('levelPanelGrid');
       grid.innerHTML = '';
+      
+      // Determine max level based on difficulty
+      let maxLevel = 9;
+      if (currentDifficulty === 'easy') maxLevel = 5;
+      else if (currentDifficulty === 'medium') maxLevel = 7;
+      
       for (let lvl = 2; lvl <= 9; lvl++) {
-        const isUnlocked = unlockedLevels.includes(lvl);
+        // Levels beyond difficulty max are always locked
+        const isDifficultyLocked = lvl > maxLevel;
+        const isUnlocked = !isDifficultyLocked && unlockedLevels.includes(lvl);
         const isSelected = selectedLevel === lvl;
         const btn = document.createElement('button');
         btn.className = 'level-panel-btn' + (isSelected ? ' active' : '') + (!isUnlocked ? ' locked' : '');
@@ -3718,7 +4103,7 @@
       battleState.monsterBuffs = [];
       battleState.monsterAction = null;
 
-      document.getElementById('monsterEmoji').textContent = template.emoji;
+      document.getElementById('monsterImg').src = template.img;
       document.getElementById('monsterName').textContent = template.name;
       document.getElementById('monsterCard').classList.toggle('boss', battleState.isBoss);
       updateMonsterHpBar();
@@ -3806,9 +4191,15 @@
       
       // Apply adaptive difficulty
       const ranges = { newbie: [2, 5], veteran: [2, 9], legend: [2, 12] };
-      let [min, max] = ranges[currentDomain] || ranges.veteran;
+      // Ensure domainKey is valid
+      let domainKey = battleState.domain;
+      if (!domainKey || !ranges[domainKey]) {
+        domainKey = 'newbie';
+        battleState.domain = 'newbie'; // Fix corrupted state
+      }
+      let [min, max] = ranges[domainKey];
       
-      if (selectedLevel) {
+      if (selectedLevel && typeof selectedLevel === 'number' && selectedLevel >= 2 && selectedLevel <= 9) {
         num1 = selectedLevel;
         num2 = Math.floor(Math.random() * 8) + 2;
       } else {
@@ -3816,6 +4207,11 @@
         const adaptive = applyAdaptiveToQuestion();
         min = adaptive.min;
         max = adaptive.max;
+        // Safety check - ensure min and max are valid numbers
+        if (typeof min !== 'number' || typeof max !== 'number' || min > max) {
+          min = 2;
+          max = 5;
+        }
         num1 = Math.floor(Math.random() * (max - min + 1)) + min;
         num2 = Math.floor(Math.random() * (max - min + 1)) + min;
       }
@@ -3889,7 +4285,7 @@
       const container = document.getElementById('battleOptions');
       container.innerHTML = '';
 
-      if (currentDomain === 'legend') {
+      if (domainKey === 'legend') {
         container.innerHTML = `
           <input type="number" id="battleAnswerInput" class="battle-answer-input" placeholder="?" autocomplete="off">
           <button class="battle-submit-btn" onclick="battleSubmitAnswer()">確認</button>
@@ -3900,7 +4296,7 @@
           if (e.key === 'Enter') battleSubmitAnswer();
         });
       } else {
-        const optionCount = currentDomain === 'newbie' ? 3 : 4;
+        const optionCount = domainKey === 'newbie' ? 3 : 4;
         const options = [battleState.battleAnswer];
         while (options.length < optionCount) {
           const r = Math.floor(Math.random() * 30) + 4;
@@ -4534,8 +4930,16 @@
         legend: { min: 2, max: 12 }
       };
       
-      const base = ranges[currentDomain] || ranges.veteran;
-      const adjustment = battleState.difficultyLevel;
+      // Use battleState.domain to be safe, ensure it's valid
+      let domainKey = battleState.domain;
+      if (!domainKey || !ranges[domainKey]) {
+        domainKey = 'newbie';
+      }
+      const base = ranges[domainKey];
+      if (!base) {
+        return { min: 2, max: 5 };
+      }
+      const adjustment = battleState.difficultyLevel || 0;
       
       // Easy mode: restrict to smaller numbers
       let min = Math.max(2, base.min - adjustment);
@@ -4545,6 +4949,12 @@
       if (adjustment > 0) {
         min = base.min;
         max = Math.min(12, base.max + adjustment);
+      }
+      
+      // Ensure min and max are valid
+      if (typeof min !== 'number' || typeof max !== 'number' || min > max || min < 2) {
+        min = 2;
+        max = 5;
       }
       
       return { min, max };
