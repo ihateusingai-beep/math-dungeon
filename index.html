@@ -2322,7 +2322,7 @@
   <div class="battle-overlay" id="battleOverlay">
     <button class="battle-close-btn" onclick="closeBattleOverlay()">✕</button>
 
-    <div class="battle-arena forest-duel">
+    <div class="battle-arena forest-duel" id="battleArena">
       <!-- 森林兵團 Header -->
       <div class="battle-header">
         <div>
@@ -4106,6 +4106,17 @@
       document.getElementById('monsterImg').src = template.img;
       document.getElementById('monsterName').textContent = template.name;
       document.getElementById('monsterCard').classList.toggle('boss', battleState.isBoss);
+      
+      // 根據領域切換背景
+      const arena = document.getElementById('battleArena');
+      arena.className = 'battle-arena';
+      if (currentDomain === 'legend') {
+        arena.style.background = `linear-gradient(rgba(20,10,40,0.85), rgba(30,15,60,0.85)), url('assets/images/bg-castle.jpeg') center/cover`;
+      } else {
+        arena.style.background = `linear-gradient(rgba(10,30,20,0.85), rgba(15,50,35,0.85)), url('assets/images/bg-forest.jpeg') center/cover`;
+      }
+      arena.classList.add(currentDomain === 'legend' ? 'castle-duel' : 'forest-duel');
+      
       updateMonsterHpBar();
 
       battleState.combo = 0;
