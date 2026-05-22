@@ -2012,6 +2012,111 @@
     border-color: #c026d3;
     font-weight: bold;
   }
+
+  /* ========== 三大主Tab導航 ========== */
+  .main-nav {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .main-nav-btn {
+    padding: 12px 22px;
+    border: none;
+    border-radius: 14px;
+    font-size: 1.05rem;
+    font-family: inherit;
+    cursor: pointer;
+    background: rgba(255,255,255,0.12);
+    color: #bbb;
+    transition: all 0.25s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .main-nav-btn:hover {
+    background: rgba(255,255,255,0.2);
+    transform: translateY(-2px);
+  }
+
+  .main-nav-btn.active {
+    background: linear-gradient(135deg, #4D96FF, #6366f1);
+    color: #fff;
+    box-shadow: 0 4px 20px rgba(77, 150, 255, 0.4);
+  }
+
+  .main-nav-btn[data-section="battle"].active {
+    background: linear-gradient(135deg, #a855f7, #6366f1);
+    box-shadow: 0 4px 20px rgba(168, 85, 247, 0.4);
+  }
+
+  .main-nav-btn[data-section="profile"].active {
+    background: linear-gradient(135deg, #FFD93D, #FF8C42);
+    color: #333;
+    box-shadow: 0 4px 20px rgba(255, 217, 61, 0.4);
+  }
+
+  .main-nav-btn:focus {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  /* ========== profileSection 子Tab ========== */
+  .sub-tab-nav {
+    display: flex;
+    gap: 5px;
+    margin: 10px 0;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .sub-tab-btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-family: inherit;
+    cursor: pointer;
+    background: rgba(255,255,255,0.1);
+    color: #aaa;
+    transition: all 0.2s;
+  }
+
+  .sub-tab-btn.active {
+    background: var(--primary);
+    color: #fff;
+    font-weight: bold;
+  }
+
+  .sub-tab-btn:hover {
+    background: rgba(77,150,255,0.3);
+    color: #fff;
+  }
+
+  .profile-sub-panel {
+    animation: fadeIn 0.3s;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ========== 主Section容器 ========== */
+  .main-section {
+    display: none;
+    width: 100%;
+    max-width: 600px;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .main-section.active {
+    display: flex;
+  }
 </style>
 </head>
 <body>
@@ -2026,6 +2131,16 @@
       ⭐ 乘法小鎮
       <span class="subtitle" id="modeLabel"></span>
     </h1>
+
+    <!-- ========== 三大主Tab導航 ========== -->
+    <nav class="main-nav" role="navigation" aria-label="主要功能導航">
+      <button class="main-nav-btn active" data-section="learn" onclick="switchMainSection('learn')">🎓 學習</button>
+      <button class="main-nav-btn" data-section="battle" onclick="switchMainSection('battle')">⚔️ 戰鬥</button>
+      <button class="main-nav-btn" data-section="profile" onclick="switchMainSection('profile')">📊 我的</button>
+    </nav>
+
+    <!-- ========== 學習區 ========== -->
+    <section id="learnSection" class="main-section active" aria-label="學習區">
 
   <!-- 計時器 -->
   <div class="timer-display" id="timerDisplay">
@@ -2262,6 +2377,7 @@
       <div class="explanation" id="blockExpl"></div>
     </div>
 
+
     <!-- 故事 -->
     <div class="viz-section" id="story" style="position:relative;">
       <div class="row-col-stat" id="statStory">2 × 4 = 8</div>
@@ -2309,174 +2425,6 @@
     <div class="table-content" id="tableContent">請選擇數字</div>
   </div>
 
-  <!-- 戰鬥 Overlay -->
-  <div class="battle-overlay" id="battleOverlay">
-    <button class="battle-close-btn" onclick="closeBattleOverlay()">✕</button>
-
-    <div class="battle-arena forest-duel" id="battleArena">
-      <!-- 森林兵團 Header -->
-      <div class="battle-header">
-        <div>
-          <span class="level-name">第 1 關 - 森林兵團</span>
-          <span id="waveInfo" style="color:#a5ffcc; font-weight:bold;">1/2</span>
-        </div>
-        <div class="timer-center">
-          <div class="timer-bar">
-            <div class="timer-fill" id="battleTimerFill" style="width: 100%"></div>
-          </div>
-          <span class="timer-text" id="battleTimerText">2.65s</span>
-        </div>
-        <div class="score">
-          🪙 <span id="goldCount">118</span> 分數: <span id="waveScore">0</span>
-        </div>
-      </div>
-
-      <!-- 屬性列 -->
-      <div class="battle-attributes">
-        <div>波次: <span id="waveInfo2">1/2</span></div>
-        <div>法力: <span id="manaPercent">0</span>%</div>
-        <div>護盾: <span id="shieldCount">20</span></div>
-        <div>命中率: <span id="accuracyText">0</span>%</div>
-      </div>
-
-      <!-- 左右對戰 Duel -->
-      <div class="battle-duel">
-        <!-- 玩家左側 -->
-        <div class="player-side">
-          <div style="position:relative;">
-            <img src="assets/images/wizard-hero.jpeg" class="player-character" id="heroBattleAvatar" alt="魔法師">
-            <div class="player-platform"></div>
-          </div>
-          <div style="margin-top:8px; text-align:center;">
-            <div style="color:#4ade80; font-weight:bold; font-size:0.95rem;">玩家回合</div>
-            <div class="hp-bar">
-              <div class="hp-fill green" id="heroHpFill" style="width: 100%"></div>
-            </div>
-            <div style="font-size:0.75rem; color:#a5ffcc;" id="heroHpText">100 / 100</div>
-          </div>
-        </div>
-
-        <!-- 中央數學題 -->
-        <div class="question-center">
-          <div class="math-question" id="battleQuestion">2 × 6 = ?</div>
-        </div>
-
-        <!-- 敵人右側 -->
-        <div class="enemy-side" id="monsterCard">
-          <img src="assets/images/slime-monster.jpeg" class="enemy-character" id="monsterImg" alt="森林怪物">
-          <div style="margin-top:6px; text-align:center; width:100%;">
-            <div style="color:#ff5555; font-weight:bold;" id="monsterName">森林哨兵</div>
-            <div class="hp-bar">
-              <div class="hp-fill red" id="monsterHpFill" style="width: 100%"></div>
-            </div>
-            <div style="font-size:0.75rem; color:#ff8888;" id="monsterHpText">15 / 15</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 奧術爆發能量槽 -->
-      <div class="arcane-energy">
-        <div style="display:flex; justify-content:space-between; font-size:0.85rem; margin-bottom:4px;">
-          <span style="color:#c026d3;">⚡ 奧術爆發</span>
-          <span id="energyText">0/100</span>
-        </div>
-        <div class="hp-bar" style="border-color:#a855f7; background:#2a1a3a;">
-          <div class="arcane-bar" id="arcaneBar" style="width:0%"></div>
-        </div>
-      </div>
-
-      <!-- 數字鍵盤 -->
-      <div class="number-pad" id="numberPad">
-        <button class="num-btn" data-num="1">1</button>
-        <button class="num-btn" data-num="2">2</button>
-        <button class="num-btn" data-num="3">3</button>
-        <button class="num-btn" data-num="4">4</button>
-        <button class="num-btn" data-num="5">5</button>
-        <button class="num-btn" data-num="6">6</button>
-        <button class="num-btn" data-num="7">7</button>
-        <button class="num-btn" data-num="8">8</button>
-        <button class="num-btn" data-num="9">9</button>
-        <button class="num-btn special" data-num="C">C</button>
-        <button class="num-btn" data-num="0">0</button>
-        <button class="num-btn special" data-num="E">E</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- 魔法大爆發特效 -->
-  <div class="magic-burst" id="magicBurst">✨</div>
-
-  <!-- 進化動畫Overlay -->
-  <div class="evolution-overlay" id="evolutionOverlay">
-    <div class="evolution-stars">⭐🌟⭐🌟⭐</div>
-    <div class="evolution-title" id="evolutionTitle">💫 進化！</div>
-    <div class="evolution-old-name" id="evolutionOldName">銀藍騎士</div>
-    <div class="evolution-arrow" id="evolutionArrow">⬇️</div>
-    <div class="evolution-new-name" id="evolutionNewName">初級魔法師</div>
-    <div class="evolution-stats">
-      <div class="evolution-stat">
-        <div class="value" id="evoHpBonus">+20</div>
-        <div class="label">HP</div>
-      </div>
-      <div class="evolution-stat">
-        <div class="value" id="evoAtkBonus">+5</div>
-        <div class="label">攻擊</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- 關卡地圖 -->
-  <div class="stage-map-container" id="stageMap">
-    <div class="stage-map-back">
-      <button onclick="closeStageMap()">← 返回</button>
-    </div>
-    <div class="stage-map-title">🗺️ 世界地圖</div>
-    <div class="stage-worlds" id="stageWorlds">
-      <!-- Dynamically generated -->
-    </div>
-  </div>
-  <!-- 成就按鈕 -->
-  <button class="achievement-btn" id="achievementBtn" onclick="openAchievementPanel()">🏆</button>
-  
-  <!-- 錯題本按鈕 -->
-  <button class="wrongbook-btn" id="wrongbookBtn" onclick="openWrongBookPanel()">📖</button>
-  <button class="daily-tasks-btn" id="dailyTasksBtn" onclick="openDailyTasksPanel()">📋</button>
-
-  <!-- 成就通知 -->
-  <div class="achievement-notification" id="achievementNotif">
-    <div class="notif-icon" id="notifIcon">🏆</div>
-    <div class="notif-title">成就解鎖！</div>
-    <div class="notif-name" id="notifName">初露頭角</div>
-    <div class="notif-desc" id="notifDesc">完成首場戰鬥</div>
-  </div>
-
-  <!-- 成就面板 -->
-  <div class="achievement-panel" id="achievementPanel">
-    <div class="achievement-header">
-      <h2>🏆 成就系統</h2>
-      <button class="achievement-close" onclick="closeAchievementPanel()">關閉</button>
-    </div>
-    <div class="achievement-stats">
-      <div class="achievement-stat">
-        <div class="value" id="totalAchievements">0</div>
-        <div class="label">已解鎖</div>
-      </div>
-      <div class="achievement-stat">
-        <div class="value" id="totalAchievementPoints">0</div>
-        <div class="label">成就積分</div>
-      </div>
-    </div>
-    <div class="achievement-categories">
-      <button class="achievement-cat-btn active" onclick="filterAchievements('all')">全部</button>
-      <button class="achievement-cat-btn" onclick="filterAchievements('battle')">⚔️ 戰鬥</button>
-      <button class="achievement-cat-btn" onclick="filterAchievements('combo')">🔥 Combo</button>
-      <button class="achievement-cat-btn" onclick="filterAchievements('study')">📚 學習</button>
-      <button class="achievement-cat-btn" onclick="filterAchievements('special')">⭐ 特殊</button>
-    </div>
-    <div class="achievement-grid" id="achievementGrid">
-      <!-- Dynamically generated -->
-    </div>
-  </div>
   <!-- 練習 -->
     <div class="practice-panel" id="practicePanel">
       <div class="quiz-card">
@@ -2537,11 +2485,206 @@
       </div>
     </div>
 
-  </div>
+    </section>
 
-  <!-- 獎勵 -->
-  <div class="badge-display" id="badgeDisplay"></div>
-  
+  <!-- ========== 戰鬥區 ========== -->
+  <section id="battleSection" class="main-section" aria-label="戰鬥區">
+    <!-- 頂部操作欄 -->
+    <div class="action-bar" style="margin-bottom:8px;">
+      <button class="action-btn settings" onclick="switchMainSection('learn')">← 返回學習</button>
+      <button class="action-btn random" onclick="openStageMap()">🗺️ 關卡地圖</button>
+      <button class="action-btn reset" onclick="resetBattleState()">↻ 重置</button>
+    </div>
+
+    <!-- 當前英雄狀態 -->
+    <div id="heroBattleStatus" style="text-align:center; margin: 8px 0;">
+      <div style="color:#aaa; font-size:0.85rem;">選擇你的英雄</div>
+      <div style="display:flex; justify-content:center; gap:10px; margin-top:5px;" id="heroSelector">
+        <button class="action-btn battle" onclick="selectBattleHero('knight')" id="heroBtn_knight">🗡️ 銀藍騎士</button>
+        <button class="action-btn battle" onclick="selectBattleHero('mage')" id="heroBtn_mage">🔮 銀月法師</button>
+        <button class="action-btn battle" onclick="selectBattleHero('berserker')" id="heroBtn_berserker">⚔️ 烈焰狂戰</button>
+      </div>
+    </div>
+
+    <!-- 戰鬥 arena -->
+    <div class="battle-arena forest-duel" id="battleArena" style="width:100%; max-width:520px;">
+      <!-- 森林兵團 Header -->
+      <div class="battle-header">
+        <div>
+          <span class="level-name">第 <span id="battleLevelNum">1</span> 關 - <span id="battleWorldName">森林兵團</span></span>
+          <span id="waveInfo" style="color:#a5ffcc; font-weight:bold;">1/2</span>
+        </div>
+        <div class="timer-center">
+          <div class="timer-bar">
+            <div class="timer-fill" id="battleTimerFill" style="width: 100%"></div>
+          </div>
+          <span class="timer-text" id="battleTimerText">2.65s</span>
+        </div>
+        <div class="score">
+          🪙 <span id="goldCount">0</span> 分數: <span id="waveScore">0</span>
+        </div>
+      </div>
+
+      <!-- 屬性列 -->
+      <div class="battle-attributes">
+        <div>波次: <span id="waveInfo2">1/2</span></div>
+        <div>法力: <span id="manaPercent">0</span>%</div>
+        <div>護盾: <span id="shieldCount">0</span></div>
+        <div>命中率: <span id="accuracyText">0</span>%</div>
+      </div>
+
+      <!-- 左右對戰 Duel -->
+      <div class="battle-duel">
+        <!-- 玩家左側 -->
+        <div class="player-side">
+          <div style="position:relative;">
+            <img src="assets/images/knight-hero.png" class="player-character" id="heroBattleAvatar" alt="英雄">
+            <div class="player-platform"></div>
+          </div>
+          <div style="margin-top:8px; text-align:center;">
+            <div style="color:#4ade80; font-weight:bold; font-size:0.95rem;" id="heroBattleName">銀藍騎士</div>
+            <div class="hp-bar">
+              <div class="hp-fill green" id="heroHpFill" style="width: 100%"></div>
+            </div>
+            <div style="font-size:0.75rem; color:#a5ffcc;" id="heroHpText">100 / 100</div>
+          </div>
+        </div>
+
+        <!-- 中央數學題 -->
+        <div class="question-center">
+          <div class="math-question" id="battleQuestion">2 × 6 = ?</div>
+        </div>
+
+        <!-- 敵人右側 -->
+        <div class="enemy-side" id="monsterCard">
+          <img src="assets/images/slime-monster.jpeg" class="enemy-character" id="monsterImg" alt="森林怪物">
+          <div style="margin-top:6px; text-align:center; width:100%;">
+            <div style="color:#ff5555; font-weight:bold;" id="monsterName">森林哨兵</div>
+            <div class="hp-bar">
+              <div class="hp-fill red" id="monsterHpFill" style="width: 100%"></div>
+            </div>
+            <div style="font-size:0.75rem; color:#ff8888;" id="monsterHpText">15 / 15</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 奧術爆發能量槽 -->
+      <div class="arcane-energy">
+        <div style="display:flex; justify-content:space-between; font-size:0.85rem; margin-bottom:4px;">
+          <span style="color:#c026d3;">⚡ 奧術爆發</span>
+          <span id="energyText">0/100</span>
+        </div>
+        <div class="hp-bar" style="border-color:#a855f7; background:#2a1a3a;">
+          <div class="arcane-bar" id="arcaneBar" style="width:0%"></div>
+        </div>
+      </div>
+
+      <!-- 數字鍵盤 -->
+      <div class="number-pad" id="numberPad">
+        <button class="num-btn" data-num="1">1</button>
+        <button class="num-btn" data-num="2">2</button>
+        <button class="num-btn" data-num="3">3</button>
+        <button class="num-btn" data-num="4">4</button>
+        <button class="num-btn" data-num="5">5</button>
+        <button class="num-btn" data-num="6">6</button>
+        <button class="num-btn" data-num="7">7</button>
+        <button class="num-btn" data-num="8">8</button>
+        <button class="num-btn" data-num="9">9</button>
+        <button class="num-btn special" data-num="C">C</button>
+        <button class="num-btn" data-num="0">0</button>
+        <button class="num-btn special" data-num="E">E</button>
+      </div>
+    </div>
+
+    <!-- 開始戰鬥按鈕 -->
+    <button class="action-btn battle" id="battleStartBtnOverlay" onclick="startBattle()" style="margin:10px auto; font-size:1rem; padding:10px 30px;">
+      ⚔️ 開始戰鬥
+    </button>
+
+    <!-- Combo 顯示 -->
+    <div class="combo-display" id="comboDisplay">
+      <span id="comboCount">0</span> COMBO
+    </div>
+
+    <!-- 獎勵 -->
+    <div class="badge-display" id="badgeDisplay"></div>
+  </section>
+
+  <!-- ========== 我的區 ========== -->
+  <section id="profileSection" class="main-section" aria-label="我的資料">
+    <!-- 子Tab導航 -->
+    <nav class="sub-tab-nav" style="display:flex; gap:5px; margin:10px 0; flex-wrap:wrap; justify-content:center;">
+      <button class="sub-tab-btn active" onclick="switchProfileTab('stats')">📊 統計</button>
+      <button class="sub-tab-btn" onclick="switchProfileTab('wrongbook')">📖 錯題本</button>
+      <button class="sub-tab-btn" onclick="switchProfileTab('achievements')">🏆 成就</button>
+      <button class="sub-tab-btn" onclick="switchProfileTab('heroes')">⚔️ 英雄</button>
+    </nav>
+
+    <!-- 統計面板 -->
+    <div id="profileStats" class="profile-sub-panel" style="width:100%; max-width:500px;">
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:10px;">
+        <div class="stat-card" style="background:rgba(77,150,255,0.15); padding:15px; border-radius:12px; text-align:center;">
+          <div style="font-size:2rem; color:#4D96FF;">📝</div>
+          <div style="font-size:1.5rem; font-weight:bold;" id="profileTotal">0</div>
+          <div style="font-size:0.8rem; color:#aaa;">總答題數</div>
+        </div>
+        <div class="stat-card" style="background:rgba(107,203,119,0.15); padding:15px; border-radius:12px; text-align:center;">
+          <div style="font-size:2rem; color:#6BCB77;">✅</div>
+          <div style="font-size:1.5rem; font-weight:bold;" id="profileCorrect">0</div>
+          <div style="font-size:0.8rem; color:#aaa;">答對</div>
+        </div>
+        <div class="stat-card" style="background:rgba(255,107,107,0.15); padding:15px; border-radius:12px; text-align:center;">
+          <div style="font-size:2rem; color:#FF6B6B;">❌</div>
+          <div style="font-size:1.5rem; font-weight:bold;" id="profileWrong">0</div>
+          <div style="font-size:0.8rem; color:#aaa;">答錯</div>
+        </div>
+        <div class="stat-card" style="background:rgba(255,217,61,0.15); padding:15px; border-radius:12px; text-align:center;">
+          <div style="font-size:2rem; color:#FFD93D;">⭐</div>
+          <div style="font-size:1.5rem; font-weight:bold;" id="profileAccuracy">0%</div>
+          <div style="font-size:0.8rem; color:#aaa;">準確率</div>
+        </div>
+        <div class="stat-card" style="background:rgba(168,85,247,0.15); padding:15px; border-radius:12px; text-align:center;">
+          <div style="font-size:2rem; color:#a855f7;">🗡️</div>
+          <div style="font-size:1.5rem; font-weight:bold;" id="profileBattles">0</div>
+          <div style="font-size:0.8rem; color:#aaa;">戰鬥場數</div>
+        </div>
+        <div class="stat-card" style="background:rgba(255,140,66,0.15); padding:15px; border-radius:12px; text-align:center;">
+          <div style="font-size:2rem; color:#FF8C42;">🔥</div>
+          <div style="font-size:1.5rem; font-weight:bold;" id="profileBestStreak">0</div>
+          <div style="font-size:0.8rem; color:#aaa;">最高Combo</div>
+        </div>
+      </div>
+      <!-- 錯題分析雷達圖 -->
+      <div style="text-align:center; margin-top:15px;">
+        <button class="action-btn" onclick="openWrongBookPanel()" style="background:#FF6B6B; color:#fff;">
+          📖 查看錯題本
+        </button>
+        <button class="action-btn" onclick="openAchievementPanel()" style="background:#a855f7; color:#fff;">
+          🏆 成就一覽
+        </button>
+      </div>
+    </div>
+
+    <!-- 錯題本子面板 -->
+    <div id="profileWrongbook" class="profile-sub-panel" style="display:none; width:100%; max-width:500px;">
+      <div id="profileWeakAnalysis" style="margin-top:10px;"></div>
+      <div id="profileWrongHistory" style="margin-top:10px;"></div>
+    </div>
+
+    <!-- 成就子面板 -->
+    <div id="profileAchievements" class="profile-sub-panel" style="display:none; width:100%; max-width:500px;">
+      <div style="margin-top:10px; text-align:center;">
+        <div style="color:#FFD93D; font-size:1.2rem; margin-bottom:5px;">🏆 已解鎖 <span id="profileAchievementCount">0</span> 成就</div>
+        <div id="profileAchievementGrid" style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:10px;"></div>
+      </div>
+    </div>
+
+    <!-- 英雄子面板 -->
+    <div id="profileHeroes" class="profile-sub-panel" style="display:none; width:100%; max-width:500px;">
+      <div style="margin-top:10px; display:flex; flex-direction:column; gap:10px;" id="profileHeroList"></div>
+    </div>
+  </section>
+
   <!-- 力量指引系統 -->
   <div class="guidance-panel" id="guidancePanel">
     <div class="guidance-title" id="guidanceTitle">
@@ -2626,6 +2769,80 @@
     <button class="export-btn" onclick="exportReport()">📥 匯出報告</button>
   </div>
 
+  <!-- 魔法大爆發特效 -->
+  <div class="magic-burst" id="magicBurst">✨</div>
+
+  <!-- 進化動畫Overlay -->
+  <div class="evolution-overlay" id="evolutionOverlay">
+    <div class="evolution-stars">⭐🌟⭐🌟⭐</div>
+    <div class="evolution-title" id="evolutionTitle">💫 進化！</div>
+    <div class="evolution-old-name" id="evolutionOldName">銀藍騎士</div>
+    <div class="evolution-arrow" id="evolutionArrow">⬇️</div>
+    <div class="evolution-new-name" id="evolutionNewName">初級魔法師</div>
+    <div class="evolution-stats">
+      <div class="evolution-stat">
+        <div class="value" id="evoHpBonus">+20</div>
+        <div class="label">HP</div>
+      </div>
+      <div class="evolution-stat">
+        <div class="value" id="evoAtkBonus">+5</div>
+        <div class="label">攻擊</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 關卡地圖 -->
+  <div class="stage-map-container" id="stageMap">
+    <div class="stage-map-back">
+      <button onclick="closeStageMap()">← 返回</button>
+    </div>
+    <div class="stage-map-title">🗺️ 世界地圖</div>
+    <div class="stage-worlds" id="stageWorlds">
+      <!-- Dynamically generated -->
+    </div>
+  </div>
+  <!-- 成就按鈕 -->
+  <button class="achievement-btn" id="achievementBtn" onclick="openAchievementPanel()">🏆</button>
+  
+  <!-- 錯題本按鈕 -->
+  <button class="wrongbook-btn" id="wrongbookBtn" onclick="openWrongBookPanel()">📖</button>
+  <button class="daily-tasks-btn" id="dailyTasksBtn" onclick="openDailyTasksPanel()">📋</button>
+
+  <!-- 成就通知 -->
+  <div class="achievement-notification" id="achievementNotif">
+    <div class="notif-icon" id="notifIcon">🏆</div>
+    <div class="notif-title">成就解鎖！</div>
+    <div class="notif-name" id="notifName">初露頭角</div>
+    <div class="notif-desc" id="notifDesc">完成首場戰鬥</div>
+  </div>
+
+  <!-- 成就面板 -->
+  <div class="achievement-panel" id="achievementPanel">
+    <div class="achievement-header">
+      <h2>🏆 成就系統</h2>
+      <button class="achievement-close" onclick="closeAchievementPanel()">關閉</button>
+    </div>
+    <div class="achievement-stats">
+      <div class="achievement-stat">
+        <div class="value" id="totalAchievements">0</div>
+        <div class="label">已解鎖</div>
+      </div>
+      <div class="achievement-stat">
+        <div class="value" id="totalAchievementPoints">0</div>
+        <div class="label">成就積分</div>
+      </div>
+    </div>
+    <div class="achievement-categories">
+      <button class="achievement-cat-btn active" onclick="filterAchievements('all')">全部</button>
+      <button class="achievement-cat-btn" onclick="filterAchievements('battle')">⚔️ 戰鬥</button>
+      <button class="achievement-cat-btn" onclick="filterAchievements('combo')">🔥 Combo</button>
+      <button class="achievement-cat-btn" onclick="filterAchievements('study')">📚 學習</button>
+      <button class="achievement-cat-btn" onclick="filterAchievements('special')">⭐ 特殊</button>
+    </div>
+    <div class="achievement-grid" id="achievementGrid">
+      <!-- Dynamically generated -->
+    </div>
+  </div>
   <script>
     const config = {
       2: { icon: '🦆', color: '#FFD93D', obj: '🍎', story: '小熊維尼', storyIcon: '🍯' },
@@ -3117,9 +3334,98 @@
       saveData();
     }
 
-    // 全熒幕
+    // ========== 戰鬥區 Helper 函數 ==========
+    function selectBattleHero(key) {
+      const hero = heroes[key];
+      battleState.heroKey = key;
+      document.getElementById('heroBattleAvatar').src = hero.img;
+      document.getElementById('heroBattleName').textContent = hero.name;
+      battleState.heroHp = hero.hp;
+      battleState.heroMaxHp = hero.hp;
+      updateHeroHpBar();
+      document.querySelectorAll('[id^="heroBtn_"]').forEach(b => b.classList.remove('active'));
+      const btn = document.getElementById('heroBtn_' + key);
+      if (btn) btn.classList.add('active');
+      saveData();
+    }
+
+    function resetBattleState() {
+      battleState.active = false;
+      battleState.inBattle = false;
+      battleState.combo = 0;
+      battleState.gold = 0;
+      streakForLevel = 0;
+      document.getElementById('comboDisplay').classList.remove('active');
+      document.getElementById('goldCount').textContent = '0';
+      document.getElementById('waveScore').textContent = '0';
+      document.getElementById('battleStartBtnOverlay').style.display = 'block';
+      if (battleState.battleTimerInterval) {
+        clearInterval(battleState.battleTimerInterval);
+        battleState.battleTimerInterval = null;
+      }
+      updateHeroHpBar();
+      saveData();
+    }
+
+    function initBattleHeroSelection() {
+      const defaultHero = localStorage.getItem('selectedHero') || 'knight';
+      selectBattleHero(defaultHero);
+    }
+
+    // ========== 全熒幕 ==========
     function toggleFullscreen() {
       document.body.classList.toggle('fullscreen-app');
+    }
+
+    // ========== profileSection 子Tab切換 ==========
+    function switchProfileTab(tab) {
+      document.querySelectorAll('.sub-tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelector(`.sub-tab-btn[onclick="switchProfileTab('${tab}')"]`).classList.add('active');
+      document.querySelectorAll('.profile-sub-panel').forEach(p => p.style.display = 'none');
+      document.getElementById('profile' + tab.charAt(0).toUpperCase() + tab.slice(1)).style.display = 'block';
+      // 更新內容
+      if (tab === 'stats') updateProfileStats();
+      else if (tab === 'wrongbook') { renderWeakAnalysis(); renderWrongHistory(); }
+      else if (tab === 'achievements') updateProfileAchievements();
+      else if (tab === 'heroes') updateProfileHeroes();
+    }
+
+    function updateProfileStats() {
+      const total = correct + wrong;
+      const acc = total > 0 ? Math.round((correct / total) * 100) : 0;
+      document.getElementById('profileTotal').textContent = total;
+      document.getElementById('profileCorrect').textContent = correct;
+      document.getElementById('profileWrong').textContent = wrong;
+      document.getElementById('profileAccuracy').textContent = acc + '%';
+      const bd = JSON.parse(localStorage.getItem('battleData') || '{}');
+      document.getElementById('profileBattles').textContent = bd.battlesWon || 0;
+      document.getElementById('profileBestStreak').textContent = bd.bestCombo || 0;
+    }
+
+    function updateProfileAchievements() {
+      const ach = JSON.parse(localStorage.getItem('achievementData') || '{"list":[],"points":0}');
+      document.getElementById('profileAchievementCount').textContent = ach.list.length;
+      const grid = document.getElementById('profileAchievementGrid');
+      grid.innerHTML = ach.list.map(a => `<div style="background:rgba(255,217,61,0.15); padding:10px; border-radius:8px; text-align:center;">
+        <div style="font-size:1.5rem;">${a.icon}</div>
+        <div style="font-size:0.8rem; color:#FFD93D;">${a.name}</div>
+      </div>`).join('') || '<div style="color:#aaa;">未解鎖任何成就</div>';
+    }
+
+    function updateProfileHeroes() {
+      const list = document.getElementById('profileHeroList');
+      list.innerHTML = Object.entries(heroes).map(([key, h]) => {
+        const bd = JSON.parse(localStorage.getItem('battleData') || '{}');
+        const lvl = bd.heroLevels?.[key] || 1;
+        return `<div style="background:rgba(255,255,255,0.05); padding:12px; border-radius:12px; display:flex; align-items:center; gap:12px;">
+          <img src="${h.img}" style="width:50px;height:50px;border-radius:8px;">
+          <div style="flex:1;">
+            <div style="font-weight:bold;">${h.name}</div>
+            <div style="font-size:0.8rem; color:#aaa;">Lv.${lvl} HP:${h.hp + (lvl-1)*20}</div>
+          </div>
+          <div style="color:#4ade80; font-size:0.9rem;">★ ${lvl}</div>
+        </div>`;
+      }).join('');
     }
 
     // 設置 & 報告
@@ -3252,6 +3558,16 @@
       resetDifficultyFlow();
       speak('已重置');
       saveData();
+    }
+
+    // ========== 三大主Tab切換 ==========
+    function switchMainSection(section) {
+      // 切換頂層nav按鈕狀態
+      document.querySelectorAll('.main-nav-btn').forEach(b => b.classList.remove('active'));
+      document.querySelector(`.main-nav-btn[data-section="${section}"]`).classList.add('active');
+      // 切換section顯示
+      document.querySelectorAll('.main-section').forEach(s => s.classList.remove('active'));
+      document.getElementById(section + 'Section').classList.add('active');
     }
 
     // Tab 切換
@@ -3716,11 +4032,7 @@
     loadData();
     loadBattleData();
     update();
-
-    // 初始化英雄選擇
-    const defaultHero = localStorage.getItem('battleData') ? JSON.parse(localStorage.getItem('battleData')).heroKey : 'knight';
-    selectHero(defaultHero);
-    document.querySelector(`.hero-select-card[data-hero="${defaultHero}"]`).classList.add('selected');
+    initBattleHeroSelection();
   
     // 三大領域系統
     function switchDomain(domain) {
@@ -4031,7 +4343,7 @@
 
     function openBattleFromCurrentSelection() {
       SoundManager.ensureInit();
-      document.getElementById('battleOverlay').classList.add('active');
+      switchMainSection('battle');
       document.getElementById('battleStartBtnOverlay').style.display = 'block';
       battleState.active = false;
       battleState.inBattle = false;
@@ -4039,12 +4351,10 @@
       streakForLevel = 0;
       document.getElementById('comboDisplay').classList.remove('active');
       const hero = heroes[battleState.heroKey];
-      const heroEl = document.getElementById('heroBattleStatus');
-      if (heroEl) heroEl.classList.remove('berserker-mode');
-      battleState.heroHp = hero.hp;
-      battleState.heroMaxHp = hero.hp;
       document.getElementById('heroBattleAvatar').src = hero.img;
       document.getElementById('heroBattleName').textContent = hero.name;
+      battleState.heroHp = hero.hp;
+      battleState.heroMaxHp = hero.hp;
       updateHeroHpBar();
     }
 
@@ -4053,7 +4363,7 @@
         clearInterval(battleState.battleTimerInterval);
         battleState.battleTimerInterval = null;
       }
-      document.getElementById('battleOverlay').classList.remove('active');
+      switchMainSection('learn');
       battleState.active = false;
       battleState.inBattle = false;
     }
@@ -6025,8 +6335,8 @@ function openAchievementPanel() {
 
   </script>
 
-<!-- Wrong Answers Panel -->
-<div id="wrongbookPanel" class="wrongbook-panel" style="display:none;">
+  <!-- Wrong Answers Panel -->
+  <div id="wrongbookPanel" class="wrongbook-panel" style="display:none;">
     <div class="wrongbook-header">
         <h2>📖 錯題本</h2>
         <button class="close-btn" onclick="closeWrongBookPanel()">✕</button>
@@ -6066,11 +6376,6 @@ function openAchievementPanel() {
 </div>
 
 <!-- Achievement Panel -->
-<div id="achievementPanel" class="achievement-panel" style="display:none;">
-    <div class="achievement-header">
-        <h2>🏆 成就系統</h2>
-        <button class="close-btn" onclick="closeAchievementPanel()">✕</button>
-    </div>
     <div class="achievement-progress">
         <span>已解鎖：<span id="achievementCount">0</span>/10</span>
         <span>總積分：<span id="achievementPoints">0</span></span>
