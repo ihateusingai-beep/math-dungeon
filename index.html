@@ -4632,8 +4632,18 @@
         `;
         const input = document.getElementById('battleAnswerInput');
         input.focus();
-        input.addEventListener('keypress', (e) => {
+        input.addEventListener('keydown', (e) => {
           if (e.key === 'Enter') battleSubmitAnswer();
+          // Handle number keys for quick answer
+          if (e.key >= '0' && e.key <= '9') {
+            // Allow number input in the field
+          }
+        });
+        input.addEventListener('keyup', (e) => {
+          // Prevent non-number keys from being typed
+          if (!/^[0-9]$/.test(e.key) && e.key !== 'Backspace' && e.key !== 'Delete' && e.key !== 'Enter' && !e.key.startsWith('Arrow')) {
+            // optional: block non-numeric
+          }
         });
       } else {
         const optionCount = domainKey === 'newbie' ? 3 : 4;
