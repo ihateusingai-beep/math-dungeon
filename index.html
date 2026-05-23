@@ -4457,7 +4457,27 @@
 
     // 數字鍵盤事件監聽 - 使用 onclick 屬性
     // numpadInput 函數在下面定義
-  
+
+    // ========== 桌面鍵盤快捷鍵 ==========
+    document.addEventListener('keydown', (e) => {
+      // 數字 1-9 快捷選答案（選擇題模式 + 戰鬥中）
+      if (battleState.active && battleState.inBattle && battleState.answerMode === 'choice') {
+        const key = parseInt(e.key);
+        if (key >= 1 && key <= 9) {
+          const options = document.querySelectorAll('.battle-option');
+          if (options[key - 1]) {
+            options[key - 1].click();
+          }
+        }
+      }
+      // Enter 確認答案（輸入模式）
+      if (battleState.active && battleState.inBattle && battleState.answerMode === 'input') {
+        if (e.key === 'Enter') {
+          battleSubmitAnswer();
+        }
+      }
+    });
+
     // 三大領域系統
     function switchDomain(domain) {
       currentDomain = domain;
