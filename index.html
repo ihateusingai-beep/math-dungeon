@@ -717,29 +717,6 @@
     .question-type-badge.missing { background: rgba(255,217,61,0.3); color: #FFD93D; }
     .question-type-badge.application { background: rgba(168,85,247,0.3); color: #C9B1FF; }
 
-    /* ========== NEW: 增強Combo視覺 ========== */
-    .combo-display {
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      padding: 8px 16px;
-      background: rgba(0,0,0,0.6);
-      border: 2px solid #FF8C42;
-      border-radius: 12px;
-      transition: all 0.3s;
-    }
-    .combo-display.active { display: flex; }
-    .combo-display.level-high { border-color: #FFD93D; background: rgba(255,217,61,0.2); box-shadow: 0 0 20px rgba(255,217,61,0.4); }
-    .combo-display.level-max { border-color: #a855f7; background: rgba(168,85,247,0.3); box-shadow: 0 0 30px rgba(168,85,247,0.6); animation: comboMaxPulse 0.5s ease infinite; }
-    @keyframes comboMaxPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
-    .combo-fire { font-size: 1.5rem; }
-    .combo-count { font-size: 1.8rem; font-weight: bold; color: #FF8C42; }
-    .combo-display.level-high .combo-count { color: #FFD93D; }
-    .combo-display.level-max .combo-count { color: #a855f7; }
-    .combo-skill { font-size: 0.8rem; color: #aaa; }
-    @keyframes comboPopIn { 0% { transform: scale(0.5); opacity: 0; } 50% { transform: scale(1.3); } 100% { transform: scale(1); opacity: 1; } }
-    .combo-display.pulse .combo-fire { animation: comboPopIn 0.4s ease; }
-
     /* ========== NEW: 進化動畫Overlay ========== */
     .evolution-overlay {
       display: none;
@@ -1158,6 +1135,107 @@
       font-size: 1rem;
     }
     .achievement-close:hover { background: rgba(255,255,255,0.2); }
+
+    /* ========== Wrongbook Panel ========== */
+    .wrongbook-panel {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.9);
+      z-index: 300;
+      flex-direction: column;
+      padding: 20px;
+      overflow-y: auto;
+    }
+    .wrongbook-panel.active { display: flex; }
+    .wrongbook-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .wrongbook-header h2 { color: #FFD93D; margin: 0; }
+    .wrongbook-tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .wrongbook-tabs .tab-btn {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+    }
+    .wrongbook-tabs .tab-btn.active { background: var(--primary); }
+    .wrongbook-content { padding: 10px; }
+    .wrong-tables-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+      gap: 10px;
+      margin: 15px 0;
+    }
+    .close-btn {
+      background: rgba(255,255,255,0.1);
+      border: none;
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+    .close-btn:hover { background: rgba(255,255,255,0.2); }
+    .practice-btn {
+      background: var(--primary);
+      border: none;
+      color: #fff;
+      padding: 12px 24px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 1rem;
+      width: 100%;
+      margin-top: 10px;
+    }
+    .practice-btn:hover { background: #3a7bc8; }
+    .start-practice-btn {
+      background: linear-gradient(135deg, var(--success), #4D96FF);
+      border: none;
+      color: #fff;
+      padding: 15px 30px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 1.1rem;
+      width: 100%;
+      margin-top: 10px;
+    }
+    .start-practice-btn:hover { opacity: 0.9; }
+
+    /* ========== Daily Tasks Panel ========== */
+    .daily-tasks-panel {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.9);
+      z-index: 300;
+      flex-direction: column;
+      padding: 20px;
+      overflow-y: auto;
+    }
+    .daily-tasks-panel.active { display: flex; }
+    .daily-tasks-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .daily-tasks-header h2 { color: #FFD93D; margin: 0; }
+    .daily-tasks-list { display: flex; flex-direction: column; gap: 15px; }
+
     .achievement-stats {
       display: flex;
       gap: 20px;
@@ -1358,9 +1436,12 @@
     .battle-section {
       display: none;
       width: 100%;
+      max-width: 100%;
       flex-direction: column;
-      align-items: center;
+      align-items: stretch;
       gap: 15px;
+      padding: 0;
+      box-sizing: border-box;
     }
     .battle-section.active { display: flex; }
 
@@ -1370,9 +1451,11 @@
       align-items: center;
       gap: 20px;
       width: 100%;
+      max-width: 520px;
       padding: 15px;
       background: rgba(0,0,0,0.3);
       border-radius: 18px;
+      box-sizing: border-box;
     }
 
     .monster-card {
@@ -1515,6 +1598,16 @@
       border-color: #ff0080;
       animation: comboGlowMax 0.5s ease, comboMaxPulse 0.8s ease infinite 0.5s;
     }
+    .combo-display.milestone-15 {
+      background: linear-gradient(135deg, rgba(255,140,0,0.6), rgba(255,0,128,0.4));
+      border-color: #ff8c00;
+      animation: comboGlowMilestone 0.6s ease;
+    }
+    .combo-display.milestone-20 {
+      background: linear-gradient(135deg, rgba(255,215,0,0.7), rgba(255,0,128,0.5));
+      border-color: #ffd700;
+      animation: comboGlowMax 0.5s ease, comboMaxPulse 0.6s ease infinite 0.5s;
+    }
     @keyframes comboGlow {
       0% { transform: scale(0.8); box-shadow: 0 0 0 rgba(255,217,61,0); }
       50% { transform: scale(1.1); box-shadow: 0 0 30px rgba(255,217,61,0.8); }
@@ -1530,11 +1623,76 @@
       50% { transform: scale(1.2); box-shadow: 0 0 50px rgba(255,0,128,1); }
       100% { transform: scale(1); box-shadow: 0 0 25px rgba(255,0,128,0.6); }
     }
+    @keyframes comboGlowMilestone {
+      0% { transform: scale(0.8); box-shadow: 0 0 0 rgba(255,140,0,0); }
+      50% { transform: scale(1.2); box-shadow: 0 0 50px rgba(255,140,0,0.9); }
+      100% { transform: scale(1); box-shadow: 0 0 25px rgba(255,140,0,0.5); }
+    }
     #comboCount { transition: transform 0.2s; }
     #comboCount.pulse { animation: comboPulse 0.3s ease; }
     @keyframes comboPulse {
       0%, 100% { transform: scale(1); }
       50% { transform: scale(1.4); }
+    }
+
+    .stage-selector {
+      background: rgba(20, 30, 50, 0.95);
+      border: 2px solid var(--accent);
+      border-radius: 16px;
+      padding: 15px;
+      margin-bottom: 10px;
+      display: none;
+      width: 100%;
+      max-width: 520px;
+      box-sizing: border-box;
+    }
+    .stage-selector.active { display: block; }
+    .stage-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+    .stage-btn {
+      padding: 12px 8px;
+      border: 2px solid;
+      border-radius: 12px;
+      background: rgba(30, 40, 60, 0.8);
+      color: #fff;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+    .stage-btn:not(.locked):hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 15px currentColor;
+    }
+    .stage-btn.locked {
+      opacity: 0.5;
+      cursor: not-allowed;
+      filter: grayscale(0.8);
+    }
+    .stage-btn.completed {
+      border-color: #ffd700;
+    }
+    .stage-btn.current {
+      border-color: var(--accent);
+      box-shadow: 0 0 10px var(--accent);
+    }
+    .stage-btn .stage-name {
+      font-size: 0.8rem;
+      color: #aaa;
+    }
+    .stage-btn .stage-stars {
+      font-size: 0.75rem;
+      color: #ffd700;
+    }
+    .stage-btn .stage-table {
+      font-size: 0.7rem;
+      color: #888;
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -1553,13 +1711,49 @@
       animation: damageFloat 1s ease-out forwards;
       pointer-events: none;
       z-index: 100;
+      white-space: nowrap;
     }
     .damage-number.heal { color: #6BCB77; }
-    .damage-number.crit { color: #FF6B6B; font-size: 2.2rem; }
+    .damage-number.crit { 
+      color: #ff5050; 
+      font-size: 2.4rem; 
+      text-shadow: 0 0 20px #ff5050, 0 0 40px #ff8080, 2px 2px 0 rgba(0,0,0,0.5);
+      animation: critFloat 1s ease-out forwards;
+    }
+    .damage-number.miss { 
+      color: #888; 
+      font-size: 1.4rem; 
+      font-style: italic;
+    }
+    .damage-number.blocked { 
+      color: #64c8ff; 
+      font-size: 1.5rem; 
+    }
+    .damage-number.timeout {
+      color: #888;
+      font-size: 1.2rem;
+    }
+    .correct-answer-hint {
+      margin-top: 10px;
+      color: #6BCB77;
+      font-size: 1.1rem;
+      font-weight: bold;
+      animation: fadeInHint 0.3s ease-out;
+    }
+    @keyframes fadeInHint {
+      from { opacity: 0; transform: scale(0.8); }
+      to { opacity: 1; transform: scale(1); }
+    }
     @keyframes damageFloat {
       0% { opacity: 1; transform: translateY(0) scale(1); }
-      50% { opacity: 1; transform: translateY(-30px) scale(1.2); }
+      30% { opacity: 1; transform: translateY(-20px) scale(1.15); }
       100% { opacity: 0; transform: translateY(-60px) scale(0.8); }
+    }
+    @keyframes critFloat {
+      0% { opacity: 1; transform: translateY(0) scale(0.5); }
+      20% { opacity: 1; transform: translateY(-10px) scale(1.3); }
+      50% { opacity: 1; transform: translateY(-35px) scale(1.2); }
+      100% { opacity: 0; transform: translateY(-80px) scale(0.9); }
     }
 
     .battle-reward-popup {
@@ -1706,7 +1900,7 @@
     }
 
     .battle-answer-input {
-      margin-top: 15px;
+      margin: 0;
       padding: 12px 20px;
       font-size: 1.8rem;
       width: 140px;
@@ -1716,19 +1910,27 @@
       background: rgba(0,0,0,0.5);
       color: #fff;
       font-family: inherit;
+      -webkit-appearance: none;
+      appearance: none;
     }
-    .battle-answer-input:focus { outline: none; border-color: #fff; }
+    .battle-answer-input:focus {
+      outline: none;
+      border-color: #fff;
+    }
 
     .battle-submit-btn {
       margin-left: 10px;
-      padding: 12px 25px;
-      font-size: 1.2rem;
+      padding: 14px 28px;
+      font-size: 1.3rem;
       background: var(--accent);
       border: none;
-      border-radius: 10px;
+      border-radius: 12px;
       cursor: pointer;
       font-family: inherit;
       transition: transform 0.2s;
+      min-width: 70px;
+      min-height: 50px;
+      touch-action: manipulation;
     }
     .battle-submit-btn:hover { transform: scale(1.05); }
 
@@ -1802,16 +2004,20 @@
   .monster-hit-anim { animation: monsterHit 0.3s ease-out; }
   .hero-attack-anim { animation: heroAttack 0.4s ease-out; }
   @keyframes heroAttack { 0% { transform: translateX(0); } 40% { transform: translateX(80px) scale(1.2); } 100% { transform: translateX(0); } }
-  .damage-number { position: absolute; font-size: 1.8em; font-weight: bold; pointer-events: none; z-index: 1000; text-shadow: 2px 2px 4px rgba(0,0,0,0.8), -1px -1px 0 #fff; animation: floatUp 1s ease-out forwards; }
-  .damage-number.crit { font-size: 2.5em; color: #f39c12; text-shadow: 0 0 20px #f39c12, 2px 2px 4px rgba(0,0,0,0.8); }
-  .damage-number.heal { color: #27ae60; }
-  @keyframes floatUp { 0% { opacity: 1; transform: translateY(0) scale(1); } 50% { opacity: 1; transform: translateY(-40px) scale(1.3); } 100% { opacity: 0; transform: translateY(-80px) scale(0.8); } }
   .particle-container { position: fixed; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none; z-index: 998; overflow: hidden; }
   .particle { position: absolute; width: 8px; height: 8px; border-radius: 50%; pointer-events: none; animation: particleFade 1s ease-out forwards; }
   .particle.gold { background: radial-gradient(circle, #f1c40f, #f39c12); box-shadow: 0 0 10px #f39c12; }
   .particle.magic { background: radial-gradient(circle, #9b59b6, #8e44ad); box-shadow: 0 0 10px #9b59b6; }
   .particle.spark { background: radial-gradient(circle, #fff, #f39c12); box-shadow: 0 0 15px #fff; }
+  .particle.hit { background: radial-gradient(circle, #ff6b6b, #ff4444); box-shadow: 0 0 8px #ff6b6b; animation: hitSpark 0.6s ease-out forwards; }
+  .particle.fire { background: radial-gradient(circle, #ff8c42, #ff5722); box-shadow: 0 0 12px #ff5722; animation: fireSpark 0.8s ease-out forwards; }
+  .particle.ice { background: radial-gradient(circle, #64c8ff, #00bcd4); box-shadow: 0 0 12px #64c8ff; animation: iceSpark 0.8s ease-out forwards; }
+  .particle.crit { background: radial-gradient(circle, #ffd700, #ff8c00); box-shadow: 0 0 20px #ffd700; animation: critSpark 1s ease-out forwards; }
   @keyframes particleFade { 0% { opacity: 1; transform: scale(1); } 100% { opacity: 0; transform: scale(0) translateY(-100px); } }
+  @keyframes hitSpark { 0% { opacity: 1; transform: scale(1.5) translateY(0); } 100% { opacity: 0; transform: scale(0) translateY(-50px); } }
+  @keyframes fireSpark { 0% { opacity: 1; transform: scale(1.2) translateY(0); } 50% { opacity: 0.8; transform: scale(1) translateY(-30px); } 100% { opacity: 0; transform: scale(0.5) translateY(-80px); } }
+  @keyframes iceSpark { 0% { opacity: 1; transform: scale(1.2) translateX(-20px); } 50% { opacity: 0.6; transform: scale(1) translateX(10px) translateY(-40px); } 100% { opacity: 0; transform: scale(0.3) translateX(-10px) translateY(-100px); } }
+  @keyframes critSpark { 0% { opacity: 1; transform: scale(2) translateY(0); } 30% { opacity: 1; transform: scale(1.5) translateY(-20px); } 100% { opacity: 0; transform: scale(0) translateY(-120px); } }
   .floating-text { position: fixed; font-size: 1.5em; font-weight: bold; color: #f39c12; text-shadow: 2px 2px 4px rgba(0,0,0,0.8); pointer-events: none; z-index: 1001; animation: floatText 1.5s ease-out forwards; }
   @keyframes floatText { 0% { opacity: 1; transform: translateY(0) scale(1); } 50% { opacity: 1; transform: translateY(-30px) scale(1.2); } 100% { opacity: 0; transform: translateY(-60px); } }
   .monster-intent-display { position: absolute; top: -60px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.8); border: 2px solid; border-radius: 20px; padding: 8px 16px; font-size: 1em; white-space: nowrap; z-index: 100; animation: intentPulse 2s ease-in-out infinite; }
@@ -1832,8 +2038,8 @@
 
   /* ========== 森林兵團新UI (Phase 1) ========== */
   .battle-arena.forest-duel {
-    background: linear-gradient(#0a2a1f, #0f3d2e);
-    background-image: 
+    background: 
+      linear-gradient(#0a2a1f, #0f3d2e),
       radial-gradient(circle at 20% 30%, rgba(80,200,120,0.15) 0%, transparent 50%),
       radial-gradient(circle at 80% 70%, rgba(120,80,200,0.12) 0%, transparent 50%);
     position: relative;
@@ -1849,12 +2055,37 @@
     z-index: 0;
   }
 
+  .stage-banner {
+    background: linear-gradient(var(--stage-color, #4ade80), var(--stage-accent, #22c55e));
+    border: 3px solid var(--stage-accent, #22c55e);
+    border-radius: 12px;
+    padding: 8px 20px;
+    text-align: center;
+    z-index: 2;
+    width: 100%;
+    max-width: 520px;
+    box-sizing: border-box;
+  }
+  .stage-banner .stage-number { font-size: 1.2rem; font-weight: bold; }
+  .stage-banner .monster-name { font-size: 0.9rem; color: var(--stage-accent, #22c55e); }
+  .stage-banner.stage-9 {
+    background: linear-gradient(#fbbf24, #f59e0b);
+    border-color: #f59e0b;
+    animation: bossGlow 1s ease infinite;
+  }
+  @keyframes bossGlow {
+    0%, 100% { box-shadow: 0 0 20px rgba(251, 191, 36, 0.5); }
+    50% { box-shadow: 0 0 40px rgba(251, 191, 36, 0.8); }
+  }
+
   .battle-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
     width: 100%;
     padding: 8px 16px;
+    box-sizing: border-box;
+  }
     background: rgba(0, 20, 15, 0.85);
     border-radius: 12px;
     border: 2px solid #3a8f6f;
@@ -1882,8 +2113,19 @@
   .timer-fill {
     height: 100%;
     background: linear-gradient(90deg, #4ade80, #22c55e);
-    transition: width 0.1s linear;
+    transition: width 0.1s linear, background 0.3s ease;
   }
+  .timer-fill.warning { background: linear-gradient(90deg, #fbbf24, #f59e0b); }
+  .timer-fill.danger { 
+    background: linear-gradient(90deg, #ff5555, #c02626); 
+    animation: timerPulse 0.5s ease infinite; 
+  }
+  @keyframes timerPulse { 
+    0%, 100% { opacity: 1; box-shadow: 0 0 8px #ff5555; } 
+    50% { opacity: 0.7; box-shadow: 0 0 16px #ff5555; } 
+  }
+  .timer-bar.urgent { animation: timerShake 0.3s ease infinite; }
+  @keyframes timerShake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-2px); } 75% { transform: translateX(2px); } }
   .timer-text {
     font-size: 1.1rem;
     color: #4ade80;
@@ -1970,14 +2212,25 @@
     border-radius: 999px;
     overflow: hidden;
     margin-top: 6px;
+    transition: border-color 0.3s;
   }
-  .hp-fill.green { background: linear-gradient(#4ade80, #22c55e); }
-  .hp-fill.red { background: linear-gradient(#ff5555, #c02626); }
+  .hp-fill {
+    height: 100%;
+    transition: width 0.3s ease, background 0.5s ease;
+    border-radius: 999px;
+  }
+  .hp-fill.green { background: linear-gradient(90deg, #4ade80, #22c55e); }
+  .hp-fill.yellow { background: linear-gradient(90deg, #fbbf24, #f59e0b); border-color: #fbbf24; }
+  .hp-fill.red { background: linear-gradient(90deg, #ff5555, #c02626); animation: hpBarPulse 0.8s ease infinite; }
+  @keyframes hpBarPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+  .hp-bar.damaged { animation: hpBarShake 0.3s ease; }
+  @keyframes hpBarShake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-3px); } 75% { transform: translateX(3px); } }
 
   .question-center {
     flex: 1;
     text-align: center;
     padding: 10px;
+    min-width: 0;
   }
   .math-question {
     font-size: 3.2rem;
@@ -1990,6 +2243,16 @@
     border: 3px solid #4ade80;
     display: inline-block;
     min-width: 280px;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+  .battle-options {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    width: 100%;
+    max-width: 320px;
+    margin: 10px auto 0;
   }
 
   .arcane-energy {
@@ -2014,6 +2277,8 @@
     width: 100%;
     max-width: 380px;
     margin: 0 auto;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
   }
   .num-btn {
     padding: 18px 0;
@@ -2025,6 +2290,10 @@
     cursor: pointer;
     font-family: inherit;
     transition: all 0.1s;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-appearance: none;
+    appearance: none;
   }
   .num-btn:active { transform: scale(0.95); background: #3a8f6f; }
   .num-btn.special {
@@ -2136,6 +2405,112 @@
 
   .main-section.active {
     display: flex;
+  }
+
+  /* ========== 響應式設計 ========== */
+  @media (max-width: 540px) {
+    .battle-section {
+      padding: 5px;
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+    .battle-section.active {
+      display: flex;
+    }
+    .battle-arena {
+      width: 100%;
+      max-width: 100%;
+      padding: 8px;
+      gap: 12px;
+    }
+    .stage-selector, .stage-banner {
+      max-width: 100%;
+      padding: 8px;
+    }
+    .battle-header {
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 6px 10px;
+    }
+    .timer-bar {
+      width: 100px;
+    }
+    .number-pad {
+      max-width: 100%;
+      gap: 5px;
+      padding: 0 5px;
+    }
+    .num-btn {
+      padding: 12px 0;
+      font-size: 1.3rem;
+    }
+    .battle-duel {
+      gap: 10px;
+      padding: 8px;
+    }
+    .player-side, .enemy-side {
+      width: 90px;
+    }
+    .player-character, .enemy-character {
+      width: 65px;
+      height: 65px;
+    }
+    .math-question {
+      font-size: 2.2rem;
+      padding: 12px 20px;
+      min-width: 180px;
+    }
+    .question-center {
+      padding: 5px;
+    }
+    .battle-attributes {
+      font-size: 0.8rem;
+      padding: 5px 8px;
+    }
+    .battle-options {
+      max-width: 280px;
+      gap: 8px;
+    }
+    .battle-option {
+      padding: 10px 15px;
+      font-size: 1.2rem;
+    }
+  }
+  @media (max-width: 400px) {
+    .battle-section {
+      padding: 3px;
+    }
+    .battle-arena {
+      padding: 6px;
+      gap: 10px;
+    }
+    .num-btn {
+      padding: 10px 0;
+      font-size: 1.2rem;
+    }
+    .battle-option {
+      padding: 8px 12px;
+      font-size: 1.1rem;
+    }
+    .math-question {
+      font-size: 1.8rem;
+      padding: 10px 16px;
+      min-width: 150px;
+    }
+    .player-character, .enemy-character {
+      width: 55px;
+      height: 55px;
+    }
+    .battle-duel {
+      gap: 8px;
+      padding: 6px;
+    }
+  }
+  /* Full width override for battle section */
+  #battleSection {
+    width: 100%;
+    max-width: 100%;
   }
 </style>
 </head>
@@ -2528,6 +2903,12 @@
 
     <!-- 戰鬥 arena -->
     <div class="battle-arena forest-duel" id="battleArena" style="width:100%; max-width:520px;">
+      <!-- Stage Banner -->
+      <div class="stage-banner" id="stageBanner" style="display:none; margin-bottom:8px;">
+        <div class="stage-number" id="stageBannerNumber">關卡 1</div>
+        <div class="monster-name" id="stageBannerMonster">森林哨兵</div>
+      </div>
+      
       <!-- 森林兵團 Header -->
       <div class="battle-header">
         <div>
@@ -2578,6 +2959,8 @@
             <button class="mode-btn active" id="modeInputBtn" onclick="setAnswerMode('input')">⌨️ 直接輸入</button>
             <button class="mode-btn" id="modeChoiceBtn" onclick="setAnswerMode('choice')">🔘 選擇題</button>
           </div>
+          <!-- 選擇題選項容器 -->
+          <div id="battleOptions" class="battle-options" style="margin-top:10px;"></div>
         </div>
 
         <!-- 敵人右側 -->
@@ -2606,18 +2989,29 @@
 
       <!-- 數字鍵盤 -->
       <div class="number-pad" id="numberPad">
-        <button class="num-btn" data-num="1">1</button>
-        <button class="num-btn" data-num="2">2</button>
-        <button class="num-btn" data-num="3">3</button>
-        <button class="num-btn" data-num="4">4</button>
-        <button class="num-btn" data-num="5">5</button>
-        <button class="num-btn" data-num="6">6</button>
-        <button class="num-btn" data-num="7">7</button>
-        <button class="num-btn" data-num="8">8</button>
-        <button class="num-btn" data-num="9">9</button>
-        <button class="num-btn special" data-num="C">C</button>
-        <button class="num-btn" data-num="0">0</button>
-        <button class="num-btn special" data-num="E">E</button>
+        <button type="button" class="num-btn" onclick="numpadInput('1')">1</button>
+        <button type="button" class="num-btn" onclick="numpadInput('2')">2</button>
+        <button type="button" class="num-btn" onclick="numpadInput('3')">3</button>
+        <button type="button" class="num-btn" onclick="numpadInput('4')">4</button>
+        <button type="button" class="num-btn" onclick="numpadInput('5')">5</button>
+        <button type="button" class="num-btn" onclick="numpadInput('6')">6</button>
+        <button type="button" class="num-btn" onclick="numpadInput('7')">7</button>
+        <button type="button" class="num-btn" onclick="numpadInput('8')">8</button>
+        <button type="button" class="num-btn" onclick="numpadInput('9')">9</button>
+        <button type="button" class="num-btn special" onclick="numpadInput('C')">C</button>
+        <button type="button" class="num-btn" onclick="numpadInput('0')">0</button>
+        <button type="button" class="num-btn special" onclick="numpadInput('E')">E</button>
+      </div>
+    </div>
+
+    <!-- Stage Selection UI -->
+    <div class="stage-selector" id="stageSelector" style="width:100%; max-width:520px; margin:10px auto;">
+      <div style="text-align:center; margin-bottom:10px; font-size:1.2rem; color:var(--accent);">🗺️ 選擇關卡</div>
+      <div class="stage-grid" id="stageGrid" style="gap:8px;">
+        <!-- Dynamically generated -->
+      </div>
+      <div style="text-align:center; margin-top:8px; color:#aaa; font-size:0.9rem;">
+        總星數: <span id="totalStageStars">0</span> ⭐
       </div>
     </div>
 
@@ -3192,9 +3586,9 @@
       if (btn) btn.textContent = BGM.playing ? '🎵 音樂: 開' : '🎵 音樂: 關';
     }
     const heroes = {
-      knight: { name: '銀藍騎士', hp: 100, atkMin: 8, atkMax: 12, crit: 0.1, img: 'assets/images/wizard-hero.jpeg', color: '#4a90e2', passive: 'block' },
-      mage: { name: '銀月法師', hp: 80, atkMin: 12, atkMax: 18, crit: 0.15, img: 'assets/images/wizard-hero.jpeg', color: '#9b59b6', passive: 'critBoost' },
-      berserker: { name: '烈焰狂戰', hp: 120, atkMin: 15, atkMax: 25, crit: 0.25, img: 'assets/images/wizard-hero.jpeg', color: '#e74c3c', passive: 'rage' }
+      knight: { name: '銀藍騎士', hp: 100, maxHp: 100, atkMin: 8, atkMax: 12, crit: 0.1, img: 'assets/images/knight-hero.png', color: '#4a90e2', passive: 'block' },
+      mage: { name: '銀月法師', hp: 80, maxHp: 80, atkMin: 12, atkMax: 18, crit: 0.15, img: 'assets/images/mage-hero.png', color: '#9b59b6', passive: 'critBoost' },
+      berserker: { name: '烈焰狂戰', hp: 120, maxHp: 120, atkMin: 15, atkMax: 25, crit: 0.25, img: 'assets/images/berserker-hero.png', color: '#e74c3c', passive: 'rage' }
     };
     const monsters = {
       newbie: [
@@ -4060,6 +4454,9 @@
     loadBattleData();
     update();
     initBattleHeroSelection();
+
+    // 數字鍵盤事件監聽 - 使用 onclick 屬性
+    // numpadInput 函數在下面定義
   
     // 三大領域系統
     function switchDomain(domain) {
@@ -4433,6 +4830,22 @@
       updateHeroLevelDisplay();
       document.getElementById('battleTimerContainer').classList.remove('active');
 
+      // Show stage banner if in stage mode
+      const banner = document.getElementById('stageBanner');
+      if (battleState.currentStage) {
+        const stage = getStageData(battleState.currentStage);
+        document.getElementById('stageBannerNumber').textContent = '關卡 ' + stage.id;
+        document.getElementById('stageBannerMonster').textContent = stage.name;
+        banner.style.display = 'block';
+        banner.className = 'stage-banner stage-' + stage.id;
+        document.documentElement.style.setProperty('--stage-color', stage.color);
+        document.documentElement.style.setProperty('--stage-accent', stage.accent);
+        document.getElementById('battleLevelNum').textContent = stage.id;
+        document.getElementById('battleWorldName').textContent = stage.name;
+      } else {
+        banner.style.display = 'none';
+      }
+
       document.getElementById('battleStartBtnOverlay').style.display = 'none';
 
       document.getElementById('battleQuestion').innerHTML = '<span style="font-size:1.5rem">⚔️ 戰鬥開始！</span>';
@@ -4444,34 +4857,49 @@
     }
 
     function spawnMonster() {
-      const domain = currentDomain;
-      const monsterList = monsters[domain];
-      const template = monsterList[Math.floor(Math.random() * monsterList.length)];
-
-      battleState.monsterName = template.name;
-      battleState.monsterEmoji = template.emoji;
-      battleState.monsterMaxHp = Math.floor(Math.random() * (template.hpMax - template.hpMin + 1)) + template.hpMin;
+      // Use stage-based monster selection
+      const stage = getStageData(battleState.currentStage || 1);
+      const monsterHp = Math.floor(50 * stage.hpScale);
+      
+      battleState.monsterName = stage.name;
+      battleState.monsterEmoji = '';
+      battleState.monsterMaxHp = monsterHp;
       battleState.monsterHp = battleState.monsterMaxHp;
-      battleState.monsterGold = template.gold;
-      battleState.monsterExp = template.exp;
-      battleState.isBoss = template.boss || false;
+      battleState.monsterGold = Math.floor(10 * stage.hpScale);
+      battleState.monsterExp = Math.floor(15 * stage.hpScale);
+      battleState.isBoss = stage.isBoss || false;
       battleState.monsterTurnCount = 0;
       battleState.monsterBuffs = [];
       battleState.monsterAction = null;
 
-      document.getElementById('monsterImg').src = template.img;
-      document.getElementById('monsterName').textContent = template.name;
+      // Set monster image based on stage
+      const monsterImages = {
+        1: 'assets/images/slime-monster.jpeg',
+        2: 'assets/images/goblin-monster.jpeg',
+        3: 'assets/images/skeleton-monster.jpeg',
+        4: 'assets/images/orc-monster.jpeg',
+        5: 'assets/images/darkknight-monster.jpeg',
+        6: 'assets/images/shadowmage-monster.jpeg',
+        7: 'assets/images/dragon-monster.jpeg',
+        8: 'assets/images/demonlord-monster.jpeg',
+        9: 'assets/images/boss-monster.png'
+      };
+      document.getElementById('monsterImg').src = monsterImages[stage.id] || 'assets/images/slime-monster.jpeg';
+      document.getElementById('monsterName').textContent = stage.name;
       document.getElementById('monsterCard').classList.toggle('boss', battleState.isBoss);
       
-      // 根據領域切換背景
+      // Apply stage-themed background
       const arena = document.getElementById('battleArena');
-      arena.className = 'battle-arena';
-      if (currentDomain === 'legend') {
-        arena.style.background = `linear-gradient(rgba(20,10,40,0.85), rgba(30,15,60,0.85)), url('assets/images/bg-castle.jpeg') center/cover`;
-      } else {
-        arena.style.background = `linear-gradient(rgba(10,30,20,0.85), rgba(15,50,35,0.85)), url('assets/images/bg-forest.jpeg') center/cover`;
+      arena.className = 'battle-arena stage-' + stage.id;
+      arena.style.background = `linear-gradient(${stage.color}22, ${stage.color}11), url('assets/images/bg-forest.jpeg') center/cover`;
+      arena.classList.add('forest-duel');
+      
+      // Update stage banner with themed colors
+      const banner = document.getElementById('stageBanner');
+      if (banner) {
+        banner.style.borderColor = stage.accent;
+        banner.style.background = `linear-gradient(${stage.color}, ${stage.accent})`;
       }
-      arena.classList.add(currentDomain === 'legend' ? 'castle-duel' : 'forest-duel');
       
       updateMonsterHpBar();
 
@@ -4506,23 +4934,31 @@
 
       count.textContent = battleState.combo;
 
-      if (battleState.combo >= 10) {
+      if (battleState.combo >= 20) {
+        skill.textContent = '💫 毀滅衝擊';
+        display.classList.add('milestone-20');
+      } else if (battleState.combo >= 15) {
         skill.textContent = '⚡ 終極大招';
-      } else if (battleState.combo >= 5) {
+        display.classList.add('milestone-15');
+      } else if (battleState.combo >= 10) {
         skill.textContent = '🔥 技能攻擊';
-      } else if (battleState.combo >= 3) {
+        display.classList.add('level-max');
+      } else if (battleState.combo >= 5) {
         skill.textContent = '💥 普通攻擊';
+        display.classList.add('level-high');
       } else {
         skill.textContent = '';
       }
 
-      display.classList.remove('level-high', 'level-max');
-      if (battleState.combo >= 10) {
+      display.classList.remove('level-high', 'level-max', 'milestone-15', 'milestone-20');
+      if (battleState.combo >= 20) {
+        display.classList.add('milestone-20');
+      } else if (battleState.combo >= 15) {
+        display.classList.add('milestone-15');
+      } else if (battleState.combo >= 10) {
         display.classList.add('level-max');
       } else if (battleState.combo >= 5) {
         display.classList.add('level-high');
-      } else {
-        display.classList.remove('level-high', 'level-max');
       }
 
       display.classList.toggle('active', battleState.combo >= 3);
@@ -4531,6 +4967,12 @@
         count.classList.remove('pulse');
         void count.offsetWidth;
         count.classList.add('pulse');
+      }
+
+      if ([5, 10, 15, 20].includes(battleState.combo)) {
+        display.classList.remove('pulse');
+        void display.offsetWidth;
+        display.classList.add('pulse');
       }
     }
 
@@ -4546,95 +4988,111 @@
       // Record start time for speed calculation
       battleState.answerStartTime = Date.now();
       
-      // 20% chance for application, 30% for missing, 50% for normal
-      const rand = Math.random();
-      if (rand < 0.2) {
-        battleState.questionType = 'application';
-      } else if (rand < 0.5) {
-        battleState.questionType = 'missing';
+      // Use stage-based question generation if stage is set
+      if (battleState.currentStage) {
+        const stageQuestion = generateStageQuestion(battleState.currentStage);
+        document.getElementById('battleQuestion').innerHTML = stageQuestion.typeBadge + '<div style="margin-top:8px;font-size:1.5rem;">' + stageQuestion.questionText + '</div>';
+        battleState.battleAnswer = stageQuestion.answer;
+        battleState.questionType = stageQuestion.table ? 'normal' : 'missing';
+        num1 = stageQuestion.table;
+        num2 = stageQuestion.num2;
       } else {
-        battleState.questionType = 'normal';
-      }
-      
-      // Apply adaptive difficulty
-      const ranges = { newbie: [2, 5], veteran: [2, 9], legend: [2, 12] };
-      // Ensure domainKey is valid
-      let domainKey = battleState.domain;
-      if (!domainKey || !ranges[domainKey]) {
-        domainKey = 'newbie';
-        battleState.domain = 'newbie'; // Fix corrupted state
-      }
-      let [min, max] = ranges[domainKey];
-      
-      if (selectedLevel && typeof selectedLevel === 'number' && selectedLevel >= 2 && selectedLevel <= 9) {
-        num1 = selectedLevel;
-        num2 = Math.floor(Math.random() * 8) + 2;
-      } else {
-        // Use adaptive ranges if not in specific level mode
-        const adaptive = applyAdaptiveToQuestion();
-        min = adaptive.min;
-        max = adaptive.max;
-        // Safety check - ensure min and max are valid numbers
-        if (typeof min !== 'number' || typeof max !== 'number' || min > max) {
-          min = 2;
-          max = 5;
-        }
-        num1 = Math.floor(Math.random() * (max - min + 1)) + min;
-        num2 = Math.floor(Math.random() * (max - min + 1)) + min;
-      }
-      battleState.battleAnswer = num1 * num2;
-
-      // Generate question text based on type
-      let questionText = '';
-      let typeBadge = '';
-      
-      if (battleState.questionType === 'missing') {
-        // 缺數題: 7 × ? = 42 或 ? × 8 = 56
-        if (Math.random() < 0.5) {
-          questionText = `${num1} × ? = ${num1 * num2}`;
-          battleState.battleAnswer = num2;
+        // Fallback to original domain-based question generation
+        const rand = Math.random();
+        if (rand < 0.2) {
+          battleState.questionType = 'application';
+        } else if (rand < 0.5) {
+          battleState.questionType = 'missing';
         } else {
-          questionText = `? × ${num2} = ${num1 * num2}`;
-          battleState.battleAnswer = num1;
+          battleState.questionType = 'normal';
         }
-        typeBadge = '<span class="question-type-badge missing">🔍 缺數題</span>';
-      } else if (battleState.questionType === 'application') {
-        // 應用題
-        const applications = [
-          `有 ${num1} 群怪物，每群 ${num2} 隻，總共幾多隻？`,
-          `每個寶箱有 ${num1} 個金幣，開咗 ${num2} 個寶箱，共幾多金幣？`,
-          `小明每秒攻擊 ${num1} 點，攻擊 ${num2} 秒，共幾多點？`
-        ];
-        questionText = applications[Math.floor(Math.random() * applications.length)];
-        typeBadge = '<span class="question-type-badge application">📖 應用題</span>';
-      } else {
-        questionText = `${num1} × ${num2} = ?`;
-        typeBadge = '<span class="question-type-badge normal">⚔️ 基礎題</span>';
+        
+        const ranges = { newbie: [2, 5], veteran: [2, 9], legend: [2, 12] };
+        let domainKey = battleState.domain;
+        if (!domainKey || !ranges[domainKey]) {
+          domainKey = 'newbie';
+          battleState.domain = 'newbie';
+        }
+        let [min, max] = ranges[domainKey];
+        
+        if (selectedLevel && typeof selectedLevel === 'number' && selectedLevel >= 2 && selectedLevel <= 9) {
+          num1 = selectedLevel;
+          num2 = Math.floor(Math.random() * 8) + 2;
+        } else {
+          const adaptive = applyAdaptiveToQuestion();
+          min = adaptive.min;
+          max = adaptive.max;
+          if (typeof min !== 'number' || typeof max !== 'number' || min > max) {
+            min = 2;
+            max = 5;
+          }
+          num1 = Math.floor(Math.random() * (max - min + 1)) + min;
+          num2 = Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+        battleState.battleAnswer = num1 * num2;
+
+        let questionText = '';
+        let typeBadge = '';
+        
+        if (battleState.questionType === 'missing') {
+          if (Math.random() < 0.5) {
+            questionText = `${num1} × ? = ${num1 * num2}`;
+            battleState.battleAnswer = num2;
+          } else {
+            questionText = `? × ${num2} = ${num1 * num2}`;
+            battleState.battleAnswer = num1;
+          }
+          typeBadge = '<span class="question-type-badge missing">🔍 缺數題</span>';
+        } else if (battleState.questionType === 'application') {
+          const applications = [
+            `有 ${num1} 群怪物，每群 ${num2} 隻，總共幾多隻？`,
+            `每個寶箱有 ${num1} 個金幣，開咗 ${num2} 個寶箱，共幾多金幣？`,
+            `小明每秒攻擊 ${num1} 點，攻擊 ${num2} 秒，共幾多點？`
+          ];
+          questionText = applications[Math.floor(Math.random() * applications.length)];
+          typeBadge = '<span class="question-type-badge application">📖 應用題</span>';
+        } else {
+          questionText = `${num1} × ${num2} = ?`;
+          typeBadge = '<span class="question-type-badge normal">⚔️ 基礎題</span>';
+        }
+
+        document.getElementById('battleQuestion').innerHTML = typeBadge + '<div style="margin-top:8px;font-size:1.5rem;">' + questionText + '</div>';
       }
 
-      // Set question with type badge
-      document.getElementById('battleQuestion').innerHTML = typeBadge + '<div style="margin-top:8px;font-size:1.5rem;">' + questionText + '</div>';
-
-      // Start timer with adaptive time
-      const adaptiveTime = getAdaptiveTimer();
-      battleState.timeLeft = adaptiveTime;
-      battleState.maxTime = adaptiveTime;
+      // Start timer with stage modifier or adaptive time
+      let baseTime = getAdaptiveTimer ? getAdaptiveTimer() : 3;
+      if (battleState.currentStage) {
+        const stage = getStageData(battleState.currentStage);
+        baseTime = baseTime * stage.timerMod;
+      }
+      battleState.timeLeft = baseTime;
+      battleState.maxTime = baseTime;
       document.getElementById('battleTimerContainer').classList.add('active');
       document.getElementById('battleTimerFill').style.width = '100%';
-      document.getElementById('battleTimerFill').classList.remove('danger');
-      document.getElementById('battleTimerText').textContent = '3.0';
-      updateSpeedMultiplierDisplay();
-      
-      // Start timer interval
-      battleState.battleTimerInterval = setInterval(() => {
-        battleState.timeLeft -= 0.1;
-        const pct = (battleState.timeLeft / battleState.maxTime) * 100;
-        document.getElementById('battleTimerFill').style.width = pct + '%';
-        document.getElementById('battleTimerText').textContent = Math.max(0, battleState.timeLeft).toFixed(1);
+document.getElementById('battleTimerFill').classList.remove('danger', 'warning');
         
-        if (battleState.timeLeft <= 1) {
-          document.getElementById('battleTimerFill').classList.add('danger');
-        }
+        // Start timer interval
+        battleState.battleTimerInterval = setInterval(() => {
+          battleState.timeLeft -= 0.1;
+          const pct = (battleState.timeLeft / battleState.maxTime) * 100;
+          document.getElementById('battleTimerFill').style.width = pct + '%';
+          document.getElementById('battleTimerText').textContent = Math.max(0, battleState.timeLeft).toFixed(1);
+          
+          const timerFill = document.getElementById('battleTimerFill');
+          const timerBar = document.querySelector('.timer-bar');
+          
+          if (pct <= 25) {
+            timerFill.classList.add('danger');
+            timerFill.classList.remove('warning');
+            if (timerBar) timerBar.classList.add('urgent');
+          } else if (pct <= 50) {
+            timerFill.classList.add('warning');
+            timerFill.classList.remove('danger');
+            if (timerBar) timerBar.classList.remove('urgent');
+          } else {
+            timerFill.classList.remove('danger', 'warning');
+            if (timerBar) timerBar.classList.remove('urgent');
+          }
         
         // Update accuracy text
         const accText = document.getElementById('accuracyText');
@@ -4656,17 +5114,21 @@
       if (battleState.answerMode === 'input') {
         // 直接輸入模式（type="tel" 觸發數字鍵盤，適合平板/手機）
         container.innerHTML = `
-          <input type="tel" id="battleAnswerInput" class="battle-answer-input" placeholder="?" autocomplete="off">
-          <button class="battle-submit-btn" onclick="battleSubmitAnswer()">✓ 確認</button>
+          <div style="display:flex; justify-content:center; align-items:center; gap:10px; margin:10px 0;">
+            <input type="tel" id="battleAnswerInput" class="battle-answer-input" placeholder="?" autocomplete="off" style="margin:0;">
+            <button type="button" class="battle-submit-btn" onclick="battleSubmitAnswer()">✓</button>
+          </div>
         `;
         const input = document.getElementById('battleAnswerInput');
-        input.focus();
-        input.addEventListener('keydown', (e) => {
-          if (e.key === 'Enter') battleSubmitAnswer();
-        });
-        input.addEventListener('input', () => {
-          input.value = input.value.replace(/[^0-9]/g, '');
-        });
+        if (input) {
+          input.focus();
+          input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') battleSubmitAnswer();
+          });
+          input.addEventListener('input', () => {
+            input.value = input.value.replace(/[^0-9]/g, '');
+          });
+        }
       } else {
         // 選擇題模式（3選1，適合觸控）
         showChoiceOptions(battleState.battleAnswer);
@@ -4708,7 +5170,7 @@
     function showChoiceOptions(answer) {
       const container = document.getElementById('battleOptions');
       container.innerHTML = '';
-      const optionCount = 3;
+      const optionCount = 4;
       const options = [answer];
       while (options.length < optionCount) {
         const r = Math.floor(Math.random() * 50) + 1;
@@ -4717,6 +5179,7 @@
       options.sort(() => Math.random() - 0.5);
       options.forEach(opt => {
         const btn = document.createElement('button');
+        btn.type = 'button';
         btn.className = 'battle-option';
         btn.textContent = opt;
         btn.onclick = () => battleCheckAnswer(opt, btn);
@@ -4732,6 +5195,38 @@
       const elapsed = (Date.now() - battleState.answerStartTime) / 1000;
       let multiplier = 1.5 - (elapsed / 3.0) * 0.7;
       return Math.max(0.8, Math.min(1.5, multiplier));
+    }
+
+    function numpadInput(num) {
+      alert('numpadInput: ' + num);
+      let input = document.getElementById('battleAnswerInput');
+
+      if (!input) {
+        alert('Input not found, regenerating...');
+        const container = document.getElementById('battleOptions');
+        if (container) {
+          container.innerHTML = `
+            <div style="display:flex; justify-content:center; align-items:center; gap:10px; margin:10px 0;">
+              <input type="tel" id="battleAnswerInput" class="battle-answer-input" placeholder="?" autocomplete="off" style="margin:0;">
+              <button type="button" class="battle-submit-btn" onclick="battleSubmitAnswer()">✓</button>
+            </div>
+          `;
+          input = document.getElementById('battleAnswerInput');
+        }
+      }
+
+      if (!input) {
+        alert('Still no input!');
+        return;
+      }
+
+      if (num === 'C') {
+        input.value = '';
+      } else if (num === 'E') {
+        battleSubmitAnswer();
+      } else {
+        input.value += num;
+      }
     }
 
     function battleSubmitAnswer() {
@@ -4767,6 +5262,10 @@
         const monsterCard = document.getElementById('monsterCard');
         monsterCard.classList.add('monster-hit');
         setTimeout(() => monsterCard.classList.remove('monster-hit'), 400);
+
+        const rect = monsterCard.getBoundingClientRect();
+        const particleType = isCrit ? 'crit' : 'hit';
+        spawnParticles(rect.left + rect.width/2, rect.top + rect.height/2, particleType, isCrit ? 12 : 6);
 
         // Accumulate shield
         if (battleState.combo >= 3) {
@@ -4819,10 +5318,16 @@
         input.style.borderColor = 'var(--danger)';
         SoundManager.play('wrong');
         trackError(num1, num2);
+
+        // 顯示正確答案
+        const correctAnswer = battleState.battleAnswer;
+        const questionEl = document.getElementById('battleQuestion');
+        questionEl.innerHTML += `<div class="correct-answer-hint">✓ 正確答案：${correctAnswer}</div>`;
+
         setTimeout(() => heroTakeDamage(), 400);
         setTimeout(() => {
           generateBattleQuestion();
-        }, 1000);
+        }, 1500); // 給多啲時間睇正確答案
       }
     }
 
@@ -4929,6 +5434,7 @@
         
         const hero = heroes[battleState.heroKey];
         hero.maxHp += 20;
+        hero.hp = hero.maxHp;
         hero.atkMin += 3;
         hero.atkMax += 5;
         
@@ -4989,6 +5495,126 @@
     }
 
 
+    // ========== NEW: Stage Progression System ==========
+    const stages = [
+      { id: 1, table: 2, name: '森林哨兵', monster: 'slime', timerMod: 1.5, hpScale: 1.0, questionTypes: ['direct'], unlocked: true, completed: false, stars: 0, color: '#4ade80', accent: '#22c55e' },
+      { id: 2, table: 3, name: '哥布林', monster: 'goblin', timerMod: 1.0, hpScale: 1.1, questionTypes: ['direct'], unlocked: false, completed: false, stars: 0, color: '#60a5fa', accent: '#3b82f6' },
+      { id: 3, table: 4, name: '骸骨兵', monster: 'skeleton', timerMod: 1.0, hpScale: 1.2, questionTypes: ['direct', 'missing'], unlocked: false, completed: false, stars: 0, color: '#a1a1aa', accent: '#71717a' },
+      { id: 4, table: 5, name: '獸人戰士', monster: 'orc', timerMod: 0.95, hpScale: 1.3, questionTypes: ['direct', 'missing'], unlocked: false, completed: false, stars: 0, color: '#f97316', accent: '#ea580c' },
+      { id: 5, table: 6, name: '黑暗騎士', monster: 'darkknight', timerMod: 0.95, hpScale: 1.4, questionTypes: ['direct', 'missing'], unlocked: false, completed: false, stars: 0, color: '#6366f1', accent: '#4f46e5' },
+      { id: 6, table: 7, name: '暗影法師', monster: 'shadowmage', timerMod: 0.90, hpScale: 1.5, questionTypes: ['direct', 'missing', 'application'], unlocked: false, completed: false, stars: 0, color: '#8b5cf6', accent: '#7c3aed' },
+      { id: 7, table: 8, name: '幼龍', monster: 'dragon', timerMod: 0.90, hpScale: 1.6, questionTypes: ['direct', 'missing', 'application'], unlocked: false, completed: false, stars: 0, color: '#ef4444', accent: '#dc2626' },
+      { id: 8, table: 9, name: '惡魔領主', monster: 'demonlord', timerMod: 0.85, hpScale: 1.8, questionTypes: ['direct', 'missing', 'application'], unlocked: false, completed: false, stars: 0, color: '#dc2626', accent: '#b91c1c' },
+      { id: 9, table: 10, name: '深淵魔王', monster: 'boss', timerMod: 0.85, hpScale: 2.5, questionTypes: ['direct', 'missing', 'application'], unlocked: false, completed: false, stars: 0, color: '#fbbf24', accent: '#f59e0b', isBoss: true }
+    ];
+
+    function getStageData(stageId) {
+      return stages.find(s => s.id === stageId) || stages[0];
+    }
+
+    function calculateStageHP(baseHP, stageId) {
+      const stage = getStageData(stageId);
+      return Math.floor(baseHP * stage.hpScale);
+    }
+
+    function calculateStageDamage(base, stageId) {
+      const stage = getStageData(stageId);
+      return Math.floor(base * (1 + (stageId - 1) * 0.05));
+    }
+
+    function calculateStarRating(accuracy, timeLeft, totalTime) {
+      if (accuracy >= 0.9 && timeLeft > totalTime * 0.5) return 3;
+      if (accuracy >= 0.7 || timeLeft > totalTime * 0.3) return 2;
+      return 1;
+    }
+
+    function unlockNextStage(currentStageId) {
+      const nextStage = stages.find(s => s.id === currentStageId + 1);
+      if (nextStage) {
+        nextStage.unlocked = true;
+        saveStageProgress();
+      }
+      if (currentStageId === 8) {
+        const totalStars = stages.slice(0, 8).reduce((sum, s) => sum + s.stars, 0);
+        if (totalStars >= 15) {
+          stages[8].unlocked = true;
+          saveStageProgress();
+        }
+      }
+    }
+
+    function loadStageProgress() {
+      const saved = JSON.parse(localStorage.getItem('multiplicationTownStageProgress') || '{}');
+      stages.forEach(stage => {
+        const data = saved[stage.id] || {};
+        stage.completed = data.completed || false;
+        stage.stars = data.stars || 0;
+        stage.unlocked = data.unlocked || stage.unlocked;
+      });
+    }
+
+    function saveStageProgress() {
+      const saved = {};
+      stages.forEach(stage => {
+        saved[stage.id] = {
+          completed: stage.completed,
+          stars: stage.stars,
+          unlocked: stage.unlocked
+        };
+      });
+      localStorage.setItem('multiplicationTownStageProgress', JSON.stringify(saved));
+    }
+
+    function generateStageQuestion(stageId) {
+      const stage = getStageData(stageId);
+      const table = stage.table;
+      const num2 = Math.floor(Math.random() * 9) + 2;
+      
+      let questionType = 'normal';
+      const rand = Math.random();
+      
+      if (stage.questionTypes.length === 1 && stage.questionTypes[0] === 'direct') {
+        questionType = 'direct';
+      } else if (stage.questionTypes.length === 2) {
+        questionType = rand < 0.8 ? 'direct' : 'missing';
+      } else {
+        if (rand < 0.5) questionType = 'direct';
+        else if (rand < 0.8) questionType = 'missing';
+        else questionType = 'application';
+      }
+      
+      let questionText = '';
+      let answer = table * num2;
+      let typeBadge = '';
+      
+      if (questionType === 'missing') {
+        if (Math.random() < 0.5) {
+          questionText = `${table} × ? = ${answer}`;
+          answer = num2;
+        } else {
+          questionText = `? × ${num2} = ${answer}`;
+          answer = table;
+        }
+        typeBadge = '<span class="question-type-badge missing">🔍 缺數題</span>';
+      } else if (questionType === 'application') {
+        const apps = [
+          `每群有 ${table} 隻怪物，共 ${num2} 群，總共幾多隻？`,
+          `每包有 ${table} 個寶石，買咗 ${num2} 包，共幾多個？`,
+          `每秒攻擊 ${table} 點，攻擊 ${num2} 秒，共幾多點？`
+        ];
+        questionText = apps[Math.floor(Math.random() * apps.length)];
+        typeBadge = '<span class="question-type-badge application">📖 應用題</span>';
+      } else {
+        questionText = `${table} × ${num2} = ?`;
+        typeBadge = '<span class="question-type-badge normal">⚔️ 基礎題</span>';
+      }
+      
+      return { questionText, answer, typeBadge, table, num2 };
+    }
+
+    // Initialize stage progress on load
+    loadStageProgress();
+
     // ========== NEW: Stage Map System ==========
     const worlds = [
       {
@@ -5047,6 +5673,61 @@
       loadWorldProgress();
       renderStageMap();
       document.getElementById('stageMap').classList.add('active');
+    }
+
+    function openStageSelector() {
+      loadStageProgress();
+      renderStageSelector();
+      document.getElementById('stageSelector').classList.add('active');
+    }
+
+    function closeStageSelector() {
+      document.getElementById('stageSelector').classList.remove('active');
+    }
+
+    function renderStageSelector() {
+      const grid = document.getElementById('stageGrid');
+      grid.innerHTML = '';
+      
+      stages.forEach(stage => {
+        const btn = document.createElement('button');
+        btn.className = 'stage-btn';
+        if (stage.locked) btn.classList.add('locked');
+        if (stage.completed) btn.classList.add('completed');
+        
+        const starsText = stage.stars > 0 ? '⭐'.repeat(stage.stars) : '';
+        btn.innerHTML = `
+          <div class="stage-number" style="color:${stage.color}; font-weight:bold;">關卡 ${stage.id}</div>
+          <div class="stage-name">${stage.name}</div>
+          <div class="stage-stars">${starsText}</div>
+          <div class="stage-table">${stage.table}× 乘法</div>
+        `;
+        
+        if (stage.unlocked) {
+          btn.style.borderColor = stage.color;
+          btn.onclick = () => selectStage(stage.id);
+        } else {
+          btn.innerHTML += '<div style="font-size:0.7rem; color:#666;">🔒 未解鎖</div>';
+        }
+        
+        grid.appendChild(btn);
+      });
+      
+      const totalStars = stages.reduce((sum, s) => sum + s.stars, 0);
+      document.getElementById('totalStageStars').textContent = totalStars;
+    }
+
+    function selectStage(stageId) {
+      const stage = getStageData(stageId);
+      if (!stage.unlocked) return;
+      
+      battleState.currentStage = stageId;
+      currentDomain = 'newbie';
+      selectedLevel = stage.table;
+      
+      closeStageSelector();
+      document.getElementById('battleStartBtnOverlay').style.display = 'block';
+      showLevelUnlockNotification(stage.id);
     }
 
     function closeStageMap() {
@@ -5174,7 +5855,7 @@
       document.getElementById('domainBtn' + currentDomain.charAt(0).toUpperCase() + currentDomain.slice(1))?.classList.add('active');
       
       // Show practice area
-      showSection('practice');
+      switchMainSection('battle');
     }
 
     function selectBossStage(worldId) {
@@ -5185,7 +5866,7 @@
       closeStageMap();
       
       // Start battle for boss
-      showSection('practice');
+      switchMainSection('battle');
       setTimeout(() => {
         document.getElementById('battleStartBtn').click();
       }, 300);
@@ -5928,9 +6609,19 @@ function openAchievementPanel() {
       
       countEl.textContent = battleState.combo;
       
-      comboEl.classList.remove('level-high', 'level-max');
+      comboEl.classList.remove('level-high', 'level-max', 'milestone-15', 'milestone-20');
       
-      if (battleState.combo >= 10) {
+      if (battleState.combo >= 20) {
+        comboEl.classList.add('active', 'milestone-20');
+        skillEl.textContent = '💫 毀滅衝擊';
+        comboEl.classList.add('pulse');
+        setTimeout(() => comboEl.classList.remove('pulse'), 500);
+      } else if (battleState.combo >= 15) {
+        comboEl.classList.add('active', 'milestone-15');
+        skillEl.textContent = '⚡ 終極大招';
+        comboEl.classList.add('pulse');
+        setTimeout(() => comboEl.classList.remove('pulse'), 500);
+      } else if (battleState.combo >= 10) {
         comboEl.classList.add('active', 'level-max');
         skillEl.textContent = '🔥 魔法大爆發！';
         comboEl.classList.add('pulse');
@@ -5946,6 +6637,10 @@ function openAchievementPanel() {
       } else {
         comboEl.classList.remove('active');
         skillEl.textContent = '';
+      }
+      
+      if ([5, 10, 15, 20].includes(battleState.combo)) {
+        screenShake();
       }
     }
 
@@ -6088,12 +6783,28 @@ function openAchievementPanel() {
       saveData();
     }
 
-    function showDamageNumber(damage, isCrit, isHeal) {
+    function showDamageNumber(damage, isCrit, isHeal, isTimeout) {
       const el = document.createElement('div');
-      el.className = 'damage-number' + (isHeal ? ' heal' : '') + (isCrit ? ' crit' : '');
-      el.textContent = (isHeal ? '+' : '-') + damage;
+      let displayClass = 'damage-number';
+      let text = '';
       
-      // Position near monster
+      if (isTimeout) {
+        displayClass += ' timeout';
+        text = '時間到!';
+      } else if (isHeal) {
+        displayClass += ' heal';
+        text = '+' + damage;
+      } else if (isCrit) {
+        displayClass += ' crit';
+        text = damage + '!';
+        screenShake();
+      } else {
+        text = '-' + damage;
+      }
+      
+      el.className = displayClass;
+      el.textContent = text;
+      
       const monsterCard = document.getElementById('monsterCard');
       if (monsterCard) {
         const rect = monsterCard.getBoundingClientRect();
@@ -6289,73 +7000,121 @@ function openAchievementPanel() {
 
     function monsterDefeated() {
         updateDailyProgress('battle', 1);
-      battleState.gold += battleState.monsterGold;
-      battleState.monstersDefeated++;
-      battleState.monsterTurnCount = 0;
-      battleState.monsterBuffs = [];
-      showMonsterIntent(null);
-      updateBattleStatsBar();
-      saveBattleData();
-      checkBattleAchievements();
+        battleState.gold += battleState.monsterGold;
+        battleState.monstersDefeated++;
+        battleState.monsterTurnCount = 0;
+        battleState.monsterBuffs = [];
+        showMonsterIntent(null);
+        updateBattleStatsBar();
+        saveBattleData();
+        checkBattleAchievements();
 
-      const monsterCard = document.getElementById('monsterCard');
-      monsterCard.style.transition = 'transform 0.5s, opacity 0.5s';
-      monsterCard.style.transform = 'scale(1.2)';
-      monsterCard.style.opacity = '0';
-      triggerMonsterDeathAnimation();
+        // Check if in stage mode - stage complete after defeating one monster
+        if (battleState.currentStage) {
+          const stage = getStageData(battleState.currentStage);
+          const accuracy = correct / (correct + wrong + 1); // Approximate accuracy
+          const timeLeft = battleState.timeLeft || 0;
+          const totalTime = battleState.maxTime || 3;
+          const stars = calculateStarRating(accuracy, timeLeft, totalTime);
+          
+          // Update stage progress
+          stage.completed = true;
+          if (stars > stage.stars) stage.stars = stars;
+          unlockNextStage(battleState.currentStage);
+          saveStageProgress();
+          
+          // Show stage victory
+          battleState.inBattle = false;
+          showStageVictory(stars, stage);
+          return;
+        }
 
-      const popup = document.createElement('div');
-      popup.className = 'battle-reward-popup active';
-      popup.innerHTML = `
-        <h3>🏆 怪物被擊敗！</h3>
-        <div class="reward-row">
-          <span class="reward-icon">💰</span>
-          <span class="reward-value">+${battleState.monsterGold} 金幣</span>
-        </div>
-        <div class="reward-row">
-          <span class="reward-icon">⭐</span>
-          <span class="reward-value">+${battleState.monsterExp} 經驗</span>
-        </div>
-      `;
-      document.body.appendChild(popup);
+        const monsterCard = document.getElementById('monsterCard');
+        monsterCard.style.transition = 'transform 0.5s, opacity 0.5s';
+        monsterCard.style.transform = 'scale(1.2)';
+        monsterCard.style.opacity = '0';
+        triggerMonsterDeathAnimation();
 
-      const milestones = [5, 15, 30, 50];
-      const titles = ['初露頭角', '小有名氣', '聲名遠播', '傳說級勇士'];
-      const idx = milestones.indexOf(battleState.monstersDefeated);
-      if (idx !== -1) {
-        setTimeout(() => {
-          SoundManager.play('milestone');
-          const milestonePopup = document.createElement('div');
-          milestonePopup.className = 'battle-reward-popup active';
-          milestonePopup.innerHTML = `<h3 style="color:var(--accent)">🏆 ${titles[idx]}</h3>`;
-          document.body.appendChild(milestonePopup);
+        const popup = document.createElement('div');
+        popup.className = 'battle-reward-popup active';
+        popup.innerHTML = `
+          <h3>🏆 怪物被擊敗！</h3>
+          <div class="reward-row">
+            <span class="reward-icon">💰</span>
+            <span class="reward-value">+${battleState.monsterGold} 金幣</span>
+          </div>
+          <div class="reward-row">
+            <span class="reward-icon">⭐</span>
+            <span class="reward-value">+${battleState.monsterExp} 經驗</span>
+          </div>
+        `;
+        document.body.appendChild(popup);
+
+        const milestones = [5, 15, 30, 50];
+        const titles = ['初露頭角', '小有名氣', '聲名遠播', '傳說級勇士'];
+        const idx = milestones.indexOf(battleState.monstersDefeated);
+        if (idx !== -1) {
           setTimeout(() => {
-            milestonePopup.classList.remove('active');
-            setTimeout(() => milestonePopup.remove(), 300);
-          }, 1500);
-        }, 500);
+            SoundManager.play('milestone');
+            const milestonePopup = document.createElement('div');
+            milestonePopup.className = 'battle-reward-popup active';
+            milestonePopup.innerHTML = `<h3 style="color:var(--accent)">🏆 ${titles[idx]}</h3>`;
+            document.body.appendChild(milestonePopup);
+            setTimeout(() => {
+              milestonePopup.classList.remove('active');
+              setTimeout(() => milestonePopup.remove(), 300);
+            }, 1500);
+          }, 500);
+        }
+
+        const rect = monsterCard.getBoundingClientRect();
+        const floatScore = document.createElement('div');
+        floatScore.className = 'damage-number';
+        floatScore.textContent = `+${battleState.monsterGold}`;
+        floatScore.style.color = '#FFD700';
+        floatScore.style.left = (rect.left + rect.width / 2) + 'px';
+        floatScore.style.top = (rect.top + rect.height / 2) + 'px';
+        document.body.appendChild(floatScore);
+        setTimeout(() => floatScore.remove(), 1000);
+
+        setTimeout(() => {
+          popup.classList.remove('active');
+          setTimeout(() => popup.remove(), 300);
+          monsterCard.style.transition = 'none';
+          monsterCard.style.transform = 'scale(1)';
+          monsterCard.style.opacity = '1';
+          spawnMonster();
+          generateBattleQuestion();
+        }, 3000);
       }
 
-      const rect = monsterCard.getBoundingClientRect();
-      const floatScore = document.createElement('div');
-      floatScore.className = 'damage-number';
-      floatScore.textContent = `+${battleState.monsterGold}`;
-      floatScore.style.color = '#FFD700';
-      floatScore.style.left = (rect.left + rect.width / 2) + 'px';
-      floatScore.style.top = (rect.top + rect.height / 2) + 'px';
-      document.body.appendChild(floatScore);
-      setTimeout(() => floatScore.remove(), 1000);
-
-      setTimeout(() => {
-        popup.classList.remove('active');
-        setTimeout(() => popup.remove(), 300);
-        monsterCard.style.transition = 'none';
-        monsterCard.style.transform = 'scale(1)';
-        monsterCard.style.opacity = '1';
-        spawnMonster();
-        generateBattleQuestion();
-      }, 3000);
-    }
+      function showStageVictory(stars, stage) {
+        const starsText = '⭐'.repeat(stars);
+        const stageColor = stage.color || '#4ade80';
+        
+        const overlay = document.createElement('div');
+        overlay.className = 'victory-overlay active';
+        overlay.innerHTML = `
+          <h2 style="color:${stageColor};">🎉 關卡 ${stage.id} 完成！</h2>
+          <div style="font-size:1.5rem; margin:10px 0; color:${stageColor};">${stage.name}</div>
+          <div style="font-size:2rem; margin:15px 0;">${starsText}</div>
+          <div class="rewards-summary">
+            <div style="margin:5px 0;">💰 +${Math.floor(10 * stage.hpScale)} 金幣</div>
+            <div style="margin:5px 0;">⭐ +${stars} 星評價</div>
+          </div>
+          <button onclick="this.parentElement.classList.remove('active'); this.parentElement.remove(); document.getElementById('battleStartBtnOverlay').style.display = 'block';" 
+                  style="margin-top:20px; padding:12px 30px; font-size:1.1rem; background:${stageColor}; color:#fff; border:none; border-radius:20px; cursor:pointer; font-family:inherit;">
+            返回關卡選擇
+          </button>
+        `;
+        document.body.appendChild(overlay);
+        
+        SoundManager.play('victory');
+        triggerVictoryCelebration();
+        
+        // Hide stage banner
+        document.getElementById('stageBanner').style.display = 'none';
+      }
 
     function battleDefeat() {
       battleState.inBattle = false;
