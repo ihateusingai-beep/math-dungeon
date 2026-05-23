@@ -1732,6 +1732,26 @@
     }
     .battle-submit-btn:hover { transform: scale(1.05); }
 
+    /* 答題模式切換按鈕 */
+    .mode-btn {
+      padding: 6px 12px;
+      font-size: 0.85rem;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 20px;
+      background: rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.7);
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+    .mode-btn.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+    .mode-btn:hover { background: rgba(255,255,255,0.2); }
+    .mode-btn.active:hover { background: var(--accent); }
+
     .battle-close-btn {
       position: absolute;
       top: 15px;
@@ -2553,6 +2573,11 @@
         <!-- 中央數學題 -->
         <div class="question-center">
           <div class="math-question" id="battleQuestion">2 × 6 = ?</div>
+          <!-- 答題模式切換按鈕 -->
+          <div id="answerModeToggle" style="margin-top:8px; display:flex; gap:8px; justify-content:center;">
+            <button class="mode-btn active" id="modeInputBtn" onclick="setAnswerMode('input')">⌨️ 直接輸入</button>
+            <button class="mode-btn" id="modeChoiceBtn" onclick="setAnswerMode('choice')">🔘 選擇題</button>
+          </div>
         </div>
 
         <!-- 敵人右側 -->
@@ -3020,7 +3045,9 @@
       hintActive: false,
       speedBoost: false,
       // === INITIALIZE DOMAIN (for range calculations) ===
-      domain: 'newbie'
+      domain: 'newbie',
+      // 答題模式切換: 'input'=直接輸入, 'choice'=選擇題
+      answerMode: 'input'
     };
     const SoundManager = {
       ctx: null,
@@ -4625,42 +4652,24 @@
       const container = document.getElementById('battleOptions');
       container.innerHTML = '';
 
-      if (domainKey === 'legend') {
-        // Legend mode: text input (適合平板/手機虛擬鍵盤)
+      // 根據答題模式顯示輸入框或選擇題
+      if (battleState.answerMode === 'input') {
+        // 直接輸入模式（type="tel" 觸發數字鍵盤，適合平板/手機）
         container.innerHTML = `
           <input type="tel" id="battleAnswerInput" class="battle-answer-input" placeholder="?" autocomplete="off">
           <button class="battle-submit-btn" onclick="battleSubmitAnswer()">✓ 確認</button>
         `;
         const input = document.getElementById('battleAnswerInput');
-        
-        // 立刻聚焦（不用 setTimeout，減少延遲）
         input.focus();
-        
-        // 監聽 Enter 鍵（桌面鍵盤）
         input.addEventListener('keydown', (e) => {
           if (e.key === 'Enter') battleSubmitAnswer();
         });
-        
-        // 限制只能輸入數字（防止其他字元）
         input.addEventListener('input', () => {
           input.value = input.value.replace(/[^0-9]/g, '');
         });
       } else {
-        const optionCount = domainKey === 'newbie' ? 3 : 4;
-        const options = [battleState.battleAnswer];
-        while (options.length < optionCount) {
-          const r = Math.floor(Math.random() * 30) + 4;
-          if (!options.includes(r)) options.push(r);
-        }
-        options.sort(() => Math.random() - 0.5);
-
-        options.forEach(opt => {
-          const btn = document.createElement('button');
-          btn.className = 'battle-option';
-          btn.textContent = opt;
-          btn.onclick = () => battleCheckAnswer(opt, btn);
-          container.appendChild(btn);
-        });
+        // 選擇題模式（3選1，適合觸控）
+        showChoiceOptions(battleState.battleAnswer);
       }
     }
 
@@ -4682,6 +4691,37 @@
         document.getElementById('battleOptions').querySelectorAll('.battle-option').forEach(b => b.disabled = false);
         generateBattleQuestion();
       }, 1000);
+    }
+
+    // 答題模式切換
+    function setAnswerMode(mode) {
+      battleState.answerMode = mode;
+      document.getElementById('modeInputBtn').classList.toggle('active', mode === 'input');
+      document.getElementById('modeChoiceBtn').classList.toggle('active', mode === 'choice');
+      // 如果在戰鬥中，重新生成題目（用新模式顯示）
+      if (battleState.active && battleState.inBattle) {
+        generateBattleQuestion();
+      }
+    }
+
+    // 顯示選擇題選項
+    function showChoiceOptions(answer) {
+      const container = document.getElementById('battleOptions');
+      container.innerHTML = '';
+      const optionCount = 3;
+      const options = [answer];
+      while (options.length < optionCount) {
+        const r = Math.floor(Math.random() * 50) + 1;
+        if (!options.includes(r)) options.push(r);
+      }
+      options.sort(() => Math.random() - 0.5);
+      options.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = 'battle-option';
+        btn.textContent = opt;
+        btn.onclick = () => battleCheckAnswer(opt, btn);
+        container.appendChild(btn);
+      });
     }
 
     function updateSpeedMultiplierDisplay() {
