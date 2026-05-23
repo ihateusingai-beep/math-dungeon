@@ -4626,20 +4626,25 @@
       container.innerHTML = '';
 
       if (domainKey === 'legend') {
+        // Legend mode: text input (適合平板/手機虛擬鍵盤)
         container.innerHTML = `
-          <input type="text" id="battleAnswerInput" class="battle-answer-input" placeholder="?" autocomplete="off">
-          <button class="battle-submit-btn" onclick="battleSubmitAnswer()">確認</button>
+          <input type="tel" id="battleAnswerInput" class="battle-answer-input" placeholder="?" autocomplete="off">
+          <button class="battle-submit-btn" onclick="battleSubmitAnswer()">✓ 確認</button>
         `;
         const input = document.getElementById('battleAnswerInput');
-        // Use setTimeout to ensure focus works after DOM insertion
-        setTimeout(() => {
-          input.focus();
-          input.select();
-          // Re-add keydown for Enter
-          input.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') battleSubmitAnswer();
-          });
-        }, 50);
+        
+        // 立刻聚焦（不用 setTimeout，減少延遲）
+        input.focus();
+        
+        // 監聽 Enter 鍵（桌面鍵盤）
+        input.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') battleSubmitAnswer();
+        });
+        
+        // 限制只能輸入數字（防止其他字元）
+        input.addEventListener('input', () => {
+          input.value = input.value.replace(/[^0-9]/g, '');
+        });
       } else {
         const optionCount = domainKey === 'newbie' ? 3 : 4;
         const options = [battleState.battleAnswer];
