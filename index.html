@@ -5186,15 +5186,19 @@ document.getElementById('battleTimerFill').classList.remove('danger', 'warning')
       }
     }
 
-    // 顯示選擇題選項
+    // 顯示選擇題選項（3選1，答案範圍優化）
     function showChoiceOptions(answer) {
       const container = document.getElementById('battleOptions');
       container.innerHTML = '';
-      const optionCount = 4;
+      const optionCount = 3;
       const options = [answer];
+      
+      // 生成接近答案的干擾項（±15-30%範圍內）
       while (options.length < optionCount) {
-        const r = Math.floor(Math.random() * 50) + 1;
-        if (!options.includes(r)) options.push(r);
+        const offset = Math.floor(answer * (0.15 + Math.random() * 0.25));
+        const r = Math.random() < 0.5 ? answer - offset : answer + offset;
+        const finalR = Math.max(1, Math.min(r, answer * 1.5)); // 限制範圍
+        if (!options.includes(finalR)) options.push(finalR);
       }
       options.sort(() => Math.random() - 0.5);
       options.forEach(opt => {
