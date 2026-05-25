@@ -572,10 +572,9 @@ function selectTopic(topicKey) {
 
 function renderDiffScreen() {
   const domain = STAGES_DATA[currentDomain];
-  const topic = domain[topicKey];
+  const topic = domain[currentTopic];
   if (!topic) return;
   document.getElementById('diff-title').textContent = '📚 ' + topic.name + ' — 選擇難度';
-  // diff-screen already has the 3 difficulty buttons, no need to rebuild
 }
 
 function renderTopicScreen() {
