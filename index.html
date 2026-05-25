@@ -198,7 +198,7 @@ section{position:fixed;inset:0;display:flex;flex-direction:column;align-items:ce
 <section id="home-screen">
   <div class="home-logo">⚔️ <span>數學地城</span> RPG</div>
   <div class="home-motto">在奇幻世界中學習乘法！</div>
-  <button class="home-btn" onclick="showNameScreen()">🎮 開始冒險</button>
+  <button class="home-btn" onclick="showNameScreen(); playBgm('battle')">🎮 開始冒險</button>
   <button class="home-btn" style="background:linear-gradient(135deg,#2d2d44,#3d3d5c)" onclick="loadProgress()">📖 繼續遊戲</button>
 </section>
 
@@ -316,7 +316,7 @@ section{position:fixed;inset:0;display:flex;flex-direction:column;align-items:ce
 
 <!-- ==================== BATTLE SCREEN ==================== -->
 <section id="battle-screen" class="hidden">
-  <button class="back-btn" onclick="confirmExitBattle()">✖</button>
+  <button class="back-btn" onclick="confirmExitBattle(); stopBgm()">✖</button>
   <div class="battle-top-bar">
     <div class="player-hud">
       <div class="hud-name"><span id="battle-player-name">冒險者</span><span id="battle-player-lv">Lv.1</span></div>
@@ -469,7 +469,7 @@ const STAGES_DATA = {
       { id: "boss-easy", name: "史萊姆之王", difficulty: "easy", enabled: true, monsters: ["dragon"], bg: "boss_room", isBoss: true,
         questions: [
           {q:"2 × 1 = ?",answer:2,choices:[1,2,3]},{q:"2 × 2 = ?",answer:4,choices:[3,4,5]},{q:"2 × 3 = ?",answer:6,choices:[5,6,7]},
-          {q:"2 × 4 = ?",answer:8,choices:[6,7,8]},{q:"2 × 5 = ?",answer:10,choices:[8,9,10]},{q:"2 × 62 = ?",answer:12,choices:[10,11,12]},
+          {q:"2 × 4 = ?",answer:8,choices:[6,7,8]},{q:"2 × 5 = ?",answer:10,choices:[8,9,10]},{q:"2 × 6 = ?",answer:12,choices:[10,11,12]},
           {q:"2 × 7 = ?",answer:14,choices:[12,14,16]},{q:"2 × 8 = ?",answer:16,choices:[14,15,16]},{q:"2 × 9 = ?",answer:18,choices:[16,18,20]},
           {q:"2 × 10 = ?",answer:20,choices:[18,20,22]}
         ]}
@@ -546,7 +546,7 @@ function hideAll() {
 
 function showScreen(id) { hideAll(); document.getElementById(id).classList.remove('hidden'); }
 
-function goHome() { saveProgress(); showScreen('home-screen'); }
+function goHome() { saveProgress(); showScreen('home-screen'); stopBgm(); playBgm('menu'); }
 function showNameScreen() { showScreen('name-screen'); document.getElementById('playerNameInput').focus(); }
 function showCharScreen() { showScreen('char-screen'); }
 function showMapScreen() { updateMapInfo(); showScreen('map-screen'); }
@@ -713,6 +713,8 @@ function startBattle() {
   updateBattleUI();
   nextQuestion(); // sets currentQuestion first
   renderBattleAnswer(); // uses currentQuestion
+  const isBoss = battleState.stageData?.isBoss;
+  playBgm(isBoss ? 'boss' : 'battle');
   addLog(`⚔️ 戰鬥開始！遇到 ${battleState.monsterName}！`);
 
   // Set character sprite
@@ -1014,32 +1016,12 @@ function showBattleResult(victory) {
   }
 
   saveProgress();
-  // 寫入學習日誌
-  const LOG_KEY = 'mathDungeon_learningLog';
-  const stageId = battleState.stageData?.id || 'unknown';
-  const accuracy = battleState.questionsAnswered > 0 ? Math.round(battleState.correctCount/battleState.questionsAnswered*100) : 0;
-  const wrongQuestions = [];
-  const logEntry = {
-    stageId,
-    correctCount: battleState.correctCount,
-    wrongCount: battleState.wrongCount,
-    wrongQuestions,
-    accuracy,
-    maxCombo: battleState.maxCombo,
-    date: new Date().toISOString()
-  };
-  try {
-    const raw = localStorage.getItem(LOG_KEY);
-    const logs = raw ? JSON.parse(raw) : [];
-    logs.push(logEntry);
-    localStorage.setItem(LOG_KEY, JSON.stringify(logs));
-  } catch(e){}
 
   const title = document.getElementById('result-title');
   title.textContent = victory ? '🎉 勝利！' : '💀 戰敗...';
+  if (victory) { stopBgm(); playBgm('victory'); }
   title.className = 'result-title ' + (victory ? 'victory' : 'defeat');
 
-  const accuracy = battleState.questionsAnswered > 0 ? Math.round(battleState.correctCount/battleState.questionsAnswered*100) : 0;
   const feedback = accuracy >= 80 ? '🌟 做得好！' : accuracy >= 50 ? '💪 繼續加油！' : '📚 需要多練習！';
   document.getElementById('result-stats').innerHTML = `
     <div class="result-stat"><span>獲得經驗</span><span style="color:var(--xp)">+${xpGain} XP</span></div>
@@ -1125,6 +1107,43 @@ const SoundEngine = {
   skill() { this.tone(440,.1); setTimeout(()=>this.tone(880,.15),80); }
 };
 function playSound(type) { try { SoundEngine[type](); } catch(e){} }
+
+// ==================== BGM SYSTEM ====================
+let bgmAudio = null;
+let bgmEnabled = true;
+
+function playBgm(type) {
+  if (!bgmEnabled) return;
+  stopBgm();
+  const bgmFiles = {
+    menu: 'assets/bgm/menu-bgm.mp3',
+    battle: 'assets/bgm/battle-bgm.mp3',
+    boss: 'assets/bgm/boss-bgm.mp3',
+    victory: 'assets/bgm/victory-bgm.mp3'
+  };
+  const src = bgmFiles[type];
+  if (!src) return;
+  bgmAudio = new Audio(src);
+  bgmAudio.loop = true;
+  bgmAudio.volume = 0.4;
+  bgmAudio.play().catch(() => {});
+}
+
+function stopBgm() {
+  if (bgmAudio) {
+    bgmAudio.pause();
+    bgmAudio.currentTime = 0;
+    bgmAudio = null;
+  }
+}
+
+function toggleBgm() {
+  bgmEnabled = !bgmEnabled;
+  if (!bgmEnabled) stopBgm();
+  return bgmEnabled;
+}
+
+
 
 // ==================== COMBO SYSTEM ====================
 function showComboMilestone() {
