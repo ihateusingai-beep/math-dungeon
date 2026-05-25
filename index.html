@@ -2231,6 +2231,28 @@
     border: 1px solid #3a8f6f;
   }
 
+  .active-effects-display {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    flex-wrap: wrap;
+    width: 100%;
+    min-height: 32px;
+    padding: 4px;
+  }
+  .effect-icon {
+    font-size: 1.2rem;
+    background: rgba(80,40,120,0.8);
+    padding: 4px 8px;
+    border-radius: 8px;
+    border: 1px solid #9f7aea;
+    animation: effectPulse 2s ease-in-out infinite;
+  }
+  @keyframes effectPulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.7; transform: scale(0.95); }
+  }
+
   .battle-duel {
     display: flex;
     align-items: flex-end;
@@ -3050,6 +3072,9 @@
         <div>護盾: <span id="shieldCount">0</span></div>
         <div>命中率: <span id="accuracyText">0</span>%</div>
       </div>
+
+      <!-- 狀態效果顯示 -->
+      <div class="active-effects-display" id="activeEffectsDisplay"></div>
 
       <!-- 左右對戰 Duel -->
       <div class="battle-duel">
@@ -3960,6 +3985,27 @@
         berserkerRoar: { name: '狂戰怒吼', level: 9, manaCost: 15, cooldown: 4, description: '消耗所有怒火,每層+25%傷害', effect: 'berserker_roar' },
         bloodlust: { name: '血祭', level: 13, manaCost: 20, cooldown: 4, description: '造成傷害的30%轉為治療', effect: 'bloodlust' },
         undyingRage: { name: '不死怒火', level: 17, manaCost: 30, cooldown: 6, description: 'HP降至0時保留1HP(每戰一次)', effect: 'undying_rage' }
+      },
+      rogue: {
+        backstab: { name: '背刺', level: 1, manaCost: 5, cooldown: 1, description: '150%傷害,若有連擊傷害更高', effect: 'backstab' },
+        smokeBomb: { name: '煙霧彈', level: 4, manaCost: 10, cooldown: 3, description: '閃避下一次攻擊', effect: 'smoke_bomb' },
+        poisonBlade: { name: '毒刃', level: 8, manaCost: 15, cooldown: 3, description: '使怪物中毒,每回合額外傷害', effect: 'poison_blade' },
+        shadowStep: { name: '暗影步', level: 11, manaCost: 20, cooldown: 4, description: '瞬移並造成200%傷害', effect: 'shadow_step' },
+        executioner: { name: '處決者', level: 15, manaCost: 25, cooldown: 5, description: '對50%HP以下敵人造成300%傷害', effect: 'executioner' }
+      },
+      priest: {
+        holyLight: { name: '聖光術', level: 1, manaCost: 8, cooldown: 1, description: '治療自己30%HP', effect: 'holy_light' },
+        smite: { name: '重擊', level: 4, manaCost: 5, cooldown: 1, description: '造成120%傷害+驅散1個增益', effect: 'smite' },
+        divineProtection: { name: '神聖庇護', level: 8, manaCost: 15, cooldown: 4, description: '減傷50%持續2回合', effect: 'divine_protection' },
+        resurrection: { name: '復活', level: 12, manaCost: 40, cooldown: 6, description: '戰鬥開始自動復活1次', effect: 'resurrection' },
+        holyBomb: { name: '聖光炸彈', level: 16, manaCost: 30, cooldown: 5, description: '造成250%聖屬性傷害', effect: 'holy_bomb' }
+      },
+      ranger: {
+        preciseShot: { name: '精準射擊', level: 1, manaCost: 5, cooldown: 1, description: '必定暴擊', effect: 'precise_shot' },
+        volley: { name: '箭雨', level: 5, manaCost: 15, cooldown: 3, description: '攻擊所有怪物各80%傷害', effect: 'volley' },
+        trapMaster: { name: '陷阱大師', level: 9, manaCost: 10, cooldown: 4, description: '放置陷阱,怪物攻擊時反擊', effect: 'trap_master' },
+        eagleEye: { name: '鷹眼', level: 13, manaCost: 20, cooldown: 4, description: '下3次攻擊無視防禦', effect: 'eagle_eye' },
+        natureCall: { name: '自然呼喚', level: 18, manaCost: 35, cooldown: 6, description: '召喚狼伙伴助戰3回合', effect: 'nature_call' }
       }
     };
 
@@ -4220,6 +4266,7 @@
       battleState.mana = 100;
       battleState.skillCooldowns = {};
       battleState.activeEffects = [];
+      renderActiveEffectsDisplay();
       battleState.rageStacks = 0;
       const arcaneBar = document.getElementById('arcaneBar');
       if (arcaneBar) arcaneBar.style.width = '0%';
@@ -6276,11 +6323,13 @@
       battleState.mana = 100;
       battleState.skillCooldowns = {};
       battleState.activeEffects = [];
+      renderActiveEffectsDisplay();
       battleState.rageStacks = 0;
       battleState.monsterTurnCount = 0;
       battleState.monsterBuffs = [];
       battleState.monsterAction = null;
 
+      BGM.start();
       updateManaDisplay();
       renderSkillButtons();
 
@@ -6545,6 +6594,25 @@
 
     function addActiveEffect(effect) {
       battleState.activeEffects.push(effect);
+      renderActiveEffectsDisplay();
+    }
+
+    function renderActiveEffectsDisplay() {
+      const container = document.getElementById('activeEffectsDisplay');
+      if (!container) return;
+      const icons = {
+        challenge: '🎯',
+        last_stand: '⚔️',
+        divine_shield: '🛡️',
+        spell_shield: '✨',
+        rage: '🔥',
+        mana_font: '💎',
+        arcane_bolt: '⚡',
+        arcane_barrage: '🌪️'
+      };
+      container.innerHTML = battleState.activeEffects
+        .map(e => `<div class="effect-icon" title="剩餘${e.turnsRemaining}回合">${icons[e.type] || '💫'}</div>`)
+        .join('');
     }
 
     function removeEffect(effect) {
@@ -6764,7 +6832,7 @@
     function updateArcaneBar() {
       const arcaneBar = document.getElementById('arcaneBar');
       if (!arcaneBar) return;
-      const maxCombo = 20;
+      const maxCombo = 50;
       const fillPct = Math.min((battleState.combo / maxCombo) * 100, 100);
       arcaneBar.style.width = fillPct + '%';
     }
@@ -6901,7 +6969,7 @@
     }
 
     function showComboMilestone(combo) {
-      const milestones = { 5: '🔥', 10: '✨', 15: '💫', 20: '🌟', 30: '🌟', 50: '🔥🔥' };
+      const milestones = { 5: '🔥', 10: '✨', 15: '💫', 20: '🌟', 30: '💥', 50: '👑' };
       if (!milestones[combo]) return;
 
       const notif = document.createElement('div');
@@ -6927,7 +6995,10 @@
     const evolutionNames = {
       knight: ['見習騎士', '銀藍騎士', '皇家騎士', '聖殿騎士', '傳說聖騎'],
       mage: ['魔法學徒', '見習法師', '元素法師', '大法師', '魔法宗師'],
-      berserker: ['狂戰士', '烈焰狂戰', '毀滅者', '深淵魔戰', '毀滅之王']
+      berserker: ['狂戰士', '烈焰狂戰', '毀滅者', '深淵魔戰', '毀滅之王'],
+      rogue: ['盜賊', '暗影刺客', '影舞者', '虛空殺手', '幽靈之王'],
+      priest: ['祭司', '聖殿修士', '神官', '大主教', '聖光教皇'],
+      ranger: ['弓手', '獵人', '遊俠', '森林守護者', '自然之神']
     };
 
     function addHeroExp(amount) {
@@ -8907,5 +8978,5 @@ function showStageVictory(stars, stage) {
     </div>
     <div class="achievement-list" id="achievementList"></div>
 </div>
-</body>
+<div id="watermark" style="position:fixed;bottom:16px;right:16px;display:flex;align-items:center;gap:8px;padding:8px 12px;background:rgba(0,0,0,0.6);border-radius:8px;z-index:9999;pointer-events:none"><img src="https://i.imgur.com/OQwyeIV.png" alt="KC" style="height:24px;width:auto;"><span style="color:#fff;font-size:12px;font-family:sans-serif;">© Ken Cheng 製作</span></div></body>
 </html>
