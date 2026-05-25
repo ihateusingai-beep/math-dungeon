@@ -1,0 +1,186 @@
+{
+  "multiplication": {
+    "2": {
+      "name": "2的乘法",
+      "stages": [
+        {
+          "id": "2-easy", "name": "2的乘法·初", "difficulty": "easy", "enabled": true,
+          "monsters": ["slime-green"], "bg": "forest",
+          "questions": [
+            {"q": "2 × 1 = ?", "answer": 2, "choices": [1, 2, 3]},
+            {"q": "2 × 2 = ?", "answer": 4, "choices": [3, 4, 5]},
+            {"q": "2 × 3 = ?", "answer": 6, "choices": [5, 6, 7]},
+            {"q": "2 × 4 = ?", "answer": 8, "choices": [6, 7, 8]},
+            {"q": "2 × 5 = ?", "answer": 10, "choices": [8, 9, 10]},
+            {"q": "2 × 6 = ?", "answer": 12, "choices": [10, 11, 12]},
+            {"q": "2 × 7 = ?", "answer": 14, "choices": [12, 14, 16]},
+            {"q": "2 × 8 = ?", "answer": 16, "choices": [14, 15, 16]},
+            {"q": "2 × 9 = ?", "answer": 18, "choices": [16, 18, 20]},
+            {"q": "2 × 10 = ?", "answer": 20, "choices": [18, 20, 22]}
+          ]
+        },
+        {
+          "id": "2-normal", "name": "2的乘法·中", "difficulty": "normal", "enabled": true,
+          "monsters": ["wolf"], "bg": "forest",
+          "questions": [
+            {"q": "2 × 1 = ?", "answer": 2, "choices": [1, 2, 3, 4]},
+            {"q": "2 × 2 = ?", "answer": 4, "choices": [2, 3, 4, 5]},
+            {"q": "2 × 3 = ?", "answer": 6, "choices": [4, 5, 6, 7]},
+            {"q": "2 × 4 = ?", "answer": 8, "choices": [6, 7, 8, 9]},
+            {"q": "2 × 5 = ?", "answer": 10, "choices": [8, 10, 12, 14]},
+            {"q": "2 × 6 = ?", "answer": 12, "choices": [10, 12, 14, 16]},
+            {"q": "2 × 7 = ?", "answer": 14, "choices": [12, 14, 16, 18]},
+            {"q": "2 × 8 = ?", "answer": 16, "choices": [14, 15, 16, 18]},
+            {"q": "2 × 9 = ?", "answer": 18, "choices": [16, 17, 18, 20]},
+            {"q": "2 × 10 = ?", "answer": 20, "choices": [18, 20, 22, 24]}
+          ]
+        },
+        {
+          "id": "2-hard", "name": "2的乘法·終", "difficulty": "hard", "enabled": true,
+          "monsters": ["orc-warrior"], "bg": "castle",
+          "questions": [
+            {"q": "2 × 7 = ?", "answer": 14},
+            {"q": "2 × 9 = ?", "answer": 18},
+            {"q": "2 × 6 = ?", "answer": 12},
+            {"q": "2 × 4 = ?", "answer": 8},
+            {"q": "2 × 8 = ?", "answer": 16},
+            {"q": "2 × 3 = ?", "answer": 6},
+            {"q": "2 × 5 = ?", "answer": 10},
+            {"q": "2 × 2 = ?", "answer": 4}
+          ]
+        }
+      ]
+    },
+    "3": {
+      "name": "3的乘法",
+      "stages": [
+        {
+          "id": "3-easy", "name": "3的乘法·初", "difficulty": "easy", "enabled": true,
+          "monsters": ["slime-blue"], "bg": "forest",
+          "questions": [
+            {"q": "3 × 1 = ?", "answer": 3, "choices": [2, 3, 4]},
+            {"q": "3 × 2 = ?", "answer": 6, "choices": [5, 6, 7]},
+            {"q": "3 × 3 = ?", "answer": 9, "choices": [8, 9, 10]},
+            {"q": "3 × 4 = ?", "answer": 12, "choices": [10, 12, 14]},
+            {"q": "3 × 5 = ?", "answer": 15, "choices": [12, 15, 18]},
+            {"q": "3 × 6 = ?", "answer": 18, "choices": [15, 18, 21]},
+            {"q": "3 × 7 = ?", "answer": 21, "choices": [18, 21, 24]},
+            {"q": "3 × 8 = ?", "answer": 24, "choices": [21, 24, 27]},
+            {"q": "3 × 9 = ?", "answer": 27, "choices": [24, 27, 30]},
+            {"q": "3 × 10 = ?", "answer": 30, "choices": [27, 30, 33]}
+          ]
+        },
+        {
+          "id": "3-normal", "name": "3的乘法·中", "difficulty": "normal", "enabled": true,
+          "monsters": ["shadow-wolf"], "bg": "forest",
+          "questions": [
+            {"q": "3 × 1 = ?", "answer": 3, "choices": [2, 3, 4, 5]},
+            {"q": "3 × 2 = ?", "answer": 6, "choices": [4, 5, 6, 7]},
+            {"q": "3 × 3 = ?", "answer": 9, "choices": [6, 7, 9, 10]},
+            {"q": "3 × 4 = ?", "answer": 12, "choices": [9, 10, 12, 15]},
+            {"q": "3 × 5 = ?", "answer": 15, "choices": [12, 15, 18, 20]},
+            {"q": "3 × 6 = ?", "answer": 18, "choices": [15, 16, 18, 21]},
+            {"q": "3 × 7 = ?", "answer": 21, "choices": [18, 20, 21, 24]},
+            {"q": "3 × 8 = ?", "answer": 24, "choices": [21, 24, 27, 30]},
+            {"q": "3 × 9 = ?", "answer": 27, "choices": [24, 27, 30, 33]},
+            {"q": "3 × 10 = ?", "answer": 30, "choices": [27, 30, 33, 36]}
+          ]
+        },
+        {
+          "id": "3-hard", "name": "3的乘法·終", "difficulty": "hard", "enabled": true,
+          "monsters": ["skeleton-warrior"], "bg": "castle",
+          "questions": [
+            {"q": "3 × 7 = ?", "answer": 21},
+            {"q": "3 × 9 = ?", "answer": 27},
+            {"q": "3 × 6 = ?", "answer": 18},
+            {"q": "3 × 8 = ?", "answer": 24},
+            {"q": "3 × 4 = ?", "answer": 12},
+            {"q": "3 × 5 = ?", "answer": 15},
+            {"q": "3 × 3 = ?", "answer": 9},
+            {"q": "3 × 2 = ?", "answer": 6}
+          ]
+        }
+      ]
+    },
+    "5": {
+      "name": "5的乘法",
+      "stages": [
+        {
+          "id": "5-easy", "name": "5的乘法·初", "difficulty": "easy", "enabled": true,
+          "monsters": ["slime"], "bg": "forest",
+          "questions": [
+            {"q": "5 × 1 = ?", "answer": 5, "choices": [4, 5, 6]},
+            {"q": "5 × 2 = ?", "answer": 10, "choices": [8, 10, 12]},
+            {"q": "5 × 3 = ?", "answer": 15, "choices": [12, 15, 18]},
+            {"q": "5 × 4 = ?", "answer": 20, "choices": [15, 20, 25]},
+            {"q": "5 × 5 = ?", "answer": 25, "choices": [20, 25, 30]},
+            {"q": "5 × 6 = ?", "answer": 30, "choices": [25, 30, 35]},
+            {"q": "5 × 7 = ?", "answer": 35, "choices": [30, 35, 40]},
+            {"q": "5 × 8 = ?", "answer": 40, "choices": [35, 40, 45]},
+            {"q": "5 × 9 = ?", "answer": 45, "choices": [40, 45, 50]},
+            {"q": "5 × 10 = ?", "answer": 50, "choices": [45, 50, 55]}
+          ]
+        },
+        {
+          "id": "5-normal", "name": "5的乘法·中", "difficulty": "normal", "enabled": true,
+          "monsters": ["goblin"], "bg": "forest",
+          "questions": [
+            {"q": "5 × 1 = ?", "answer": 5, "choices": [3, 5, 7, 9]},
+            {"q": "5 × 2 = ?", "answer": 10, "choices": [8, 10, 12, 14]},
+            {"q": "5 × 3 = ?", "answer": 15, "choices": [10, 12, 15, 18]},
+            {"q": "5 × 4 = ?", "answer": 20, "choices": [15, 18, 20, 25]},
+            {"q": "5 × 5 = ?", "answer": 25, "choices": [20, 25, 30, 35]},
+            {"q": "5 × 6 = ?", "answer": 30, "choices": [25, 28, 30, 35]},
+            {"q": "5 × 7 = ?", "answer": 35, "choices": [30, 35, 40, 45]},
+            {"q": "5 × 8 = ?", "answer": 40, "choices": [35, 38, 40, 45]},
+            {"q": "5 × 9 = ?", "answer": 45, "choices": [40, 42, 45, 50]},
+            {"q": "5 × 10 = ?", "answer": 50, "choices": [45, 50, 55, 60]}
+          ]
+        },
+        {
+          "id": "5-hard", "name": "5的乘法·終", "difficulty": "hard", "enabled": true,
+          "monsters": ["skeleton-mage"], "bg": "castle",
+          "questions": [
+            {"q": "5 × 7 = ?", "answer": 35},
+            {"q": "5 × 9 = ?", "answer": 45},
+            {"q": "5 × 6 = ?", "answer": 30},
+            {"q": "5 × 8 = ?", "answer": 40},
+            {"q": "5 × 4 = ?", "answer": 20},
+            {"q": "5 × 5 = ?", "answer": 25},
+            {"q": "5 × 3 = ?", "answer": 15},
+            {"q": "5 × 2 = ?", "answer": 10}
+          ]
+        }
+      ]
+    },
+    "boss": {
+      "name": "乘法Boss關",
+      "stages": [
+        {
+          "id": "boss-easy", "name": "史萊姆之王", "difficulty": "easy", "enabled": true,
+          "monsters": ["dragon"], "bg": "boss_room", "isBoss": true,
+          "questions": [
+            {"q": "7 × 1 = ?", "answer": 7, "choices": [5, 6, 7]},
+            {"q": "7 × 2 = ?", "answer": 14, "choices": [12, 14, 16]},
+            {"q": "7 × 3 = ?", "answer": 21, "choices": [18, 21, 24]},
+            {"q": "7 × 4 = ?", "answer": 28, "choices": [24, 28, 32]},
+            {"q": "7 × 5 = ?", "answer": 35, "choices": [30, 35, 40]},
+            {"q": "7 × 6 = ?", "answer": 42, "choices": [36, 42, 48]},
+            {"q": "7 × 7 = ?", "answer": 49, "choices": [42, 49, 56]},
+            {"q": "7 × 8 = ?", "answer": 56, "choices": [48, 56, 64]},
+            {"q": "7 × 9 = ?", "answer": 63, "choices": [54, 63, 72]},
+            {"q": "7 × 10 = ?", "answer": 70, "choices": [60, 70, 80]}
+          ]
+        }
+      ]
+    }
+  },
+  "addition": { "enabled": false, "stages": [] },
+  "subtraction": { "enabled": false, "stages": [] },
+  "division": { "enabled": false, "stages": [] },
+  "fractions": { "enabled": false, "stages": [] },
+  "algebra": { "enabled": false, "stages": [] },
+  "measurement": { "enabled": false, "stages": [] },
+  "shapes": { "enabled": false, "stages": [] },
+  "data": { "enabled": false, "stages": [] }
+}
