@@ -184,7 +184,7 @@ section{position:fixed;inset:0;display:flex;flex-direction:column;align-items:ce
 /* Skills Toggle */
 .skills-toggle{position:fixed;bottom:16px;right:16px;z-index:50;background:var(--card);border:2px solid var(--border);border-radius:50%;width:48px;height:48px;color:var(--text);font-size:1.2rem;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;touch-action:manipulation}
 .skills-toggle:hover{background:#3d3d5c;border-color:var(--secondary)}
-#battle-skills.collapsed{max-height:0;overflow:hidden;opacity:0;margin-top:0}
+#battle-skills.collapsed{max-height:0;overflow:hidden;opacity:0;margin-top:0;position:relative;z-index:40}
 #battle-skills.collapsed .skill-btn{pointer-events:none}
 
 /* Zoom Controls */
@@ -411,7 +411,7 @@ section{position:fixed;inset:0;display:flex;flex-direction:column;align-items:ce
 
     <div class="battle-log" id="battle-log"></div>
   </div>
-  <button class="skills-toggle" id="skills-toggle" onclick="toggleSkills()" aria-label="技能">⚔️</button>
+  <button class="skills-toggle" id="skills-toggle" onclick="toggleSkills();event.stopPropagation();" aria-label="技能">⚔️</button>
 </section>
 
 <!-- ==================== BATTLE RESULT ==================== -->
@@ -1021,10 +1021,18 @@ function submitChoice(answer) {
     showComboMilestone();
     addLog(`✅ 回答正確！(${battleState.combo}連) 攻擊造成 ${dmg} 傷害！`);
     flashSprite('monster-sprite');
-    // Turn-based: check if monster counter-attacks
+
+    // Turn-based redesign: correct answer = shield for monster retaliation, then monster attacks
+    // Shield is granted BEFORE monster attacks so it reduces the retaliation damage
+    gameState.shieldActive = true;
+    gameState.shieldTurns = 1;
+    gameState.shieldReduction = 0.5; // 50% damage reduction from correct answer shield
+    addLog(`🛡️ 獲得護盾！下回合怪物攻擊減半！`);
+
+    // Check if monster defeated
     if (battleState.monsterHP > 0) {
       setTimeout(() => {
-        monsterAttack();
+        monsterAttack(); // Monster counterattacks (shield reduces damage if active)
         updateBattleUI();
         if (battleState.monsterHP > 0) nextQuestion();
         checkBattleEnd();
@@ -1038,10 +1046,10 @@ function submitChoice(answer) {
     battleState.questionsAnswered++;
     battleState.combo = 0;
     updateComboDisplay();
+    // Wrong answer = no shield, monster attacks at full damage
     addLog(`❌ 正確答案是 ${correct}！怪物反擊！`);
     playSound('fail');
-    monsterAttack();
-    // Turn-based: player's wrong answer = their turn is wasted, monster attacks → next question
+    monsterAttack(); // Full damage since no shield
     setTimeout(() => {
       if (battleState.monsterHP > 0) nextQuestion();
       checkBattleEnd();
@@ -1264,7 +1272,7 @@ function updateBattleUI() {
   document.getElementById('monster-max-hp').textContent = battleState.monsterMaxHP;
   document.getElementById('monster-hp-bar').style.width = (battleState.monsterHP / battleState.monsterMaxHP * 100) + '%';
   document.getElementById('wave-indicator').textContent = `第 ${battleState.waveIndex + 1}/${battleState.enemiesPerStage} 波`;
-  document.getElementById('turn-indicator').textContent = '⚔️ 玩家進攻';
+  document.getElementById('turn-indicator').textContent = gameState.shieldActive ? '🛡️ 防護盾生效' : '⚔️ 玩家進攻';
   // XP bar
   const xpBar = document.getElementById('xp-bar');
   const xpText = document.getElementById('xp-text');
