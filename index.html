@@ -4821,8 +4821,13 @@
 
     function startNavBattle() {
       hideAllSections();
-      document.getElementById('battleSection').style.display = 'flex';
-      document.getElementById('battleSection').classList.add('active');
+      // There are two #battleSection elements - target the real one (2nd)
+      const battleSections = document.querySelectorAll('#battleSection');
+      const realBattle = battleSections[battleSections.length - 1];
+      if (realBattle) {
+        realBattle.style.display = 'flex';
+        realBattle.classList.add('active');
+      }
       initBattle(navState.topic, navState.difficulty);
     }
 
