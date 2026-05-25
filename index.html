@@ -564,6 +564,20 @@ function selectDomain(domain) {
   showTopicScreen();
 }
 
+function selectTopic(topicKey) {
+  currentTopic = topicKey;
+  renderDiffScreen();
+  showDiffScreen();
+}
+
+function renderDiffScreen() {
+  const domain = STAGES_DATA[currentDomain];
+  const topic = domain[topicKey];
+  if (!topic) return;
+  document.getElementById('diff-title').textContent = '📚 ' + topic.name + ' — 選擇難度';
+  // diff-screen already has the 3 difficulty buttons, no need to rebuild
+}
+
 function renderTopicScreen() {
   const list = document.getElementById('topic-list');
   const domain = STAGES_DATA[currentDomain];
@@ -574,37 +588,24 @@ function renderTopicScreen() {
   Object.entries(domain).forEach(([key, val]) => {
     if (key === 'name') return;
     const topicData = val;
-    topicData.stages.forEach(stage => {
-      if (!stage.enabled) return;
-      const diffLabel = { easy: '🌱', normal: '⚔️', hard: '💀' };
-      html += `<button class="topic-btn" onclick="selectTopic('${key}', '${stage.id}')">
-        <span class="t-num">${key === 'boss' ? '👑' : key + '的乘法'}</span>
-        <span style="color:var(--text-dim);font-size:.85rem">${stage.name}</span>
-        <span class="t-arrow">${diffLabel[stage.difficulty] || ''} →</span>
-      </button>`;
-    });
+    const stageCount = topicData.stages.filter(s => s.enabled).length;
+    if (stageCount === 0) return;
+    html += `<button class="topic-btn" onclick="selectTopic('${key}')">
+      <span class="t-num">${key === 'boss' ? '👑 乘法Boss關' : key + '的乘法'}</span>
+      <span style="color:var(--text-dim);font-size:.85rem">${stageCount}個難度</span>
+      <span class="t-arrow">選擇 →</span>
+    </button>`;
   });
   list.innerHTML = html || '<div style="color:var(--text-dim);text-align:center;padding:2em">暫無關卡</div>';
 }
 
-function selectTopic(topicKey, stageId) {
-  currentTopic = topicKey;
-  const domain = STAGES_DATA[currentDomain];
-  let stage = null;
-  Object.entries(domain).forEach(([key, val]) => {
-    if (key === 'name') return;
-    const s = val.stages.find(x => x.id === stageId);
-    if (s) stage = s;
-  });
-  if (!stage) return;
-  currentStage = stage;
-  currentDiff = stage.difficulty;
-  showDiffScreen();
-  document.getElementById('diff-title').textContent = '⚔️ ' + stage.name;
-}
-
 function selectDiff(diff) {
   currentDiff = diff;
+  const domain = STAGES_DATA[currentDomain];
+  const topic = domain[currentTopic];
+  if (!topic) return;
+  currentStage = topic.stages.find(s => s.difficulty === diff && s.enabled);
+  if (!currentStage) return;
   renderStageConfirm();
   showStageScreen();
 }
