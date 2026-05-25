@@ -534,7 +534,9 @@ function confirmName() {
   showCharScreen();
 }
 
+let charSelectTimeout = null;
 function selectChar(char) {
+  if (charSelectTimeout) { clearTimeout(charSelectTimeout); charSelectTimeout = null; }
   gameState.character = char;
   document.querySelectorAll('.char-card').forEach(c => c.classList.remove('selected'));
   event.currentTarget.classList.add('selected');
@@ -543,7 +545,7 @@ function selectChar(char) {
     mage: 'assets/images/mage-hero.png',
     berserker: 'assets/images/berserker-hero.png'
   };
-  setTimeout(() => { showMapScreen(); }, 400);
+  charSelectTimeout = setTimeout(() => { charSelectTimeout = null; showMapScreen(); }, 400);
 }
 
 function updateMapInfo() {
@@ -664,8 +666,8 @@ function startBattle() {
 
   showScreen('battle-screen');
   updateBattleUI();
-  renderBattleAnswer();
-  nextQuestion();
+  nextQuestion(); // sets currentQuestion first
+  renderBattleAnswer(); // uses currentQuestion
   addLog(`⚔️ 戰鬥開始！遇到 ${battleState.monsterName}！`);
 
   // Set character sprite
