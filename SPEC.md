@@ -9,9 +9,87 @@
 
 ## 📍 項目位置
 `~/workspace/vs code/education/multiplication-town/`
-- 主文件：`index.html`（~7901 行，純 HTML/CSS/JS）
+- 主文件：`index.html`（~8900 行，純 HTML/CSS/JS）
 - 精靈文件：`pixel-sprites.html`
 - 入口：`MathBattle 乘法戰鬥系統`
+
+---
+
+## 🗺️ 導航架構
+
+### 導航流程（範疇 → 子項 → 難度 → 關卡確認 → 戰鬥）
+
+```
+首頁點擊「🗺️ 新導航」
+  │
+  ├─ 畫面1: 範疇選擇（世界地圖）
+  │         ├─ 🌲 數字森林 (unlocked)
+  │         ├─ ⛰️ 運算山脈 (locked)
+  │         ├─ 🏰 圖形城堡 (locked)
+  │         └─ ...
+  │         ◀ 返回（回到首頁）
+  │
+  └─ 畫面2: 子項選擇（Topic 卡片列表）
+            ├─ 📍 1-10草原 → 乘法洞窟
+            ├─ 📍 11-20森林
+            └─ 👑 百位數守衛（Boss）
+            ◀ 返回（回到範疇選擇）
+
+            └─ 畫面3: 難度選擇（三大按鈕）
+                      ├─ 🌱 新手（基礎題目）
+                      ├─ ⚔️ 老兵（標準題目）
+                      └─ 💀 傳奇（高等題目）
+                      ◀ 返回（回到子項選擇）
+
+                      └─ 畫面4: 關卡確認
+                                └─ 🚀 開始戰鬥！
+```
+
+### 導航狀態機 (navState)
+
+| 欄位 | 類型 | 說明 |
+|------|------|------|
+| `screen` | string | 當前畫面：`domain` \| `topic` \| `difficulty` \| `stage` |
+| `domain` | string | 範疇ID，如 `numbers`, `operations`, `shapes` |
+| `topic` | string | 子項ID，如 `multiplication`, `addition`, `shapes2D` |
+| `difficulty` | string | 難度：`easy` \| `normal` \| `hard` |
+| `stageId` | number | 關卡ID |
+
+### 核心函數
+
+| 函數 | 職責 |
+|------|------|
+| `showNavScreen(name)` | 顯示指定導航畫面，隱藏其他 |
+| `navigateTo(screen, extra)` | 導航到下一層，更新 navState |
+| `navGoBack()` | 返回上一層 |
+| `renderNavDomainScreen()` | 渲染範疇選擇（世界地圖） |
+| `renderNavTopicScreen(domainId)` | 渲染子項選擇 |
+| `renderNavDifficultyScreen(data)` | 渲染難度選擇 |
+| `renderNavStageConfirm(data)` | 渲染關卡確認 |
+| `startNavBattle()` | 隱藏所有section，顯示battleSection，調用 `initBattle()` |
+| `initBattle(topic, difficulty)` | 新導航專用入口：設 `selectedLevel` 然後 `startBattle()` |
+| `startNewNav()` | 入口：開始新導航流程（調用 `navigateTo('domain')`） |
+
+### HTML 容器
+
+| ID | 畫面 |
+|----|------|
+| `nav-domain-screen` | 範疇選擇 |
+| `nav-topic-screen` | 子項選擇 |
+| `nav-difficulty-screen` | 難度選擇 |
+| `nav-stage-screen` | 關卡確認 |
+
+### CSS 類
+
+| 類 | 用途 |
+|----|------|
+| `.nav-screen` | 導航畫面容器（display:none/flex） |
+| `.nav-card` | 範疇/子項卡片 |
+| `.nav-diff-btn` | 難度按鈕 |
+| `.nav-start-btn` | 開始戰鬥按鈕（漸變背景） |
+| `.locked-domain` | 未解鎖範疇（opacity:0.4） |
+
+---
 
 ---
 
@@ -1297,8 +1375,9 @@ HP > 0
 
 ### 🆕 2026-05-26 今日新增系統
 
-| 日期 | 更新內容 |
+|| 日期 | 更新內容 |
 |------|---------|
+| 2026-05-26 | **新導航系統**：4畫面導航架構（範疇→子項→難度→關卡確認）+ 狀態機 + 入口按鈕 |
 | 2026-05-26 | **元素屬性系統**：6大元素+元素反應（10種基礎+5種高級）+職業元素抗性表 |
 | 2026-05-26 | **異常狀態系統**：10種負面狀態、8種正面狀態、4種特殊狀態完整定義 |
 | 2026-05-26 | **評星系統詳細化**：5維評分權重、詳細評級條件、獎勵、展示動畫 |
@@ -1321,6 +1400,7 @@ HP > 0
 | 2026-05-25 | **Boss三階段機制**：巨龍、黑暗法師、暗影騎士各階段詳細行為與弱點 |
 | 2026-05-25 | **新職業技能樹**：盜賊、牧師、弓箭手完整技能數值（等級/MP/冷卻/效果）|
 | 2026-05-25 | **新職業詳細數值**：基礎HP/MP/ATK/防禦/速度/暴擊率/閃避率等屬性 |
+| 2026-05-26 | **新導航系統**：4畫面導航架構（範疇→子項→難度→關卡確認）+ 狀態機 + 入口按鈕 |
 | 2026-05-26 | **元素屬性系統**：6大元素+元素反應（10種基礎+5種高級）+職業元素抗性表 |
 | 2026-05-26 | **異常狀態系統**：10種負面狀態、8種正面狀態、4種特殊狀態完整定義 |
 | 2026-05-26 | **評星系統詳細化**：5維評分權重、詳細評級條件、獎勵、展示動畫 |
