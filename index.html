@@ -319,6 +319,7 @@ section{position:fixed;inset:0;display:flex;flex-direction:column;align-items:ce
 <!-- ==================== BATTLE SCREEN ==================== -->
 <section id="battle-screen" class="hidden">
   <button class="back-btn" onclick="confirmExitBattle(); stopBgm()">✖</button>
+  <button class="back-btn" id="bgm-toggle-btn" onclick="toggleBgm()" style="right:60px;background:#2d2d44" title="音樂開關">🔊</button>
   <div class="battle-top-bar">
     <div class="player-hud">
       <div class="hud-name"><span id="battle-player-name">冒險者</span><span id="battle-player-lv">Lv.1</span></div>
@@ -331,10 +332,16 @@ section{position:fixed;inset:0;display:flex;flex-direction:column;align-items:ce
         <div class="hud-bar-fill hud-mp-fill" id="player-mp-bar" style="width:100%"></div>
       </div>
       <div class="hud-text">MP <span id="player-mp-text">50</span>/50</div>
+      <div class="hud-bar" style="margin-top:4px;background:#222">
+        <div class="hud-bar-fill" id="xp-bar" style="width:0%;background:var(--accent);height:8px;border-radius:4px"></div>
+      </div>
+      <div class="hud-text" style="font-size:.7rem">XP <span id="xp-text">0/50</span></div>
     </div>
     <div class="monster-hud">
       <div class="monster-hud-name" id="monster-hud-name">史萊姆</div>
       <div class="monster-hud-hp">HP <span id="monster-hp-text">30</span>/<span id="monster-max-hp">30</span></div>
+      <div id="wave-indicator" style="font-size:.7rem;color:var(--gold);margin-top:2px">第 1/3 波</div>
+      <div class="monster-hud-hp" id="turn-indicator" style="margin-top:4px;font-size:.75rem;color:var(--accent)">⚔️ 玩家進攻</div>
       <div class="hud-bar">
         <div class="hud-bar-fill hud-hp-fill" id="monster-hp-bar" style="width:100%"></div>
       </div>
@@ -361,21 +368,44 @@ section{position:fixed;inset:0;display:flex;flex-direction:column;align-items:ce
     </div>
 
     <div class="battle-skills" id="battle-skills">
-      <button class="skill-btn fireball" onclick="useSkill('fireball')" aria-label="火球術">
-        <span class="sk-name">🔥 火球術</span>
-        <span class="sk-cost" id="fireball-cost">15MP · 30傷</span>
+      <!-- Knight Skills -->
+      <button class="skill-btn fireball knight-only" id="sk-btn-0" onclick="useSkill('shield-bash')" style="display:none" aria-label="盾牌猛擊">
+        <span class="sk-name">🛡️ 盾牌猛擊</span>
+        <span class="sk-cost">8MP · 15傷+暈</span>
       </button>
-      <button class="skill-btn heal" onclick="useSkill('heal')" aria-label="治療術">
+      <button class="skill-btn heal knight-only" id="sk-btn-1" onclick="useSkill('iron-fortress')" style="display:none" aria-label="鋼鐵壁壘">
+        <span class="sk-name">🏰 鋼鐵壁壘</span>
+        <span class="sk-cost">15MP · 75%減3回</span>
+      </button>
+      <button class="skill-btn shield knight-only" id="sk-btn-2" onclick="useSkill('holy-shield')" style="display:none" aria-label="聖光護盾">
+        <span class="sk-name">✨ 聖光護盾</span>
+        <span class="sk-cost">15MP · 防4回</span>
+      </button>
+      <!-- Mage Skills -->
+      <button class="skill-btn fireball mage-only" id="sk-btn-0" onclick="useSkill('fireball')" style="display:none" aria-label="火球術">
+        <span class="sk-name">🔥 火球術</span>
+        <span class="sk-cost" id="fireball-cost">15MP · 40傷</span>
+      </button>
+      <button class="skill-btn heal mage-only" id="sk-btn-1" onclick="useSkill('frost-nova')" style="display:none" aria-label="冰凍術">
+        <span class="sk-name">❄️ 冰凍術</span>
+        <span class="sk-cost">12MP · 20傷+凍</span>
+      </button>
+      <button class="skill-btn critical mage-only" id="sk-btn-2" onclick="useSkill('heal')" style="display:none" aria-label="治療術">
         <span class="sk-name">💚 治療術</span>
         <span class="sk-cost">20MP · +30HP</span>
       </button>
-      <button class="skill-btn critical" onclick="useSkill('critical')" aria-label="暴擊之刃">
-        <span class="sk-name">⚡ 暴擊之刃</span>
-        <span class="sk-cost">10MP · 2~3倍</span>
+      <!-- Berserker Skills -->
+      <button class="skill-btn fireball berserker-only" id="sk-btn-0" onclick="useSkill('bloodlust')" style="display:none" aria-label="嗜血打擊">
+        <span class="sk-name">🩸 嗜血打擊</span>
+        <span class="sk-cost">10MP · 25傷+吸血</span>
       </button>
-      <button class="skill-btn shield" onclick="useSkill('shield')" aria-label="聖光護盾">
-        <span class="sk-name">🛡️ 聖光護盾</span>
-        <span class="sk-cost">15MP · 防+50%~75%</span>
+      <button class="skill-btn heal berserker-only" id="sk-btn-1" onclick="useSkill('berserk-rage')" style="display:none" aria-label="狂暴狀態">
+        <span class="sk-name">💢 狂暴狀態</span>
+        <span class="sk-cost">15MP · 2回雙倍</span>
+      </button>
+      <button class="skill-btn critical berserker-only" id="sk-btn-2" onclick="useSkill('critical')" style="display:none" aria-label="暴擊之刃">
+        <span class="sk-name">⚡ 暴擊之刃</span>
+        <span class="sk-cost">10MP · 3倍傷</span>
       </button>
     </div>
 
@@ -609,12 +639,15 @@ let gameState = {
   character: null,
   level: 1,
   xp: 0,
+  xpToNext: 50,
   gold: 0,
   playerMaxHP: 100,
   playerMaxMP: 50,
   playerATK: 10,
   shieldActive: false,
-  shieldTurns: 0
+  shieldTurns: 0,
+  shieldReduction: 0.5,
+  berserkStacks: 0
 };
 
 let battleState = {
@@ -641,7 +674,10 @@ let battleState = {
   correctCount: 0,
   wrongCount: 0,
   totalDamage: 0,
-  questionsAnswered: 0
+  questionsAnswered: 0,
+  waveIndex: 0,
+  enemiesPerStage: 3,
+  totalStageDamage: 0
 };
 
 let numpadValue = '';
@@ -772,8 +808,8 @@ function renderStageConfirm() {
   const monsterHP = s.monsters.reduce((sum, m) => sum + (MONSTER_STATS[m]?.hp || 30), 0);
   const diffLabel = { easy: '🌱 初階 3選1', normal: '⚔️ 中階 4選1', hard: '💀 高階 數字輸入' };
   document.getElementById('confirm-info').innerHTML = `
-    <div>👹 ${monsterNames}</div>
-    <div>❤️ HP ${monsterHP}</div>
+    <div>👹 ${monsterNames} × 3 波</div>
+    <div>❤️ 敵人 HP ${monsterHP}+/波</div>
     <div>${diffLabel[currentDiff]}</div>
   `;
 }
@@ -789,7 +825,6 @@ function startBattle() {
     playerMaxHP: gameState.playerMaxHP || 100,
     playerMaxMP: gameState.playerMaxMP || 50,
     playerATK: gameState.playerATK || 10,
-    monsterHP: 0,
     monsterMaxHP: 0,
     monsterATK: 0,
     monsterName: '',
@@ -807,13 +842,19 @@ function startBattle() {
     correctCount: 0,
     wrongCount: 0,
     totalDamage: 0,
-    questionsAnswered: 0
+    questionsAnswered: 0,
+    waveIndex: 0,
+    enemiesPerStage: 3,
+    totalStageDamage: 0,
+    stunned: false
   };
 
   gameState.shieldActive = false;
   gameState.shieldTurns = 0;
+  gameState.shieldReduction = 0.5;
+  gameState.berserkStacks = 0;
 
-  // Monster setup - use first monster type for simplicity
+  // Monster setup for wave 0
   const monsterKey = s.monsters[0];
   const ms = MONSTER_STATS[monsterKey] || { name: '怪物', hp: 30, atk: 5, img: '' };
   const multiplier = currentDiff === 'hard' ? 1.5 : currentDiff === 'normal' ? 1.2 : 1;
@@ -847,6 +888,7 @@ function startBattle() {
   // Set background
   const bg = BG_MAP[s.bg] || BG_MAP.forest;
   document.getElementById('battle-bg').style.backgroundImage = `url('${bg}')`;
+  document.getElementById('turn-indicator').textContent = '⚔️ 玩家進攻';
 }
 
 function shuffleArray(arr) {
@@ -866,7 +908,9 @@ function nextQuestion() {
   battleState.currentQuestion = battleState.questions[battleState.qIndex];
   battleState.qIndex++;
   document.getElementById('question-text').textContent = battleState.currentQuestion.q;
-  document.getElementById('question-counter').textContent = `${battleState.qIndex}/${battleState.questions.length}`;
+  const totalQ = battleState.questions.length * battleState.enemiesPerStage;
+  const currentQ = battleState.qIndex;
+  document.getElementById('question-counter').textContent = `${currentQ}/${totalQ}`;
   renderBattleAnswer();
 }
 
@@ -883,17 +927,17 @@ function renderBattleAnswer() {
     container.innerHTML = `
       <div class="numpad">
         <div class="numpad-input-display" id="numpad-display" tabindex="0" aria-label="輸入數字"></div>
-        <button class="numpad-btn" onclick="numpadPress('1'" aria-label="1">1</button>
-        <button class="numpad-btn" onclick="numpadPress('2'" aria-label="2">2</button>
-        <button class="numpad-btn" onclick="numpadPress('3'" aria-label="3">3</button>
-        <button class="numpad-btn" onclick="numpadPress('4'" aria-label="4">4</button>
-        <button class="numpad-btn" onclick="numpadPress('5'" aria-label="5">5</button>
-        <button class="numpad-btn" onclick="numpadPress('6'" aria-label="6">6</button>
-        <button class="numpad-btn" onclick="numpadPress('7'" aria-label="7">7</button>
-        <button class="numpad-btn" onclick="numpadPress('8'" aria-label="8">8</button>
-        <button class="numpad-btn" onclick="numpadPress('9'" aria-label="9">9</button>
+        <button class="numpad-btn" onclick="numpadPress('1')" aria-label="1">1</button>
+        <button class="numpad-btn" onclick="numpadPress('2')" aria-label="2">2</button>
+        <button class="numpad-btn" onclick="numpadPress('3')" aria-label="3">3</button>
+        <button class="numpad-btn" onclick="numpadPress('4')" aria-label="4">4</button>
+        <button class="numpad-btn" onclick="numpadPress('5')" aria-label="5">5</button>
+        <button class="numpad-btn" onclick="numpadPress('6')" aria-label="6">6</button>
+        <button class="numpad-btn" onclick="numpadPress('7')" aria-label="7">7</button>
+        <button class="numpad-btn" onclick="numpadPress('8')" aria-label="8">8</button>
+        <button class="numpad-btn" onclick="numpadPress('9')" aria-label="9">9</button>
         <button class="numpad-btn clear-btn" onclick="numpadClear()" aria-label="清除">✖</button>
-        <button class="numpad-btn" onclick="numpadPress('0'" aria-label="0">0</button>
+        <button class="numpad-btn" onclick="numpadPress('0')" aria-label="0">0</button>
         <button class="numpad-btn submit-num-btn" onclick="submitNumpad()" aria-label="確定">✓ 確定</button>
       </div>`;
     document.getElementById('answer-hint').textContent = '輸入數字後按 ✓ 確認或按 Enter';
@@ -948,9 +992,13 @@ function submitChoice(answer) {
     updateComboDisplay();
     let dmg = battleState.playerATK;
     if (battleState.usingSkill === 'critical') {
-      const critMult = gameState.character === 'berserker' ? 3 : 2;
-      dmg *= critMult;
+      dmg *= 3; // Berserker critical x3
       addLog('⚡ 暴擊！');
+    }
+    if (gameState.berserkStacks > 0) {
+      dmg *= 2;
+      gameState.berserkStacks--;
+      addLog(`💢 狂暴！雙倍伤害！`);
     }
     battleState.monsterHP = Math.max(0, battleState.monsterHP - dmg);
     battleState.totalDamage += dmg;
@@ -959,7 +1007,18 @@ function submitChoice(answer) {
     showComboMilestone();
     addLog(`✅ 回答正確！(${battleState.combo}連) 攻擊造成 ${dmg} 傷害！`);
     flashSprite('monster-sprite');
-    nextQuestion();
+    // Turn-based: check if monster counter-attacks
+    if (battleState.monsterHP > 0) {
+      setTimeout(() => {
+        monsterAttack();
+        updateBattleUI();
+        if (battleState.monsterHP > 0) nextQuestion();
+        checkBattleEnd();
+      }, 400);
+    } else {
+      nextQuestion();
+      checkBattleEnd();
+    }
   } else {
     battleState.wrongCount++;
     battleState.questionsAnswered++;
@@ -968,18 +1027,25 @@ function submitChoice(answer) {
     addLog(`❌ 正確答案是 ${correct}！怪物反擊！`);
     playSound('fail');
     monsterAttack();
-    nextQuestion();
+    // Turn-based: player's wrong answer = their turn is wasted, monster attacks → next question
+    setTimeout(() => {
+      if (battleState.monsterHP > 0) nextQuestion();
+      checkBattleEnd();
+    }, 400);
+    updateBattleUI();
   }
   battleState.usingSkill = false;
-  updateBattleUI();
-  checkBattleEnd();
 }
 
 function monsterAttack() {
+  if (battleState.stunned) {
+    battleState.stunned = false;
+    addLog(`💤 ${battleState.monsterName} 被暈住了！`);
+    return;
+  }
   let atk = battleState.monsterATK;
   if (gameState.shieldActive) {
-    // Knight額外50%減傷（實際承受25%），其他50%（實際承受50%）
-    const reduction = gameState.character === 'knight' ? 0.25 : 0.5;
+    const reduction = gameState.shieldReduction !== undefined ? gameState.shieldReduction : 0.5;
     atk = Math.round(atk * reduction);
     addLog(`🛡️ 護盾減傷！受到 ${atk} 傷害！`);
   } else {
@@ -987,71 +1053,189 @@ function monsterAttack() {
   }
   battleState.playerHP = Math.max(0, battleState.playerHP - atk);
   flashSprite('char-sprite');
-  if (gameState.shieldActive) gameState.shieldTurns--;
-  if (gameState.shieldTurns <= 0) gameState.shieldActive = false;
+  if (gameState.shieldActive) {
+    gameState.shieldTurns--;
+    if (gameState.shieldTurns <= 0) {
+      gameState.shieldActive = false;
+    }
+  }
+  document.getElementById('turn-indicator').textContent = '👹 怪獸進攻';
   updateBattleUI();
 }
 
 function useSkill(skill) {
   if (!battleState.battleActive) return;
-  const costs = { fireball: 15, heal: 20, critical: 10, shield: 15 };
-  const cost = costs[skill];
+  const char = gameState.character;
+  const costs = {
+    'shield-bash': 8, 'iron-fortress': 15, 'holy-shield': 15,
+    'fireball': 15, 'frost-nova': 12, 'heal': 20,
+    'bloodlust': 10, 'berserk-rage': 15, 'critical': 10
+  };
+  const cost = costs[skill] || 15;
   if (battleState.playerMP < cost) {
     addLog(`❌ MP不足！需要 ${cost} MP`);
     return;
   }
-
   battleState.playerMP -= cost;
-
   playSound('skill');
+
   switch (skill) {
-    case 'fireball':
-      const fbDmg = gameState.character === 'mage' ? 40 : 30;
-      battleState.monsterHP = Math.max(0, battleState.monsterHP - fbDmg);
-      battleState.totalDamage += fbDmg;
-      showDmgNumber(fbDmg, false);
-      addLog(`🔥 火球術！造成 ${fbDmg} 傷害！`);
+    // ===== KNIGHT SKILLS =====
+    case 'shield-bash':
+      // Knight: 15 damage + monster stunned (skip 1 counter-attack, tracked via flag)
+      battleState.monsterHP = Math.max(0, battleState.monsterHP - 15);
+      battleState.totalDamage += 15;
+      battleState.stunned = true;
+      showDmgNumber(15, false);
+      addLog(`🛡️ 盾牌猛擊！15傷害+暈住1回合！`);
       flashSprite('monster-sprite');
-      monsterAttack();
+      playSound('correct');
+      setTimeout(() => {
+        if (!battleState.stunned) { monsterAttack(); }
+        battleState.stunned = false;
+        updateBattleUI();
+        if (battleState.monsterHP > 0) nextQuestion();
+        checkBattleEnd();
+      }, 400);
+      break;
+    case 'iron-fortress':
+      // Knight: 75% damage reduction for 3 turns
+      gameState.shieldActive = true;
+      gameState.shieldTurns = 3;
+      gameState.shieldReduction = 0.25;
+      addLog(`🏰 鋼鐵壁壘！75%減傷，持續3回合！`);
+      setTimeout(() => {
+        if (battleState.monsterHP > 0) { monsterAttack(); }
+        updateBattleUI();
+        if (battleState.monsterHP > 0) nextQuestion();
+        checkBattleEnd();
+      }, 400);
+      break;
+    case 'holy-shield':
+      // Knight: Complete immunity for 4 turns
+      gameState.shieldActive = true;
+      gameState.shieldTurns = 4;
+      gameState.shieldReduction = 0;
+      addLog(`✨ 聖光護盾！無敵4回合！`);
+      setTimeout(() => {
+        if (battleState.monsterHP > 0) { monsterAttack(); }
+        updateBattleUI();
+        if (battleState.monsterHP > 0) nextQuestion();
+        checkBattleEnd();
+      }, 400);
+      break;
+    // ===== MAGE SKILLS =====
+    case 'fireball':
+      // Mage: 40 damage
+      battleState.monsterHP = Math.max(0, battleState.monsterHP - 40);
+      battleState.totalDamage += 40;
+      showDmgNumber(40, false);
+      addLog(`🔥 火球術！40傷害！`);
+      flashSprite('monster-sprite');
+      playSound('correct');
+      setTimeout(() => {
+        if (battleState.monsterHP > 0) { monsterAttack(); }
+        updateBattleUI();
+        if (battleState.monsterHP > 0) nextQuestion();
+        checkBattleEnd();
+      }, 400);
+      break;
+    case 'frost-nova':
+      // Mage: 20 damage + freeze (monster skips 1 attack turn)
+      battleState.monsterHP = Math.max(0, battleState.monsterHP - 20);
+      battleState.totalDamage += 20;
+      battleState.stunned = true;
+      showDmgNumber(20, false);
+      addLog(`❄️ 冰凍術！20傷害+凍住1回合！`);
+      flashSprite('monster-sprite');
+      playSound('correct');
+      setTimeout(() => {
+        if (!battleState.stunned) { monsterAttack(); }
+        battleState.stunned = false;
+        updateBattleUI();
+        if (battleState.monsterHP > 0) nextQuestion();
+        checkBattleEnd();
+      }, 400);
       break;
     case 'heal':
+      // Mage: Heal 30 HP
       const healAmt = Math.min(30, battleState.playerMaxHP - battleState.playerHP);
       battleState.playerHP = Math.min(battleState.playerMaxHP, battleState.playerHP + 30);
       showDmgNumber(healAmt, true);
       addLog(`💚 治療術！恢復 ${healAmt} HP！`);
-      monsterAttack();
+      setTimeout(() => {
+        if (battleState.monsterHP > 0) { monsterAttack(); }
+        updateBattleUI();
+        if (battleState.monsterHP > 0) nextQuestion();
+        checkBattleEnd();
+      }, 400);
+      break;
+    // ===== BERSERKER SKILLS =====
+    case 'bloodlust':
+      // Berserker: 25 damage + lifesteal (heal 15 HP)
+      battleState.monsterHP = Math.max(0, battleState.monsterHP - 25);
+      battleState.totalDamage += 25;
+      const healBS = Math.min(15, battleState.playerMaxHP - battleState.playerHP);
+      battleState.playerHP = Math.min(battleState.playerMaxHP, battleState.playerHP + healBS);
+      showDmgNumber(25, false);
+      addLog(`🩸 嗜血打擊！25傷+吸血${healBS}HP！`);
+      flashSprite('monster-sprite');
+      playSound('correct');
+      setTimeout(() => {
+        if (battleState.monsterHP > 0) { monsterAttack(); }
+        updateBattleUI();
+        if (battleState.monsterHP > 0) nextQuestion();
+        checkBattleEnd();
+      }, 400);
+      break;
+    case 'berserk-rage':
+      // Berserker: Double ATK for 2 turns (stackable)
+      gameState.berserkStacks = (gameState.berserkStacks || 0) + 2;
+      battleState.usingSkill = 'berserk';
+      addLog(`💢 狂暴狀態！下2次攻擊雙倍傷害！`);
+      setTimeout(() => {
+        if (battleState.monsterHP > 0) { monsterAttack(); }
+        updateBattleUI();
+        if (battleState.monsterHP > 0) nextQuestion();
+        checkBattleEnd();
+      }, 400);
       break;
     case 'critical':
+      // Berserker: 3x critical hit
       battleState.usingSkill = 'critical';
-      // 暴擊倍率的角色差異化：Berserker x3，其他 x2
-      const critMult = gameState.character === 'berserker' ? 3 : 2;
-      battleState.usingSkill = 'critical';
-      addLog(`⚡ 暴擊之刃！下次攻擊傷害×${critMult}！`);
-      monsterAttack();
-      break;
-    case 'shield':
-      gameState.shieldActive = true;
-      const shieldTurns = gameState.character === 'knight' ? 3 : 2;
-      gameState.shieldTurns = shieldTurns;
-      addLog(`🛡️ 聖光護盾！防禦+50%，持續${shieldTurns}回合！`);
-      monsterAttack();
+      addLog(`⚡ 暴擊之刃！下次傷害×3！`);
+      setTimeout(() => {
+        if (battleState.monsterHP > 0) { monsterAttack(); }
+        updateBattleUI();
+        if (battleState.monsterHP > 0) nextQuestion();
+        checkBattleEnd();
+      }, 400);
       break;
   }
   updateBattleUI();
-  checkBattleEnd();
 }
 
 function updateSkillButtons() {
-  const costs = { fireball: 15, heal: 20, critical: 10, shield: 15 };
-  const isMage = gameState.character === 'mage';
+  const char = gameState.character;
+  // Show only the skills for the current character
   document.querySelectorAll('.skill-btn').forEach(btn => {
-    const skillName = btn.classList[1];
-    const cost = costs[skillName] || 0;
+    btn.style.display = 'none';
+  });
+  document.querySelectorAll(`.${char}-only`).forEach(btn => {
+    btn.style.display = '';
+  });
+
+  // Check MP and apply disabled state only to visible buttons
+  const visibleCosts = {
+    'shield-bash': 8, 'iron-fortress': 15, 'holy-shield': 15,
+    'fireball': 15, 'frost-nova': 12, 'heal': 20,
+    'bloodlust': 10, 'berserk-rage': 15, 'critical': 10
+  };
+  document.querySelectorAll(`.${char}-only`).forEach(btn => {
+    const skillKey = btn.classList[1]; // second class is the skill key
+    const cost = visibleCosts[skillKey] || 0;
     btn.classList.toggle('disabled', battleState.playerMP < cost);
   });
-  // Dynamic fireball cost display
-  const fbCost = document.getElementById('fireball-cost');
-  if (fbCost) fbCost.textContent = `15MP · ${isMage ? '40' : '30'}傷`;
 }
 
 function updateBattleUI() {
@@ -1065,6 +1249,13 @@ function updateBattleUI() {
   document.getElementById('monster-hp-text').textContent = battleState.monsterHP;
   document.getElementById('monster-max-hp').textContent = battleState.monsterMaxHP;
   document.getElementById('monster-hp-bar').style.width = (battleState.monsterHP / battleState.monsterMaxHP * 100) + '%';
+  document.getElementById('wave-indicator').textContent = `第 ${battleState.waveIndex + 1}/${battleState.enemiesPerStage} 波`;
+  document.getElementById('turn-indicator').textContent = '⚔️ 玩家進攻';
+  // XP bar
+  const xpBar = document.getElementById('xp-bar');
+  const xpText = document.getElementById('xp-text');
+  if (xpBar) xpBar.style.width = Math.min(100, (gameState.xp / gameState.xpToNext) * 100) + '%';
+  if (xpText) xpText.textContent = `${gameState.xp}/${gameState.xpToNext}`;
   updateSkillButtons();
 }
 
@@ -1098,12 +1289,43 @@ function addLog(msg) {
 
 function checkBattleEnd() {
   if (battleState.monsterHP <= 0) {
-    battleState.battleActive = false;
-    setTimeout(() => showBattleResult(true), 600);
+    battleState.waveIndex++;
+    addLog(`💀 擊敗 ${battleState.monsterName}！`);
+    if (battleState.waveIndex >= battleState.enemiesPerStage) {
+      // All enemies defeated
+      battleState.battleActive = false;
+      setTimeout(() => showBattleResult(true), 600);
+    } else {
+      // Spawn next enemy with remaining player HP/MP
+      spawnNextWave();
+    }
   } else if (battleState.playerHP <= 0) {
     battleState.battleActive = false;
     setTimeout(() => showBattleResult(false), 600);
   }
+}
+
+function spawnNextWave() {
+  const s = battleState.stageData;
+  const monsters = s.monsters;
+  const waveIdx = battleState.waveIndex;
+  // Pick monster for this wave (cycle through the monsters array)
+  const monsterKey = monsters[waveIdx % monsters.length];
+  const ms = MONSTER_STATS[monsterKey] || { name: '怪物', hp: 30, atk: 5, img: '' };
+  const multiplier = battleState.difficulty === 'hard' ? 1.5 : battleState.difficulty === 'normal' ? 1.2 : 1;
+
+  battleState.monsterMaxHP = Math.round(ms.hp * multiplier);
+  battleState.monsterHP = battleState.monsterMaxHP;
+  battleState.monsterATK = Math.round(ms.atk * multiplier);
+  battleState.monsterName = ms.name;
+  battleState.monsterImg = ms.img;
+
+  document.getElementById('monster-sprite').src = battleState.monsterImg;
+  document.getElementById('monster-hp-text').textContent = `${battleState.monsterHP}/${battleState.monsterMaxHP}`;
+  document.getElementById('wave-indicator').textContent = `第 ${battleState.waveIndex + 1}/${battleState.enemiesPerStage} 波`;
+  document.getElementById('turn-indicator').textContent = '⚔️ 玩家進攻';
+  updateBattleUI();
+  addLog(`⚔️ 第 ${battleState.waveIndex + 1} 波！遇到 ${battleState.monsterName}！`);
 }
 
 function showBattleResult(victory) {
@@ -1130,12 +1352,15 @@ function showBattleResult(victory) {
   localStorage.setItem(logKey, JSON.stringify(logData.slice(-50))); // 保留最近50場
 
   // Level up check
-  const xpNeeded = gameState.level * gameState.level * 100;
-  if (gameState.xp >= xpNeeded) {
+  if (gameState.xp >= gameState.xpToNext) {
     gameState.level++;
-    gameState.xp -= xpNeeded;
+    gameState.xp -= gameState.xpToNext;
+    gameState.xpToNext = gameState.level * gameState.level * 50;
     gameState.playerMaxHP = 100 + (gameState.level - 1) * 10;
     gameState.playerMaxMP = 50 + (gameState.level - 1) * 5;
+    gameState.playerATK = 10 + (gameState.level - 1) * 2;
+    gameState.playerHP = gameState.playerMaxHP;
+    gameState.playerMP = gameState.playerMaxMP;
     battleState.playerMaxHP = gameState.playerMaxHP;
     battleState.playerMaxMP = gameState.playerMaxMP;
     addLog(`🎉 等級提升！現在是 Lv.${gameState.level}！`);
@@ -1152,6 +1377,7 @@ function showBattleResult(victory) {
   const feedback = accuracy >= 80 ? '🌟 做得好！' : accuracy >= 50 ? '💪 繼續加油！' : '📚 需要多練習！';
   document.getElementById('result-stats').innerHTML = `
     <div class="result-stat"><span>獲得經驗</span><span style="color:var(--xp)">+${xpGain} XP</span></div>
+    <div class="result-stat"><span>升級進度</span><span>${gameState.xp}/${gameState.xpToNext}</span></div>
     <div class="result-stat"><span>獲得金幣</span><span style="color:var(--gold)">+${goldGain} 💰</span></div>
     <div class="result-stat"><span>玩家等級</span><span>Lv.${gameState.level}</span></div>
     <div class="result-stat"><span>總金幣</span><span>${gameState.gold} 💰</span></div>
@@ -1202,6 +1428,7 @@ function loadProgress() {
     gameState.character = data.character || null;
     gameState.level = data.level || 1;
     gameState.xp = data.xp || 0;
+    gameState.xpToNext = data.xpToNext || 50;
     gameState.gold = data.gold || 0;
     gameState.playerMaxHP = data.playerMaxHP || 100;
     gameState.playerMaxMP = data.playerMaxMP || 50;
@@ -1266,7 +1493,13 @@ function stopBgm() {
 
 function toggleBgm() {
   bgmEnabled = !bgmEnabled;
-  if (!bgmEnabled) stopBgm();
+  if (!bgmEnabled) {
+    stopBgm();
+    document.getElementById('bgm-toggle-btn').textContent = '🔇';
+  } else {
+    document.getElementById('bgm-toggle-btn').textContent = '🔊';
+    playBgm('battle');
+  }
   return bgmEnabled;
 }
 
