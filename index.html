@@ -825,6 +825,7 @@ function startBattle() {
     playerMaxHP: gameState.playerMaxHP || 100,
     playerMaxMP: gameState.playerMaxMP || 50,
     playerATK: gameState.playerATK || 10,
+    stunned: false,
     monsterMaxHP: 0,
     monsterATK: 0,
     monsterName: '',
@@ -865,6 +866,19 @@ function startBattle() {
   battleState.monsterImg = ms.img;
 
   document.getElementById('battle-log').innerHTML = '';
+  // Reset skills visibility when battle starts
+  skillsVisible = true;
+  const skillsEl = document.getElementById('battle-skills');
+  const btnEl = document.getElementById('skills-toggle');
+  if (skillsEl) skillsEl.classList.remove('collapsed');
+  if (btnEl) { btnEl.textContent = '✖️'; btnEl.title = '隱藏技能'; }
+  // Reset per-battle state
+  gameState.shieldActive = false;
+  gameState.shieldTurns = 0;
+  gameState.shieldReduction = 0.5;
+  gameState.berserkStacks = 0;
+  updateSkillButtons();
+
   const isBoss = battleState.stageData?.isBoss;
   showScreen('battle-screen');
   updateBattleUI();
@@ -1520,12 +1534,16 @@ function showComboMilestone() {
 }
 
 // ==================== SKILLS TOGGLE ====================
+let skillsVisible = true;
 function toggleSkills() {
   const skills = document.getElementById('battle-skills');
   const btn = document.getElementById('skills-toggle');
-  skills.classList.toggle('collapsed');
-  btn.textContent = skills.classList.contains('collapsed') ? '⚔️' : '✖';
-  btn.title = skills.classList.contains('collapsed') ? '顯示技能' : '隱藏技能';
+  skillsVisible = !skillsVisible;
+  skills.classList.toggle('collapsed', !skillsVisible);
+  btn.textContent = skillsVisible ? '✖️' : '⚔️';
+  btn.title = skillsVisible ? '隱藏技能' : '顯示技能';
+  // Ensure character-specific skill buttons are visible when opening
+  if (skillsVisible) updateSkillButtons();
 }
 
 function updateComboDisplay() {
