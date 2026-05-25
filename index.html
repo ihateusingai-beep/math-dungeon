@@ -1066,22 +1066,52 @@
     }
 
     /* ========== NEW: Achievement System ========== */
-    .achievement-btn {
+    .icon-btn {
       position: fixed;
-      bottom: 80px;
-      right: 20px;
-      width: 50px;
-      height: 50px;
-      background: linear-gradient(135deg, #FFD93D, #FF8C42);
+      width: 46px;
+      height: 46px;
       border: none;
       border-radius: 50%;
-      font-size: 1.5rem;
+      font-size: 1.3rem;
       cursor: pointer;
       z-index: 100;
-      box-shadow: 0 4px 15px rgba(255, 217, 61, 0.4);
-      transition: transform 0.3s;
+      transition: transform 0.2s;
     }
-    .achievement-btn:hover { transform: scale(1.1); }
+    .icon-btn:hover { transform: scale(1.15); }
+    .icon-btn:hover .icon-tooltip { display: block; }
+    .icon-tooltip {
+      display: none;
+      position: absolute;
+      bottom: 58px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(20,20,50,0.95);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: #fff;
+      font-size: 0.75rem;
+      padding: 5px 10px;
+      border-radius: 8px;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+    .achievement-btn {
+      bottom: 140px;
+      right: 20px;
+      background: linear-gradient(135deg, #FFD93D, #FF8C42);
+      box-shadow: 0 4px 15px rgba(255, 217, 61, 0.4);
+    }
+    .wrongbook-btn {
+      bottom: 85px;
+      right: 20px;
+      background: linear-gradient(135deg, #4D96FF, #a855f7);
+      box-shadow: 0 4px 15px rgba(77, 150, 255, 0.4);
+    }
+    .daily-tasks-btn {
+      bottom: 30px;
+      right: 20px;
+      background: linear-gradient(135deg, #6BCB77, #4D96FF);
+      box-shadow: 0 4px 15px rgba(107, 203, 119, 0.4);
+    }
     .achievement-btn.has-new {
       animation: achievementGlow 1s ease infinite;
     }
@@ -2874,12 +2904,6 @@
   <div id="ambientParticles" class="ambient-particles"></div>
   
 <h1>
-      ⭐ 乘法小鎮
-      <span class="subtitle" id="modeLabel"></span>
-    </h1>
-
-    <!-- ========== 頂部標題區 ========== -->
-    <h1>
       🔮 奇幻數學殿
       <span class="subtitle" id="modeLabel"></span>
     </h1>
@@ -2898,35 +2922,16 @@
       <div style="text-align:center; margin: 15px 0;">
         <div style="color:var(--accent); font-size:1.2rem; margin-bottom:15px;">⚡ 選擇你的世界 ⚡</div>
 
-        <!-- 世界地圖容器 -->
+        <!-- 世界地圖容器（新導航入口） -->
         <div id="worldMapContainer" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(160px, 1fr)); gap:15px; max-width:750px; margin:0 auto;">
-          <!-- 世界卡片由 renderWorldMap() 動態生成 -->
-        </div>
-
-        <!-- 世界詳情面板 -->
-        <div id="worldInfoPanel" style="display:none; margin-top:20px; background:rgba(255,255,255,0.1); border-radius:16px; padding:20px; max-width:500px; margin-left:auto; margin-right:auto;">
-          <div style="font-size:1.4rem; color:var(--accent); margin-bottom:10px;" id="worldInfoTitle">🌲 數字森林</div>
-          <div style="color:#aaa; margin-bottom:15px;" id="worldInfoDesc">學習數字1-100的認識與比較</div>
-          <div style="display:flex; gap:15px; justify-content:center; margin-bottom:15px;">
-            <span style="background:rgba(77,150,255,0.3); padding:5px 12px; border-radius:20px; font-size:0.85rem;">
-              📍 <span id="worldInfoStages">5 個關卡</span>
-            </span>
-          </div>
-          <div id="worldStageList" style="text-align:left;"></div>
-        </div>
-
-        <div style="margin-top:25px; color:#aaa; font-size:0.85rem;">
-          完成世界內所有關卡來解鎖下一個世界
+          <!-- 由 renderWorldMap() 動態生成，但現在僅用於展示，點擊統一進入新導航 -->
         </div>
       </div>
 
-      <!-- 快捷入口 -->
-      <div style="text-align:center; margin-top:20px;">
-        <button class="action-btn battle" onclick="quickBattle()" style="font-size:1rem; padding:12px 30px;">
-          ⚡ 快速開始 (乘法)
-        </button>
-        <button class="action-btn" onclick="startNewNav()" style="font-size:1rem; padding:12px 30px; margin-left:10px; background:rgba(168,85,247,0.3); border:1px solid #a855f7;">
-          🗺️ 新導航
+      <!-- 主要入口按鈕 -->
+      <div style="text-align:center; margin-top:30px;">
+        <button class="action-btn battle" onclick="startNewNav()" style="font-size:1.2rem; padding:16px 40px; background:linear-gradient(135deg, #a855f7, #6BCB77); border:none; border-radius:30px; font-weight:bold; box-shadow: 0 4px 20px rgba(168,85,247,0.4);">
+          🔮 開始奇幻數學之旅 ⚔️
         </button>
       </div>
 
@@ -3516,11 +3521,20 @@
     </div>
   </div>
   <!-- 成就按鈕 -->
-  <button class="achievement-btn" id="achievementBtn" onclick="openAchievementPanel()">🏆</button>
-  
+  <button class="icon-btn achievement-btn" id="achievementBtn" onclick="openAchievementPanel()">
+    🏆
+    <span class="icon-tooltip">🏆 成就</span>
+  </button>
+
   <!-- 錯題本按鈕 -->
-  <button class="wrongbook-btn" id="wrongbookBtn" onclick="openWrongBookPanel()">📖</button>
-  <button class="daily-tasks-btn" id="dailyTasksBtn" onclick="openDailyTasksPanel()">📋</button>
+  <button class="icon-btn wrongbook-btn" id="wrongbookBtn" onclick="openWrongBookPanel()">
+    📖
+    <span class="icon-tooltip">📖 錯題本</span>
+  </button>
+  <button class="icon-btn daily-tasks-btn" id="dailyTasksBtn" onclick="openDailyTasksPanel()">
+    📋
+    <span class="icon-tooltip">📋 任務</span>
+  </button>
 
   <!-- 成就通知 -->
   <div class="achievement-notification" id="achievementNotif">
@@ -4804,37 +4818,18 @@
         }
       });
 
-      // Show world info panel
+      // Show world info panel - now redirects to new nav
       showWorldInfo(worldId);
+      navState.domain = worldId;
+      navigateTo('topic', worldId);
 
       // Speak selection
       speak(world.name);
     }
 
     function showWorldInfo(worldId) {
-      const world = topicConfigs[worldId];
-      if (!world) return;
-
-      const infoPanel = document.getElementById('worldInfoPanel');
-      if (infoPanel) {
-        document.getElementById('worldInfoTitle').textContent = world.icon + ' ' + world.name;
-        document.getElementById('worldInfoDesc').textContent = world.description;
-        document.getElementById('worldInfoStages').textContent = world.stages.length + ' 個關卡';
-
-        // Build stage list
-        const stageList = document.getElementById('worldStageList');
-        stageList.innerHTML = world.stages.map((stage, idx) => {
-          const locked = stage.boss && !isBossUnlocked(worldId, stage.id);
-          return `
-          <div class="world-stage-item ${stage.boss ? 'boss' : ''} ${locked ? 'locked' : ''}" ${locked ? '' : `onclick="selectStage('${worldId}', ${stage.id})"`}>
-            <span class="stage-icon">${stage.boss ? (locked ? '🔒' : '👑') : (idx + 1)}</span>
-            <span class="stage-name">${stage.name}</span>
-            <span class="stage-topic">${getTopicDisplayName(stage.topic)}</span>
-          </div>
-        `}).join('');
-
-        infoPanel.style.display = 'block';
-      }
+      // 舊面板已移除，現在用新導航系統
+      // 點擊世界卡片直接進入新導航
     }
 
     function getTopicDisplayName(topic) {
