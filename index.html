@@ -416,8 +416,9 @@ const STAGES_DATA = {
         ]},
       { id: "2-hard", name: "2的乘法·終", difficulty: "hard", enabled: true, monsters: ["orc-warrior"], bg: "castle",
         questions: [
-          {q:"2 × 7 = ?",answer:14},{q:"2 × 9 = ?",answer:18},{q:"2 × 6 = ?",answer:12},{q:"2 × 4 = ?",answer:8},
-          {q:"2 × 8 = ?",answer:16},{q:"2 × 3 = ?",answer:6},{q:"2 × 5 = ?",answer:10},{q:"2 × 2 = ?",answer:4}
+          {q:"2 × 1 = ?",answer:2},{q:"2 × 2 = ?",answer:4},{q:"2 × 3 = ?",answer:6},{q:"2 × 4 = ?",answer:8},
+          {q:"2 × 5 = ?",answer:10},{q:"2 × 6 = ?",answer:12},{q:"2 × 7 = ?",answer:14},{q:"2 × 8 = ?",answer:16},
+          {q:"2 × 9 = ?",answer:18},{q:"2 × 10 = ?",answer:20}
         ]}
     ]},
     "3": { name: "3的乘法", stages: [
@@ -437,8 +438,9 @@ const STAGES_DATA = {
         ]},
       { id: "3-hard", name: "3的乘法·終", difficulty: "hard", enabled: true, monsters: ["skeleton-warrior"], bg: "castle",
         questions: [
-          {q:"3 × 7 = ?",answer:21},{q:"3 × 9 = ?",answer:27},{q:"3 × 6 = ?",answer:18},{q:"3 × 8 = ?",answer:24},
-          {q:"3 × 4 = ?",answer:12},{q:"3 × 5 = ?",answer:15},{q:"3 × 3 = ?",answer:9},{q:"3 × 2 = ?",answer:6}
+          {q:"3 × 1 = ?",answer:3},{q:"3 × 2 = ?",answer:6},{q:"3 × 3 = ?",answer:9},{q:"3 × 4 = ?",answer:12},
+          {q:"3 × 5 = ?",answer:15},{q:"3 × 6 = ?",answer:18},{q:"3 × 7 = ?",answer:21},{q:"3 × 8 = ?",answer:24},
+          {q:"3 × 9 = ?",answer:27},{q:"3 × 10 = ?",answer:30}
         ]}
     ]},
     "5": { name: "5的乘法", stages: [
@@ -458,8 +460,9 @@ const STAGES_DATA = {
         ]},
       { id: "5-hard", name: "5的乘法·終", difficulty: "hard", enabled: true, monsters: ["skeleton-mage"], bg: "castle",
         questions: [
-          {q:"5 × 7 = ?",answer:35},{q:"5 × 9 = ?",answer:45},{q:"5 × 6 = ?",answer:30},{q:"5 × 8 = ?",answer:40},
-          {q:"5 × 4 = ?",answer:20},{q:"5 × 5 = ?",answer:25},{q:"5 × 3 = ?",answer:15},{q:"5 × 2 = ?",answer:10}
+          {q:"5 × 1 = ?",answer:5},{q:"5 × 2 = ?",answer:10},{q:"5 × 3 = ?",answer:15},{q:"5 × 4 = ?",answer:20},
+          {q:"5 × 5 = ?",answer:25},{q:"5 × 6 = ?",answer:30},{q:"5 × 7 = ?",answer:35},{q:"5 × 8 = ?",answer:40},
+          {q:"5 × 9 = ?",answer:45},{q:"5 × 10 = ?",answer:50}
         ]}
     ]},
     boss: { name: "乘法Boss關", stages: [
@@ -817,7 +820,7 @@ function submitChoice(answer) {
     battleState.combo = 0;
     updateComboDisplay();
     addLog(`❌ 正確答案是 ${correct}！怪物反擊！`);
-    playSound('wrong');
+    playSound('fail');
     monsterAttack();
     nextQuestion();
   }
