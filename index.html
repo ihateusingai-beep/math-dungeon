@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>乘法小鎮 ⭐ 全攻略</title>
+  <title>數學戰鬥系統 ⭐ MathBattle</title>
   <style>
     .skip-link {
       position: absolute;
@@ -902,6 +902,19 @@
       50% { box-shadow: 0 0 25px rgba(255, 217, 61, 0.6); }
     }
     .stage-level-btn .stars { font-size: 0.8rem; }
+    .level-select-screen { padding: 15px; }
+    .level-card {
+      display: flex; flex-direction: column; align-items: center;
+      padding: 15px 20px; background: rgba(255,255,255,0.1);
+      border: 2px solid transparent; border-radius: 16px;
+      cursor: pointer; transition: all 0.3s; min-width: 100px;
+    }
+    .level-card:hover { transform: translateY(-4px); border-color: var(--accent); }
+    .level-card.selected { background: rgba(255,217,61,0.2); border-color: var(--accent); }
+    .level-card .level-icon { font-size: 2rem; margin-bottom: 5px; }
+    .level-card .level-title { font-size: 1.2rem; font-weight: bold; color: #fff; }
+    .level-card .level-desc { font-size: 0.8rem; color: #aaa; margin-top: 4px; }
+    .level-card .level-badge { margin-top: 8px; padding: 3px 10px; border-radius: 10px; font-size: 0.7rem; color: #fff; }
     .stage-boss-btn {
       grid-column: span 5;
       padding: 15px;
@@ -1313,6 +1326,30 @@
       transition: width 0.5s;
     }
     .achievement-progress-text { font-size: 0.7rem; color: #888; margin-top: 4px; }
+
+    .certificate-popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      border: 3px solid #FFD93D;
+      border-radius: 20px;
+      padding: 30px 40px;
+      z-index: 600;
+      text-align: center;
+      box-shadow: 0 0 50px rgba(255, 217, 61, 0.4);
+      transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .certificate-popup.show { transform: translate(-50%, -50%) scale(1); }
+    .cert-header { font-size: 2rem; margin-bottom: 10px; }
+    .cert-title { font-size: 1.5rem; color: var(--accent); margin-bottom: 15px; }
+    .cert-content { background: rgba(255,255,255,0.1); border-radius: 12px; padding: 15px; margin: 15px 0; }
+    .cert-stage { font-size: 1.2rem; margin-bottom: 8px; }
+    .cert-stars { font-size: 1.5rem; color: var(--accent); margin-bottom: 8px; }
+    .cert-date { font-size: 0.9rem; color: #aaa; }
+    .cert-footer { font-size: 0.9rem; color: #888; margin-top: 15px; }
+
   /* 英雄展示卡 */
     .hero-display {
       display: flex;
@@ -2277,6 +2314,75 @@
     transition: width 0.3s;
   }
 
+  /* ========== ENERGY BAR (Ultimate System) ========== */
+  .energy-bar-container {
+    width: 100%;
+    margin: 8px 0;
+    padding: 8px 16px;
+    background: rgba(0,0,0,0.5);
+    border-radius: 12px;
+    border: 2px solid #a855f7;
+  }
+  .energy-bar-container .energy-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    margin-bottom: 4px;
+  }
+  .energy-bar-container .energy-label .energy-title {
+    color: #c026d3;
+    font-weight: bold;
+  }
+  .energy-bar-container .energy-label .energy-count {
+    color: #e879f9;
+  }
+  .energy-fill {
+    height: 20px;
+    background: linear-gradient(90deg, #8b5cf6, #a855f7);
+    border-radius: 999px;
+    transition: width 0.4s ease, background 0.3s ease;
+    box-shadow: 0 0 8px rgba(139, 92, 246, 0.5);
+  }
+  @keyframes energyPulse {
+    0%, 100% { box-shadow: 0 0 10px rgba(231, 76, 60, 0.5); }
+    50% { box-shadow: 0 0 25px rgba(231, 76, 60, 0.9); }
+  }
+  .energy-pulse {
+    animation: energyPulse 0.8s ease-in-out infinite;
+  }
+  @keyframes ultimateReadyAnim {
+    0% { transform: translateX(-50%) scale(0.5); opacity: 0; }
+    30% { transform: translateX(-50%) scale(1.2); opacity: 1; }
+    60% { transform: translateX(-50%) scale(1); opacity: 1; }
+    100% { transform: translateX(-50%) scale(0.8); opacity: 0; }
+  }
+  #ultimateBtn {
+    background: linear-gradient(135deg, #4a4a5a, #3a3a4a);
+    border: 2px solid #6b5b7a;
+    color: #888;
+    padding: 10px 20px;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: not-allowed;
+    transition: all 0.3s ease;
+    font-family: inherit;
+    margin-top: 8px;
+    width: 100%;
+  }
+  #ultimateBtn.ultimate-ready {
+    background: linear-gradient(135deg, #e74c3c, #ff6b6b);
+    border-color: #ff8a80;
+    color: #fff;
+    cursor: pointer;
+    box-shadow: 0 0 20px rgba(231, 76, 60, 0.6);
+    animation: energyPulse 1s ease-in-out infinite;
+  }
+  #ultimateBtn.ultimate-ready:hover {
+    transform: scale(1.03);
+    box-shadow: 0 0 35px rgba(231, 76, 60, 0.9);
+  }
+
   .number-pad {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -2519,6 +2625,124 @@
     width: 100%;
     max-width: 100%;
   }
+
+  /* ========== World Map Styles ========== */
+  .world-map {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 15px;
+    max-width: 750px;
+    margin: 0 auto;
+  }
+
+  .world-card {
+    background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+    border: 2px solid rgba(255,255,255,0.2);
+    border-radius: 16px;
+    padding: 20px 15px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .world-card:hover:not(.locked) {
+    transform: translateY(-5px);
+    border-color: var(--accent);
+    box-shadow: 0 10px 30px rgba(255, 217, 61, 0.2);
+  }
+
+  .world-card.selected {
+    border-color: var(--accent);
+    background: rgba(255, 217, 61, 0.15);
+    box-shadow: 0 0 20px rgba(255, 217, 61, 0.3);
+  }
+
+  .world-card.locked {
+    opacity: 0.5;
+    cursor: not-allowed;
+    filter: grayscale(0.5);
+  }
+
+  .world-card .world-icon {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+  }
+
+  .world-card .world-name {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #fff;
+    margin-bottom: 5px;
+  }
+
+  .world-card .world-name.locked-text {
+    color: #666;
+  }
+
+  .world-card .world-desc {
+    font-size: 0.75rem;
+    color: #aaa;
+    margin-bottom: 10px;
+    min-height: 30px;
+  }
+
+  .world-card .world-progress {
+    font-size: 0.8rem;
+    color: var(--accent);
+  }
+
+  .world-card .progress-text {
+    background: rgba(255, 217, 61, 0.2);
+    padding: 3px 10px;
+    border-radius: 10px;
+  }
+
+  .world-stage-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 15px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 10px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .world-stage-item:hover {
+    background: rgba(255,255,255,0.1);
+    transform: translateX(5px);
+  }
+
+  .world-stage-item.boss {
+    background: linear-gradient(135deg, rgba(168,85,247,0.2), rgba(231,76,60,0.2));
+    border: 1px solid #a855f7;
+  }
+
+  .world-stage-item .stage-icon {
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255,255,255,0.1);
+    border-radius: 50%;
+    font-size: 0.9rem;
+  }
+
+  .world-stage-item .stage-name {
+    flex: 1;
+    font-weight: bold;
+    color: #fff;
+  }
+
+  .world-stage-item .stage-topic {
+    font-size: 0.75rem;
+    color: #aaa;
+    background: rgba(255,255,255,0.1);
+    padding: 3px 8px;
+    border-radius: 8px;
+  }
 </style>
 </head>
 <body>
@@ -2534,366 +2758,75 @@
       <span class="subtitle" id="modeLabel"></span>
     </h1>
 
-    <!-- ========== 三大主Tab導航 ========== -->
+    <!-- ========== 頂部標題區 ========== -->
+    <h1>
+      ⚔️ MathBattle
+      <span class="subtitle" id="modeLabel"></span>
+    </h1>
+
+    <!-- ========== 主Tab導航 ========== -->
     <nav class="main-nav" role="navigation" aria-label="主要功能導航">
-      <button class="main-nav-btn active" data-section="learn" onclick="switchMainSection('learn')">🎓 學習</button>
+      <button class="main-nav-btn active" data-section="root" onclick="switchMainSection('root')">🏠 首頁</button>
       <button class="main-nav-btn" data-section="battle" onclick="switchMainSection('battle')">⚔️ 戰鬥</button>
+      <button class="main-nav-btn" data-section="game" onclick="switchMainSection('game')">🎮 遊戲</button>
       <button class="main-nav-btn" data-section="profile" onclick="switchMainSection('profile')">📊 我的</button>
     </nav>
 
-    <!-- ========== 學習區 ========== -->
-    <section id="learnSection" class="main-section active" aria-label="學習區">
+    <!-- ========== 首頁/根頁面 ========== -->
+    <section id="rootSection" class="main-section active" aria-label="首頁">
 
-  <!-- 計時器 -->
-  <div class="timer-display" id="timerDisplay">
-    <span>⏱️</span>
-    <span class="time" id="timerTime">60</span>
-    <span class="best">最好: <span id="bestScore">0</span>題</span>
-  </div>
+      <div style="text-align:center; margin: 15px 0;">
+        <div style="color:var(--accent); font-size:1.2rem; margin-bottom:15px;">⚡ 選擇你的世界 ⚡</div>
 
-  <!-- 操作欄 -->
-  <div class="action-bar">
-    <button class="action-btn speak" id="speakBtn" onclick="speakResult()">🔊 發聲</button>
-    <button class="action-btn" id="voiceBtn" onclick="toggleVoice()" title="語音輸入">🎤 語音</button>
-    <button class="action-btn random" onclick="randomQuestion()">🎲 Random</button>
-    <button class="action-btn timer" id="timerBtn" onclick="toggleTimer()">⏱️ 計時</button>
-    <button class="action-btn settings" onclick="toggleSettings()">⚙️ 設置</button>
-    <button class="action-btn reset" onclick="resetAll()">↻ 重置</button>
-  </div>
+        <!-- 世界地圖容器 -->
+        <div id="worldMapContainer" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(160px, 1fr)); gap:15px; max-width:750px; margin:0 auto;">
+          <!-- 世界卡片由 renderWorldMap() 動態生成 -->
+        </div>
 
-  <div class="action-bar">
-    <button class="action-btn" onclick="toggleFullscreen()" title="全熒幕">⛶</button>
-    <button class="action-btn" onclick="toggleReport()" title="學習報告">📊 報告</button>
-  </div>
+        <!-- 世界詳情面板 -->
+        <div id="worldInfoPanel" style="display:none; margin-top:20px; background:rgba(255,255,255,0.1); border-radius:16px; padding:20px; max-width:500px; margin-left:auto; margin-right:auto;">
+          <div style="font-size:1.4rem; color:var(--accent); margin-bottom:10px;" id="worldInfoTitle">🌲 數字森林</div>
+          <div style="color:#aaa; margin-bottom:15px;" id="worldInfoDesc">學習數字1-100的認識與比較</div>
+          <div style="display:flex; gap:15px; justify-content:center; margin-bottom:15px;">
+            <span style="background:rgba(77,150,255,0.3); padding:5px 12px; border-radius:20px; font-size:0.85rem;">
+              📍 <span id="worldInfoStages">5 個關卡</span>
+            </span>
+          </div>
+          <div id="worldStageList" style="text-align:left;"></div>
+        </div>
 
-
-  <!-- 我的英雄 -->
-
-  <!-- 我的英雄隊伍 -->
-  <div style="text-align:center; margin: 15px 0;">
-    <div style="color:#4a90e2; font-size:0.9rem; margin-bottom:8px;">★ 我的英雄隊伍 ★</div>
-    <div style="display:flex; justify-content:center; gap:15px; flex-wrap:wrap;">
-      <div style="text-align:center;">
-        <img src="assets/images/knight-hero.png" style="width:75px;height:75px;object-fit:contain;border:2px solid #4a90e2;border-radius:10px;background:#0a0a12;">
-        <div style="font-size:0.75rem;color:#ddd;margin-top:4px;">銀藍騎士</div>
+        <div style="margin-top:25px; color:#aaa; font-size:0.85rem;">
+          完成世界內所有關卡來解鎖下一個世界
+        </div>
       </div>
-      <div style="text-align:center;">
-        <img src="assets/images/mage-hero.png" style="width:75px;height:75px;object-fit:contain;border:2px solid #9b59b6;border-radius:10px;background:#0a0a12;">
-        <div style="font-size:0.75rem;color:#ddd;margin-top:4px;">銀月法師</div>
-      </div>
-      <div style="text-align:center;">
-        <img src="assets/images/berserker-hero.png" style="width:75px;height:75px;object-fit:contain;border:2px solid #e74c3c;border-radius:10px;background:#0a0a12;">
-        <div style="font-size:0.75rem;color:#ddd;margin-top:4px;">烈焰狂戰</div>
-      </div>
-    </div>
-  </div>
 
-  <!-- 關卡 & Streak -->
-  <div class="level-display" id="levelDisplay" onclick="toggleLevelPanel()">
-    <span>🔢</span>
-    <span>關卡 <span id="currentLevel">1</span>/8</span>
-  </div>
-
-  <!-- 關卡選擇面板 -->
-  <div class="level-panel" id="levelPanel">
-    <div class="level-panel-header">
-      <span>選擇乘法表</span>
-      <button class="level-panel-close" onclick="toggleLevelPanel()">×</button>
-    </div>
-    <div class="level-panel-grid" id="levelPanelGrid"></div>
-  </div>
-  <div class="level-panel-backdrop" id="levelPanelBackdrop" onclick="toggleLevelPanel()"></div>
-  
-  <!-- 難度選擇步驟 -->
-  <div class="difficulty-step" id="difficultyStep">
-    <div style="text-align:center; margin-bottom:15px;">
-      <div style="color:var(--accent); font-size:1.1rem; margin-bottom:10px;">請先選擇難度</div>
-      <div class="difficulty-selector">
-        <button class="difficulty-btn" data-diff="easy" onclick="selectDifficulty('easy')">
-          <span class="diff-icon">🌱</span>
-          <span class="diff-label">簡單</span>
-          <span class="diff-desc">2-5乘法表</span>
-        </button>
-        <button class="difficulty-btn" data-diff="medium" onclick="selectDifficulty('medium')">
-          <span class="diff-icon">⚔️</span>
-          <span class="diff-label">中等</span>
-          <span class="diff-desc">2-7乘法表</span>
-        </button>
-        <button class="difficulty-btn" data-diff="hard" onclick="selectDifficulty('hard')">
-          <span class="diff-icon">👑</span>
-          <span class="diff-label">困難</span>
-          <span class="diff-desc">2-9乘法表</span>
+      <!-- 快捷入口 -->
+      <div style="text-align:center; margin-top:20px;">
+        <button class="action-btn battle" onclick="quickBattle()" style="font-size:1rem; padding:12px 30px;">
+          ⚔️ 快速開始 (乘法)
         </button>
       </div>
-    </div>
-  </div>
-
-  <!-- 三大領域選擇器 (先隱藏，等難度選完後顯示) -->
-  <div class="domain-selector" id="domainSelector" style="display:none;">
-    <div style="text-align:center; margin-bottom:10px; color:#aaa; font-size:0.9rem;">選擇領域</div>
-    <div class="domain-btn" data-domain="newbie" onclick="switchDomain('newbie')">
-      <span class="domain-icon">🌱</span>
-      <span>新手村</span>
-    </div>
-    <div class="domain-btn" data-domain="veteran" onclick="switchDomain('veteran')">
-      <span class="domain-icon">⚔️</span>
-      <span>黑暗森林</span>
-    </div>
-    <div class="domain-btn" data-domain="legend" onclick="switchDomain('legend')">
-      <span class="domain-icon">👑</span>
-      <span>深淵</span>
-    </div>
-  </div>
-
-  <div class="streak-display" id="streakDisplay">
-    <span>🔥</span>
-    <span>連續 <span id="streakCount">0</span></span>
-  </div>
-
-  <div class="action-bar">
-    <button class="action-btn battle" onclick="openBattleFromCurrentSelection()">⚔️ 開始戰鬥</button>
-  </div>
-
-  <!-- 控制區 -->
-  <div class="control-panel">
-    <div class="num-selector">
-      <div class="label">被乘數</div>
-      <div class="num-btn-group" id="btns1">
-        <button class="num-btn" data-n="2" aria-label="選擇 2">2</button>
-        <button class="num-btn" data-n="3" aria-label="選擇 3">3</button>
-        <button class="num-btn" data-n="4" aria-label="選擇 4">4</button>
-        <button class="num-btn" data-n="5" aria-label="選擇 5">5</button>
-        <button class="num-btn" data-n="6" aria-label="選擇 6">6</button>
-        <button class="num-btn" data-n="7" aria-label="選擇 7">7</button>
-        <button class="num-btn" data-n="8" aria-label="選擇 8">8</button>
-        <button class="num-btn" data-n="9" aria-label="選擇 9">9</button>
-      </div>
-    </div>
-
-    <span class="operator">×</span>
-
-    <div class="num-selector">
-      <div class="label">乘數</div>
-      <div class="num-btn-group" id="btns2" role="group" aria-label="乘數選擇">
-        <button class="num-btn" data-n="2" aria-label="乘以 2">2</button>
-        <button class="num-btn" data-n="3" aria-label="乘以 3">3</button>
-        <button class="num-btn" data-n="4" aria-label="乘以 4">4</button>
-        <button class="num-btn" data-n="5" aria-label="乘以 5">5</button>
-        <button class="num-btn" data-n="6" aria-label="乘以 6">6</button>
-        <button class="num-btn" data-n="7" aria-label="乘以 7">7</button>
-        <button class="num-btn" data-n="8" aria-label="乘以 8">8</button>
-        <button class="num-btn" data-n="9" aria-label="乘以 9">9</button>
-      </div>
-    </div>
-
-    <span class="equals">=</span>
-
-    <div class="result-display">
-      <div class="num" id="result">12</div>
-      <div class="label">結果</div>
-    </div>
-  </div>
-
-  <!-- Tab 導航 -->
-  <div class="tab-nav">
-    <button class="tab-btn active" data-tab="dots">📍點</button>
-    <button class="tab-btn" data-tab="numberline">📏線</button>
-    <button class="tab-btn" data-tab="objects">🍎實</button>
-    <button class="tab-btn" data-tab="animals">🦆動</button>
-    <button class="tab-btn" data-tab="blocks">🧱木</button>
-    <button class="tab-btn" data-tab="story">📖故</button>
-<button class="tab-btn" data-tab="fingers">✋手</button>
-
-    <button class="tab-btn" data-tab="coins">💰錢</button>
-  </div>
-
-  <!-- 乘法表按鈕 -->
-  <button class="table-btn" onclick="showTablePanel()">📋 乘法表</button>
-  <button class="table-btn" onclick="openStageMap()" style="background: linear-gradient(135deg, #667eea, #764ba2);">🗺️ 關卡地圖</button>
-  <div class="table-backdrop" id="tableBackdrop" onclick="hideTablePanel()"></div>
-
-  <!-- 計分板 -->
-  <div class="score-board">
-    <div class="score-item"><span>✅</span><span class="value" id="correctScore">0</span><span class="label">正確</span></div>
-    <div class="score-item"><span>❌</span><span class="value" id="wrongScore">0</span><span class="label">錯誤</span></div>
-    <div class="score-item"><span>🎖️</span><span class="value" id="badgeCount">0</span></div>
-  </div>
-
-  <!-- 練習建議橫幅 -->
-  <div class="suggestion-banner" id="suggestionBanner">
-    <span>📚 需要加強練習：</span>
-    <div id="suggestionBtns"></div>
-  </div>
-
-  <!-- 豎式乘法 -->
-  <div class="vertical-mult" id="verticalMult">
-    <div class="v-multiplicand" id="vMultiplicand">3</div>
-    <div class="v-multiplier">
-      <span class="v-times">×</span>
-      <span class="v-factor" id="vFactor">5</span>
-    </div>
-    <div class="v-line"></div>
-    <div class="v-result" id="vResult">15</div>
-  </div>
-
-  <!-- 顯示區 -->
-  <div class="display-area" id="main-content" role="main" aria-label="乘法學習區">
-    
-    <!-- 點陣 -->
-    <div class="viz-section active" id="dots" style="position:relative;">
-      <div class="row-col-stat" id="statDots">2 × 4 = 8</div>
-      <div class="viz-title">📍 點陣圖</div>
-      <div class="dot-container" id="dotContainer"></div>
-      <div class="explanation" id="dotExpl">2行 × 4列 = <span class="highlight">12</span>點</div>
-    </div>
-
-    <!-- 數線 -->
-    <div class="viz-section" id="numberline" style="position:relative;">
-      <div class="row-col-stat" id="statLine">3 × 4 = 12</div>
-      <div class="viz-title">📏 數線跳躍</div>
-      <div class="number-line" id="numberLine"></div>
-      <div class="explanation" id="lineExpl">由 0 跳<span class="highlight">3</span>格，跳<span class="highlight">4</span>次</div>
-    </div>
-
-    <!-- 實物 -->
-    <div class="viz-section" id="objects" style="position:relative;">
-      <div class="row-col-stat" id="statObjects">2 × 4 = 8</div>
-      <div class="viz-title">🍎 實物分組</div>
-      <div class="object-group" id="objectGroup"></div>
-      <div class="explanation" id="objExpl"></div>
-    </div>
-
-    <!-- 動物 -->
-    <div class="viz-section" id="animals" style="position:relative;">
-      <div class="row-col-stat" id="statAnimals">2 × 4 = 8</div>
-      <div class="viz-title">🦆 動物農場</div>
-      <div class="animal-farm" id="animalFarm"></div>
-      <div class="explanation" id="farmExpl"></div>
-    </div>
-
-    <!-- 積木 -->
-    <div class="viz-section" id="blocks" style="position:relative;">
-      <div class="row-col-stat" id="statBlocks">2 × 4 = 8</div>
-      <div class="viz-title">🧱 積木疊疊</div>
-      <div class="block-view" id="blockView"></div>
-      <div class="explanation" id="blockExpl"></div>
-    </div>
-
-
-    <!-- 故事 -->
-    <div class="viz-section" id="story" style="position:relative;">
-      <div class="row-col-stat" id="statStory">2 × 4 = 8</div>
-      <div class="viz-title">📖 乘法故事</div>
-      <div class="story-panel">
-        <div class="story-title" id="storyTitle"></div>
-        <div class="story-scene" id="storyScene"></div>
-        <div class="story-items" id="storyItems"></div>
-      </div>
-      <div class="explanation" id="storyExpl"></div>
-    </div>
-
-    <!-- 手指 -->
-    <div class="viz-section" id="fingers" style="position:relative;">
-      <div class="row-col-stat" id="statFingers">2 × 4 = 8</div>
-      <div class="viz-title">✋ 手指計數</div>
-      <div class="finger-display" id="fingerDisplay"></div>
-      <div class="explanation" id="fingerExpl">每隻手<span class="highlight">5</span>指，<span class="highlight">3</span>隻手</div>
-    </div>
-
-    
-
-    <!-- 錢幣 -->
-    <div class="viz-section" id="coins" style="position:relative;">
-      <div class="row-col-stat" id="statCoins">2 × 4 = 8</div>
-      <div class="viz-title">💰 錢幣排列</div>
-      <div class="coin-display" id="coinDisplay"></div>
-      <div class="explanation" id="coinExpl"></div>
-    </div>
-
-    <!-- 乘法表面板 -->
-  <div id="tablePanel" class="table-panel">
-    <div class="table-title">📋 乘法表</div>
-    <div class="table-nav">
-      <button class="table-num-btn" data-n="2">2</button>
-      <button class="table-num-btn" data-n="3">3</button>
-      <button class="table-num-btn" data-n="4">4</button>
-      <button class="table-num-btn" data-n="5">5</button>
-      <button class="table-num-btn" data-n="6">6</button>
-      <button class="table-num-btn" data-n="7">7</button>
-      <button class="table-num-btn" data-n="8">8</button>
-      <button class="table-num-btn" data-n="9">9</button>
-    </div>
-    <button class="table-close" onclick="hideTablePanel()">✕ 關閉</button>
-    <div class="table-content" id="tableContent">請選擇數字</div>
-  </div>
-
-  <!-- 練習 -->
-    <div class="practice-panel" id="practicePanel">
-      <div class="quiz-card">
-        
-    <!-- 概念解釋 -->
-    <div style="text-align:center; margin: 8px 0;">
-      <button onclick="showConcept()" style="padding:6px 14px; font-size:0.85rem; background:#5e6ad2; color:white; border:none; border-radius:20px; cursor:pointer;">
-        💡 點解要乘？
-      </button>
-    </div>
-    
-    <div id="conceptPanel" style="display:none; max-width:420px; margin:0 auto; background:rgba(30,30,60,0.8); padding:12px 16px; border-radius:12px; font-size:0.9rem; color:#ddd;">
-      <div style="color:#4a90e2; margin-bottom:6px;">乘法 = 快速加法</div>
-      <div id="conceptText"></div>
-    </div>
-
-    <div class="quiz-question" id="quizQuestion">3 × 4 = ?</div>
-        <div class="quiz-options" id="quizOptions"></div>
-        <div class="quiz-result" id="quizResult"></div>
-
-    <!-- 生活應用題 -->
-    <div style="margin: 15px auto; max-width: 420px;">
-      <div style="text-align:center; margin-bottom:8px;">
-        <button onclick="showLifeProblem()" style="padding:6px 14px; font-size:0.85rem; background:#FF8C42; color:white; border:none; border-radius:20px; cursor:pointer;">
-          🏠 生活應用題
-        </button>
-      </div>
-      <div id="lifeProblem" style="display:none; background:rgba(40,30,20,0.6); padding:14px; border-radius:12px; font-size:0.95rem;">
-        <div id="lifeQuestion" style="margin-bottom:10px;"></div>
-        <div id="lifeOptions" style="display:flex; flex-direction:column; gap:6px;"></div>
-      </div>
-    </div>
-
-
-    <div class="reward-area" id="rewardArea">
-      <div class="reward-item" id="rewardChest">
-        <img src="assets/images/treasure-chest.png" alt="寶箱">
-        <div class="reward-text">獲得戰利品！</div>
-      </div>
-      <div class="reward-item" id="rewardSword">
-        <img src="assets/images/glowing-sword.png" alt="發光劍">
-        <div class="reward-text">致命一擊！</div>
-      </div>
-      <div class="reward-item" id="rewardMonster">
-        <img src="assets/images/cute-monster.png" alt="小怪物">
-        <div class="reward-text" id="monsterText">我們再試一次吧！</div>
-      </div>
-    </div>
-
-    <!-- 關卡解鎖通知 -->
-    <div class="level-unlock-notification" id="levelUnlockNotification">
-      <div class="unlock-content">
-        <div class="unlock-icon">🎉</div>
-        <div class="unlock-text">關卡 <span id="unlockLevelNum">3</span> 已解鎖！</div>
-      </div>
-    </div>
-
-      </div>
-    </div>
 
     </section>
 
-  <!-- ========== 戰鬥區 ========== -->
-  <section id="battleSection" class="main-section" aria-label="戰鬥區">
+    <!-- 世界解鎖通知 -->
+    <div id="worldUnlockNotification" class="achievement-notification">
+      <div class="notif-icon">🌍</div>
+      <div class="notif-title">世界解鎖！</div>
+      <div class="notif-name" id="unlockWorldName">數字森林</div>
+      <div class="notif-desc">點擊查看新關卡</div>
+    </div>
+
+<!-- ========== 戰鬥區 (教學模式 - 已停用) ========== -->
+    <section id="battleSection" class="main-section" aria-label="戰鬥區" style="display:none;">
+      <!-- 教學功能已移至根頁面，戰鬥系統見下方真正的戰鬥區 -->
+    </section>
+
+    <!-- ========== 真正的戰鬥區 ========== -->
+    <section id="battleSection" class="main-section" aria-label="戰鬥區">
     <!-- 頂部操作欄 -->
     <div class="action-bar" style="margin-bottom:8px;">
-      <button class="action-btn settings" onclick="switchMainSection('learn')">← 返回學習</button>
+      <button class="action-btn settings" onclick="switchMainSection('root')">🏠 返回首頁</button>
       <button class="action-btn random" onclick="openStageMap()">🗺️ 關卡地圖</button>
       <button class="action-btn reset" onclick="resetBattleState()">↻ 重置</button>
     </div>
@@ -2984,15 +2917,42 @@
       </div>
 
       <!-- 奧術爆發能量槽 -->
+      <div class="energy-bar-container">
+        <div class="energy-label">
+          <span class="energy-title">⚡ 能量</span>
+          <span class="energy-count"><span id="shieldEnergyValue">0</span> / 100</span>
+        </div>
+        <div class="hp-bar" style="border-color:#a855f7; background:#2a1a3a;">
+          <div class="energy-fill" id="energyFill" style="width:0%"></div>
+        </div>
+      </div>
+
+      <!-- 奧術Combo條 -->
       <div class="arcane-energy">
         <div style="display:flex; justify-content:space-between; font-size:0.85rem; margin-bottom:4px;">
-          <span style="color:#c026d3;">⚡ 奧術爆發</span>
-          <span id="energyText">⚡ <span id="shieldEnergyValue">0</span></span>
+          <span style="color:#c026d3;">🔥 奧術爆發</span>
+          <span id="energyText">🔥 <span id="shieldEnergyValue2">0</span></span>
         </div>
         <div class="hp-bar" style="border-color:#a855f7; background:#2a1a3a;">
           <div class="arcane-bar" id="arcaneBar" style="width:0%"></div>
         </div>
       </div>
+
+      <button id="ultimateBtn" onclick="releaseUltimate()" disabled>⚡ 大招 (100能量)</button>
+
+      <!-- 法力槽 -->
+      <div class="mana-bar-container" style="margin-top:8px;">
+        <div style="display:flex; justify-content:space-between; font-size:0.85rem; margin-bottom:4px;">
+          <span style="color:#3b82f6;">🔮 法力</span>
+          <span id="manaText"><span id="manaValue">100</span> / <span id="manaMax">100</span></span>
+        </div>
+        <div class="hp-bar" style="border-color:#3b82f6; background:#1a2a3a;">
+          <div class="mana-fill" id="manaBar" style="width:100%; background:linear-gradient(90deg, #3b82f6, #8b5cf6);"></div>
+        </div>
+      </div>
+
+      <!-- 技能按鈕 -->
+      <div class="skill-buttons" id="skillButtons" style="display:flex; gap:8px; margin-top:8px; justify-content:center; flex-wrap:wrap;"></div>
 
       <!-- 數字鍵盤 -->
       <div class="number-pad" id="numberPad">
@@ -3022,6 +2982,37 @@
       </div>
     </div>
 
+    <!-- Level Selection Screen (Input Difficulty) -->
+    <div class="level-select-screen" id="levelSelectScreen" style="display:none; width:100%; max-width:520px; margin:10px auto;">
+      <div style="text-align:center; margin-bottom:15px;">
+        <h3 style="color:var(--accent);">選擇答題難度</h3>
+        <p style="color:#aaa; font-size:0.9rem;">你鍾意點樣答題？</p>
+      </div>
+      <div class="level-cards" style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">
+        <button class="level-card" data-level="1" onclick="selectInputLevel(1)">
+          <div class="level-icon">🔘</div>
+          <div class="level-title">3選1</div>
+          <div class="level-desc">選擇正确答案</div>
+          <div class="level-badge" style="background:#4ade80;">入門</div>
+        </button>
+        <button class="level-card" data-level="2" onclick="selectInputLevel(2)">
+          <div class="level-icon">🎯</div>
+          <div class="level-title">4選1</div>
+          <div class="level-desc">4個選項搵答案</div>
+          <div class="level-badge" style="background:#60a5fa;">進階</div>
+        </button>
+        <button class="level-card" data-level="3" onclick="selectInputLevel(3)">
+          <div class="level-icon">⌨️</div>
+          <div class="level-title">直接輸入</div>
+          <div class="level-desc">用數字鍵盤輸入</div>
+          <div class="level-badge" style="background:#a855f7;">高手</div>
+        </button>
+      </div>
+      <button class="action-btn" onclick="showStageSelector()" style="margin-top:20px;">
+        → 選擇關卡
+      </button>
+    </div>
+
     <!-- 開始戰鬥按鈕 -->
     <button class="action-btn battle" id="battleStartBtnOverlay" onclick="startBattle()" style="margin:10px auto; font-size:1rem; padding:10px 30px;">
       ⚔️ 開始戰鬥
@@ -3034,6 +3025,131 @@
 
     <!-- 獎勵 -->
     <div class="badge-display" id="badgeDisplay"></div>
+  </section>
+
+  <!-- ========== 遊戲區 ========== -->
+  <section id="gameSection" class="main-section" aria-label="遊戲區">
+    <div class="action-bar" style="margin-bottom:8px;">
+      <button class="action-btn settings" onclick="switchMainSection('root')">🏠 返回首頁</button>
+    </div>
+
+    <!-- 英雄管理 -->
+    <div class="hero-management" style="margin: 15px 0;">
+      <div style="color:var(--accent); font-size:1.1rem; text-align:center; margin-bottom:15px;">⚔️ 英雄管理</div>
+
+      <!-- 英雄選擇卡片 -->
+      <div style="display:flex; justify-content:center; gap:15px; flex-wrap:wrap; margin-bottom:20px;">
+        <div class="hero-card selected" id="gameHero_knight" onclick="selectGameHero('knight')" style="text-align:center; padding:15px; border:2px solid #4a90e2; border-radius:10px; background:#1a1a2e; cursor:pointer; min-width:100px;">
+          <img src="assets/images/knight-hero.png" style="width:60px;height:60px;object-fit:contain;">
+          <div style="font-size:0.8rem;color:#ddd;margin-top:6px;">銀藍騎士</div>
+          <div style="font-size:0.7rem;color:#4a90e2;" id="gameHeroLevel_knight">Lv.1</div>
+        </div>
+        <div class="hero-card" id="gameHero_mage" onclick="selectGameHero('mage')" style="text-align:center; padding:15px; border:2px solid #9b59b6; border-radius:10px; background:#1a1a2e; cursor:pointer; min-width:100px;">
+          <img src="assets/images/mage-hero.png" style="width:60px;height:60px;object-fit:contain;">
+          <div style="font-size:0.8rem;color:#ddd;margin-top:6px;">銀月法師</div>
+          <div style="font-size:0.7rem;color:#9b59b6;" id="gameHeroLevel_mage">Lv.1</div>
+        </div>
+        <div class="hero-card" id="gameHero_berserker" onclick="selectGameHero('berserker')" style="text-align:center; padding:15px; border:2px solid #e74c3c; border-radius:10px; background:#1a1a2e; cursor:pointer; min-width:100px;">
+          <img src="assets/images/berserker-hero.png" style="width:60px;height:60px;object-fit:contain;">
+          <div style="font-size:0.8rem;color:#ddd;margin-top:6px;">烈焰狂戰</div>
+          <div style="font-size:0.7rem;color:#e74c3c;" id="gameHeroLevel_berserker">Lv.1</div>
+        </div>
+      </div>
+
+      <!-- 當前英雄詳細狀態 -->
+      <div id="gameHeroDetails" style="background:#1a1a2e; border-radius:10px; padding:15px; max-width:400px; margin:0 auto;">
+        <div style="text-align:center; margin-bottom:10px;">
+          <img src="assets/images/knight-hero.png" id="gameHeroImg" style="width:80px;height:80px;object-fit:contain;border-radius:10px;">
+        </div>
+        <div style="text-align:center; color:#4ade80; font-size:1rem; margin-bottom:10px;">
+          <span id="gameHeroName">銀藍騎士</span>
+          <span id="gameHeroEvolution" style="color:#ffd700;">★</span>
+        </div>
+        <div style="margin-bottom:10px;">
+          <div style="display:flex;justify-content:space-between;font-size:0.85rem;margin-bottom:4px;">
+            <span style="color:#aaa;">等級</span>
+            <span style="color:#4ade80;"><span id="gameHeroLv">1</span>/20</span>
+          </div>
+          <div class="hp-bar" style="background:#2a2a4a;">
+            <div class="hp-fill green" id="gameHeroXpBar" style="width:0%"></div>
+          </div>
+          <div style="text-align:right;font-size:0.75rem;color:#aaa;">
+            <span id="gameHeroXpCurrent">0</span> / <span id="gameHeroXpMax">100</span> XP
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:0.85rem;">
+          <div style="display:flex;justify-content:space-between;">
+            <span style="color:#aaa;">攻擊力</span>
+            <span style="color:#ff6b6b;" id="gameHeroAtk">10</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;">
+            <span style="color:#aaa;">防守力</span>
+            <span style="color:#4ade80;" id="gameHeroDef">5</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;">
+            <span style="color:#aaa;">生命力</span>
+            <span style="color:#60a5fa;" id="gameHeroHp">100</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;">
+            <span style="color:#aaa;">速度</span>
+            <span style="color:#ffd700;" id="gameHeroSpd">8</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 倉庫/背包 -->
+    <div class="inventory-section" style="margin: 20px 0;">
+      <div style="color:var(--accent); font-size:1.1rem; text-align:center; margin-bottom:15px;">🎒 倉庫</div>
+      <div style="display:flex; justify-content:center; gap:20px; flex-wrap:wrap; margin-bottom:15px;">
+        <div style="text-align:center; background:#1a1a2e; padding:15px 25px; border-radius:10px;">
+          <div style="font-size:1.5rem;">🪙</div>
+          <div style="color:#ffd700; font-size:1.2rem; font-weight:bold;" id="gameGoldDisplay">0</div>
+          <div style="color:#aaa; font-size:0.8rem;">金幣</div>
+        </div>
+        <div style="text-align:center; background:#1a1a2e; padding:15px 25px; border-radius:10px;">
+          <div style="font-size:1.5rem;">🧪</div>
+          <div style="color:#e74c3c; font-size:1.2rem; font-weight:bold;" id="gamePotionDisplay">0</div>
+          <div style="color:#aaa; font-size:0.8rem;">藥水</div>
+        </div>
+        <div style="text-align:center; background:#1a1a2e; padding:15px 25px; border-radius:10px;">
+          <div style="font-size:1.5rem;">📜</div>
+          <div style="color:#9b59b6; font-size:1.2rem; font-weight:bold;" id="gameScrollDisplay">0</div>
+          <div style="color:#aaa; font-size:0.8rem;">卷軸</div>
+        </div>
+        <div style="text-align:center; background:#1a1a2e; padding:15px 25px; border-radius:10px;">
+          <div style="font-size:1.5rem;">💎</div>
+          <div style="color:#60a5fa; font-size:1.2rem; font-weight:bold;" id="gameFragmentDisplay">0</div>
+          <div style="color:#aaa; font-size:0.8rem;">碎片</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 關卡地圖入口 -->
+    <div style="text-align:center; margin: 20px 0;">
+      <button class="action-btn battle" onclick="switchMainSection('battle'); showStageSelector();" style="font-size:1.1rem; padding:15px 40px;">
+        🗺️ 關卡地圖
+      </button>
+    </div>
+
+    <!-- 獎勵一覽 -->
+    <div class="rewards-section" style="margin: 20px 0;">
+      <div style="color:var(--accent); font-size:1.1rem; text-align:center; margin-bottom:15px;">🎁 今日獎勵</div>
+      <div id="dailyRewardsContainer" style="display:flex; justify-content:center; gap:15px; flex-wrap:wrap;">
+        <div style="text-align:center; background:#1a1a2e; padding:15px; border-radius:10px; min-width:80px;">
+          <div style="font-size:1.5rem;">🪙×10</div>
+          <div style="color:#aaa; font-size:0.8rem; margin-top:5px;">登入獎勵</div>
+        </div>
+        <div style="text-align:center; background:#1a1a2e; padding:15px; border-radius:10px; min-width:80px;">
+          <div style="font-size:1.5rem;">🧪×1</div>
+          <div style="color:#aaa; font-size:0.8rem; margin-top:5px;">連續獎勵</div>
+        </div>
+        <div style="text-align:center; background:#1a1a2e; padding:15px; border-radius:10px; min-width:80px;">
+          <div style="font-size:1.5rem;">📜×1</div>
+          <div style="color:#aaa; font-size:0.8rem; margin-top:5px;">完成關卡</div>
+        </div>
+      </div>
+    </div>
   </section>
 
   <!-- ========== 我的區 ========== -->
@@ -3290,7 +3406,8 @@
     let difficultyStepComplete = false;
     let domainStats = { newbie: {correct:0, wrong:0}, veteran: {correct:0, wrong:0}, legend: {correct:0, wrong:0} };
     let level = 1, unlockedLevels = [2], selectedLevel = null;
-    let streakForLevel = 0;
+    let selectedInputLevel = null; // 1, 2, or 3 for battle input mode
+    let streakForLevel = 0; // Track correct answer streak for level-specific learning
     
     // === WRONG ANSWERS TRACKING ===
     let wrongAnswers = JSON.parse(localStorage.getItem('mt_wrongAnswers') || '[]');
@@ -3302,11 +3419,11 @@
             correct: correct,
             userAnswer: userAnswer,
             timestamp: Date.now(),
-            table: correct.split('×')[0].trim()
+            table: typeof correct === 'string' ? correct.split('×')[0].trim() : String(correct)
         });
         if (wrongAnswers.length > 100) wrongAnswers.shift();
         localStorage.setItem('mt_wrongAnswers', JSON.stringify(wrongAnswers));
-        let table = correct.split('×')[0].trim();
+        let table = typeof correct === 'string' ? correct.split('×')[0].trim() : String(correct);
         if (!weakTables[table]) weakTables[table] = {wrong: 0, total: 0};
         weakTables[table].wrong++;
         weakTables[table].total++;
@@ -3314,7 +3431,7 @@
     }
 
     function recordCorrectAnswer(correct) {
-        let table = correct.split('×')[0].trim();
+        let table = typeof correct === 'string' ? correct.split('×')[0].trim() : String(correct);
         if (!weakTables[table]) weakTables[table] = {wrong: 0, total: 0};
         weakTables[table].total++;
         localStorage.setItem('mt_weakTables', JSON.stringify(weakTables));
@@ -3397,6 +3514,11 @@
         saveData();
     }
 
+    function updateGoldDisplay() {
+        const goldEl = document.getElementById('goldCount');
+        if (goldEl) goldEl.textContent = battleState.gold || 0;
+    }
+
     function openDailyTasksPanel() {
         document.getElementById('dailyTasksPanel').style.display = 'block';
         checkDailyReset();
@@ -3448,7 +3570,24 @@
       // === INITIALIZE DOMAIN (for range calculations) ===
       domain: 'newbie',
       // 答題模式切換: 'input'=直接輸入, 'choice'=選擇題
-      answerMode: 'input'
+      answerMode: 'input',
+      // Monster AI state
+      monsterBuffs: [],
+      monsterTurnCount: 0,
+      // === MANA SYSTEM ===
+      mana: 100,
+      maxMana: 100,
+      skillCooldowns: {},
+      // === ACTIVE EFFECTS ===
+      activeEffects: [],
+      rageStacks: 0,
+      // === ENERGY / ULTIMATE SYSTEM ===
+      energy: 0,
+      maxEnergy: 100,
+      ultimateReady: false,
+      // === BOSS PHASE SYSTEM ===
+      bossPhase: 1,
+      bossPhaseEffects: []
     };
     const SoundManager = {
       ctx: null,
@@ -3537,6 +3676,17 @@
             gain.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
             osc.start(now); osc.stop(now + 0.5);
             break;
+          case 'celebration':
+            osc.frequency.setValueAtTime(523.25, now);
+            osc.frequency.setValueAtTime(659.25, now + 0.1);
+            osc.frequency.setValueAtTime(783.99, now + 0.2);
+            osc.frequency.setValueAtTime(1046.5, now + 0.3);
+            osc.frequency.setValueAtTime(1318.5, now + 0.4);
+            osc.frequency.setValueAtTime(1567.98, now + 0.5);
+            gain.gain.setValueAtTime(0.4, now);
+            gain.gain.exponentialRampToValueAtTime(0.01, now + 0.8);
+            osc.start(now); osc.stop(now + 0.8);
+            break;
         }
       }
     };
@@ -3595,8 +3745,38 @@
     const heroes = {
       knight: { name: '銀藍騎士', hp: 100, maxHp: 100, atkMin: 8, atkMax: 12, crit: 0.1, img: 'assets/images/knight-hero.png', color: '#4a90e2', passive: 'block' },
       mage: { name: '銀月法師', hp: 80, maxHp: 80, atkMin: 12, atkMax: 18, crit: 0.15, img: 'assets/images/mage-hero.png', color: '#9b59b6', passive: 'critBoost' },
-      berserker: { name: '烈焰狂戰', hp: 120, maxHp: 120, atkMin: 15, atkMax: 25, crit: 0.25, img: 'assets/images/berserker-hero.png', color: '#e74c3c', passive: 'rage' }
+      healer: { name: '翠光祭司', hp: 90, maxHp: 90, atkMin: 10, atkMax: 14, crit: 0.1, img: 'assets/images/characters/priest/priest-male.jpeg', color: '#27ae60', passive: 'healBoost' },
+      berserker: { name: '烈焰狂戰', hp: 120, maxHp: 120, atkMin: 15, atkMax: 25, crit: 0.25, img: 'assets/images/berserker-hero.png', color: '#e74c3c', passive: 'rage' },
+      rogue: { name: '暗影刺客', hp: 70, maxHp: 70, atkMin: 14, atkMax: 20, crit: 0.25, img: 'assets/images/characters/rogue/rogue-male.jpeg', color: '#2c3e50', passive: 'evasion' },
+      ranger: { name: '森林遊俠', hp: 75, maxHp: 75, atkMin: 13, atkMax: 19, crit: 0.2, img: 'assets/images/characters/ranger/ranger-male.jpeg', color: '#27ae60', passive: 'ranged' }
     };
+
+    // ========== HERO SKILLS SYSTEM ==========
+    const heroSkills = {
+      knight: {
+        shieldBlock: { name: '盾牌格擋', level: 1, manaCost: 0, cooldown: 2, description: '下次受到的傷害-50%', effect: 'shield_block' },
+        challenge: { name: '挑釁', level: 3, manaCost: 10, cooldown: 3, description: '怪物優先攻擊騎士3回合', effect: 'challenge' },
+        bulwark: { name: '壁壘', level: 7, manaCost: 20, cooldown: 4, description: '獲得等同20%最大HP的護盾', effect: 'bulwark' },
+        lastStand: { name: '背水一戰', level: 12, manaCost: 0, cooldown: 5, description: 'HP低於25%時攻擊力+50%', effect: 'last_stand' },
+        divineShield: { name: '神聖護盾', level: 18, manaCost: 50, cooldown: 8, description: '無敵1回合', effect: 'divine_shield' }
+      },
+      mage: {
+        arcaneBolt: { name: '奧術箭', level: 1, manaCost: 5, cooldown: 1, description: '造成150%傷害', effect: 'arcane_bolt' },
+        manaSurge: { name: '法力湧動', level: 4, manaCost: 0, cooldown: 3, description: '恢復50%最大法力', effect: 'mana_surge' },
+        arcaneBarrage: { name: '奧術轟擊', level: 8, manaCost: 25, cooldown: 3, description: '連續3次50%傷害攻擊', effect: 'arcane_barrage' },
+        spellShield: { name: '法術護盾', level: 11, manaCost: 15, cooldown: 4, description: '抵消下次法術攻擊', effect: 'spell_shield' },
+        arcaneMastery: { name: '奧術大師', level: 15, manaCost: 40, cooldown: 5, description: '下次攻擊300%傷害', effect: 'arcane_mastery' },
+        manaFont: { name: '法力之泉', level: 20, manaCost: 0, cooldown: 6, description: '被動:答對+2法力', effect: 'mana_font' }
+      },
+      berserker: {
+        wildSwing: { name: '狂暴打擊', level: 1, manaCost: 0, cooldown: 1, description: '120%傷害,自己-5HP', effect: 'wild_swing' },
+        rageBuild: { name: '怒火積蓄', level: 5, manaCost: 0, cooldown: 2, description: '獲得1層怒火(最高5層)', effect: 'rage_build' },
+        berserkerRoar: { name: '狂戰怒吼', level: 9, manaCost: 15, cooldown: 4, description: '消耗所有怒火,每層+25%傷害', effect: 'berserker_roar' },
+        bloodlust: { name: '血祭', level: 13, manaCost: 20, cooldown: 4, description: '造成傷害的30%轉為治療', effect: 'bloodlust' },
+        undyingRage: { name: '不死怒火', level: 17, manaCost: 30, cooldown: 6, description: 'HP降至0時保留1HP(每戰一次)', effect: 'undying_rage' }
+      }
+    };
+
     const monsters = {
       newbie: [
         { name: '森林史萊姆', emoji: '🟢', img: 'assets/images/slime-monster.jpeg', hpMin: 5, hpMax: 8, gold: 10, exp: 5 },
@@ -3774,7 +3954,72 @@
       document.querySelectorAll('[id^="heroBtn_"]').forEach(b => b.classList.remove('active'));
       const btn = document.getElementById('heroBtn_' + key);
       if (btn) btn.classList.add('active');
+      renderSkillButtons();
       saveData();
+    }
+
+    function renderSkillButtons() {
+      const container = document.getElementById('skillButtons');
+      if (!container) return;
+      const heroKey = battleState.heroKey;
+      const skills = heroSkills[heroKey];
+      if (!skills) return;
+
+      container.innerHTML = '';
+      Object.entries(skills).forEach(([key, skill]) => {
+        const btn = document.createElement('button');
+        btn.className = 'skill-btn';
+        btn.id = 'skill_' + key;
+        btn.style.cssText = 'padding:6px 10px; font-size:0.8rem; background:#2a2a3a; color:#fff; border:1px solid #4a4a5a; border-radius:8px; cursor:pointer;';
+
+        const isUnlocked = battleState.heroLevel >= skill.level;
+        const cd = battleState.skillCooldowns[key] || 0;
+        const canUse = isUnlocked && cd === 0 && battleState.mana >= skill.manaCost;
+
+        if (!isUnlocked) {
+          btn.style.opacity = '0.4';
+          btn.title = `需要等級 ${skill.level}`;
+        } else if (cd > 0) {
+          btn.style.opacity = '0.6';
+          btn.title = `冷卻中: ${cd} 回合`;
+        } else if (battleState.mana < skill.manaCost) {
+          btn.style.opacity = '0.6';
+          btn.title = '法力不足';
+        }
+
+        btn.innerHTML = `<span>${skill.name}</span>`;
+        if (skill.manaCost > 0) {
+          btn.innerHTML += `<span style="color:#3b82f6;"> -${skill.manaCost}</span>`;
+        }
+        if (cd > 0) {
+          btn.innerHTML += `<span style="color:#f97316;"> [${cd}]</span>`;
+        }
+
+        if (canUse) {
+          btn.onclick = () => handleSkillUse(key);
+        }
+
+        container.appendChild(btn);
+      });
+    }
+
+    function handleSkillUse(skillKey) {
+      const result = useSkill(skillKey);
+      if (!result.success) {
+        showSkillMessage(result.message);
+      } else {
+        showSkillMessage(result.message);
+        renderSkillButtons();
+      }
+    }
+
+    function showSkillMessage(message) {
+      const el = document.createElement('div');
+      el.className = 'skill-message';
+      el.style.cssText = 'position:fixed; top:30%; left:50%; transform:translateX(-50%); background:rgba(0,0,0,0.8); color:#fff; padding:10px 20px; border-radius:10px; z-index:1000; font-size:1rem;';
+      el.textContent = message;
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 1500);
     }
 
     function resetBattleState() {
@@ -3782,6 +4027,17 @@
       battleState.inBattle = false;
       battleState.combo = 0;
       battleState.gold = 0;
+      battleState.currentStage = null;
+      battleState.monsterTurnCount = 0;
+      battleState.monsterBuffs = [];
+      battleState.shield = 0;
+      battleState.mana = 100;
+      battleState.skillCooldowns = {};
+      battleState.activeEffects = [];
+      battleState.rageStacks = 0;
+      const arcaneBar = document.getElementById('arcaneBar');
+      if (arcaneBar) arcaneBar.style.width = '0%';
+      resetAdaptiveState();
       streakForLevel = 0;
       document.getElementById('comboDisplay').classList.remove('active');
       document.getElementById('goldCount').textContent = '0';
@@ -3792,6 +4048,8 @@
         battleState.battleTimerInterval = null;
       }
       updateHeroHpBar();
+      updateManaDisplay();
+      renderSkillButtons();
       saveData();
     }
 
@@ -3992,10 +4250,802 @@
     function switchMainSection(section) {
       // 切換頂層nav按鈕狀態
       document.querySelectorAll('.main-nav-btn').forEach(b => b.classList.remove('active'));
-      document.querySelector(`.main-nav-btn[data-section="${section}"]`).classList.add('active');
+      const navBtn = document.querySelector(`.main-nav-btn[data-section="${section}"]`);
+      if (navBtn) navBtn.classList.add('active');
       // 切換section顯示
       document.querySelectorAll('.main-section').forEach(s => s.classList.remove('active'));
-      document.getElementById(section + 'Section').classList.add('active');
+      const targetSection = document.getElementById(section + 'Section');
+      if (targetSection) targetSection.classList.add('active');
+      // Handle section-specific logic
+      if (section === 'game') {
+        updateGameSection();
+      }
+      // Update world map when returning to root
+      if (section === 'root') {
+        loadGameProgress();
+        renderWorldMap();
+      }
+      // Show level select when opening battle tab (unless battle already in progress or coming from world map)
+      if (section === 'battle' && !battleState.inBattle) {
+        if (selectedLevel !== null && !battleState.currentStage) {
+          startBattle();
+        } else {
+          selectedInputLevel = localStorage.getItem('selectedInputLevel') ? parseInt(localStorage.getItem('selectedInputLevel')) : null;
+          showLevelSelect();
+        }
+      }
+    }
+
+    function quickBattle() {
+      selectTopic('multiplication');
+      switchMainSection('battle');
+      selectedLevel = 2;
+      startBattle();
+    }
+
+    // Topic selection - designed for scalability
+    let currentTopic = 'multiplication';
+    let currentWorld = null;
+
+    // Extended topic configurations with full 6-world structure
+    const topicConfigs = {
+      // World 1: Numbers Forest (數字森林) - Numbers recognition
+      numbers: {
+        name: '數字森林',
+        icon: '🌲',
+        description: '學習數字1-100的認識與比較',
+        worldId: 1,
+        unlocked: true,
+        stages: [
+          { id: 1, name: '1-10草原', topic: 'numbers1to10', monster: '森林史萊姆', color: '#6BCB77', accent: '#4ade80' },
+          { id: 2, name: '11-20森林', topic: 'numbers11to20', monster: '森林史萊姆', color: '#6BCB77', accent: '#4ade80' },
+          { id: 3, name: '21-50沼澤', topic: 'numbers21to50', monster: '草原小狼', color: '#a855f7', accent: '#c084fc' },
+          { id: 4, name: '51-100山丘', topic: 'numbers51to100', monster: '草原小狼', color: '#a855f7', accent: '#c084fc' },
+          { id: 5, name: '百位數守衛', topic: 'hundreds', monster: '城堡守衛', color: '#FF8C42', accent: '#fb923c', boss: true }
+        ]
+      },
+
+      // World 2: Operations Mountain (運算山脈) - Four operations
+      operations: {
+        name: '運算山脈',
+        icon: '⛰️',
+        description: '加減乘除四則運算訓練',
+        worldId: 2,
+        unlocked: false,
+        stages: [
+          { id: 1, name: '加法洞窟', topic: 'addition', subTopic: 'addition1digit', monster: '哥布林', color: '#4D96FF', accent: '#60a5fa' },
+          { id: 2, name: '減法峽谷', topic: 'subtraction', subTopic: 'subtraction1digit', monster: '蝙蝠', color: '#FF6B6B', accent: '#f87171' },
+          { id: 3, name: '乘法神殿', topic: 'multiplication', monster: '骨法師', color: '#a855f7', accent: '#c084fc' },
+          { id: 4, name: '除法深淵', topic: 'division', subTopic: 'division1digit', monster: '巨人', color: '#FFD93D', accent: '#facc15' },
+          { id: 5, name: '四則巨龍', topic: 'mixed', monster: '暗黑惡魔', color: '#e74c3c', accent: '#ef4444', boss: true }
+        ]
+      },
+
+      // World 3: Shapes Castle (圖形城堡) - 2D/3D shapes, symmetry, angles
+      shapes: {
+        name: '圖形城堡',
+        icon: '🏰',
+        description: '認識2D和3D圖形、對稱與角度',
+        worldId: 3,
+        unlocked: false,
+        stages: [
+          { id: 1, name: '2D花園', topic: 'shapes2D', monster: '幾何怪獸', color: '#EC4899', accent: '#f472b6' },
+          { id: 2, name: '3D塔樓', topic: 'shapes3D', monster: '立體怪物', color: '#8B5CF6', accent: '#a78bfa' },
+          { id: 3, name: '對稱大殿', topic: 'symmetry', monster: '鏡像怪', color: '#06B6D4', accent: '#22d3ee' },
+          { id: 4, name: '角度試煉', topic: 'angles', monster: '角度獸', color: '#10B981', accent: '#34d399' },
+          { id: 5, name: '角度之王', topic: 'angles', monster: '幾何之王', color: '#F59E0B', accent: '#fbbf24', boss: true }
+        ]
+      },
+
+      // World 4: Measurement Kingdom (度量王國) - Length, weight, capacity, time, money
+      measurement: {
+        name: '度量王國',
+        icon: '👑',
+        description: '長度、重量、容量、時間和金錢',
+        worldId: 4,
+        unlocked: false,
+        stages: [
+          { id: 1, name: '長度森林', topic: 'length', monster: '尺子怪', color: '#3B82F6', accent: '#60a5fa' },
+          { id: 2, name: '時間河流', topic: 'time', monster: '時鐘獸', color: '#8B5CF6', accent: '#a78bfa' },
+          { id: 3, name: '金錢商店', topic: 'money', monster: '硬幣精靈', color: '#FFD93D', accent: '#facc15' },
+          { id: 4, name: '容量湖泊', topic: 'capacity', monster: '水滴怪', color: '#06B6D4', accent: '#22d3ee' },
+          { id: 5, name: '單位大師', topic: 'unitConversion', monster: '單位巨獸', color: '#EF4444', accent: '#f87171', boss: true }
+        ]
+      },
+
+      // World 5: Data Temple (數據神殿) - Statistics and data handling
+      data: {
+        name: '數據神殿',
+        icon: '📊',
+        description: '分類、統計圖和平均數',
+        worldId: 5,
+        unlocked: false,
+        stages: [
+          { id: 1, name: '分類殿堂', topic: 'classification', monster: '分類精靈', color: '#10B981', accent: '#34d399' },
+          { id: 2, name: '統計圖書館', topic: 'charts', monster: '柱狀獸', color: '#3B82F6', accent: '#60a5fa' },
+          { id: 3, name: '平均數實驗室', topic: 'average', monster: '平均數龍', color: '#8B5CF6', accent: '#a78bfa' },
+          { id: 4, name: '概率領域', topic: 'probability', monster: '概率法師', color: '#EC4899', accent: '#f472b6' },
+          { id: 5, name: '數據巨龍', topic: 'dataAnalysis', monster: '數據龍', color: '#F59E0B', accent: '#fbbf24', boss: true }
+        ]
+      },
+
+      // World 6: Advanced Challenge (進階挑戰) - Fractions, decimals, ratios
+      advanced: {
+        name: '進階挑戰',
+        icon: '🚀',
+        description: '分數、小數、百分數和比率',
+        worldId: 6,
+        unlocked: false,
+        stages: [
+          { id: 1, name: '分數領域', topic: 'fractions', monster: '分數法師', color: '#8B5CF6', accent: '#a78bfa' },
+          { id: 2, name: '小數領域', topic: 'decimals', monster: '小數精靈', color: '#06B6D4', accent: '#22d3ee' },
+          { id: 3, name: '百分數領域', topic: 'percentages', monster: '百分比獸', color: '#10B981', accent: '#34d399' },
+          { id: 4, name: '比率試煉', topic: 'ratios', monster: '比率守衛', color: '#EC4899', accent: '#f472b6' },
+          { id: 5, name: '數學之神', topic: 'mixedAdvanced', monster: '數學之神', color: '#FFD93D', accent: '#facc15', boss: true }
+        ]
+      },
+
+      // Legacy multiplication (keeps existing battle system working)
+      multiplication: {
+        name: '乘法',
+        icon: '✖️',
+        description: '乘法表訓練',
+        worldId: 2,
+        unlocked: true,
+        stages: [
+          { id: 1, name: '2的乘法', topic: 'multiplication', table: 2, monster: '森林史萊姆', color: '#FFD93D', accent: '#facc15' },
+          { id: 2, name: '3的乘法', topic: 'multiplication', table: 3, monster: '森林史萊姆', color: '#FF6B6B', accent: '#f87171' },
+          { id: 3, name: '4的乘法', topic: 'multiplication', table: 4, monster: '草原小狼', color: '#6BCB77', accent: '#4ade80' },
+          { id: 4, name: '5的乘法', topic: 'multiplication', table: 5, monster: '草原小狼', color: '#4D96FF', accent: '#60a5fa' },
+          { id: 5, name: '6的乘法', topic: 'multiplication', table: 6, monster: '城堡守衛', color: '#a855f7', accent: '#c084fc' },
+          { id: 6, name: '7的乘法', topic: 'multiplication', table: 7, monster: '蝙蝠', color: '#FF8C42', accent: '#fb923c' },
+          { id: 7, name: '8的乘法', topic: 'multiplication', table: 8, monster: '骨法師', color: '#9B59B6', accent: '#a855f7' },
+          { id: 8, name: '9的乘法', topic: 'multiplication', table: 9, monster: '暗黑惡魔', color: '#e74c3c', accent: '#ef4444', boss: true }
+        ]
+      }
+    };
+
+    // World unlock state
+    let unlockedWorlds = [1]; // World 1 (numbers) is unlocked by default
+
+    function selectWorld(worldId) {
+      currentWorld = worldId;
+      const world = topicConfigs[worldId];
+      if (!world) return;
+
+      console.log('Selected world:', world.name);
+
+      // Check if world is unlocked
+      if (!unlockedWorlds.includes(world.worldId)) {
+        alert('這個世界尚未解鎖！完成前一世界來解鎖。');
+        return;
+      }
+
+      // Update UI - highlight selected world
+      document.querySelectorAll('.world-card').forEach(card => {
+        card.classList.remove('selected');
+        if (card.dataset.world === worldId) {
+          card.classList.add('selected');
+        }
+      });
+
+      // Show world info panel
+      showWorldInfo(worldId);
+
+      // Speak selection
+      speak(world.name);
+    }
+
+    function showWorldInfo(worldId) {
+      const world = topicConfigs[worldId];
+      if (!world) return;
+
+      const infoPanel = document.getElementById('worldInfoPanel');
+      if (infoPanel) {
+        document.getElementById('worldInfoTitle').textContent = world.icon + ' ' + world.name;
+        document.getElementById('worldInfoDesc').textContent = world.description;
+        document.getElementById('worldInfoStages').textContent = world.stages.length + ' 個關卡';
+
+        // Build stage list
+        const stageList = document.getElementById('worldStageList');
+        stageList.innerHTML = world.stages.map((stage, idx) => {
+          const locked = stage.boss && !isBossUnlocked(worldId, stage.id);
+          return `
+          <div class="world-stage-item ${stage.boss ? 'boss' : ''} ${locked ? 'locked' : ''}" ${locked ? '' : `onclick="selectStage('${worldId}', ${stage.id})"`}>
+            <span class="stage-icon">${stage.boss ? (locked ? '🔒' : '👑') : (idx + 1)}</span>
+            <span class="stage-name">${stage.name}</span>
+            <span class="stage-topic">${getTopicDisplayName(stage.topic)}</span>
+          </div>
+        `}).join('');
+
+        infoPanel.style.display = 'block';
+      }
+    }
+
+    function getTopicDisplayName(topic) {
+      const topicNames = {
+        'numbers1to10': '1-10認知',
+        'numbers11to20': '11-20認知',
+        'numbers21to50': '21-50認知',
+        'numbers51to100': '51-100認知',
+        'hundreds': '百位數',
+        'addition': '加法',
+        'subtraction': '減法',
+        'multiplication': '乘法',
+        'division': '除法',
+        'mixed': '混合',
+        'shapes2D': '2D圖形',
+        'shapes3D': '3D立體',
+        'symmetry': '對稱',
+        'angles': '角度',
+        'length': '長度',
+        'time': '時間',
+        'money': '金錢',
+        'capacity': '容量',
+        'unitConversion': '單位轉換',
+        'classification': '分類',
+        'charts': '統計圖',
+        'average': '平均數',
+        'probability': '概率',
+        'dataAnalysis': '數據分析',
+        'fractions': '分數',
+        'decimals': '小數',
+        'percentages': '百分數',
+        'ratios': '比率',
+        'mixedAdvanced': '綜合'
+      };
+      return topicNames[topic] || topic;
+    }
+
+    function isBossUnlocked(worldId, stageId) {
+      const world = topicConfigs[worldId];
+      if (!world) return false;
+
+      const allProgress = JSON.parse(localStorage.getItem('worldProgress') || '{}');
+      const worldProgress = allProgress[worldId] || {};
+
+      const previousStages = world.stages.filter(s =>
+        !s.boss && s.id < stageId
+      );
+
+      return previousStages.every(s => worldProgress[s.id]?.completed);
+    }
+
+    function selectStage(worldId, stageId) {
+      const world = topicConfigs[worldId];
+      if (!world) return;
+
+      const stage = world.stages.find(s => s.id === stageId);
+      if (!stage) return;
+
+      if (stage.boss && !isBossUnlocked(worldId, stageId)) {
+        alert('需要完成所有關卡才能挑戰Boss！');
+        return;
+      }
+
+      console.log('Selected stage:', stage.name, 'topic:', stage.topic);
+
+      // Set current topic and stage for battle
+      currentTopic = stage.topic;
+      battleState.currentStage = stageId;
+      battleState.currentWorld = worldId;
+
+      // For multiplication, set selectedLevel (table number)
+      if (stage.topic === 'multiplication' && stage.table) {
+        selectedLevel = stage.table;
+      }
+
+      // Navigate to battle
+      switchMainSection('battle');
+
+      // Start battle after a short delay
+      setTimeout(() => {
+        if (!battleState.inBattle) {
+          startBattle();
+        }
+      }, 500);
+    }
+
+    function unlockWorld(worldId) {
+      if (!unlockedWorlds.includes(worldId)) {
+        unlockedWorlds.push(worldId);
+        saveGameProgress();
+        showWorldUnlockNotification(worldId);
+      }
+    }
+
+    function saveGameProgress() {
+      const progress = {
+        unlockedWorlds: unlockedWorlds,
+        currentWorld: currentWorld,
+        selectedTopic: currentTopic,
+        heroData: JSON.parse(localStorage.getItem('mathTownHero') || '{}'),
+        battleData: JSON.parse(localStorage.getItem('battleData') || '{}')
+      };
+      localStorage.setItem('gameProgress', JSON.stringify(progress));
+    }
+
+    function loadGameProgress() {
+      const saved = localStorage.getItem('gameProgress');
+      if (saved) {
+        const progress = JSON.parse(saved);
+        unlockedWorlds = progress.unlockedWorlds || [1];
+        currentWorld = progress.currentWorld;
+        currentTopic = progress.selectedTopic || 'multiplication';
+      }
+    }
+
+    function showWorldUnlockNotification(worldId) {
+      const world = topicConfigs[Object.keys(topicConfigs).find(k => topicConfigs[k].worldId === worldId)];
+      if (!world) return;
+
+      const notification = document.getElementById('worldUnlockNotification');
+      if (notification) {
+        document.getElementById('unlockWorldName').textContent = world.name;
+        notification.classList.add('active');
+        SoundManager.play('victory');
+        setTimeout(() => {
+          notification.classList.remove('active');
+        }, 4000);
+      }
+    }
+
+    function selectTopic(topic) {
+      currentTopic = topic;
+
+      // Legacy topic config for backwards compatibility
+      const legacyConfigs = {
+        multiplication: {
+          name: '乘法',
+          icon: '✖️',
+          levels: 8,
+          description: '乘法表訓練'
+        }
+      };
+
+      // Update UI for topic selection if needed
+      document.querySelectorAll('.topic-card').forEach(card => {
+        card.classList.remove('selected');
+      });
+
+      // Log topic selection for extensibility
+      console.log('Selected topic:', topic, legacyConfigs[topic] || 'Unknown topic');
+    }
+
+    function renderWorldMap() {
+      const container = document.getElementById('worldMapContainer');
+      if (!container) return;
+
+      const worldIds = ['numbers', 'operations', 'shapes', 'measurement', 'data', 'advanced'];
+
+      container.innerHTML = worldIds.map(worldId => {
+        const world = topicConfigs[worldId];
+        const isUnlocked = unlockedWorlds.includes(world.worldId);
+        const isSelected = currentWorld === worldId;
+
+        return `
+          <div class="world-card ${isUnlocked ? '' : 'locked'} ${isSelected ? 'selected' : ''}"
+               data-world="${worldId}"
+               onclick="${isUnlocked ? `selectWorld('${worldId}')` : ''}">
+            <div class="world-icon">${isUnlocked ? world.icon : '🔒'}</div>
+            <div class="world-name ${!isUnlocked ? 'locked-text' : ''}">${world.name}</div>
+            <div class="world-desc">${isUnlocked ? world.description : '未解鎖'}</div>
+            <div class="world-progress">
+              ${isUnlocked ? `<span class="progress-text">${getWorldProgress(worldId)}%</span>` : ''}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function getWorldProgress(worldId) {
+      // Calculate progress based on completed stages
+      const world = topicConfigs[worldId];
+      if (!world) return 0;
+
+      const progressData = JSON.parse(localStorage.getItem('worldProgress') || '{}');
+      const worldProgress = progressData[worldId] || {};
+
+      let completed = 0;
+      world.stages.forEach(stage => {
+        if (worldProgress[stage.id]?.completed) completed++;
+      });
+
+      return Math.round((completed / world.stages.length) * 100);
+    }
+
+    function updateWorldMap() {
+      // Called when returning to root section to refresh world map
+      renderWorldMap();
+      loadGameProgress();
+    }
+
+    // ========== Missing Functions for Battle System ==========
+    function setAnswerMode(mode) {
+      battleState.answerMode = mode;
+      document.getElementById('modeInputBtn').classList.toggle('active', mode === 'input');
+      document.getElementById('modeChoiceBtn').classList.toggle('active', mode === 'choice');
+      saveBattleData();
+
+      // Regenerate current question with new mode
+      if (battleState.active && battleState.inBattle) {
+        generateBattleQuestion();
+      }
+    }
+
+    function battleSubmitAnswer() {
+      const input = document.getElementById('battleInputField');
+      if (!input) return;
+      const val = parseInt(input.value);
+      if (isNaN(val)) return;
+      battleCheckAnswer(val, null);
+      input.value = '';
+    }
+
+    // ========== Question Generation System ==========
+    function generateBattleQuestion() {
+      const topic = currentTopic || 'multiplication';
+
+      // Use topicConfigs to determine question type
+      let questionData;
+
+      switch(topic) {
+        case 'multiplication':
+          questionData = generateMultiplicationQuestion();
+          break;
+        case 'addition':
+          questionData = generateAdditionQuestion();
+          break;
+        case 'subtraction':
+          questionData = generateSubtractionQuestion();
+          break;
+        case 'division':
+          questionData = generateDivisionQuestion();
+          break;
+        case 'numbers1to10':
+        case 'numbers11to20':
+        case 'numbers21to50':
+        case 'numbers51to100':
+          questionData = generateNumberRecognitionQuestion(topic);
+          break;
+        case 'comparison':
+          questionData = generateComparisonQuestion();
+          break;
+        default:
+          // Default to multiplication for legacy support
+          questionData = generateMultiplicationQuestion();
+      }
+
+      // Set the battle answer
+      battleState.battleAnswer = questionData.answer;
+
+      // Update the question display
+      document.getElementById('battleQuestion').innerHTML = questionData.display;
+
+      // Generate options if in choice mode
+      if (battleState.answerMode === 'choice') {
+        generateOptions(questionData.answer, questionData.range);
+      } else {
+        document.getElementById('battleOptions').innerHTML = '';
+      }
+
+      // Start timer
+      startBattleTimer();
+    }
+
+    function generateMultiplicationQuestion() {
+      let n1, n2;
+
+      if (selectedLevel) {
+        n1 = selectedLevel;
+        n2 = Math.floor(Math.random() * 9) + 2; // 2-10
+      } else {
+        n1 = Math.floor(Math.random() * 8) + 2; // 2-9
+        n2 = Math.floor(Math.random() * 9) + 2; // 2-10
+      }
+
+      const answer = n1 * n2;
+      num1 = n1;
+      num2 = n2;
+
+      return {
+        display: `${n1} × ${n2} = ?`,
+        answer: answer,
+        range: [Math.max(2, answer - 10), answer + 10]
+      };
+    }
+
+    function generateAdditionQuestion() {
+      const difficulty = getDifficultyForTopic('addition');
+      let n1, n2, answer;
+
+      switch(difficulty) {
+        case 'easy':
+          // 1-9 addition
+          n1 = Math.floor(Math.random() * 9) + 1;
+          n2 = Math.floor(Math.random() * 9) + 1;
+          break;
+        case 'medium':
+          // 10-18 (make 18)
+          n1 = Math.floor(Math.random() * 10) + 9;
+          n2 = Math.floor(Math.random() * 10) + 1;
+          break;
+        case 'hard':
+          // Two-digit addition
+          n1 = Math.floor(Math.random() * 50) + 10;
+          n2 = Math.floor(Math.random() * 50) + 10;
+          break;
+        default:
+          n1 = Math.floor(Math.random() * 9) + 1;
+          n2 = Math.floor(Math.random() * 9) + 1;
+      }
+
+      answer = n1 + n2;
+      num1 = n1;
+      num2 = n2;
+
+      return {
+        display: `${n1} + ${n2} = ?`,
+        answer: answer,
+        range: [Math.max(0, answer - 15), answer + 15]
+      };
+    }
+
+    function generateSubtractionQuestion() {
+      const difficulty = getDifficultyForTopic('subtraction');
+      let n1, n2, answer;
+
+      switch(difficulty) {
+        case 'easy':
+          // Results in 0-9
+          n2 = Math.floor(Math.random() * 9) + 1;
+          answer = Math.floor(Math.random() * 9);
+          n1 = n2 + answer;
+          break;
+        case 'medium':
+          // 18以内
+          n1 = Math.floor(Math.random() * 15) + 5;
+          n2 = Math.floor(Math.random() * n1) + 1;
+          answer = n1 - n2;
+          break;
+        case 'hard':
+          // Two-digit subtraction
+          n1 = Math.floor(Math.random() * 50) + 30;
+          n2 = Math.floor(Math.random() * 30) + 10;
+          if (n2 > n1) [n1, n2] = [n2, n1]; // Ensure positive result
+          answer = n1 - n2;
+          break;
+        default:
+          n2 = Math.floor(Math.random() * 9) + 1;
+          answer = Math.floor(Math.random() * 9);
+          n1 = n2 + answer;
+      }
+
+      num1 = n1;
+      num2 = n2;
+
+      return {
+        display: `${n1} - ${n2} = ?`,
+        answer: answer,
+        range: [Math.max(0, answer - 10), answer + 10]
+      };
+    }
+
+    function generateDivisionQuestion() {
+      const difficulty = getDifficultyForTopic('division');
+      let n1, n2, answer;
+
+      switch(difficulty) {
+        case 'easy':
+          // Simple division with small numbers
+          n2 = Math.floor(Math.random() * 5) + 2; // 2-6 divisor
+          answer = Math.floor(Math.random() * 8) + 2; // 2-9 quotient
+          n1 = n2 * answer;
+          break;
+        case 'medium':
+          // Division up to 50
+          n2 = Math.floor(Math.random() * 8) + 2; // 2-9 divisor
+          answer = Math.floor(Math.random() * 9) + 2; // 2-10 quotient
+          n1 = n2 * answer;
+          break;
+        case 'hard':
+          // Larger division
+          n2 = Math.floor(Math.random() * 9) + 2; // 2-10 divisor
+          answer = Math.floor(Math.random() * 12) + 3; // 3-14 quotient
+          n1 = n2 * answer;
+          break;
+        default:
+          n2 = Math.floor(Math.random() * 5) + 2;
+          answer = Math.floor(Math.random() * 8) + 2;
+          n1 = n2 * answer;
+      }
+
+      num1 = n1;
+      num2 = n2;
+
+      return {
+        display: `${n1} ÷ ${n2} = ?`,
+        answer: answer,
+        range: [Math.max(1, answer - 5), answer + 5]
+      };
+    }
+
+    function generateNumberRecognitionQuestion(topic) {
+      let maxNum, display, answer;
+
+      switch(topic) {
+        case 'numbers1to10':
+          maxNum = 10;
+          break;
+        case 'numbers11to20':
+          maxNum = 20;
+          break;
+        case 'numbers21to50':
+          maxNum = 50;
+          break;
+        case 'numbers51to100':
+          maxNum = 100;
+          break;
+        default:
+          maxNum = 10;
+      }
+
+      answer = Math.floor(Math.random() * maxNum) + 1;
+      display = `${answer} 是什麼數？`;
+
+      return {
+        display: display,
+        answer: answer,
+        range: [1, maxNum]
+      };
+    }
+
+    function generateComparisonQuestion() {
+      const n1 = Math.floor(Math.random() * 100) + 1;
+      const n2 = Math.floor(Math.random() * 100) + 1;
+      const answer = n1 > n2 ? 1 : (n1 < n2 ? 2 : 0); // 1: first bigger, 2: second bigger, 0: equal
+
+      return {
+        display: `${n1} __ ${n2}<br><span style="font-size:1rem">[1: 第一個大  2: 第二個大  3: 一樣大]</span>`,
+        answer: answer,
+        range: [1, 3]
+      };
+    }
+
+    function getDifficultyForTopic(topic) {
+      // Map currentDomain to difficulty level for question generation
+      if (currentDomain === 'newbie') return 'easy';
+      if (currentDomain === 'veteran') return 'medium';
+      return 'hard';
+    }
+
+    function generateOptions(correctAnswer, range) {
+      const container = document.getElementById('battleOptions');
+      const optionCount = battleState.optionCount || 4;
+
+      // Generate wrong options
+      const options = [correctAnswer];
+      while (options.length < optionCount) {
+        const wrong = Math.floor(Math.random() * (range[1] - range[0] + 1)) + range[0];
+        if (!options.includes(wrong) && wrong !== correctAnswer) {
+          options.push(wrong);
+        }
+      }
+
+      // Shuffle options
+      options.sort(() => Math.random() - 0.5);
+
+      // Create option buttons
+      container.innerHTML = options.map((opt, idx) => `
+        <button class="battle-option" onclick="battleCheckAnswer(${opt}, this)" style="animation-delay: ${idx * 0.1}s">
+          ${opt}
+        </button>
+      `).join('');
+    }
+
+    function startBattleTimer() {
+      // Clear existing timer
+      if (battleState.battleTimerInterval) {
+        clearInterval(battleState.battleTimerInterval);
+      }
+
+      battleState.timeLeft = battleState.maxTime || 3.0;
+      battleState.answerStartTime = Date.now();
+
+      const timerFill = document.getElementById('battleTimerFill');
+      const timerText = document.getElementById('battleTimerText');
+
+      battleState.battleTimerInterval = setInterval(() => {
+        battleState.timeLeft -= 0.1;
+        if (battleState.timeLeft <= 0) {
+          clearInterval(battleState.battleTimerInterval);
+          battleState.timeLeft = 0;
+          handleTimeout();
+        }
+
+        if (timerFill) {
+          timerFill.style.width = (battleState.timeLeft / battleState.maxTime * 100) + '%';
+        }
+        if (timerText) {
+          timerText.textContent = battleState.timeLeft.toFixed(2) + 's';
+        }
+      }, 100);
+    }
+
+    function handleTimeout() {
+      // Treat timeout as wrong answer
+      const container = document.getElementById('battleOptions');
+      container.querySelectorAll('.battle-option').forEach(b => b.disabled = true);
+
+      wrong++;
+      streak = 0;
+      battleState.combo = 0;
+      updateComboDisplay();
+      battleState.consecutiveErrors++;
+
+      showDamageNumber(0, false, false, true);
+      heroTakeDamage();
+
+      const questionEl = document.getElementById('battleQuestion');
+      questionEl.innerHTML += `<div class="correct-answer-hint">⏰ 時間到！正確答案：${battleState.battleAnswer}</div>`;
+
+      SoundManager.play('wrong');
+      showScreenFlash('wrong');
+      screenShake();
+
+      setTimeout(() => {
+        if (battleState.inBattle) {
+          generateBattleQuestion();
+        }
+      }, 1500);
+    }
+
+    function updateGameSection() {
+      const heroData = JSON.parse(localStorage.getItem('mathTownHero') || '{}');
+      const battleData = JSON.parse(localStorage.getItem('battleData') || '{}');
+      const gameInventory = JSON.parse(localStorage.getItem('gameInventory') || '{}');
+
+      const heroes = {
+        knight: { name: '銀藍騎士', color: '#4a90e2', img: 'assets/images/knight-hero.png', atk: 10, def: 5, hp: 100, spd: 8 },
+        mage: { name: '銀月法師', color: '#9b59b6', img: 'assets/images/mage-hero.png', atk: 8, def: 3, hp: 80, spd: 10 },
+        berserker: { name: '烈焰狂戰', color: '#e74c3c', img: 'assets/images/berserker-hero.png', atk: 15, def: 2, hp: 120, spd: 6 }
+      };
+
+      const selectedHero = heroData.selectedHero || 'knight';
+      const hero = heroes[selectedHero];
+      const level = heroData.heroLevel || 1;
+      const exp = heroData.heroExp || 0;
+      const expMax = heroData.expToNextLevel || 100;
+
+      document.getElementById('gameHeroImg').src = hero.img;
+      document.getElementById('gameHeroName').textContent = hero.name;
+      document.getElementById('gameHeroLv').textContent = level;
+      document.getElementById('gameHeroXpCurrent').textContent = exp;
+      document.getElementById('gameHeroXpMax').textContent = expMax;
+      document.getElementById('gameHeroXpBar').style.width = (exp / expMax * 100) + '%';
+      document.getElementById('gameHeroAtk').textContent = hero.atk + (level - 1) * 2;
+      document.getElementById('gameHeroDef').textContent = hero.def + (level - 1);
+      document.getElementById('gameHeroHp').textContent = hero.hp + (level - 1) * 10;
+      document.getElementById('gameHeroSpd').textContent = hero.spd + Math.floor((level - 1) / 2);
+
+      ['knight', 'mage', 'berserker'].forEach(h => {
+        const card = document.getElementById('gameHero_' + h);
+        const levelEl = document.getElementById('gameHeroLevel_' + h);
+        if (card) card.classList.toggle('selected', h === selectedHero);
+        if (levelEl) levelEl.textContent = 'Lv.' + (heroData[h + 'Level'] || 1);
+      });
+
+      document.getElementById('gameGoldDisplay').textContent = battleData.gold || 0;
+      document.getElementById('gamePotionDisplay').textContent = gameInventory.potions || 0;
+      document.getElementById('gameScrollDisplay').textContent = gameInventory.scrolls || 0;
+      document.getElementById('gameFragmentDisplay').textContent = gameInventory.fragments || 0;
+    }
+
+    function selectGameHero(heroKey) {
+      const heroData = JSON.parse(localStorage.getItem('mathTownHero') || '{}');
+      heroData.selectedHero = heroKey;
+      localStorage.setItem('mathTownHero', JSON.stringify(heroData));
+      updateGameSection();
     }
 
     // Tab 切換
@@ -4049,9 +5099,12 @@
     }
 
     function updateScoreDisplay() {
-      document.getElementById('correctScore').textContent = correct;
-      document.getElementById('wrongScore').textContent = wrong;
-      document.getElementById('streakCount').textContent = streak;
+      const correctEl = document.getElementById('correctScore');
+      const wrongEl = document.getElementById('wrongScore');
+      const streakEl = document.getElementById('streakCount');
+      if (correctEl) correctEl.textContent = correct;
+      if (wrongEl) wrongEl.textContent = wrong;
+      if (streakEl) streakEl.textContent = streak;
       updatePracticeSuggestion();
     }
 
@@ -4763,6 +5816,10 @@
       battleState.gold = data.gold || 0;
       battleState.monstersDefeated = data.monstersDefeated || 0;
       battleState.heroKey = data.heroKey || 'knight';
+      battleState.answerMode = data.answerMode || 'input';
+      // Update UI to reflect loaded answer mode
+      document.getElementById('modeInputBtn').classList.toggle('active', battleState.answerMode === 'input');
+      document.getElementById('modeChoiceBtn').classList.toggle('active', battleState.answerMode === 'choice');
       updateBattleStatsBar();
     }
 
@@ -4770,13 +5827,16 @@
       localStorage.setItem('battleData', JSON.stringify({
         gold: battleState.gold,
         monstersDefeated: battleState.monstersDefeated,
-        heroKey: battleState.heroKey
+        heroKey: battleState.heroKey,
+        answerMode: battleState.answerMode
       }));
     }
 
     function updateBattleStatsBar() {
-      document.getElementById('goldCount').textContent = battleState.gold;
-      document.getElementById('monstersDefeated').textContent = battleState.monstersDefeated;
+      const goldEl = document.getElementById('goldCount');
+      const monstersEl = document.getElementById('monstersDefeated');
+      if (goldEl) goldEl.textContent = battleState.gold;
+      if (monstersEl) monstersEl.textContent = battleState.monstersDefeated;
     }
 
     function selectHero(key) {
@@ -4799,8 +5859,11 @@
       battleState.active = false;
       battleState.inBattle = false;
       battleState.combo = 0;
+      battleState.energy = 0;
+      battleState.ultimateReady = false;
       streakForLevel = 0;
       document.getElementById('comboDisplay').classList.remove('active');
+      updateEnergyBar();
       const hero = heroes[battleState.heroKey];
       document.getElementById('heroBattleAvatar').src = hero.img;
       document.getElementById('heroBattleName').textContent = hero.name;
@@ -4811,10 +5874,26 @@
 
     function closeBattleOverlay() {
       resetBattleState();
-      switchMainSection('learn');
+      switchMainSection('root');
     }
 
     function startBattle() {
+      // If coming from world map with selectedLevel set (number or null for mixed) but no currentStage,
+      // go directly to battle with domain/level-based questions
+      if (!battleState.currentStage && selectedLevel !== undefined) {
+        // Skip stage selector, go directly to battle
+        document.getElementById('levelSelectScreen').style.display = 'none';
+        document.getElementById('stageSelector').style.display = 'none';
+        document.getElementById('battleStartBtnOverlay').style.display = 'none';
+        // Fall through to start battle
+      } else if (!battleState.currentStage) {
+        // Show stage selector if no stage selected
+        document.getElementById('levelSelectScreen').style.display = 'none';
+        document.getElementById('stageSelector').style.display = 'block';
+        document.getElementById('battleStartBtnOverlay').style.display = 'none';
+        renderStageSelector();
+        return;
+      }
       if (battleState.inBattle) {
         spawnMonster();
         return;
@@ -4824,9 +5903,31 @@
       battleState.inBattle = true;
       battleState.combo = 0;
       battleState.shield = 0;
+      battleState.mana = 100;
+      battleState.skillCooldowns = {};
+      battleState.activeEffects = [];
+      battleState.rageStacks = 0;
       battleState.monsterTurnCount = 0;
       battleState.monsterBuffs = [];
       battleState.monsterAction = null;
+
+      updateManaDisplay();
+      renderSkillButtons();
+
+      // Reset answer counters for accurate stage accuracy tracking
+      correct = 0;
+      wrong = 0;
+
+      if (selectedInputLevel && levelConfig[selectedInputLevel]) {
+        const cfg = levelConfig[selectedInputLevel];
+        battleState.optionCount = cfg.optionCount;
+        battleState.answerMode = cfg.answerMode;
+        battleState.timerModifier = cfg.timerMod;
+        document.getElementById('answerModeToggle').style.display = 'none';
+      } else {
+        if (!battleState.answerMode) battleState.answerMode = 'input';
+        if (!battleState.optionCount) battleState.optionCount = 3;
+      }
 
       // Load saved hero level if exists
       const savedData = JSON.parse(localStorage.getItem('mathTownHero') || '{}');
@@ -4850,11 +5951,12 @@
       updateHeroHpBar();
       updateShieldDisplay();
       updateHeroLevelDisplay();
-      document.getElementById('battleTimerContainer').classList.remove('active');
+      const timerContainer = document.getElementById('battleTimerContainer');
+      if (timerContainer) timerContainer.classList.remove('active');
 
       // Show stage banner if in stage mode
       const banner = document.getElementById('stageBanner');
-      if (battleState.currentStage) {
+      if (banner && battleState.currentStage) {
         const stage = getStageData(battleState.currentStage);
         document.getElementById('stageBannerNumber').textContent = '關卡 ' + stage.id;
         document.getElementById('stageBannerMonster').textContent = stage.name;
@@ -4868,7 +5970,8 @@
         banner.style.display = 'none';
       }
 
-      document.getElementById('battleStartBtnOverlay').style.display = 'none';
+      const battleStartBtnOverlay = document.getElementById('battleStartBtnOverlay');
+      if (battleStartBtnOverlay) battleStartBtnOverlay.style.display = 'none';
 
       document.getElementById('battleQuestion').innerHTML = '<span style="font-size:1.5rem">⚔️ 戰鬥開始！</span>';
       document.getElementById('battleOptions').innerHTML = '';
@@ -4879,16 +5982,20 @@
     }
 
     function spawnMonster() {
-      // Use stage-based monster selection
-      const stage = getStageData(battleState.currentStage || 1);
-      const monsterHp = Math.floor(50 * stage.hpScale);
+      // Ensure stage is set for monster appearance (default to 1 if not in stage mode)
+      // But questions come from selectedLevel or domain-based generation
+      if (!battleState.currentStage) {
+        battleState.currentStage = 1; // Default stage for monster visuals only
+      }
+      const stage = getStageData(battleState.currentStage);
+      const monsterHp = Math.floor(100 * stage.hpScale);  // Increased base HP for better balance
       
       battleState.monsterName = stage.name;
       battleState.monsterEmoji = '';
       battleState.monsterMaxHp = monsterHp;
       battleState.monsterHp = battleState.monsterMaxHp;
-      battleState.monsterGold = Math.floor(10 * stage.hpScale);
-      battleState.monsterExp = Math.floor(15 * stage.hpScale);
+      battleState.monsterGold = Math.floor(20 * stage.hpScale);
+      battleState.monsterExp = Math.floor(25 * stage.hpScale);
       battleState.isBoss = stage.isBoss || false;
       battleState.monsterTurnCount = 0;
       battleState.monsterBuffs = [];
@@ -4896,19 +6003,24 @@
 
       // Set monster image based on stage
       const monsterImages = {
-        1: 'assets/images/slime-monster.jpeg',
-        2: 'assets/images/goblin-monster.jpeg',
-        3: 'assets/images/skeleton-monster.jpeg',
-        4: 'assets/images/orc-monster.jpeg',
-        5: 'assets/images/darkknight-monster.jpeg',
-        6: 'assets/images/shadowmage-monster.jpeg',
-        7: 'assets/images/dragon-monster.jpeg',
-        8: 'assets/images/demonlord-monster.jpeg',
-        9: 'assets/images/boss-monster.png'
+        1: 'assets/images/monsters/slime.png',
+        2: 'assets/images/monsters/bat.png',
+        3: 'assets/images/monsters/skeleton_mage.png',
+        4: 'assets/images/monsters/wolf.png',
+        5: 'assets/images/castle-guard.jpeg',
+        6: 'assets/images/monsters/skeleton_mage.png',
+        7: 'assets/images/monsters/dragon.png',
+        8: 'assets/images/monsters/skeleton_mage.png',
+        9: 'assets/images/demon-boss.jpeg'
       };
       document.getElementById('monsterImg').src = monsterImages[stage.id] || 'assets/images/slime-monster.jpeg';
       document.getElementById('monsterName').textContent = stage.name;
       document.getElementById('monsterCard').classList.toggle('boss', battleState.isBoss);
+      document.getElementById('monsterCard').classList.remove('monster-death');
+      document.getElementById('monsterCard').style.display = '';
+      document.getElementById('monsterCard').style.opacity = '1';
+      document.getElementById('monsterCard').style.transform = 'scale(1)';
+      document.getElementById('monsterCard').style.transition = '';
       
       // Apply stage-themed background
       const arena = document.getElementById('battleArena');
@@ -4921,394 +6033,10 @@
       if (banner) {
         banner.style.borderColor = stage.accent;
         banner.style.background = `linear-gradient(${stage.color}, ${stage.accent})`;
+        banner.style.display = 'block';
       }
       
       updateMonsterHpBar();
-
-      battleState.combo = 0;
-      updateComboDisplay();
-    }
-
-    function updateMonsterHpBar() {
-      const pct = (battleState.monsterHp / battleState.monsterMaxHp) * 100;
-      const fill = document.getElementById('monsterHpFill');
-      fill.style.width = pct + '%';
-      fill.className = 'hp-bar-fill';
-      if (pct > 60) fill.classList.add('high');
-      else if (pct > 30) fill.classList.add('medium');
-      else fill.classList.add('low');
-      document.getElementById('monsterHpText').textContent = `${battleState.monsterHp} / ${battleState.monsterMaxHp} HP`;
-    }
-
-    function updateHeroHpBar() {
-      const pct = (battleState.heroHp / battleState.heroMaxHp) * 100;
-      const fill = document.getElementById('heroHpFill');
-      fill.style.width = pct + '%';
-      fill.className = 'hero-hp-fill';
-      if (pct <= 30) fill.classList.add('low');
-      document.getElementById('heroHpText').textContent = `${battleState.heroHp} / ${battleState.heroMaxHp} HP`;
-    }
-
-    // updateComboDisplay moved to end of script (line ~6629)
-
-    // ========== NEW: 題目類型系統 ==========
-    const questionTypes = ['normal', 'missing', 'application'];
-    
-    function generateBattleQuestion() {
-      // Clear any existing timer
-      if (battleState.battleTimerInterval) {
-        clearInterval(battleState.battleTimerInterval);
-      }
-      
-      // Record start time for speed calculation
-      battleState.answerStartTime = Date.now();
-      
-      // Use stage-based question generation if stage is set
-      if (battleState.currentStage) {
-        const stageQuestion = generateStageQuestion(battleState.currentStage);
-        document.getElementById('battleQuestion').innerHTML = stageQuestion.typeBadge + '<div style="margin-top:8px;font-size:1.5rem;">' + stageQuestion.questionText + '</div>';
-        battleState.battleAnswer = stageQuestion.answer;
-        battleState.questionType = stageQuestion.table ? 'normal' : 'missing';
-        num1 = stageQuestion.table;
-        num2 = stageQuestion.num2;
-      } else {
-        // Fallback to original domain-based question generation
-        const rand = Math.random();
-        if (rand < 0.2) {
-          battleState.questionType = 'application';
-        } else if (rand < 0.5) {
-          battleState.questionType = 'missing';
-        } else {
-          battleState.questionType = 'normal';
-        }
-        
-        const ranges = { newbie: [2, 5], veteran: [2, 9], legend: [2, 12] };
-        let domainKey = battleState.domain;
-        if (!domainKey || !ranges[domainKey]) {
-          domainKey = 'newbie';
-          battleState.domain = 'newbie';
-        }
-        let [min, max] = ranges[domainKey];
-        
-        if (selectedLevel && typeof selectedLevel === 'number' && selectedLevel >= 2 && selectedLevel <= 9) {
-          num1 = selectedLevel;
-          num2 = Math.floor(Math.random() * 8) + 2;
-        } else {
-          const adaptive = applyAdaptiveToQuestion();
-          min = adaptive.min;
-          max = adaptive.max;
-          if (typeof min !== 'number' || typeof max !== 'number' || min > max) {
-            min = 2;
-            max = 5;
-          }
-          num1 = Math.floor(Math.random() * (max - min + 1)) + min;
-          num2 = Math.floor(Math.random() * (max - min + 1)) + min;
-        }
-        battleState.battleAnswer = num1 * num2;
-
-        let questionText = '';
-        let typeBadge = '';
-        
-        if (battleState.questionType === 'missing') {
-          if (Math.random() < 0.5) {
-            questionText = `${num1} × ? = ${num1 * num2}`;
-            battleState.battleAnswer = num2;
-          } else {
-            questionText = `? × ${num2} = ${num1 * num2}`;
-            battleState.battleAnswer = num1;
-          }
-          typeBadge = '<span class="question-type-badge missing">🔍 缺數題</span>';
-        } else if (battleState.questionType === 'application') {
-          const applications = [
-            `有 ${num1} 群怪物，每群 ${num2} 隻，總共幾多隻？`,
-            `每個寶箱有 ${num1} 個金幣，開咗 ${num2} 個寶箱，共幾多金幣？`,
-            `小明每秒攻擊 ${num1} 點，攻擊 ${num2} 秒，共幾多點？`
-          ];
-          questionText = applications[Math.floor(Math.random() * applications.length)];
-          typeBadge = '<span class="question-type-badge application">📖 應用題</span>';
-        } else {
-          questionText = `${num1} × ${num2} = ?`;
-          typeBadge = '<span class="question-type-badge normal">⚔️ 基礎題</span>';
-        }
-
-        document.getElementById('battleQuestion').innerHTML = typeBadge + '<div style="margin-top:8px;font-size:1.5rem;">' + questionText + '</div>';
-      }
-
-      // Start timer with stage modifier or adaptive time
-      let baseTime = getAdaptiveTimer ? getAdaptiveTimer() : 3;
-      if (battleState.currentStage) {
-        const stage = getStageData(battleState.currentStage);
-        baseTime = baseTime * stage.timerMod;
-      }
-      battleState.timeLeft = baseTime;
-      battleState.maxTime = baseTime;
-      document.getElementById('battleTimerContainer').classList.add('active');
-      document.getElementById('battleTimerFill').style.width = '100%';
-document.getElementById('battleTimerFill').classList.remove('danger', 'warning');
-        
-        // Start timer interval
-        battleState.battleTimerInterval = setInterval(() => {
-          battleState.timeLeft -= 0.1;
-          const pct = (battleState.timeLeft / battleState.maxTime) * 100;
-          document.getElementById('battleTimerFill').style.width = pct + '%';
-          document.getElementById('battleTimerText').textContent = Math.max(0, battleState.timeLeft).toFixed(1);
-          
-          const timerFill = document.getElementById('battleTimerFill');
-          const timerBar = document.querySelector('.timer-bar');
-          
-          if (pct <= 25) {
-            timerFill.classList.add('danger');
-            timerFill.classList.remove('warning');
-            if (timerBar) timerBar.classList.add('urgent');
-          } else if (pct <= 50) {
-            timerFill.classList.add('warning');
-            timerFill.classList.remove('danger');
-            if (timerBar) timerBar.classList.remove('urgent');
-          } else {
-            timerFill.classList.remove('danger', 'warning');
-            if (timerBar) timerBar.classList.remove('urgent');
-          }
-        
-        // Update accuracy text
-        const accText = document.getElementById('accuracyText');
-        if (accText) {
-          accText.textContent = Math.round(getRecentAccuracy() * 100) + '%';
-        }
-        
-        if (battleState.timeLeft <= 0) {
-          clearInterval(battleState.battleTimerInterval);
-          battleState.timeLeft = 0;
-          battleTimeUp();
-        }
-      }, 100);
-
-      const container = document.getElementById('battleOptions');
-      container.innerHTML = '';
-
-      // 根據答題模式顯示輸入框或選擇題
-      if (battleState.answerMode === 'input') {
-        // 直接輸入模式（type="tel" 觸發數字鍵盤，適合平板/手機）
-        container.innerHTML = `
-          <div style="display:flex; justify-content:center; align-items:center; gap:10px; margin:10px 0;">
-            <input type="tel" id="battleAnswerInput" class="battle-answer-input" placeholder="?" autocomplete="off" style="margin:0;">
-            <button type="button" class="battle-submit-btn" onclick="battleSubmitAnswer()">✓</button>
-          </div>
-        `;
-        const input = document.getElementById('battleAnswerInput');
-        if (input) {
-          input.focus();
-          input.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') battleSubmitAnswer();
-          });
-          input.addEventListener('input', () => {
-            input.value = input.value.replace(/[^0-9]/g, '');
-          });
-        }
-      } else {
-        // 選擇題模式（3選1，適合觸控）
-        showChoiceOptions(battleState.battleAnswer);
-      }
-    }
-
-    function battleTimeUp() {
-      wrong++;
-      streak = 0;
-      streakForLevel = 0;
-      battleState.combo = 0;
-      updateComboDisplay();
-      
-      document.getElementById('battleOptions').querySelectorAll('.battle-option').forEach(b => b.disabled = true);
-      
-      showDamageNumber(0, false, false, true); // Show timeout indicator
-      
-      SoundManager.play('wrong');
-      heroTakeDamage();
-      
-      setTimeout(() => {
-        document.getElementById('battleOptions').querySelectorAll('.battle-option').forEach(b => b.disabled = false);
-        generateBattleQuestion();
-      }, 1000);
-    }
-
-    // 答題模式切換
-    function setAnswerMode(mode) {
-      battleState.answerMode = mode;
-      document.getElementById('modeInputBtn').classList.toggle('active', mode === 'input');
-      document.getElementById('modeChoiceBtn').classList.toggle('active', mode === 'choice');
-      if (battleState.active && battleState.inBattle) {
-        if (battleState.battleTimerInterval) {
-          clearInterval(battleState.battleTimerInterval);
-          battleState.battleTimerInterval = null;
-        }
-        generateBattleQuestion();
-      }
-    }
-
-    // 顯示選擇題選項（3選1，答案範圍優化）
-    function showChoiceOptions(answer) {
-      const container = document.getElementById('battleOptions');
-      container.innerHTML = '';
-      const optionCount = 3;
-      const options = [answer];
-      
-      // 生成接近答案的干擾項（±15-30%範圍內）
-      while (options.length < optionCount) {
-        const offset = Math.floor(answer * (0.15 + Math.random() * 0.25));
-        const r = Math.random() < 0.5 ? answer - offset : answer + offset;
-        const finalR = Math.max(1, Math.min(r, answer * 1.5)); // 限制範圍
-        if (!options.includes(finalR)) options.push(finalR);
-      }
-      options.sort(() => Math.random() - 0.5);
-      options.forEach(opt => {
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = 'battle-option';
-        btn.textContent = opt;
-        btn.onclick = () => battleCheckAnswer(opt, btn);
-        container.appendChild(btn);
-      });
-    }
-
-    function updateSpeedMultiplierDisplay() {
-      document.getElementById('speedMultiplier').textContent = '1.0x';
-    }
-
-    function getSpeedMultiplier() {
-      const elapsed = (Date.now() - battleState.answerStartTime) / 1000;
-      let multiplier = 1.5 - (elapsed / 3.0) * 0.7;
-      return Math.max(0.8, Math.min(1.5, multiplier));
-    }
-
-    function numpadInput(num) {
-      let input = document.getElementById('battleAnswerInput');
-
-      if (!input) {
-        const container = document.getElementById('battleOptions');
-        if (container) {
-          container.innerHTML = `
-            <div style="display:flex; justify-content:center; align-items:center; gap:10px; margin:10px 0;">
-              <input type="tel" id="battleAnswerInput" class="battle-answer-input" placeholder="?" autocomplete="off" style="margin:0;">
-              <button type="button" class="battle-submit-btn" onclick="battleSubmitAnswer()">✓</button>
-            </div>
-          `;
-          input = document.getElementById('battleAnswerInput');
-        }
-      }
-
-      if (!input) {
-        return;
-      }
-
-      if (num === 'C') {
-        input.value = '';
-      } else if (num === 'E') {
-        battleSubmitAnswer();
-      } else {
-        input.value += num;
-      }
-    }
-
-    function battleSubmitAnswer() {
-      // Stop the timer
-      if (battleState.battleTimerInterval) {
-        clearInterval(battleState.battleTimerInterval);
-      }
-      
-      const input = document.getElementById('battleAnswerInput');
-      const val = parseInt(input.value);
-      if (isNaN(val)) return;
-
-      total++;
-      const container = document.getElementById('battleOptions');
-      container.querySelectorAll('.battle-option').forEach(b => b.disabled = true);
-      input.disabled = true;
-
-      if (val === battleState.battleAnswer) {
-        correct++;
-        trackCorrect(num1, num2);
-        streak++;
-        battleState.combo++;
-        updateComboDisplay();
-        updateAdaptiveState(true);
-        updateAdaptiveUI();
-
-        const speedMult = getSpeedMultiplier();
-        const { damage, isCrit } = calculateDamage(speedMult);
-        battleState.monsterHp = Math.max(0, battleState.monsterHp - damage);
-
-        showDamageNumber(damage, isCrit, false);
-
-        const monsterCard = document.getElementById('monsterCard');
-        monsterCard.classList.add('monster-hit');
-        setTimeout(() => monsterCard.classList.remove('monster-hit'), 400);
-
-        const rect = monsterCard.getBoundingClientRect();
-        const particleType = isCrit ? 'crit' : 'hit';
-        spawnParticles(rect.left + rect.width/2, rect.top + rect.height/2, particleType, isCrit ? 12 : 6);
-
-        // Accumulate shield
-        if (battleState.combo >= 3) {
-          battleState.shield = Math.min(battleState.shield + 1, 5);
-          updateShieldDisplay();
-          showShieldGain();
-        }
-
-        // Magic Burst
-        if (battleState.combo >= 5 && battleState.combo % 5 === 0) {
-          showComboMilestone(battleState.combo);
-          triggerMagicBurst();
-          if (battleState.combo >= 10) updateDailyProgress('combo', 1);
-        }
-
-        // Add experience
-        addHeroExp(10 + battleState.combo * 2);
-
-        updateMonsterHpBar();
-
-        if (battleState.monsterHp <= 0) {
-          if (isCrit) {
-            SoundManager.play('crit');
-            if (heroes[battleState.heroKey].passive === 'critBoost') {
-              const dmgEls = document.querySelectorAll('.damage-number');
-              const lastDmg = dmgEls[dmgEls.length - 1];
-              if (lastDmg) lastDmg.classList.add('crit-magic');
-            }
-          }
-          SoundManager.play('victory');
-          triggerVictoryCelebration();
-          monsterDefeated();
-        } else {
-          if (isCrit) {
-            SoundManager.play('crit');
-          }
-          else SoundManager.play('correct');
-          setTimeout(() => {
-            generateBattleQuestion();
-          }, 600);
-        }
-      } else {
-        wrong++;
-        streak = 0;
-        streakForLevel = 0;
-        battleState.combo = 0;
-        updateComboDisplay();
-        updateAdaptiveState(false);
-        updateAdaptiveUI();
-
-        input.style.borderColor = 'var(--danger)';
-        SoundManager.play('wrong');
-        trackError(num1, num2);
-
-        // 顯示正確答案
-        const correctAnswer = battleState.battleAnswer;
-        const questionEl = document.getElementById('battleQuestion');
-        questionEl.innerHTML += `<div class="correct-answer-hint">✓ 正確答案：${correctAnswer}</div>`;
-
-        setTimeout(() => heroTakeDamage(), 400);
-        setTimeout(() => {
-          generateBattleQuestion();
-        }, 1500); // 給多啲時間睇正確答案
-      }
     }
 
     function trackError(n1, n2) {
@@ -5336,7 +6064,7 @@ document.getElementById('battleTimerFill').classList.remove('danger', 'warning')
         const log = JSON.parse(localStorage.getItem('mulErrorLog') || '{}');
         const weakPairs = Object.entries(log)
           .filter(([k, v]) => v.wrong >= 3 && v.wrong > v.correct)
-          .sort((a, b) => (b[1].wrong / (b[1].correct + b[1].wrong)) - (a[1].wrong / (a[1].correct + a[1].wrong)))
+          .sort((a, b) => (b[1].wrong / (b[1].correct + b[1].wrong)) - (a[1].wrong / (a[1].correct + b[1].wrong)))
           .slice(0, 3);
         
         const banner = document.getElementById('suggestionBanner');
@@ -5348,9 +6076,9 @@ document.getElementById('battleTimerFill').classList.remove('danger', 'warning')
             const [n1, n2] = k.split('x');
             return `<button class="suggestion-btn" onclick="startFocusedPractice(${n1}, ${n2})">${n1}×${n2}</button>`;
           }).join('');
-          banner.classList.add('active');
+          if (banner) banner.classList.add('active');
         } else {
-          banner.classList.remove('active');
+          if (banner) banner.classList.remove('active');
         }
       } catch(e) {}
     }
@@ -5386,9 +6114,271 @@ document.getElementById('battleTimerFill').classList.remove('danger', 'warning')
 
     function showShieldGain() {
       const shieldEl = document.getElementById('shieldDisplay');
-      shieldEl.style.animation = 'none';
-      shieldEl.offsetHeight;
-      shieldEl.style.animation = 'comboPopIn 0.4s ease';
+      if (!shieldEl) return;
+      try {
+        shieldEl.style.animation = 'none';
+        shieldEl.offsetHeight;
+        shieldEl.style.animation = 'comboPopIn 0.4s ease';
+      } catch(e) {}
+    }
+
+    // ========== MANA SYSTEM ==========
+    function updateManaDisplay() {
+      const manaBar = document.getElementById('manaBar');
+      const manaValue = document.getElementById('manaValue');
+      if (manaBar) {
+        const fillPct = (battleState.mana / battleState.maxMana) * 100;
+        manaBar.style.width = fillPct + '%';
+      }
+      if (manaValue) {
+        manaValue.textContent = Math.floor(battleState.mana);
+      }
+    }
+
+    function consumeMana(amount) {
+      if (battleState.mana >= amount) {
+        battleState.mana -= amount;
+        updateManaDisplay();
+        return true;
+      }
+      return false;
+    }
+
+    function isSkillOnCooldown(skillKey) {
+      return battleState.skillCooldowns[skillKey] > 0;
+    }
+
+    function setSkillCooldown(skillKey, turns) {
+      battleState.skillCooldowns[skillKey] = turns;
+    }
+
+    function decrementCooldowns() {
+      Object.keys(battleState.skillCooldowns).forEach(key => {
+        if (battleState.skillCooldowns[key] > 0) {
+          battleState.skillCooldowns[key]--;
+        }
+      });
+    }
+
+    function processActiveEffects() {
+      battleState.activeEffects = battleState.activeEffects.filter(effect => {
+        if (effect.turnsRemaining !== undefined) {
+          effect.turnsRemaining--;
+          if (effect.turnsRemaining <= 0) {
+            removeEffect(effect);
+            return false;
+          }
+        }
+        return true;
+      });
+    }
+
+    function addActiveEffect(effect) {
+      battleState.activeEffects.push(effect);
+    }
+
+    function removeEffect(effect) {
+      if (effect.type === 'divine_shield') {
+        // Divine shield ended
+      }
+    }
+
+    function useSkill(skillKey) {
+      const heroKey = battleState.heroKey;
+      const skill = heroSkills[heroKey][skillKey];
+      if (!skill) return { success: false, message: '技能不存在' };
+      if (battleState.heroLevel < skill.level) return { success: false, message: `需要等級${skill.level}` };
+      if (isSkillOnCooldown(skillKey)) return { success: false, message: '冷卻中' };
+      if (!consumeMana(skill.manaCost)) return { success: false, message: '法力不足' };
+
+      setSkillCooldown(skillKey, skill.cooldown);
+      let result = applySkillEffect(skill);
+      if (result.success) {
+        SoundManager.play('correct');
+      }
+      return result;
+    }
+
+    function applySkillEffect(skill) {
+      switch(skill.effect) {
+        case 'shield_block':
+          battleState.shield = Math.min(battleState.shield + 1, 5);
+          updateShieldDisplay();
+          return { success: true, message: '+1護盾' };
+
+        case 'challenge':
+          addActiveEffect({ type: 'challenge', turnsRemaining: 3 });
+          return { success: true, message: '挑釁成功' };
+
+        case 'bulwark':
+          const bulwarkShield = Math.floor(battleState.heroMaxHp * 0.2);
+          battleState.shield = Math.min(battleState.shield + bulwarkShield, 10);
+          updateShieldDisplay();
+          return { success: true, message: `+${bulwarkShield}護盾` };
+
+        case 'last_stand':
+          addActiveEffect({ type: 'last_stand', turnsRemaining: 99 });
+          return { success: true, message: '背水一戰啟動' };
+
+        case 'divine_shield':
+          addActiveEffect({ type: 'divine_shield', turnsRemaining: 1 });
+          return { success: true, message: '無敵1回合' };
+
+        case 'arcane_bolt':
+          const { damage, isCrit } = calculateDamage(1.5);
+          battleState.monsterHp = Math.max(0, battleState.monsterHp - damage);
+          updateMonsterHpBar();
+          showDamageNumber(damage, isCrit, false);
+          return { success: true, message: `${damage}伤害` };
+
+        case 'mana_surge':
+          battleState.mana = Math.min(battleState.maxMana, battleState.mana + Math.floor(battleState.maxMana * 0.5));
+          updateManaDisplay();
+          return { success: true, message: '法力恢复' };
+
+        case 'arcane_barrage':
+          for (let i = 0; i < 3; i++) {
+            const { damage, isCrit } = calculateDamage(0.5);
+            battleState.monsterHp = Math.max(0, battleState.monsterHp - damage);
+          }
+          updateMonsterHpBar();
+          return { success: true, message: '奥术轰击' };
+
+        case 'arcane_mastery':
+          addActiveEffect({ type: 'arcane_mastery', multiplier: 3.0, turnsRemaining: 1 });
+          return { success: true, message: '下次300%伤害' };
+
+        case 'wild_swing':
+          const wsDamage = calculateDamage(1.2);
+          battleState.monsterHp = Math.max(0, battleState.monsterHp - wsDamage.damage);
+          battleState.heroHp = Math.max(1, battleState.heroHp - 5);
+          updateMonsterHpBar();
+          updateHeroHpBar();
+          return { success: true, message: `${wsDamage.damage}伤害, -5HP` };
+
+        case 'rage_build':
+          battleState.rageStacks = Math.min(battleState.rageStacks + 1, 5);
+          return { success: true, message: `怒火+1 (${battleState.rageStacks}/5)` };
+
+        case 'berserker_roar':
+          if (battleState.rageStacks > 0) {
+            const bonus = 1 + battleState.rageStacks * 0.25;
+            const { damage, isCrit } = calculateDamage(bonus);
+            battleState.monsterHp = Math.max(0, battleState.monsterHp - damage);
+            battleState.rageStacks = 0;
+            updateMonsterHpBar();
+            return { success: true, message: `怒火爆发! ${damage}伤害` };
+          }
+          return { success: false, message: '没有怒火' };
+
+        case 'bloodlust':
+          addActiveEffect({ type: 'bloodlust', turnsRemaining: 99 });
+          return { success: true, message: '血祭啟動' };
+
+        case 'undying_rage':
+          addActiveEffect({ type: 'undying_rage', used: false, turnsRemaining: 99 });
+          return { success: true, message: '不死怒火啟動' };
+
+        default:
+          return { success: false, message: '技能效果未知' };
+      }
+    }
+
+    // ========== LOOT DROP SYSTEM ==========
+    const lootTables = {
+      common: [
+        { type: 'health_potion', name: '生命藥水', chance: 0.25 },
+        { type: 'gold', name: '小金袋', amount: 15, chance: 0.50 },
+        { type: 'exp_scroll', name: '經驗卷軸', chance: 0.25 }
+      ],
+      uncommon: [
+        { type: 'health_potion', name: '生命藥水x2', chance: 0.30 },
+        { type: 'gold', name: '中金袋', amount: 30, chance: 0.40 },
+        { type: 'speed_scroll', name: '速度卷軸', chance: 0.30 }
+      ],
+      rare: [
+        { type: 'mana_potion', name: '法力藥水', chance: 0.30 },
+        { type: 'gold', name: '大金袋', amount: 60, chance: 0.40 },
+        { type: 'skill_fragment', name: '技能碎片', chance: 0.30 }
+      ],
+      epic: [
+        { type: 'equipment', name: '傳說裝備', chance: 0.50 },
+        { type: 'exp_scroll_large', name: '大經驗卷軸', chance: 0.30 },
+        { type: 'hero_soul', name: '英雄魂石', chance: 0.20 }
+      ]
+    };
+
+    function rollLoot(table) {
+      const roll = Math.random();
+      let cumulative = 0;
+      for (const item of table) {
+        cumulative += item.chance;
+        if (roll < cumulative) {
+          return item;
+        }
+      }
+      return table[0];
+    }
+
+    function processLootDrops() {
+      const drops = [];
+      const isBoss = battleState.isBoss;
+      const stage = battleState.currentStage ? getStageData(battleState.currentStage) : null;
+      const hpScale = stage ? stage.hpScale : 1.0;
+
+      // Determine rarity tier based on monster/stage
+      let tier = 'common';
+      if (isBoss) tier = 'epic';
+      else if (hpScale >= 1.8) tier = 'rare';
+      else if (hpScale >= 1.3) tier = 'uncommon';
+
+      // Drop chance: Common 60%, Uncommon 40%, Rare 25%, Epic 10% (boss)
+      const dropChance = tier === 'epic' ? 1.0 : tier === 'rare' ? 0.25 : tier === 'uncommon' ? 0.40 : 0.60;
+
+      if (Math.random() < dropChance) {
+        const drop = rollLoot(lootTables[tier]);
+        drops.push(drop);
+        showLootDropNotification(drop);
+      }
+
+      return drops;
+    }
+
+    function showLootDropNotification(drop) {
+      const popup = document.createElement('div');
+      popup.className = 'battle-reward-popup active';
+      popup.style.borderColor = '#9b59b6';
+      popup.innerHTML = `
+        <h3 style="color:#9b59b6">🎁 掉落物品！</h3>
+        <div class="reward-row">
+          <span class="reward-icon">🎁</span>
+          <span class="reward-value">${drop.name}</span>
+        </div>
+      `;
+      document.body.appendChild(popup);
+      setTimeout(() => {
+        popup.classList.remove('active');
+        setTimeout(() => popup.remove(), 300);
+      }, 2000);
+    }
+
+    function checkUndyingRage() {
+      const effect = battleState.activeEffects.find(e => e.type === 'undying_rage');
+      if (effect && !effect.used && battleState.heroHp <= 0) {
+        battleState.heroHp = 1;
+        effect.used = true;
+        updateHeroHpBar();
+        showDamageNumber(1, false, true);
+        const el = document.createElement('div');
+        el.className = 'damage-number crit';
+        el.textContent = '不死怒火!';
+        el.style.left = '50%';
+        el.style.top = '40%';
+        document.body.appendChild(el);
+        setTimeout(() => el.remove(), 1500);
+        return true;
+      }
+      return false;
     }
 
     // ========== NEW: 魔法大爆發 ==========
@@ -5401,9 +6391,147 @@ document.getElementById('battleTimerFill').classList.remove('danger', 'warning')
       setTimeout(() => burst.classList.remove('active'), 1000);
     }
 
-    // ========== Combo Milestone Celebration ==========
+    function updateArcaneBar() {
+      const arcaneBar = document.getElementById('arcaneBar');
+      if (!arcaneBar) return;
+      const maxCombo = 20;
+      const fillPct = Math.min((battleState.combo / maxCombo) * 100, 100);
+      arcaneBar.style.width = fillPct + '%';
+    }
+
+    // ========== ENERGY BAR (Ultimate System) ==========
+    function updateEnergyBar() {
+      const energyFill = document.getElementById('energyFill');
+      const energyText = document.getElementById('shieldEnergyValue');
+      const ultimateBtn = document.getElementById('ultimateBtn');
+      if (energyFill) {
+        energyFill.style.width = battleState.energy + '%';
+        // Color transitions: purple → orange → red pulse
+        if (battleState.energy >= 100) {
+          energyFill.style.background = 'linear-gradient(90deg, #e74c3c, #ff6b6b)';
+          energyFill.classList.add('energy-pulse');
+        } else if (battleState.energy >= 50) {
+          energyFill.style.background = 'linear-gradient(90deg, #f39c12, #e67e22)';
+          energyFill.classList.remove('energy-pulse');
+        } else {
+          energyFill.style.background = 'linear-gradient(90deg, #8b5cf6, #a855f7)';
+          energyFill.classList.remove('energy-pulse');
+        }
+      }
+      if (energyText) energyText.textContent = battleState.energy;
+      if (ultimateBtn) {
+        if (battleState.ultimateReady) {
+          ultimateBtn.classList.add('ultimate-ready');
+          ultimateBtn.disabled = false;
+          ultimateBtn.textContent = '⚡ 大招就緒！';
+        } else {
+          ultimateBtn.classList.remove('ultimate-ready');
+          ultimateBtn.disabled = true;
+          ultimateBtn.textContent = `⚡ 大招 (${battleState.energy}/100)`;
+        }
+      }
+    }
+
+    function showUltimateReady() {
+      // Flash notification when ultimate is ready
+      const notif = document.createElement('div');
+      notif.style.cssText = `
+        position: fixed; top: 20%; left: 50%; transform: translateX(-50%);
+        background: linear-gradient(135deg, #e74c3c, #ff6b6b);
+        color: #fff; padding: 12px 28px; border-radius: 30px;
+        font-size: 1.2rem; font-weight: bold; z-index: 600;
+        box-shadow: 0 0 30px rgba(231,76,60,0.8);
+        animation: ultimateReadyAnim 2s ease-out forwards;
+        pointer-events: none;
+      `;
+      notif.textContent = '⚡ 大招就緒！';
+      document.body.appendChild(notif);
+      setTimeout(() => notif.remove(), 2000);
+      SoundManager.play('milestone');
+    }
+
+    function releaseUltimate() {
+      if (!battleState.ultimateReady || battleState.energy < 100) return;
+      battleState.energy = 0;
+      battleState.ultimateReady = false;
+      battleState.combo = 0;
+      updateEnergyBar();
+      updateComboDisplay();
+      updateArcaneBar();
+
+      const heroKey = battleState.heroKey;
+      const { damage, isCrit } = calculateDamage(3.0); // 3x base damage ultimate
+      battleState.monsterHp = Math.max(0, battleState.monsterHp - damage);
+
+      // Visual effects
+      showScreenFlash('ultimate');
+      spawnParticles(window.innerWidth/2, window.innerHeight/2, 'ultimate', 30);
+      triggerHeroAttackAnimation();
+      showDamageNumber(damage, isCrit, true); // true = big damage
+      updateMonsterHpBar();
+
+      SoundManager.play('victory');
+
+      // Check if monster defeated
+      if (battleState.monsterHp <= 0) {
+        handleMonsterDefeated();
+      } else {
+        setTimeout(() => {
+          if (battleState.inBattle) {
+            generateBattleQuestion();
+          }
+        }, 1200);
+      }
+    }
+
+    // ========== COMBO MILESTONE & BOSS PHASE ==========
+    function checkBossPhaseTransition() {
+      if (!battleState.isBoss) return;
+      const hpPercent = battleState.monsterHp / battleState.monsterMaxHp;
+      const prevPhase = battleState.bossPhase;
+      if (prevPhase < 3 && hpPercent <= 0.66 && prevPhase === 1) {
+        battleState.bossPhase = 2;
+        triggerBossPhaseTransition(2);
+      } else if (prevPhase < 3 && hpPercent <= 0.33 && prevPhase === 2) {
+        battleState.bossPhase = 3;
+        triggerBossPhaseTransition(3);
+      }
+    }
+
+    function triggerBossPhaseTransition(phase) {
+      const phaseNames = { 2: '第二階段：狂暴！', 3: '最終階段：毀滅！' };
+      const colors = { 2: '#ff6b35', 3: '#ff0000' };
+
+      screenShake();
+      showScreenFlash('boss');
+      spawnParticles(window.innerWidth/2, window.innerHeight/3, 'fire', 40);
+
+      const notif = document.createElement('div');
+      notif.style.cssText = `
+        position: fixed; top: 25%; left: 50%; transform: translateX(-50%);
+        background: linear-gradient(135deg, ${colors[phase]}, #ff8c00);
+        color: #fff; padding: 16px 40px; border-radius: 20px;
+        font-size: 1.5rem; font-weight: bold; z-index: 600;
+        box-shadow: 0 0 40px rgba(255,107,53,0.9);
+        animation: bossGlow 0.5s ease infinite;
+        pointer-events: none;
+      `;
+      notif.textContent = '⚠️ ' + phaseNames[phase];
+      document.body.appendChild(notif);
+      setTimeout(() => notif.remove(), 2500);
+
+      const monsterCard = document.getElementById('monsterCard');
+      if (monsterCard) {
+        monsterCard.style.filter = `drop-shadow(0 0 20px ${colors[phase]})`;
+        setTimeout(() => { monsterCard.style.filter = ''; }, 2000);
+      }
+
+      SoundManager.play('milestone');
+      updateMonsterHpBar();
+    }
+
     function showComboMilestone(combo) {
-      const milestones = { 5: '🔥', 10: '✨', 15: '💫', 20: '🌟' };
+      const milestones = { 5: '🔥', 10: '✨', 15: '💫', 20: '🌟', 30: '🌟', 50: '🔥🔥' };
       if (!milestones[combo]) return;
 
       const notif = document.createElement('div');
@@ -5504,20 +6632,33 @@ document.getElementById('battleTimerFill').classList.remove('danger', 'warning')
 
 
     // ========== NEW: Stage Progression System ==========
+    // Plan spec: Stage 1=2的乘法, Stage 2=9的乘法, Stage 3=2-5混合, Stage 4=6-9混合, Stage 5=2-9混合, Stage 6=10的乘法
     const stages = [
-      { id: 1, table: 2, name: '森林哨兵', monster: 'slime', timerMod: 1.5, hpScale: 1.0, questionTypes: ['direct'], unlocked: true, completed: false, stars: 0, color: '#4ade80', accent: '#22c55e' },
-      { id: 2, table: 3, name: '哥布林', monster: 'goblin', timerMod: 1.0, hpScale: 1.1, questionTypes: ['direct'], unlocked: false, completed: false, stars: 0, color: '#60a5fa', accent: '#3b82f6' },
-      { id: 3, table: 4, name: '骸骨兵', monster: 'skeleton', timerMod: 1.0, hpScale: 1.2, questionTypes: ['direct', 'missing'], unlocked: false, completed: false, stars: 0, color: '#a1a1aa', accent: '#71717a' },
-      { id: 4, table: 5, name: '獸人戰士', monster: 'orc', timerMod: 0.95, hpScale: 1.3, questionTypes: ['direct', 'missing'], unlocked: false, completed: false, stars: 0, color: '#f97316', accent: '#ea580c' },
-      { id: 5, table: 6, name: '黑暗騎士', monster: 'darkknight', timerMod: 0.95, hpScale: 1.4, questionTypes: ['direct', 'missing'], unlocked: false, completed: false, stars: 0, color: '#6366f1', accent: '#4f46e5' },
-      { id: 6, table: 7, name: '暗影法師', monster: 'shadowmage', timerMod: 0.90, hpScale: 1.5, questionTypes: ['direct', 'missing', 'application'], unlocked: false, completed: false, stars: 0, color: '#8b5cf6', accent: '#7c3aed' },
-      { id: 7, table: 8, name: '幼龍', monster: 'dragon', timerMod: 0.90, hpScale: 1.6, questionTypes: ['direct', 'missing', 'application'], unlocked: false, completed: false, stars: 0, color: '#ef4444', accent: '#dc2626' },
-      { id: 8, table: 9, name: '惡魔領主', monster: 'demonlord', timerMod: 0.85, hpScale: 1.8, questionTypes: ['direct', 'missing', 'application'], unlocked: false, completed: false, stars: 0, color: '#dc2626', accent: '#b91c1c' },
-      { id: 9, table: 10, name: '深淵魔王', monster: 'boss', timerMod: 0.85, hpScale: 2.5, questionTypes: ['direct', 'missing', 'application'], unlocked: false, completed: false, stars: 0, color: '#fbbf24', accent: '#f59e0b', isBoss: true }
+      { id: 1, tableRange: [2], name: '森林哨兵', monster: 'slime', timerMod: 1.0, hpScale: 1.0, questionTypes: ['direct'], unlocked: true, completed: false, stars: 0, color: '#4ade80', accent: '#22c55e' },
+      { id: 2, tableRange: [9], name: '哥布林', monster: 'goblin', timerMod: 1.0, hpScale: 1.1, questionTypes: ['direct'], unlocked: true, completed: false, stars: 0, color: '#60a5fa', accent: '#3b82f6' },
+      { id: 3, tableRange: [2, 3, 4, 5], name: '骸骨兵', monster: 'skeleton', timerMod: 1.0, hpScale: 1.2, questionTypes: ['direct', 'missing'], unlocked: true, completed: false, stars: 0, color: '#a1a1aa', accent: '#71717a' },
+      { id: 4, tableRange: [6, 7, 8, 9], name: '獸人戰士', monster: 'orc', timerMod: 1.0, hpScale: 1.3, questionTypes: ['direct', 'missing'], unlocked: true, completed: false, stars: 0, color: '#f97316', accent: '#ea580c' },
+      { id: 5, tableRange: [2, 3, 4, 5, 6, 7, 8, 9], name: '黑暗騎士', monster: 'darkknight', timerMod: 1.0, hpScale: 1.4, questionTypes: ['direct', 'missing'], unlocked: true, completed: false, stars: 0, color: '#6366f1', accent: '#4f46e5' },
+      { id: 6, tableRange: [10], name: '暗影法師', monster: 'shadowmage', timerMod: 1.0, hpScale: 1.5, questionTypes: ['direct', 'missing', 'application'], unlocked: true, completed: false, stars: 0, color: '#8b5cf6', accent: '#7c3aed' },
+      { id: 7, tableRange: [2, 3, 4, 5, 6, 7, 8, 9, 10], name: '幼龍', monster: 'dragon', timerMod: 1.0, hpScale: 1.6, questionTypes: ['direct', 'missing', 'application'], unlocked: true, completed: false, stars: 0, color: '#ef4444', accent: '#dc2626' },
+      { id: 8, tableRange: [2, 3, 4, 5, 6, 7, 8, 9, 10], name: '惡魔領主', monster: 'demonlord', timerMod: 1.0, hpScale: 1.8, questionTypes: ['direct', 'missing', 'application'], unlocked: true, completed: false, stars: 0, color: '#dc2626', accent: '#b91c1c' },
+      { id: 9, tableRange: [2, 3, 4, 5, 6, 7, 8, 9, 10], name: '深淵魔王', monster: 'boss', timerMod: 1.0, hpScale: 2.5, questionTypes: ['direct', 'missing', 'application'], unlocked: true, completed: false, stars: 0, color: '#fbbf24', accent: '#f59e0b', isBoss: true }
     ];
+
+    // Helper to get a random table from stage's tableRange
+    function getRandomTableFromStage(stage) {
+      const range = stage.tableRange || [stage.table || 2];
+      return range[Math.floor(Math.random() * range.length)];
+    }
 
     function getStageData(stageId) {
       return stages.find(s => s.id === stageId) || stages[0];
+    }
+
+    // Helper to find stage ID that matches a specific table number
+    function getStageIdForTable(table) {
+      const stage = stages.find(s => s.tableRange && s.tableRange.includes(table));
+      return stage ? stage.id : 1;
     }
 
     function calculateStageHP(baseHP, stageId) {
@@ -5543,7 +6684,8 @@ document.getElementById('battleTimerFill').classList.remove('danger', 'warning')
         saveStageProgress();
       }
       if (currentStageId === 8) {
-        const totalStars = stages.slice(0, 8).reduce((sum, s) => sum + s.stars, 0);
+        // Check stars from stages 1-7 (index 0-6) before unlocking boss (stage 9, index 8)
+        const totalStars = stages.slice(0, currentStageId - 1).reduce((sum, s) => sum + s.stars, 0);
         if (totalStars >= 15) {
           stages[8].unlocked = true;
           saveStageProgress();
@@ -5575,7 +6717,7 @@ document.getElementById('battleTimerFill').classList.remove('danger', 'warning')
 
     function generateStageQuestion(stageId) {
       const stage = getStageData(stageId);
-      const table = stage.table;
+      const table = getRandomTableFromStage(stage);
       const num2 = Math.floor(Math.random() * 9) + 2;
       
       let questionType = 'normal';
@@ -5624,56 +6766,56 @@ document.getElementById('battleTimerFill').classList.remove('danger', 'warning')
     loadStageProgress();
 
     // ========== NEW: Stage Map System ==========
-    const worlds = [
+const worlds = [
       {
         id: 'newbie',
-        name: '🌲 魔法森林',
+        name: '魔法森林',
         bg: 'assets/images/backgrounds/forest.png',
         levels: [
           { id: 1, table: 2, unlocked: true, completed: false, stars: 0 },
-          { id: 2, table: 3, unlocked: false, completed: false, stars: 0 },
-          { id: 3, table: 4, unlocked: false, completed: false, stars: 0 },
-          { id: 4, table: 5, unlocked: false, completed: false, stars: 0 },
-          { id: 5, table: 0, unlocked: false, completed: false, stars: 0 }
+          { id: 2, table: 3, unlocked: true, completed: false, stars: 0 },
+          { id: 3, table: 4, unlocked: true, completed: false, stars: 0 },
+          { id: 4, table: 5, unlocked: true, completed: false, stars: 0 },
+          { id: 5, table: 0, unlocked: true, completed: false, stars: 0 }
         ],
-        bossUnlocked: false,
-        boss: { name: '🐸 沼澤之王', table: 0, unlocked: false, completed: false }
+        bossUnlocked: true,
+        boss: { name: '沼澤之王', table: 0, unlocked: true, completed: false }
       },
       {
         id: 'veteran',
-        name: '⛰️ 雲端山谷',
+        name: '雲端山谷',
         bg: 'assets/images/backgrounds/valley.png',
         levels: [
-          { id: 6, table: 6, unlocked: false, completed: false, stars: 0 },
-          { id: 7, table: 7, unlocked: false, completed: false, stars: 0 },
-          { id: 8, table: 8, unlocked: false, completed: false, stars: 0 },
-          { id: 9, table: 9, unlocked: false, completed: false, stars: 0 },
-          { id: 10, table: 0, unlocked: false, completed: false, stars: 0 }
+          { id: 6, table: 6, unlocked: true, completed: false, stars: 0 },
+          { id: 7, table: 7, unlocked: true, completed: false, stars: 0 },
+          { id: 8, table: 8, unlocked: true, completed: false, stars: 0 },
+          { id: 9, table: 9, unlocked: true, completed: false, stars: 0 },
+          { id: 10, table: 0, unlocked: true, completed: false, stars: 0 }
         ],
-        bossUnlocked: false,
-        boss: { name: '🦇 蝙蝠魔王', table: 0, unlocked: false, completed: false }
+        bossUnlocked: true,
+        boss: { name: '蝙蝠魔王', table: 0, unlocked: true, completed: false }
       },
       {
         id: 'legend',
-        name: '🏰 暗黑城堡',
+        name: '暗黑城堡',
         bg: 'assets/images/backgrounds/castle.png',
         levels: [
-          { id: 11, table: 11, unlocked: false, completed: false, stars: 0 },
-          { id: 12, table: 12, unlocked: false, completed: false, stars: 0 },
-          { id: 13, table: 0, unlocked: false, completed: false, stars: 0 },
-          { id: 14, table: 0, unlocked: false, completed: false, stars: 0 },
-          { id: 15, table: 0, unlocked: false, completed: false, stars: 0 }
+          { id: 11, table: 11, unlocked: true, completed: false, stars: 0 },
+          { id: 12, table: 12, unlocked: true, completed: false, stars: 0 },
+          { id: 13, table: 0, unlocked: true, completed: false, stars: 0 },
+          { id: 14, table: 0, unlocked: true, completed: false, stars: 0 },
+          { id: 15, table: 0, unlocked: true, completed: false, stars: 0 }
         ],
-        bossUnlocked: false,
-        boss: { name: '💀 骨魂魔王', table: 0, unlocked: false, completed: false }
+        bossUnlocked: true,
+        boss: { name: '骨魂魔王', table: 0, unlocked: true, completed: false }
       },
       {
         id: 'boss',
-        name: '👹 魔王廳',
+        name: '魔王廳',
         bg: 'assets/images/backgrounds/boss_room.png',
         levels: [],
-        bossUnlocked: false,
-        boss: { name: '🐉 深淵魔王', table: 0, unlocked: false, completed: false }
+        bossUnlocked: true,
+        boss: { name: '深淵魔王', table: 0, unlocked: true, completed: false }
       }
     ];
 
@@ -5690,7 +6832,14 @@ document.getElementById('battleTimerFill').classList.remove('danger', 'warning')
     }
 
     function closeStageSelector() {
-      document.getElementById('stageSelector').classList.remove('active');
+      document.getElementById('stageSelector').style.display = 'none';
+    }
+
+    function formatTableRange(tableRange) {
+      if (!tableRange || tableRange.length === 0) return '2-9 混合';
+      if (tableRange.length === 1) return `${tableRange[0]}× 乘法`;
+      if (tableRange.length <= 4) return tableRange.join(', ') + ' 混合';
+      return '2-9 混合';
     }
 
     function renderStageSelector() {
@@ -5700,20 +6849,21 @@ document.getElementById('battleTimerFill').classList.remove('danger', 'warning')
       stages.forEach(stage => {
         const btn = document.createElement('button');
         btn.className = 'stage-btn';
-        if (stage.locked) btn.classList.add('locked');
+        if (!stage.unlocked) btn.classList.add('locked');
+
         if (stage.completed) btn.classList.add('completed');
-        
+
         const starsText = stage.stars > 0 ? '⭐'.repeat(stage.stars) : '';
         btn.innerHTML = `
           <div class="stage-number" style="color:${stage.color}; font-weight:bold;">關卡 ${stage.id}</div>
           <div class="stage-name">${stage.name}</div>
           <div class="stage-stars">${starsText}</div>
-          <div class="stage-table">${stage.table}× 乘法</div>
+          <div class="stage-table">${formatTableRange(stage.tableRange)}</div>
         `;
         
         if (stage.unlocked) {
           btn.style.borderColor = stage.color;
-          btn.onclick = () => selectStage(stage.id);
+          btn.onclick = () => selectStageForBattle(stage.id);
         } else {
           btn.innerHTML += '<div style="font-size:0.7rem; color:#666;">🔒 未解鎖</div>';
         }
@@ -5725,17 +6875,49 @@ document.getElementById('battleTimerFill').classList.remove('danger', 'warning')
       document.getElementById('totalStageStars').textContent = totalStars;
     }
 
-    function selectStage(stageId) {
+    function selectStageForBattle(stageId) {
       const stage = getStageData(stageId);
       if (!stage.unlocked) return;
-      
+
       battleState.currentStage = stageId;
       currentDomain = 'newbie';
-      selectedLevel = stage.table;
-      
+      selectedLevel = null;
+
       closeStageSelector();
+      startBattle();
+    }
+
+    const levelConfig = {
+      1: { optionCount: 3, answerMode: 'choice', timerMod: 1.0 },
+      2: { optionCount: 4, answerMode: 'choice', timerMod: 1.0 },
+      3: { optionCount: 0, answerMode: 'input', timerMod: 1.0 }
+    };
+
+    function selectInputLevel(level) {
+      selectedInputLevel = level;
+      document.querySelectorAll('.level-card').forEach(card => {
+        card.classList.toggle('selected', parseInt(card.dataset.level) === level);
+      });
+      localStorage.setItem('selectedInputLevel', level);
+    }
+
+    function showLevelSelect() {
+      document.getElementById('stageSelector').style.display = 'none';
+      document.getElementById('battleStartBtnOverlay').style.display = 'none';
+      document.getElementById('levelSelectScreen').style.display = 'block';
+      const saved = localStorage.getItem('selectedInputLevel');
+      if (saved) selectInputLevel(parseInt(saved));
+    }
+
+    function showStageSelector() {
+      if (!selectedInputLevel) {
+        alert('請先選擇答題難度');
+        return;
+      }
+      document.getElementById('levelSelectScreen').style.display = 'none';
+      document.getElementById('stageSelector').style.display = 'block';
       document.getElementById('battleStartBtnOverlay').style.display = 'block';
-      showLevelUnlockNotification(stage.id);
+      renderStageSelector();
     }
 
     function closeStageMap() {
@@ -5791,7 +6973,9 @@ document.getElementById('battleTimerFill').classList.remove('danger', 'warning')
         worldEl.className = 'stage-world';
         
         const allLevelsComplete = world.levels.every(l => l.completed);
-        const isUnlocked = world.id === 'newbie' || world.levels.some(l => l.unlocked) || allLevelsComplete;
+        const worldIndex = worlds.indexOf(world);
+        const previousWorldsHaveProgress = worldIndex > 0 && worlds.slice(0, worldIndex).some(w => w.levels.some(l => l.unlocked));
+        const isUnlocked = world.id === 'newbie' || (previousWorldsHaveProgress && world.levels[0]?.unlocked) || allLevelsComplete;
         
         let levelsHTML = world.levels.map(level => {
           let cls = 'stage-level-btn';
@@ -5841,43 +7025,41 @@ document.getElementById('battleTimerFill').classList.remove('danger', 'warning')
       return false;
     }
 
-    function selectStage(worldIndex, levelId) {
+function selectStage(worldIndex, levelId) {
       const world = worlds[worldIndex];
+      if (!world) return;
       const level = world.levels.find(l => l.id === levelId);
       if (!level || !level.unlocked) return;
-      
+
       // Set domain based on world
       if (worldIndex === 0) currentDomain = 'newbie';
       else if (worldIndex === 1) currentDomain = 'veteran';
       else if (worldIndex === 2) currentDomain = 'legend';
-      
+
       // Set selected level for specific table practice
-      if (level.table > 0) {
-        selectedLevel = level.table;
-      } else {
-        selectedLevel = null; // Mixed
-      }
-      
+      // Use -1 to indicate "mixed" so we can distinguish from null
+      selectedLevel = level.table > 0 ? level.table : -1;
+
       closeStageMap();
-      document.getElementById('domainBtns').querySelectorAll('.domain-btn').forEach(b => b.classList.remove('active'));
-      document.getElementById('domainBtn' + currentDomain.charAt(0).toUpperCase() + currentDomain.slice(1))?.classList.add('active');
-      
-      // Show practice area
+
+      // Don't set battleState.currentStage - we want to use domain/level based questions
+      battleState.currentStage = null;
+
       switchMainSection('battle');
     }
 
     function selectBossStage(worldId) {
       const world = worlds.find(w => w.id === worldId);
       if (!world || !world.boss.unlocked) return;
-      
+
       currentDomain = worldId === 'boss' ? 'legend' : worldId;
       closeStageMap();
-      
-      // Start battle for boss
+
+      // Use domain-based questions, not stage-based
+      battleState.currentStage = null;
+      selectedLevel = -1; // Mixed for boss
+
       switchMainSection('battle');
-      setTimeout(() => {
-        document.getElementById('battleStartBtn').click();
-      }, 300);
     }
 
     function completeLevel(levelId, stars) {
@@ -5987,18 +7169,18 @@ document.getElementById('battleTimerFill').classList.remove('danger', 'warning')
     }
 
     function getAdaptiveTimer() {
-      // Base timer modified by difficulty
-      const baseTime = 3.0;
+      // Base timer modified by difficulty - ensure minimum 10 seconds
+      const baseTime = 10.0;
       let modifier = 0;
       
       // Doing well = less time (challenge)
-      if (battleState.currentDifficulty === 'hard') modifier = -0.5;
+      if (battleState.currentDifficulty === 'hard') modifier = -2.0;
       // Struggling = more time (support)
-      if (battleState.currentDifficulty === 'easy') modifier = +1.0;
+      if (battleState.currentDifficulty === 'easy') modifier = 0;
       // Very easy mode = even more time
-      if (battleState.difficultyLevel <= -2) modifier = +1.5;
+      if (battleState.difficultyLevel <= -2) modifier = 0;
       
-      return Math.max(2.0, baseTime + modifier);
+      return Math.max(10.0, baseTime + modifier);
     }
 
     function applyAdaptiveToQuestion() {
@@ -6497,35 +7679,25 @@ function openAchievementPanel() {
     }
 
     function showMonsterIntent(action) {
-      const intent = document.getElementById('monsterIntent');
-      const icon = document.getElementById('monsterIntentIcon');
-      const text = document.getElementById('monsterIntentText');
-      const actionText = document.getElementById('monsterActionText');
-      
       if (!action) {
-        intent.style.display = 'none';
+        showMonsterIntentUI(null, null);
         return;
       }
       
-      intent.style.display = 'flex';
-      intent.className = 'monster-intent';
-      intent.classList.remove('heal-intent', 'buff-intent');
+      let type = 'attack';
+      let text = '準備中...';
       
       if (action.type === 'attack') {
-        icon.textContent = '⚔️';
-        text.textContent = '準備攻擊 (' + action.minDmg + '-' + action.maxDmg + ')';
-        if (actionText) actionText.textContent = action.desc;
+        text = '準備攻擊 (' + action.minDmg + '-' + action.maxDmg + ')';
       } else if (action.type === 'heal') {
-        icon.textContent = '💚';
-        text.textContent = '準備修復 (+' + action.minHeal + '-' + action.maxHeal + ')';
-        intent.classList.add('heal-intent');
-        if (actionText) actionText.textContent = action.desc;
+        type = 'heal';
+        text = '準備修復 (+' + action.minHeal + '-' + action.maxHeal + ')';
       } else if (action.type === 'buff') {
-        icon.textContent = '🔥';
-        text.textContent = '準備激怒！';
-        intent.classList.add('buff-intent');
-        if (actionText) actionText.textContent = action.desc;
+        type = 'buff';
+        text = '準備激怒！';
       }
+      
+      showMonsterIntentUI(type, text);
     }
 
     function executeMonsterAction(action) {
@@ -6533,11 +7705,11 @@ function openAchievementPanel() {
       const turnIndicator = document.getElementById('monsterAttackTurn');
       
       if (action.type === 'attack') {
-        turnIndicator.classList.add('active');
+        if (turnIndicator) turnIndicator.classList.add('active');
         SoundManager.play('hurt');
         
         setTimeout(() => {
-          turnIndicator.classList.remove('active');
+          if (turnIndicator) turnIndicator.classList.remove('active');
           heroTakeDamage();
         }, 800);
         
@@ -6564,7 +7736,7 @@ function openAchievementPanel() {
         battleState.monsterHp = Math.floor(battleState.monsterHp * 1.2);
         updateMonsterHpBar();
         
-        monsterCard.classList.add('monster-enraged');
+        if (monsterCard) monsterCard.classList.add('monster-enraged');
         
         const el = document.createElement('div');
         el.className = 'damage-number';
@@ -6582,6 +7754,10 @@ function openAchievementPanel() {
 
     function prepareMonsterTurn() {
       battleState.monsterTurnCount++;
+      decrementCooldowns();
+      renderSkillButtons();
+      battleState.mana = Math.min(battleState.maxMana, battleState.mana + 10);
+      updateManaDisplay();
       
       if (battleState.monsterTurnCount >= 2 + Math.floor(Math.random() * 2)) {
         battleState.monsterTurnCount = 0;
@@ -6614,40 +7790,53 @@ function openAchievementPanel() {
       const comboEl = document.getElementById('comboDisplay');
       const countEl = document.getElementById('comboCount');
       const skillEl = document.getElementById('comboSkill');
-      
-      countEl.textContent = battleState.combo;
-      
+
+      if (countEl) countEl.textContent = battleState.combo;
+
+      if (!comboEl) return;
+
       comboEl.classList.remove('level-high', 'level-max', 'milestone-15', 'milestone-20');
-      
-      if (battleState.combo >= 20) {
+
+      if (battleState.combo >= 50) {
+        comboEl.classList.add('active', 'milestone-50');
+        if (skillEl) skillEl.textContent = '🔥🔥 毀滅級！';
+        screenShake();
+        spawnParticles(window.innerWidth/2, window.innerHeight/3, 'fire', 20);
+        setTimeout(() => comboEl.classList.remove('pulse'), 800);
+      } else if (battleState.combo >= 30) {
+        comboEl.classList.add('active', 'milestone-30');
+        if (skillEl) skillEl.textContent = '🌟 奧術毀滅';
+        comboEl.classList.add('pulse');
+        setTimeout(() => comboEl.classList.remove('pulse'), 600);
+      } else if (battleState.combo >= 20) {
         comboEl.classList.add('active', 'milestone-20');
-        skillEl.textContent = '💫 毀滅衝擊';
+        if (skillEl) skillEl.textContent = '💫 毀滅衝擊';
         comboEl.classList.add('pulse');
         setTimeout(() => comboEl.classList.remove('pulse'), 500);
       } else if (battleState.combo >= 15) {
         comboEl.classList.add('active', 'milestone-15');
-        skillEl.textContent = '⚡ 終極大招';
+        if (skillEl) skillEl.textContent = '⚡ 終極大招';
         comboEl.classList.add('pulse');
         setTimeout(() => comboEl.classList.remove('pulse'), 500);
       } else if (battleState.combo >= 10) {
         comboEl.classList.add('active', 'level-max');
-        skillEl.textContent = '🔥 魔法大爆發！';
+        if (skillEl) skillEl.textContent = '🔥 魔法大爆發！';
         comboEl.classList.add('pulse');
         setTimeout(() => comboEl.classList.remove('pulse'), 400);
       } else if (battleState.combo >= 5) {
         comboEl.classList.add('active', 'level-high');
-        skillEl.textContent = '⚡ 元素轟炸！';
+        if (skillEl) skillEl.textContent = '⚡ 元素轟炸！';
         comboEl.classList.add('pulse');
         setTimeout(() => comboEl.classList.remove('pulse'), 400);
       } else if (battleState.combo >= 3) {
         comboEl.classList.add('active');
-        skillEl.textContent = '✨ 力量凝聚';
+        if (skillEl) skillEl.textContent = '✨ 力量凝聚';
       } else {
         comboEl.classList.remove('active');
-        skillEl.textContent = '';
+        if (skillEl) skillEl.textContent = '';
       }
-      
-      if ([5, 10, 15, 20].includes(battleState.combo)) {
+
+      if ([5, 10, 15, 20, 30, 50].includes(battleState.combo)) {
         screenShake();
       }
     }
@@ -6659,9 +7848,18 @@ function openAchievementPanel() {
       return 1.0;
     }
 
+    function getSpeedMultiplier() {
+      const timeLeft = battleState.timeLeft || 0;
+      const maxTime = battleState.maxTime || 3;
+      if (timeLeft >= maxTime * 0.67) return 1.5; // < 1 second for 3s timer
+      if (timeLeft >= maxTime * 0.33) return 1.25; // 1-2 seconds
+      if (timeLeft >= 0.5) return 1.0; // 2-3 seconds
+      return 0.5; // > 3 seconds or timeout
+    }
+
     function calculateDamage(speedMult = 1.0) {
       const hero = heroes[battleState.heroKey];
-      const base = Math.floor(Math.random() * (hero.atkMax - hero.atkMin + 1)) + hero.atkMin;
+      const base = Math.floor(Math.random() * (hero.atkMax - hero.atkMin + 1)) + hero.atkMin + (battleState.heroLevel - 1) * 3;
       let critChance = hero.crit;
       if (hero.passive === 'critBoost') critChance += 0.1;
       const crit = Math.random() < critChance ? 2 : 1;
@@ -6669,14 +7867,35 @@ function openAchievementPanel() {
       if (hero.passive === 'rage' && battleState.heroHp / battleState.heroMaxHp < 0.3) {
         damage = Math.floor(damage * 1.5);
       }
+      if (hero.passive === 'block' && Math.random() < 0.15) {
+        damage = Math.floor(damage * 1.2);
+      }
+      if (hero.passive === 'evasion' && Math.random() < 0.2) {
+        damage = Math.floor(damage * 1.4); // Evasion passive = 40% bonus damage on dodge-proc
+      }
+      if (hero.passive === 'ranged' && battleState.combo >= 5) {
+        damage = Math.floor(damage * 1.25); // Ranged passive: +25% at combo>=5
+      }
       return { damage, isCrit: crit > 1 };
     }
 
+    // ========== HEALER PASSIVE: healBoost auto-heal ==========
+    function applyHealerPassive() {
+      const hero = heroes[battleState.heroKey];
+      if (hero.passive !== 'healBoost') return;
+      const healAmount = Math.floor(battleState.heroMaxHp * 0.05); // 5% max HP per correct answer
+      battleState.heroHp = Math.min(battleState.heroMaxHp, battleState.heroHp + healAmount);
+      updateHeroHpBar();
+      showFloatingText('+' + healAmount + ' HP', '#27ae60', document.getElementById('heroBattleAvatar'));
+    }
+
     function battleCheckAnswer(val, btn) {
+      console.log('DEBUG battleCheckAnswer: val=', val, 'battleAnswer=', battleState.battleAnswer);
       updateDailyProgress('questions', 1);
       // Stop the timer immediately
       if (battleState.battleTimerInterval) {
         clearInterval(battleState.battleTimerInterval);
+        battleState.battleTimerInterval = null;
       }
       
       total++;
@@ -6690,6 +7909,16 @@ function openAchievementPanel() {
         streak++;
         battleState.combo++;
         updateComboDisplay();
+        updateArcaneBar();
+
+        // === ENERGY SYSTEM: correct answer gains 10 energy ===
+        battleState.energy = Math.min(battleState.maxEnergy, battleState.energy + 10);
+        if (battleState.energy >= 100 && !battleState.ultimateReady) {
+          battleState.ultimateReady = true;
+          showUltimateReady();
+        }
+        updateEnergyBar();
+
         updateAdaptiveState(true);
         updateAdaptiveUI();
 
@@ -6697,6 +7926,11 @@ function openAchievementPanel() {
         const speedMult = getSpeedMultiplier();
         const { damage, isCrit } = calculateDamage(speedMult);
         battleState.monsterHp = Math.max(0, battleState.monsterHp - damage);
+
+        // Check boss phase transition (at 66% and 33% HP)
+        if (battleState.isBoss && battleState.bossPhase < 3) {
+          checkBossPhaseTransition();
+        }
 
         btn.classList.add('correct');
         triggerHeroAttackAnimation();
@@ -6735,6 +7969,17 @@ function openAchievementPanel() {
           if (battleState.combo >= 10) updateDailyProgress('combo', 1);
         }
 
+        // Mana management
+        battleState.mana = Math.min(battleState.maxMana, battleState.mana + 15);
+        if (heroes[battleState.heroKey].passive === 'critBoost') {
+          battleState.mana = Math.min(battleState.maxMana, battleState.mana + 2); // Mana Font passive
+        }
+        updateManaDisplay();
+        processActiveEffects();
+
+        // Healer passive: auto-heal on correct answer
+        applyHealerPassive();
+
         // Add hero experience
         addHeroExp(10 + battleState.combo * 2);
 
@@ -6757,10 +8002,16 @@ function openAchievementPanel() {
             SoundManager.play('crit');
           }
           else SoundManager.play('correct');
+          // Prepare monster turn after correct answer
+          prepareMonsterTurn();
           setTimeout(() => {
-            container.querySelectorAll('.battle-option').forEach(b => b.disabled = false);
-            generateBattleQuestion();
-          }, 600);
+            if (battleState.monsterAction && battleState.inBattle) {
+              handleMonsterTurn();
+            } else {
+              container.querySelectorAll('.battle-option').forEach(b => b.disabled = false);
+              generateBattleQuestion();
+            }
+          }, 800);
         }
       } else {
         wrong++;
@@ -6768,6 +8019,13 @@ function openAchievementPanel() {
         streakForLevel = 0;
         battleState.combo = 0;
         updateComboDisplay();
+        updateArcaneBar();
+
+        // === ENERGY SYSTEM: wrong answer drains 20 energy ===
+        battleState.energy = Math.max(0, battleState.energy - 20);
+        if (battleState.energy < 100) battleState.ultimateReady = false;
+        updateEnergyBar();
+
         updateAdaptiveState(false);
         updateAdaptiveUI();
         saveWrongAnswer(`${num1} × ${num2}`, battleState.battleAnswer, val);
@@ -6785,10 +8043,16 @@ function openAchievementPanel() {
         showScreenFlash('wrong');
         screenShake();
         heroTakeDamage();
+        // Prepare monster turn after wrong answer too
+        prepareMonsterTurn();
         setTimeout(() => {
-          container.querySelectorAll('.battle-option').forEach(b => b.disabled = false);
-          generateBattleQuestion();
-        }, 800);
+          if (battleState.monsterAction && battleState.inBattle) {
+            handleMonsterTurn();
+          } else {
+            container.querySelectorAll('.battle-option').forEach(b => b.disabled = false);
+            generateBattleQuestion();
+          }
+        }, 1000);
       }
       updateScoreDisplay();
       saveData();
@@ -6828,17 +8092,20 @@ function openAchievementPanel() {
 
     // === IMMERSIVE EFFECTS ===
     function showScreenFlash(type) {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
       const flash = document.getElementById('screenFlash');
       flash.className = 'screen-flash ' + type;
       setTimeout(() => flash.className = 'screen-flash', 1000);
     }
 
     function screenShake() {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
       document.body.classList.add('screen-shake');
       setTimeout(() => document.body.classList.remove('screen-shake'), 300);
     }
 
     function spawnParticles(x, y, type, count) {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
       const container = document.getElementById('particleContainer');
       for (let i = 0; i < count; i++) {
         const p = document.createElement('div');
@@ -6863,7 +8130,7 @@ function openAchievementPanel() {
       setTimeout(() => el.remove(), 1500);
     }
 
-    function showMonsterIntent(type, text) {
+    function showMonsterIntentUI(type, text) {
       const monsterCard = document.getElementById('monsterCard');
       if (!monsterCard) return;
       
@@ -6891,7 +8158,7 @@ function openAchievementPanel() {
     }
 
     function triggerHeroAttackAnimation() {
-      const heroCard = document.getElementById('heroCard');
+      const heroCard = document.getElementById('heroBattleStatus');
       if (heroCard) {
         heroCard.classList.add('hero-attack-anim');
         setTimeout(() => heroCard.classList.remove('hero-attack-anim'), 400);
@@ -7005,7 +8272,9 @@ function openAchievementPanel() {
       SoundManager.play('hurt');
 
       if (battleState.heroHp <= 0) {
-        battleDefeat();
+        if (!checkUndyingRage()) {
+          battleDefeat();
+        }
       }
     }
 
@@ -7020,10 +8289,21 @@ function openAchievementPanel() {
         saveBattleData();
         checkBattleAchievements();
 
+        // Loot drop system
+        const lootDrops = processLootDrops();
+        if (lootDrops.length > 0) {
+          lootDrops.forEach(drop => {
+            if (drop.type === 'gold') battleState.gold += drop.amount;
+            if (drop.type === 'health_potion') battleState.gold += 5; // Convert to gold for simplicity
+            if (drop.type === 'mana_potion') battleState.gold += 10;
+          });
+        }
+
         // Check if in stage mode - stage complete after defeating one monster
         if (battleState.currentStage) {
           const stage = getStageData(battleState.currentStage);
-          const accuracy = correct / (correct + wrong + 1); // Approximate accuracy
+          const totalAnswered = correct + wrong;
+          const accuracy = totalAnswered > 0 ? correct / totalAnswered : 0;
           const timeLeft = battleState.timeLeft || 0;
           const totalTime = battleState.maxTime || 3;
           const stars = calculateStarRating(accuracy, timeLeft, totalTime);
@@ -7099,10 +8379,21 @@ function openAchievementPanel() {
         }, 3000);
       }
 
-      function showStageVictory(stars, stage) {
+function showStageVictory(stars, stage) {
         const starsText = '⭐'.repeat(stars);
         const stageColor = stage.color || '#4ade80';
-        
+
+        // Generate certificate for 3-star completion
+        if (stars === 3) {
+          generateCertificate(stage);
+        }
+
+        // Reset battle state before showing victory
+        const arcaneBar = document.getElementById('arcaneBar');
+        if (arcaneBar) arcaneBar.style.width = '0%';
+        battleState.combo = 0;
+        battleState.currentStage = null;
+
         const overlay = document.createElement('div');
         overlay.className = 'victory-overlay active';
         overlay.innerHTML = `
@@ -7110,7 +8401,7 @@ function openAchievementPanel() {
           <div style="font-size:1.5rem; margin:10px 0; color:${stageColor};">${stage.name}</div>
           <div style="font-size:2rem; margin:15px 0;">${starsText}</div>
           <div class="rewards-summary">
-            <div style="margin:5px 0;">💰 +${Math.floor(10 * stage.hpScale)} 金幣</div>
+            <div style="margin:5px 0;">💰 +${Math.floor(20 * stage.hpScale)} 金幣</div>
             <div style="margin:5px 0;">⭐ +${stars} 星評價</div>
           </div>
           <button onclick="this.parentElement.classList.remove('active'); this.parentElement.remove(); document.getElementById('battleStartBtnOverlay').style.display = 'block';" 
@@ -7121,13 +8412,47 @@ function openAchievementPanel() {
         document.body.appendChild(overlay);
         
         SoundManager.play('victory');
+        if (stars === 3) SoundManager.play('celebration');
         triggerVictoryCelebration();
         
         // Hide stage banner
         document.getElementById('stageBanner').style.display = 'none';
       }
 
+    function generateCertificate(stage) {
+      const certData = {
+        stageId: stage.id,
+        stageName: stage.name,
+        date: new Date().toLocaleDateString('zh-HK'),
+        stars: 3
+      };
+      localStorage.setItem('mt_certificate_' + stage.id, JSON.stringify(certData));
+      
+      const cert = document.createElement('div');
+      cert.className = 'certificate-popup';
+      cert.innerHTML = `
+        <div class="cert-header">🏆 完成證書</div>
+        <div class="cert-title">乘法小鎮通關證書</div>
+        <div class="cert-content">
+          <div class="cert-stage">關卡 ${stage.id}: ${stage.name}</div>
+          <div class="cert-stars">⭐⭐⭐ 完美三星</div>
+          <div class="cert-date">${certData.date}</div>
+        </div>
+        <div class="cert-footer">持證者已完成乘法小鎮修煉</div>
+      `;
+      document.body.appendChild(cert);
+      setTimeout(() => {
+        cert.classList.add('show');
+        setTimeout(() => {
+          cert.classList.remove('show');
+          setTimeout(() => cert.remove(), 500);
+        }, 3000);
+      }, 500);
+    }
+
     function battleDefeat() {
+      const arcaneBar = document.getElementById('arcaneBar');
+      if (arcaneBar) arcaneBar.style.width = '0%';
       battleState.inBattle = false;
       const hero = heroes[battleState.heroKey];
       const heroEl = document.getElementById('heroBattleStatus');
@@ -7136,6 +8461,9 @@ function openAchievementPanel() {
       battleState.heroMaxHp = hero.hp;
       document.getElementById('battleStartBtnOverlay').style.display = 'block';
       document.getElementById('battleStartBtnOverlay').textContent = '🔄 再試一次';
+
+      // Clear currentStage to prevent stale stage state in future battles
+      battleState.currentStage = null;
 
       SoundManager.play('defeat');
 
