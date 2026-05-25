@@ -179,6 +179,17 @@ section{position:fixed;inset:0;display:flex;flex-direction:column;align-items:ce
 
 /* HP/MP bar labels */
 .bar-label{position:absolute;top:-16px;left:0;font-size:.6rem;color:var(--text-dim)}
+@keyframes comboPop{0%{opacity:1;transform:translateX(-50%) scale(1)}50%{transform:translateX(-50%) scale(1.4)}100%{opacity:0;transform:translateX(-50%) scale(1.8) translateY(-20px)}}
+
+/* Skills Toggle */
+.skills-toggle{position:fixed;bottom:16px;right:16px;z-index:200;background:var(--card);border:2px solid var(--border);border-radius:50%;width:44px;height:44px;color:var(--text);font-size:1.2rem;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center}
+.skills-toggle:hover{background:#3d3d5c;border-color:var(--secondary)}
+#battle-skills.collapsed{max-height:0;overflow:hidden;opacity:0;margin-top:0}
+#battle-skills.collapsed .skill-btn{pointer-events:none}
+
+/* Zoom Controls */
+.zoom-hint{position:fixed;bottom:70px;right:16px;z-index:200;font-size:.65rem;color:var(--text-dim);text-align:center}
+
 </style>
 </head>
 <body>
@@ -309,6 +320,7 @@ section{position:fixed;inset:0;display:flex;flex-direction:column;align-items:ce
   <div class="battle-top-bar">
     <div class="player-hud">
       <div class="hud-name"><span id="battle-player-name">冒險者</span><span id="battle-player-lv">Lv.1</span></div>
+      <div id="combo-display" style="font-size:.7rem;color:var(--gold);margin-bottom:4px;min-height:1em"></div>
       <div class="hud-bar">
         <div class="hud-bar-fill hud-hp-fill" id="player-hp-bar" style="width:100%"></div>
       </div>
@@ -335,7 +347,10 @@ section{position:fixed;inset:0;display:flex;flex-direction:column;align-items:ce
     </div>
 
     <div class="battle-question">
-      <div class="question-text" id="question-text">2 × 3 = ?</div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+        <div class="question-text" id="question-text">2 × 3 = ?</div>
+        <div id="question-counter" style="font-size:.8rem;color:var(--text-dim);white-space:nowrap;margin-left:12px">1/10</div>
+      </div>
       <div class="answer-hint" id="answer-hint">選擇正确答案進行攻擊！</div>
     </div>
 
@@ -364,6 +379,7 @@ section{position:fixed;inset:0;display:flex;flex-direction:column;align-items:ce
 
     <div class="battle-log" id="battle-log"></div>
   </div>
+  <button class="skills-toggle" id="skills-toggle" onclick="toggleSkills()" title="技能">⚔️</button>
 </section>
 
 <!-- ==================== BATTLE RESULT ==================== -->
@@ -504,7 +520,13 @@ let battleState = {
   stageData: null,
   inBattle: false,
   battleActive: true,
-  usingSkill: false
+  usingSkill: false,
+  combo: 0,
+  maxCombo: 0,
+  correctCount: 0,
+  wrongCount: 0,
+  totalDamage: 0,
+  questionsAnswered: 0
 };
 
 let numpadValue = '';
@@ -648,7 +670,13 @@ function startBattle() {
     stageData: s,
     inBattle: true,
     battleActive: true,
-    usingSkill: false
+    usingSkill: false,
+    combo: 0,
+    maxCombo: 0,
+    correctCount: 0,
+    wrongCount: 0,
+    totalDamage: 0,
+    questionsAnswered: 0
   };
 
   gameState.shieldActive = false;
@@ -664,6 +692,7 @@ function startBattle() {
   battleState.monsterName = ms.name;
   battleState.monsterImg = ms.img;
 
+  document.getElementById('battle-log').innerHTML = '';
   showScreen('battle-screen');
   updateBattleUI();
   nextQuestion(); // sets currentQuestion first
@@ -699,10 +728,12 @@ function nextQuestion() {
   if (battleState.qIndex >= battleState.questions.length) {
     battleState.questions = shuffleArray([...battleState.stageData.questions]);
     battleState.qIndex = 0;
+    addLog('🔄 題目重新洗牌！');
   }
   battleState.currentQuestion = battleState.questions[battleState.qIndex];
   battleState.qIndex++;
   document.getElementById('question-text').textContent = battleState.currentQuestion.q;
+  document.getElementById('question-counter').textContent = `${battleState.qIndex}/10`;
   renderBattleAnswer();
 }
 
@@ -760,21 +791,33 @@ function submitChoice(answer) {
   if (!battleState.battleActive) return;
   const correct = battleState.currentQuestion.answer;
   const diff = battleState.difficulty;
+  playSound('click');
 
   if (diff === 'hard') numpadClear();
 
   if (answer === correct) {
-    // Correct - attack monster
+    battleState.correctCount++;
+    battleState.questionsAnswered++;
+    battleState.combo++;
+    if (battleState.combo > battleState.maxCombo) battleState.maxCombo = battleState.combo;
+    updateComboDisplay();
     let dmg = battleState.playerATK;
     if (battleState.usingSkill === 'critical') { dmg *= 2; addLog('⚡ 暴擊！'); }
     battleState.monsterHP = Math.max(0, battleState.monsterHP - dmg);
+    battleState.totalDamage += dmg;
     showDmgNumber(dmg, false, battleState.usingSkill === 'critical');
-    addLog(`✅ 回答正確！攻擊造成 ${dmg} 傷害！`);
+    playSound('correct');
+    showComboMilestone();
+    addLog(`✅ 回答正確！(${battleState.combo}連) 攻擊造成 ${dmg} 傷害！`);
     flashSprite('monster-sprite');
     nextQuestion();
   } else {
-    // Wrong - monster attacks
+    battleState.wrongCount++;
+    battleState.questionsAnswered++;
+    battleState.combo = 0;
+    updateComboDisplay();
     addLog(`❌ 正確答案是 ${correct}！怪物反擊！`);
+    playSound('wrong');
     monsterAttack();
     nextQuestion();
   }
@@ -809,10 +852,12 @@ function useSkill(skill) {
 
   battleState.playerMP -= cost;
 
+  playSound('skill');
   switch (skill) {
     case 'fireball':
       const fbDmg = 30;
       battleState.monsterHP = Math.max(0, battleState.monsterHP - fbDmg);
+      battleState.totalDamage += fbDmg;
       showDmgNumber(fbDmg, false);
       addLog(`🔥 火球術！造成 ${fbDmg} 傷害！`);
       flashSprite('monster-sprite');
@@ -918,6 +963,7 @@ function showBattleResult(victory) {
     battleState.playerMaxHP = gameState.playerMaxHP;
     battleState.playerMaxMP = gameState.playerMaxMP;
     addLog(`🎉 等級提升！現在是 Lv.${gameState.level}！`);
+    playSound('levelUp');
   }
 
   saveProgress();
@@ -926,11 +972,16 @@ function showBattleResult(victory) {
   title.textContent = victory ? '🎉 勝利！' : '💀 戰敗...';
   title.className = 'result-title ' + (victory ? 'victory' : 'defeat');
 
+  const accuracy = battleState.questionsAnswered > 0 ? Math.round(battleState.correctCount/battleState.questionsAnswered*100) : 0;
   document.getElementById('result-stats').innerHTML = `
     <div class="result-stat"><span>獲得經驗</span><span style="color:var(--xp)">+${xpGain} XP</span></div>
     <div class="result-stat"><span>獲得金幣</span><span style="color:var(--gold)">+${goldGain} 💰</span></div>
     <div class="result-stat"><span>玩家等級</span><span>Lv.${gameState.level}</span></div>
     <div class="result-stat"><span>總金幣</span><span>${gameState.gold} 💰</span></div>
+    <div class="result-stat"><span>答對</span><span style="color:var(--xp)">${battleState.correctCount}/${battleState.questionsAnswered}</span></div>
+    <div class="result-stat"><span>正確率</span><span style="color:var(--accent)">${accuracy}%</span></div>
+    <div class="result-stat"><span>最高Combo</span><span style="color:var(--gold)">${battleState.maxCombo}連</span></div>
+    <div class="result-stat"><span>總傷害</span><span style="color:var(--hp)">${battleState.totalDamage}</span></div>
   `;
 
   showScreen('battle-result');
@@ -983,8 +1034,62 @@ function loadProgress() {
   }
 }
 
+// ==================== SOUND ENGINE ====================
+const SoundEngine = {
+  ctx: null,
+  init() { try { this.ctx = new (window.AudioContext||window.webkitAudioContext)(); } catch(e){} },
+  tone(freq, dur, type='sine', vol=0.3) {
+    if (!this.ctx) this.init();
+    if (!this.ctx) return;
+    const o=this.ctx.createOscillator(), g=this.ctx.createGain();
+    o.connect(g); g.connect(this.ctx.destination);
+    o.frequency.value=freq; o.type=type;
+    g.gain.setValueAtTime(vol, this.ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime+dur);
+    o.start(); o.stop(this.ctx.currentTime+dur);
+  },
+  correct() { this.tone(523,.12); setTimeout(()=>this.tone(659,.12),90); setTimeout(()=>this.tone(784,.2),180); },
+  fail() { this.tone(200,.3,'sawtooth',.15); },
+  click() { this.tone(800,.05,'square',.08); },
+  levelUp() { this.tone(523,.15); setTimeout(()=>this.tone(659,.15),120); setTimeout(()=>this.tone(784,.15),240); setTimeout(()=>this.tone(1047,.3),360); },
+  skill() { this.tone(440,.1); setTimeout(()=>this.tone(880,.15),80); }
+};
+function playSound(type) { try { SoundEngine[type](); } catch(e){} }
+
+// ==================== COMBO SYSTEM ====================
+function showComboMilestone() {
+  const combo = battleState.combo;
+  const milestone = combo >= 10 ? '💥 火力全開！' : combo >= 5 ? '🔥 熱辣辣！' : combo >= 3 ? '⚔️Combo×' + combo : '';
+  if (milestone) {
+    const field = document.querySelector('.battle-field');
+    const badge = document.createElement('div');
+    badge.style.cssText = 'position:absolute;top:15%;left:50%;transform:translateX(-50%);font-size:1.4rem;font-weight:900;color:var(--gold);z-index:20;animation:comboPop .8s ease-out forwards;pointer-events:none;text-shadow:2px 2px 8px rgba(0,0,0,.9)';
+    badge.textContent = milestone;
+    field.appendChild(badge);
+    setTimeout(() => badge.remove(), 800);
+  }
+}
+
+// ==================== SKILLS TOGGLE ====================
+function toggleSkills() {
+  const skills = document.getElementById('battle-skills');
+  const btn = document.getElementById('skills-toggle');
+  skills.classList.toggle('collapsed');
+  btn.textContent = skills.classList.contains('collapsed') ? '⚔️' : '✖';
+  btn.title = skills.classList.contains('collapsed') ? '顯示技能' : '隱藏技能';
+}
+
+function updateComboDisplay() {
+  const el = document.getElementById('combo-display');
+  if (!el) return;
+  if (battleState.combo >= 3) {
+    el.innerHTML = `<span style="color:var(--gold)">🔥 ${battleState.combo}連 Combo！</span>`;
+  } else {
+    el.innerHTML = '';
+  }
+}
+
 // ==================== INIT ====================
-// Check for existing save on load
 window.addEventListener('DOMContentLoaded', () => {
   // Show home screen by default
 });
