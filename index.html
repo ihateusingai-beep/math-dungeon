@@ -222,17 +222,17 @@ section{position:fixed;inset:0;display:flex;flex-direction:column;align-items:ce
     <div class="char-card" onclick="selectChar('knight')">
       <img src="assets/images/knight-hero.png" alt="Knight" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect fill=%22%234a90e2%22 width=%22100%22 height=%22100%22 rx=%2210%22/><text y=%22.9em%22 font-size=%2280%22 x=%2210%22>⚔️</text></svg>'">
       <div class="char-name">聖殿騎士</div>
-      <div class="char-desc">聖光護盾<br>平衡型角色</div>
+      <div class="char-desc">HP120 MP40 ATK12<br>🛡️護盾3回合・防禦型</div>
     </div>
     <div class="char-card" onclick="selectChar('mage')">
       <img src="assets/images/mage-hero.png" alt="Mage" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect fill=%22%239b59b6%22 width=%22100%22 height=%22100%22 rx=%2210%22/><text y=%22.9em%22 font-size=%2280%22 x=%2210%22>🔮</text></svg>'">
       <div class="char-name">奧術師</div>
-      <div class="char-desc">火球術<br>魔法型角色</div>
+      <div class="char-desc">HP80 MP70 ATK8<br>🔥火球40傷・魔法型</div>
     </div>
     <div class="char-card" onclick="selectChar('berserker')">
       <img src="assets/images/berserker-hero.png" alt="Berserker" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect fill=%22%23e67e22%22 width=%22100%22 height=%22100%22 rx=%2210%22/><text y=%22.9em%22 font-size=%2280%22 x=%2210%22>🪓</text></svg>'">
       <div class="char-name">嗜血者</div>
-      <div class="char-desc">暴擊之刃<br>攻擊型角色</div>
+      <div class="char-desc">HP100 MP30 ATK15<br>⚡暴擊×3・攻擊型</div>
     </div>
   </div>
 </section>
@@ -349,7 +349,7 @@ section{position:fixed;inset:0;display:flex;flex-direction:column;align-items:ce
     <div class="battle-question">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
         <div class="question-text" id="question-text">2 × 3 = ?</div>
-        <div id="question-counter" style="font-size:.8rem;color:var(--text-dim);white-space:nowrap;margin-left:12px">1/10</div>
+        <div id="question-counter" style="font-size:.8rem;color:var(--text-dim);white-space:nowrap;margin-left:12px">${battleState.qIndex}/${battleState.questions.length}</div>
       </div>
       <div class="answer-hint" id="answer-hint">選擇正确答案進行攻擊！</div>
     </div>
@@ -361,7 +361,7 @@ section{position:fixed;inset:0;display:flex;flex-direction:column;align-items:ce
     <div class="battle-skills" id="battle-skills">
       <button class="skill-btn fireball" onclick="useSkill('fireball')">
         <span class="sk-name">🔥 火球術</span>
-        <span class="sk-cost">15MP · 30傷</span>
+        <span class="sk-cost" id="sk-fireball-cost">15MP · 30傷</span>
       </button>
       <button class="skill-btn heal" onclick="useSkill('heal')">
         <span class="sk-name">💚 治療術</span>
@@ -369,11 +369,11 @@ section{position:fixed;inset:0;display:flex;flex-direction:column;align-items:ce
       </button>
       <button class="skill-btn critical" onclick="useSkill('critical')">
         <span class="sk-name">⚡ 暴擊之刃</span>
-        <span class="sk-cost">10MP · 2倍</span>
+        <span class="sk-cost">10MP · 2~3倍</span>
       </button>
       <button class="skill-btn shield" onclick="useSkill('shield')">
         <span class="sk-name">🛡️ 聖光護盾</span>
-        <span class="sk-cost">15MP · 防+50%</span>
+        <span class="sk-cost">15MP · 防+50%~75%</span>
       </button>
     </div>
 
@@ -468,10 +468,10 @@ const STAGES_DATA = {
     boss: { name: "乘法Boss關", stages: [
       { id: "boss-easy", name: "史萊姆之王", difficulty: "easy", enabled: true, monsters: ["dragon"], bg: "boss_room", isBoss: true,
         questions: [
-          {q:"7 × 1 = ?",answer:7,choices:[5,6,7]},{q:"7 × 2 = ?",answer:14,choices:[12,14,16]},{q:"7 × 3 = ?",answer:21,choices:[18,21,24]},
-          {q:"7 × 4 = ?",answer:28,choices:[24,28,32]},{q:"7 × 5 = ?",answer:35,choices:[30,35,40]},{q:"7 × 6 = ?",answer:42,choices:[36,42,48]},
-          {q:"7 × 7 = ?",answer:49,choices:[42,49,56]},{q:"7 × 8 = ?",answer:56,choices:[48,56,64]},{q:"7 × 9 = ?",answer:63,choices:[54,63,72]},
-          {q:"7 × 10 = ?",answer:70,choices:[60,70,80]}
+          {q:"2 × 1 = ?",answer:2,choices:[1,2,3]},{q:"2 × 2 = ?",answer:4,choices:[3,4,5]},{q:"2 × 3 = ?",answer:6,choices:[5,6,7]},
+          {q:"2 × 4 = ?",answer:8,choices:[6,7,8]},{q:"2 × 5 = ?",answer:10,choices:[8,9,10]},{q:"2 × 62 = ?",answer:12,choices:[10,11,12]},
+          {q:"2 × 7 = ?",answer:14,choices:[12,14,16]},{q:"2 × 8 = ?",answer:16,choices:[14,15,16]},{q:"2 × 9 = ?",answer:18,choices:[16,18,20]},
+          {q:"2 × 10 = ?",answer:20,choices:[18,20,22]}
         ]}
     ]}
   }
@@ -501,6 +501,9 @@ let gameState = {
   level: 1,
   xp: 0,
   gold: 0,
+  playerMaxHP: 100,
+  playerMaxMP: 50,
+  playerATK: 10,
   shieldActive: false,
   shieldTurns: 0
 };
@@ -563,6 +566,16 @@ let charSelectTimeout = null;
 function selectChar(char) {
   if (charSelectTimeout) { clearTimeout(charSelectTimeout); charSelectTimeout = null; }
   gameState.character = char;
+  // 角色差異化：設定初始屬性
+  const stats = {
+    knight:   { hp: 120, mp: 40, atk: 12 },
+    mage:     { hp: 80,  mp: 70, atk: 8  },
+    berserker:{ hp: 100, mp: 30, atk: 15 }
+  };
+  const s = stats[char] || stats.knight;
+  gameState.playerMaxHP = s.hp;
+  gameState.playerMaxMP = s.mp;
+  gameState.playerATK = s.atk;
   document.querySelectorAll('.char-card').forEach(c => c.classList.remove('selected'));
   event.currentTarget.classList.add('selected');
   const charImg = {
@@ -658,9 +671,9 @@ function startBattle() {
   battleState = {
     playerHP: gameState.playerMaxHP || 100,
     playerMP: gameState.playerMaxMP || 50,
-    playerMaxHP: 100,
-    playerMaxMP: 50,
-    playerATK: 10,
+    playerMaxHP: gameState.playerMaxHP || 100,
+    playerMaxMP: gameState.playerMaxMP || 50,
+    playerATK: gameState.playerATK || 10,
     monsterHP: 0,
     monsterMaxHP: 0,
     monsterATK: 0,
@@ -736,7 +749,7 @@ function nextQuestion() {
   battleState.currentQuestion = battleState.questions[battleState.qIndex];
   battleState.qIndex++;
   document.getElementById('question-text').textContent = battleState.currentQuestion.q;
-  document.getElementById('question-counter').textContent = `${battleState.qIndex}/10`;
+  document.getElementById('question-counter').textContent = `${battleState.qIndex}/${battleState.questions.length}`;
   renderBattleAnswer();
 }
 
@@ -805,7 +818,11 @@ function submitChoice(answer) {
     if (battleState.combo > battleState.maxCombo) battleState.maxCombo = battleState.combo;
     updateComboDisplay();
     let dmg = battleState.playerATK;
-    if (battleState.usingSkill === 'critical') { dmg *= 2; addLog('⚡ 暴擊！'); }
+    if (battleState.usingSkill === 'critical') {
+      const critMult = gameState.character === 'berserker' ? 3 : 2;
+      dmg *= critMult;
+      addLog('⚡ 暴擊！');
+    }
     battleState.monsterHP = Math.max(0, battleState.monsterHP - dmg);
     battleState.totalDamage += dmg;
     showDmgNumber(dmg, false, battleState.usingSkill === 'critical');
@@ -832,7 +849,9 @@ function submitChoice(answer) {
 function monsterAttack() {
   let atk = battleState.monsterATK;
   if (gameState.shieldActive) {
-    atk = Math.round(atk * 0.5);
+    // Knight額外50%減傷（實際承受25%），其他50%（實際承受50%）
+    const reduction = gameState.character === 'knight' ? 0.25 : 0.5;
+    atk = Math.round(atk * reduction);
     addLog(`🛡️ 護盾減傷！受到 ${atk} 傷害！`);
   } else {
     addLog(`💥 ${battleState.monsterName} 攻擊！造成 ${atk} 傷害！`);
@@ -858,7 +877,7 @@ function useSkill(skill) {
   playSound('skill');
   switch (skill) {
     case 'fireball':
-      const fbDmg = 30;
+      const fbDmg = gameState.character === 'mage' ? 40 : 30;
       battleState.monsterHP = Math.max(0, battleState.monsterHP - fbDmg);
       battleState.totalDamage += fbDmg;
       showDmgNumber(fbDmg, false);
@@ -875,13 +894,17 @@ function useSkill(skill) {
       break;
     case 'critical':
       battleState.usingSkill = 'critical';
-      addLog(`⚡ 暴擊之刃！下次攻擊傷害×2！`);
+      // 暴擊倍率的角色差異化：Berserker x3，其他 x2
+      const critMult = gameState.character === 'berserker' ? 3 : 2;
+      battleState.usingSkill = 'critical';
+      addLog(`⚡ 暴擊之刃！下次攻擊傷害×${critMult}！`);
       monsterAttack();
       break;
     case 'shield':
       gameState.shieldActive = true;
-      gameState.shieldTurns = 2;
-      addLog(`🛡️ 聖光護盾！防禦+50%，持續2回合！`);
+      const shieldTurns = gameState.character === 'knight' ? 3 : 2;
+      gameState.shieldTurns = shieldTurns;
+      addLog(`🛡️ 聖光護盾！防禦+50%，持續${shieldTurns}回合！`);
       monsterAttack();
       break;
   }
@@ -890,12 +913,16 @@ function useSkill(skill) {
 }
 
 function updateSkillButtons() {
+  const costs = { fireball: 15, heal: 20, critical: 10, shield: 15 };
+  const isMage = gameState.character === 'mage';
   document.querySelectorAll('.skill-btn').forEach(btn => {
-    const costs = { fireball: 15, heal: 20, critical: 10, shield: 15 };
-    const skillName = btn.classList[1]; // second class is skill name
+    const skillName = btn.classList[1];
     const cost = costs[skillName] || 0;
     btn.classList.toggle('disabled', battleState.playerMP < cost);
   });
+  // Dynamic fireball cost display
+  const fbCost = document.getElementById('sk-fireball-cost');
+  if (fbCost) fbCost.textContent = `15MP · ${isMage ? '40' : '30'}傷`;
 }
 
 function updateBattleUI() {
@@ -956,6 +983,23 @@ function showBattleResult(victory) {
   gameState.xp += xpGain;
   gameState.gold += goldGain;
 
+  // 學習日誌記錄
+  const accuracy = battleState.questionsAnswered > 0 ? Math.round(battleState.correctCount/battleState.questionsAnswered*100) : 0;
+  const logKey = 'mathDungeon_learningLog';
+  const logData = JSON.parse(localStorage.getItem(logKey) || '[]');
+  logData.push({
+    date: new Date().toLocaleString('zh-TW'),
+    stageId: battleState.stageData?.id || 'unknown',
+    character: gameState.character || 'unknown',
+    difficulty: battleState.difficulty,
+    correctCount: battleState.correctCount,
+    wrongCount: battleState.wrongCount,
+    accuracy: accuracy,
+    maxCombo: battleState.maxCombo,
+    totalDamage: battleState.totalDamage
+  });
+  localStorage.setItem(logKey, JSON.stringify(logData.slice(-50))); // 保留最近50場
+
   // Level up check
   const xpNeeded = gameState.level * gameState.level * 100;
   if (gameState.xp >= xpNeeded) {
@@ -970,19 +1014,40 @@ function showBattleResult(victory) {
   }
 
   saveProgress();
+  // 寫入學習日誌
+  const LOG_KEY = 'mathDungeon_learningLog';
+  const stageId = battleState.stageData?.id || 'unknown';
+  const accuracy = battleState.questionsAnswered > 0 ? Math.round(battleState.correctCount/battleState.questionsAnswered*100) : 0;
+  const wrongQuestions = [];
+  const logEntry = {
+    stageId,
+    correctCount: battleState.correctCount,
+    wrongCount: battleState.wrongCount,
+    wrongQuestions,
+    accuracy,
+    maxCombo: battleState.maxCombo,
+    date: new Date().toISOString()
+  };
+  try {
+    const raw = localStorage.getItem(LOG_KEY);
+    const logs = raw ? JSON.parse(raw) : [];
+    logs.push(logEntry);
+    localStorage.setItem(LOG_KEY, JSON.stringify(logs));
+  } catch(e){}
 
   const title = document.getElementById('result-title');
   title.textContent = victory ? '🎉 勝利！' : '💀 戰敗...';
   title.className = 'result-title ' + (victory ? 'victory' : 'defeat');
 
   const accuracy = battleState.questionsAnswered > 0 ? Math.round(battleState.correctCount/battleState.questionsAnswered*100) : 0;
+  const feedback = accuracy >= 80 ? '🌟 做得好！' : accuracy >= 50 ? '💪 繼續加油！' : '📚 需要多練習！';
   document.getElementById('result-stats').innerHTML = `
     <div class="result-stat"><span>獲得經驗</span><span style="color:var(--xp)">+${xpGain} XP</span></div>
     <div class="result-stat"><span>獲得金幣</span><span style="color:var(--gold)">+${goldGain} 💰</span></div>
     <div class="result-stat"><span>玩家等級</span><span>Lv.${gameState.level}</span></div>
     <div class="result-stat"><span>總金幣</span><span>${gameState.gold} 💰</span></div>
     <div class="result-stat"><span>答對</span><span style="color:var(--xp)">${battleState.correctCount}/${battleState.questionsAnswered}</span></div>
-    <div class="result-stat"><span>正確率</span><span style="color:var(--accent)">${accuracy}%</span></div>
+    <div class="result-stat"><span>正確率</span><span style="color:var(--accent)">${accuracy}% ${feedback}</span></div>
     <div class="result-stat"><span>最高Combo</span><span style="color:var(--gold)">${battleState.maxCombo}連</span></div>
     <div class="result-stat"><span>總傷害</span><span style="color:var(--hp)">${battleState.totalDamage}</span></div>
   `;
@@ -1013,7 +1078,8 @@ function saveProgress() {
     xp: gameState.xp,
     gold: gameState.gold,
     playerMaxHP: gameState.playerMaxHP || 100,
-    playerMaxMP: gameState.playerMaxMP || 50
+    playerMaxMP: gameState.playerMaxMP || 50,
+    playerATK: gameState.playerATK || 10
   };
   localStorage.setItem(SAVE_KEY, JSON.stringify(data));
 }
@@ -1030,6 +1096,7 @@ function loadProgress() {
     gameState.gold = data.gold || 0;
     gameState.playerMaxHP = data.playerMaxHP || 100;
     gameState.playerMaxMP = data.playerMaxMP || 50;
+    gameState.playerATK = data.playerATK || 10;
     if (!gameState.character) { showNameScreen(); return; }
     showMapScreen();
   } catch (e) {
