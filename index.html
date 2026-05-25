@@ -2520,6 +2520,126 @@
     display: flex;
   }
 
+  /* ========== 導航畫面 ========== */
+  .nav-screen {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .nav-header {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 20px;
+    gap: 10px;
+  }
+
+  .nav-back-btn {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 1rem;
+  }
+
+  .nav-title {
+    flex: 1;
+    text-align: center;
+    font-size: 1.4rem;
+    color: var(--accent);
+    margin: 0;
+  }
+
+  .nav-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 15px;
+    width: 100%;
+  }
+
+  .nav-card {
+    background: rgba(255,255,255,0.08);
+    border: 2px solid rgba(255,255,255,0.15);
+    border-radius: 16px;
+    padding: 20px 15px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .nav-card:hover {
+    transform: scale(1.05);
+    border-color: var(--accent);
+    background: rgba(255,255,255,0.15);
+  }
+
+  .nav-card.locked-domain { opacity: 0.4; cursor: not-allowed; }
+  .nav-card.locked-domain:hover { transform: none; border-color: rgba(255,255,255,0.15); }
+
+  .nav-card .card-icon { font-size: 2.5rem; margin-bottom: 8px; }
+  .nav-card .card-name { font-size: 1.1rem; font-weight: bold; color: #fff; margin-bottom: 4px; }
+  .nav-card .card-desc { font-size: 0.8rem; color: #aaa; }
+
+  .nav-difficulty-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+    max-width: 500px;
+  }
+
+  .nav-diff-btn {
+    background: rgba(255,255,255,0.08);
+    border: 2px solid rgba(255,255,255,0.15);
+    border-radius: 16px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .nav-diff-btn:hover { transform: scale(1.03); }
+  .nav-diff-btn.selected-easy { border-color: #6BCB77; background: rgba(107,203,119,0.2); }
+  .nav-diff-btn.selected-normal { border-color: #4D96FF; background: rgba(77,150,255,0.2); }
+  .nav-diff-btn.selected-hard { border-color: #a855f7; background: rgba(168,85,247,0.2); }
+
+  .nav-stage-preview {
+    margin-top: 20px;
+    padding: 20px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 16px;
+    width: 100%;
+    text-align: center;
+  }
+
+  .nav-stage-confirm {
+    text-align: center;
+    width: 100%;
+    max-width: 500px;
+  }
+
+  .nav-start-btn {
+    background: linear-gradient(135deg, var(--accent), #6BCB77);
+    color: #fff;
+    border: none;
+    padding: 15px 40px;
+    border-radius: 30px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: transform 0.2s;
+  }
+
+  .nav-start-btn:hover { transform: scale(1.05); }
+
   /* ========== 響應式設計 ========== */
   @media (max-width: 540px) {
     .battle-section {
@@ -2805,9 +2925,61 @@
         <button class="action-btn battle" onclick="quickBattle()" style="font-size:1rem; padding:12px 30px;">
           ⚔️ 快速開始 (乘法)
         </button>
+        <button class="action-btn" onclick="startNewNav()" style="font-size:1rem; padding:12px 30px; margin-left:10px; background:rgba(168,85,247,0.3); border:1px solid #a855f7;">
+          🗺️ 新導航
+        </button>
       </div>
 
     </section>
+
+    <!-- ========== 導航畫面 ========== -->
+
+    <!-- 畫面1: 範疇選擇 (世界地圖) -->
+    <div id="nav-domain-screen" class="nav-screen" style="display:none;">
+      <div class="nav-header">
+        <button class="nav-back-btn" onclick="navGoBack()" style="display:none;">◀ 返回</button>
+        <h2 class="nav-title" id="nav-domain-title">⚡ 選擇範疇 ⚡</h2>
+      </div>
+      <div class="nav-grid" id="nav-domain-grid">
+        <!-- 由 renderNavDomainScreen() 動態生成 -->
+      </div>
+    </div>
+
+    <!-- 畫面2: 子項選擇 (Topic) -->
+    <div id="nav-topic-screen" class="nav-screen" style="display:none;">
+      <div class="nav-header">
+        <button class="nav-back-btn" onclick="navGoBack()">◀ 返回</button>
+        <h2 class="nav-title" id="nav-topic-title">選擇主題</h2>
+      </div>
+      <div class="nav-grid" id="nav-topic-grid">
+        <!-- 由 renderNavTopicScreen() 動態生成 -->
+      </div>
+    </div>
+
+    <!-- 畫面3: 難度選擇 -->
+    <div id="nav-difficulty-screen" class="nav-screen" style="display:none;">
+      <div class="nav-header">
+        <button class="nav-back-btn" onclick="navGoBack()">◀ 返回</button>
+        <h2 class="nav-title" id="nav-difficulty-title">選擇難度</h2>
+      </div>
+      <div class="nav-difficulty-grid" id="nav-difficulty-grid">
+        <!-- Easy / Normal / Hard 三個大按鈕 -->
+      </div>
+      <div class="nav-stage-preview" id="nav-stage-preview" style="display:none;">
+        <!-- 選擇難度後顯示關卡預覽 -->
+      </div>
+    </div>
+
+    <!-- 畫面4: 關卡確認 -->
+    <div id="nav-stage-screen" class="nav-screen" style="display:none;">
+      <div class="nav-header">
+        <button class="nav-back-btn" onclick="navGoBack()">◀ 返回</button>
+        <h2 class="nav-title">確認關卡</h2>
+      </div>
+      <div class="nav-stage-confirm" id="nav-stage-confirm">
+        <!-- 關卡詳情 + 開始按鈕 -->
+      </div>
+    </div>
 
     <!-- 世界解鎖通知 -->
     <div id="worldUnlockNotification" class="achievement-notification">
@@ -4408,6 +4580,209 @@
     // World unlock state
     let unlockedWorlds = [1]; // World 1 (numbers) is unlocked by default
 
+    // =============================================
+    // 導航狀態機 (範疇 → 子項 → 難度 → 關卡確認 → 戰鬥)
+    // =============================================
+    const navState = {
+      screen: 'domain',  // domain | topic | difficulty | stage
+      domain: null,      // e.g. 'numbers', 'operations'
+      topic: null,       // e.g. 'multiplication', 'addition'
+      difficulty: null,  // 'easy' | 'normal' | 'hard'
+      stageId: null,
+    };
+
+    // 顯示指定導航畫面，隱藏其他
+    function showNavScreen(screenName) {
+      document.querySelectorAll('.nav-screen').forEach(s => s.style.display = 'none');
+      const el = document.getElementById('nav-' + screenName + '-screen');
+      if (el) el.style.display = 'flex';
+    }
+
+    function hideAllSections() {
+      document.querySelectorAll('.main-section').forEach(s => {
+        s.classList.remove('active');
+        s.style.display = 'none';
+      });
+    }
+
+    // 導航到下一層
+    function navigateTo(screen, extra) {
+      navState.screen = screen;
+      navState.difficulty = null;
+      navState.stageId = null;
+
+      if (screen === 'domain') {
+        renderNavDomainScreen();
+        showNavScreen('domain');
+        document.getElementById('rootSection').classList.add('active');
+      } else if (screen === 'topic') {
+        renderNavTopicScreen(extra);
+        showNavScreen('topic');
+        document.getElementById('rootSection').classList.add('active');
+      } else if (screen === 'difficulty') {
+        renderNavDifficultyScreen(extra);
+        showNavScreen('difficulty');
+        document.getElementById('rootSection').classList.add('active');
+      } else if (screen === 'stage') {
+        renderNavStageConfirm(extra);
+        showNavScreen('stage');
+        document.getElementById('rootSection').classList.add('active');
+      }
+    }
+
+    // 返回上一層
+    function navGoBack() {
+      if (navState.screen === 'stage') {
+        navigateTo('difficulty', { topic: navState.topic, domain: navState.domain });
+      } else if (navState.screen === 'difficulty') {
+        navigateTo('topic', navState.domain);
+      } else if (navState.screen === 'topic') {
+        navigateTo('domain');
+      } else {
+        // 返回主頁
+        showNavScreen('');
+        document.getElementById('rootSection').classList.add('active');
+        hideAllSections();
+        document.getElementById('rootSection').style.display = 'flex';
+      }
+    }
+
+    // 畫面1: 範疇選擇 (世界地圖)
+    function renderNavDomainScreen() {
+      const grid = document.getElementById('nav-domain-grid');
+      const worlds = [
+        { id: 'numbers',     name: '數字森林',     icon: '🌲', desc: '數字認知' },
+        { id: 'operations', name: '運算山脈',     icon: '⛰️', desc: '四則運算' },
+        { id: 'shapes',     name: '圖形城堡',     icon: '🏰', desc: '幾何圖形' },
+        { id: 'measurement',name: '度量王國',     icon: '👑', desc: '度量衡' },
+        { id: 'data',       name: '數據神殿',     icon: '📊', desc: '統計分析' },
+        { id: 'advanced',   name: '進階挑戰',     icon: '🚀', desc: '進階數學' },
+      ];
+      grid.innerHTML = worlds.map(w => {
+        const unlocked = unlockedWorlds.includes(
+          ['numbers','operations','shapes','measurement','data','advanced'].indexOf(w.id) + 1
+        );
+        const cls = unlocked ? '' : 'locked-domain';
+        return `<div class="nav-card ${cls}" onclick="${unlocked ? `navSelectDomain('${w.id}')` : ''}">
+          <div class="card-icon">${w.icon}</div>
+          <div class="card-name">${w.name}</div>
+          <div class="card-desc">${unlocked ? w.desc : '🔒'}</div>
+        </div>`;
+      }).join('');
+    }
+
+    function navSelectDomain(domainId) {
+      navState.domain = domainId;
+      navigateTo('topic', domainId);
+    }
+
+    // 畫面2: 子項選擇
+    function renderNavTopicScreen(domainId) {
+      const domain = topicConfigs[domainId];
+      document.getElementById('nav-topic-title').textContent = domain.icon + ' ' + domain.name;
+      const grid = document.getElementById('nav-topic-grid');
+      grid.innerHTML = domain.stages.map(s => `
+        <div class="nav-card" onclick="navSelectTopic('${domainId}', '${s.topic}', '${s.name}')">
+          <div class="card-icon">${s.boss ? '👑' : '📍'}</div>
+          <div class="card-name">${s.name}</div>
+          <div class="card-desc">${getTopicDisplayName(s.topic)}</div>
+        </div>`).join('');
+    }
+
+    function navSelectTopic(domainId, topic, topicName) {
+      navState.topic = topic;
+      navState.domain = domainId;
+      document.getElementById('nav-difficulty-title').textContent = '📍 ' + topicName;
+      navigateTo('difficulty', { topic, domain: domainId });
+    }
+
+    // 畫面3: 難度選擇
+    function renderNavDifficultyScreen(data) {
+      navState.topic = data.topic;
+      navState.domain = data.domain;
+      const grid = document.getElementById('nav-difficulty-grid');
+      const diffs = [
+        { id: 'easy',   label: '🌱 新手',   desc: '基礎題目，挑戰簡單怪物', color: '#6BCB77' },
+        { id: 'normal', label: '⚔️ 老兵',   desc: '標準題目，對應中級怪物', color: '#4D96FF' },
+        { id: 'hard',   label: '💀 傳奇',   desc: '高難度題目，Boss級怪物', color: '#a855f7' },
+      ];
+      grid.innerHTML = diffs.map(d => `
+        <div class="nav-diff-btn" id="nav-diff-${d.id}" onclick="navSelectDifficulty('${d.id}')">
+          <div style="font-size:1.5rem; color:${d.color}; font-weight:bold;">${d.label}</div>
+          <div style="font-size:0.9rem; color:#aaa; margin-top:5px;">${d.desc}</div>
+        </div>`).join('');
+      document.getElementById('nav-stage-preview').style.display = 'none';
+    }
+
+    function navSelectDifficulty(diffId) {
+      document.querySelectorAll('.nav-diff-btn').forEach(b => {
+        b.classList.remove('selected-easy', 'selected-normal', 'selected-hard');
+      });
+      const btn = document.getElementById('nav-diff-' + diffId);
+      btn.classList.add('selected-' + diffId);
+      navState.difficulty = diffId;
+
+      const preview = document.getElementById('nav-stage-preview');
+      const diffNames = { easy: '🌱 新手', normal: '⚔️ 老兵', hard: '💀 傳奇' };
+      const diffColors = { easy: '#6BCB77', normal: '#4D96FF', hard: '#a855f7' };
+      preview.style.display = 'block';
+      preview.innerHTML = `
+        <div style="font-size:1rem; color:${diffColors[diffId]};">${diffNames[diffId]} 怪物</div>
+        <div style="font-size:0.85rem; color:#aaa; margin-top:5px;">即將進入戰鬥</div>
+        <button class="action-btn" style="margin-top:15px; font-size:1rem;"
+          onclick="navConfirmStage()">⚔️ 確認關卡 →</button>`;
+    }
+
+    // 畫面4: 關卡確認
+    function navConfirmStage() {
+      if (!navState.difficulty) { alert('請先選擇難度'); return; }
+      navigateTo('stage', {
+        topic: navState.topic,
+        domain: navState.domain,
+        difficulty: navState.difficulty,
+      });
+    }
+
+    function renderNavStageConfirm(data) {
+      navState.topic = data.topic;
+      navState.domain = data.domain;
+      navState.difficulty = data.difficulty;
+      const diffNames = { easy: '🌱 新手', normal: '⚔️ 老兵', hard: '💀 傳奇' };
+      const diffColors = { easy: '#6BCB77', normal: '#4D96FF', hard: '#a855f7' };
+      const confirm = document.getElementById('nav-stage-confirm');
+      confirm.innerHTML = `
+        <div style="font-size:2rem; margin-bottom:10px;">⚔️</div>
+        <div style="font-size:1.3rem; color:#fff; font-weight:bold;">${getTopicDisplayName(data.topic)}</div>
+        <div style="font-size:1.1rem; color:${diffColors[data.difficulty]}; margin-top:8px;">${diffNames[data.difficulty]}</div>
+        <div style="color:#aaa; font-size:0.9rem; margin-top:10px;">題目難度：${data.difficulty}</div>
+        <button class="nav-start-btn" onclick="startNavBattle()">🚀 開始戰鬥！</button>`;
+    }
+
+    function startNavBattle() {
+      hideAllSections();
+      document.getElementById('battleSection').style.display = 'flex';
+      document.getElementById('battleSection').classList.add('active');
+      initBattle(navState.topic, navState.difficulty);
+    }
+
+    // 入口：開始新導航流程
+    function startNewNav() {
+      navigateTo('domain');
+    }
+
+    // =============================================
+    // initBattle(topic, difficulty) - 新導航系統專用戰鬥初始化
+    // =============================================
+    function initBattle(topic, difficulty) {
+      currentTopic = topic;
+      selectedLevel = difficulty === 'easy' ? 1 : difficulty === 'normal' ? 2 : 3;
+      selectTopic(topic);
+      startBattle();
+    }
+
+    // =============================================
+    // 原有 selectWorld (整合新導航)
+    // =============================================
     function selectWorld(worldId) {
       currentWorld = worldId;
       const world = topicConfigs[worldId];
