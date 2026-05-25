@@ -3016,12 +3016,7 @@
       <div class="notif-desc">點擊查看新關卡</div>
     </div>
 
-<!-- ========== 戰鬥區 (教學模式 - 已停用) ========== -->
-    <section id="battleSection" class="main-section" aria-label="戰鬥區" style="display:none;">
-      <!-- 教學功能已移至根頁面，戰鬥系統見下方真正的戰鬥區 -->
-    </section>
-
-    <!-- ========== 真正的戰鬥區 ========== -->
+<!-- ========== 真正的戰鬥區 ========== -->
     <section id="battleSection" class="main-section" aria-label="戰鬥區">
     <!-- 頂部操作欄 -->
     <div class="action-bar" style="margin-bottom:8px;">
@@ -4821,12 +4816,10 @@
 
     function startNavBattle() {
       hideAllSections();
-      // There are two #battleSection elements - target the real one (2nd)
-      const battleSections = document.querySelectorAll('#battleSection');
-      const realBattle = battleSections[battleSections.length - 1];
-      if (realBattle) {
-        realBattle.style.display = 'flex';
-        realBattle.classList.add('active');
+      const battleSection = document.getElementById('battleSection');
+      if (battleSection) {
+        battleSection.style.display = 'flex';
+        battleSection.classList.add('active');
       }
       initBattle(navState.topic, navState.difficulty);
     }
@@ -6917,7 +6910,7 @@
 
       // Check if monster defeated
       if (battleState.monsterHp <= 0) {
-        handleMonsterDefeated();
+        monsterDefeated();
       } else {
         setTimeout(() => {
           if (battleState.inBattle) {
