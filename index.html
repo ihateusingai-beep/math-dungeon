@@ -86,19 +86,19 @@ section{position:fixed;inset:0;display:flex;flex-direction:column;align-items:ce
 .confirm-btn:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(108,92,231,.5)}
 
 /* ============ BATTLE SCREEN ============ */
-#battle-screen{background:#0a0a14;padding:0;justify-content:flex-start}
-.battle-arena{flex:1;width:100%;display:flex;flex-direction:column;align-items:center;padding:16px;position:relative}
+#battle-screen{background:#0a0a14;padding:0;justify-content:flex-start;overflow-y:auto;overscroll-behavior:contain;padding-top:env(safe-area-inset-top,0);padding-bottom:env(safe-area-inset-bottom,0)}
+.battle-arena{flex:1;width:100%;display:flex;flex-direction:column;align-items:center;padding:clamp(8px,2vw,16px);padding-top:calc(clamp(8px,2vw,16px) + env(safe-area-inset-top,0));position:relative;min-height:0}
 
 /* Battle Top Bar */
-.battle-top-bar{width:100%;display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:10px}
-.player-hud{background:rgba(0,0,0,.6);border-radius:16px;padding:10px 14px;min-width:180px;border:1px solid var(--border)}
+.battle-top-bar{width:100%;display:flex;justify-content:space-between;align-items:flex-start;gap:clamp(6px,2vw,12px);margin-bottom:clamp(6px,2vw,12px);flex-wrap:wrap}
+.player-hud{background:rgba(0,0,0,.6);border-radius:16px;padding:clamp(8px,2vw,14px);min-width:clamp(140px,25vw,180px);border:1px solid var(--border)}
 .hud-name{font-size:.9rem;font-weight:700;color:var(--gold);margin-bottom:6px;display:flex;justify-content:space-between}
 .hud-bar{height:14px;background:#1e1e2e;border-radius:7px;overflow:hidden;margin-bottom:4px;position:relative}
 .hud-bar-fill{height:100%;border-radius:7px;transition:width .4s}
 .hud-hp-fill{background:linear-gradient(90deg,var(--hp),#c0392b)}
 .hud-mp-fill{background:linear-gradient(90deg,var(--mp),#2980b9)}
 .hud-text{font-size:.7rem;color:var(--text-dim);margin-top:2px}
-.monster-hud{background:rgba(0,0,0,.6);border-radius:16px;padding:10px 14px;min-width:180px;border:1px solid var(--border);text-align:right}
+.monster-hud{background:rgba(0,0,0,.6);border-radius:16px;padding:clamp(8px,2vw,14px);min-width:clamp(140px,25vw,180px);border:1px solid var(--border);text-align:right}
 .monster-hud-name{font-size:.9rem;font-weight:700;color:var(--accent);margin-bottom:6px}
 .monster-hud-hp{font-size:.7rem;color:var(--text-dim)}
 
@@ -119,11 +119,11 @@ section{position:fixed;inset:0;display:flex;flex-direction:column;align-items:ce
 
 /* Battle Question */
 .battle-question{background:rgba(0,0,0,.75);border-radius:20px;padding:20px 24px;width:min(480px,95vw);text-align:center;border:2px solid var(--primary);margin-bottom:12px}
-.question-text{font-size:clamp(1.6rem,5vw,2.4rem);font-weight:900;color:var(--gold);margin-bottom:.4em}
+.question-text{font-size:clamp(1.2rem,4vw,2rem);font-weight:900;color:var(--gold);margin-bottom:.4em;word-break:break-word;overflow-wrap:break-word;line-height:1.2}
 .answer-hint{font-size:.85rem;color:var(--text-dim)}
 
 /* Answer Area */
-.battle-answer{display:flex;flex-direction:column;gap:10px;width:min(480px,95vw)}
+.battle-answer{display:flex;flex-direction:column;gap:10px;width:clamp(280px,90vw,480px);margin:0 auto}
 .choices-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
 .choice-btn{min-height:56px;padding:12px 16px;font-size:1.2rem;font-weight:700;border:2px solid var(--border);border-radius:14px;background:var(--card);color:var(--text);cursor:pointer;transition:all .15s;touch-action:manipulation;font-family:inherit}
 .choice-btn:hover{background:#3d3d5c;border-color:var(--secondary)}
@@ -133,13 +133,13 @@ section{position:fixed;inset:0;display:flex;flex-direction:column;align-items:ce
 .numpad-btn{min-height:52px;font-size:1.3rem;font-weight:700;border:2px solid var(--border);border-radius:12px;background:var(--card);color:var(--text);cursor:pointer;transition:all .15s;touch-action:manipulation;font-family:inherit}
 .numpad-btn:hover{background:#3d3d5c}
 .numpad-btn:active{transform:scale(.95)}
-.numpad-input-display{grid-column:1/-1;min-height:52px;padding:12px;font-size:1.5rem;font-weight:700;border:2px solid var(--primary);border-radius:12px;background:#1e1e2e;color:var(--gold);text-align:center;letter-spacing:.1em}
+.numpad-input-display{grid-column:1/-1;min-height:clamp(44px,8vw,56px);padding:clamp(8px,2vw,12px);font-size:clamp(1.2rem,4vw,1.6rem);font-weight:700;border:2px solid var(--primary);border-radius:12px;background:#1e1e2e;color:var(--gold);text-align:center;letter-spacing:.1em;width:100%;box-sizing:border-box}
 .submit-num-btn{grid-column:span 2;background:linear-gradient(135deg,var(--primary),var(--secondary))!important;border-color:var(--primary)!important;color:#fff!important}
 .clear-btn{color:var(--hp)!important}
 
 /* Skills */
 .battle-skills{display:flex;gap:8px;width:min(480px,95vw);margin-top:8px;flex-wrap:wrap}
-.skill-btn{min-height:48px;padding:8px 14px;font-size:.85rem;font-weight:700;border:2px solid var(--border);border-radius:12px;background:var(--card);color:var(--text);cursor:pointer;transition:all .15s;touch-action:manipulation;font-family:inherit;display:flex;flex-direction:column;align-items:center;gap:2px}
+.skill-btn{min-height:clamp(44px,8vw,52px);padding:clamp(6px,1.5vw,10px) clamp(8px,2vw,14px);font-size:clamp(.7rem,2vw,.85rem);font-weight:700;border:2px solid var(--border);border-radius:12px;background:var(--card);color:var(--text);cursor:pointer;transition:all .15s;touch-action:manipulation;font-family:inherit;display:flex;flex-direction:column;align-items:center;gap:2px}
 .skill-btn:hover{background:#3d3d5c}
 .skill-btn .sk-name{font-size:.9rem}
 .skill-btn .sk-cost{font-size:.7rem;color:var(--mp)}
@@ -182,15 +182,15 @@ section{position:fixed;inset:0;display:flex;flex-direction:column;align-items:ce
 @keyframes comboPop{0%{opacity:1;transform:translateX(-50%) scale(1)}50%{transform:translateX(-50%) scale(1.4)}100%{opacity:0;transform:translateX(-50%) scale(1.8) translateY(-20px)}}
 
 /* Skills Toggle */
-.skills-toggle{position:fixed;bottom:16px;right:16px;z-index:60;background:var(--card);border:2px solid var(--border);border-radius:50%;width:48px;height:48px;color:var(--text);font-size:1.2rem;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;touch-action:manipulation}
+.skills-toggle{position:fixed;bottom:clamp(12px,3vw,20px);right:clamp(12px,3vw,20px);z-index:90;background:var(--card);border:2px solid var(--border);border-radius:50%;width:48px;height:48px;color:var(--text);font-size:1.2rem;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;touch-action:manipulation}
 .skills-toggle:hover{background:#3d3d5c;border-color:var(--secondary)}
-#battle-skills.collapsed{max-height:0;overflow:hidden;opacity:0;margin-top:0;position:relative;z-index:40}
+#battle-skills.collapsed{max-height:0;overflow:hidden;opacity:0;margin-top:0;pointer-events:none}
 #battle-skills.collapsed .skill-btn{pointer-events:none}
 
 /* Zoom Controls */
 .zoom-hint{position:fixed;bottom:70px;right:16px;z-index:50;font-size:.65rem;color:var(--text-dim);text-align:center}
 
-.battle-answer{margin-bottom:80px}
+.battle-answer{margin-bottom:clamp(60px,10vh,100px)}
 
 </style>
 </head>
@@ -940,19 +940,19 @@ function renderBattleAnswer() {
     numpadValue = '';
     container.innerHTML = `
       <div class="numpad">
-        <input type="text" class="numpad-input-display" id="numpad-display" readonly aria-label="輸入數字">
-        <button type="button" class="numpad-btn" onclick="numpadPress('1');event.stopPropagation();" type="button" aria-label="1">1</button>
-        <button class="numpad-btn" onclick="numpadPress('2');event.stopPropagation();" type="button" aria-label="2">2</button>
-        <button class="numpad-btn" onclick="numpadPress('3');event.stopPropagation();" type="button" aria-label="3">3</button>
-        <button class="numpad-btn" onclick="numpadPress('4');event.stopPropagation();" type="button" aria-label="4">4</button>
-        <button class="numpad-btn" onclick="numpadPress('5');event.stopPropagation();" type="button" aria-label="5">5</button>
-        <button class="numpad-btn" onclick="numpadPress('6');event.stopPropagation();" type="button" aria-label="6">6</button>
-        <button class="numpad-btn" onclick="numpadPress('7');event.stopPropagation();" type="button" aria-label="7">7</button>
-        <button class="numpad-btn" onclick="numpadPress('8');event.stopPropagation();" type="button" aria-label="8">8</button>
-        <button class="numpad-btn" onclick="numpadPress('9');event.stopPropagation();" type="button" aria-label="9">9</button>
-        <button class="numpad-btn clear-btn" onclick="numpadClear();event.stopPropagation();" type="button" aria-label="清除">✖</button>
-        <button class="numpad-btn" onclick="numpadPress('0');event.stopPropagation();" type="button" aria-label="0">0</button>
-        <button class="numpad-btn submit-num-btn" onclick="submitNumpad();event.stopPropagation();" type="button" aria-label="確定">✓ 確定</button>
+        <input type="tel" class="numpad-input-display" id="numpad-display" inputmode="numeric" pattern="[0-9]*" aria-label="輸入數字" autocomplete="off">
+        <button type="button" class="numpad-btn" onclick="numpadPress('1');event.stopPropagation();" aria-label="1">1</button>
+        <button type="button" class="numpad-btn" onclick="numpadPress('2');event.stopPropagation();" aria-label="2">2</button>
+        <button type="button" class="numpad-btn" onclick="numpadPress('3');event.stopPropagation();" aria-label="3">3</button>
+        <button type="button" class="numpad-btn" onclick="numpadPress('4');event.stopPropagation();" aria-label="4">4</button>
+        <button type="button" class="numpad-btn" onclick="numpadPress('5');event.stopPropagation();" aria-label="5">5</button>
+        <button type="button" class="numpad-btn" onclick="numpadPress('6');event.stopPropagation();" aria-label="6">6</button>
+        <button type="button" class="numpad-btn" onclick="numpadPress('7');event.stopPropagation();" aria-label="7">7</button>
+        <button type="button" class="numpad-btn" onclick="numpadPress('8');event.stopPropagation();" aria-label="8">8</button>
+        <button type="button" class="numpad-btn" onclick="numpadPress('9');event.stopPropagation();" aria-label="9">9</button>
+        <button type="button" class="numpad-btn clear-btn" onclick="numpadClear();event.stopPropagation();" aria-label="清除">✖</button>
+        <button type="button" class="numpad-btn" onclick="numpadPress('0');event.stopPropagation();" aria-label="0">0</button>
+        <button type="button" class="numpad-btn submit-num-btn" onclick="submitNumpad();event.stopPropagation();" aria-label="確定">✓ 確定</button>
       </div>`;
     document.getElementById('answer-hint').textContent = '輸入數字後按 ✓ 確認或按 Enter';
     // Add Enter key handler
