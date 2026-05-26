@@ -940,19 +940,19 @@ function renderBattleAnswer() {
     numpadValue = '';
     container.innerHTML = `
       <div class="numpad">
-        <div class="numpad-input-display" id="numpad-display" tabindex="0" aria-label="輸入數字"></div>
-        <button class="numpad-btn" onclick="numpadPress('1');event.stopPropagation();" aria-label="1">1</button>
-        <button class="numpad-btn" onclick="numpadPress('2');event.stopPropagation();" aria-label="2">2</button>
-        <button class="numpad-btn" onclick="numpadPress('3');event.stopPropagation();" aria-label="3">3</button>
-        <button class="numpad-btn" onclick="numpadPress('4');event.stopPropagation();" aria-label="4">4</button>
-        <button class="numpad-btn" onclick="numpadPress('5');event.stopPropagation();" aria-label="5">5</button>
-        <button class="numpad-btn" onclick="numpadPress('6');event.stopPropagation();" aria-label="6">6</button>
-        <button class="numpad-btn" onclick="numpadPress('7');event.stopPropagation();" aria-label="7">7</button>
-        <button class="numpad-btn" onclick="numpadPress('8');event.stopPropagation();" aria-label="8">8</button>
-        <button class="numpad-btn" onclick="numpadPress('9');event.stopPropagation();" aria-label="9">9</button>
-        <button class="numpad-btn clear-btn" onclick="numpadClear();event.stopPropagation();" aria-label="清除">✖</button>
-        <button class="numpad-btn" onclick="numpadPress('0');event.stopPropagation();" aria-label="0">0</button>
-        <button class="numpad-btn submit-num-btn" onclick="submitNumpad();event.stopPropagation();" aria-label="確定">✓ 確定</button>
+        <input type="text" class="numpad-input-display" id="numpad-display" readonly aria-label="輸入數字">
+        <button type="button" class="numpad-btn" onclick="numpadPress('1');event.stopPropagation();" type="button" aria-label="1">1</button>
+        <button class="numpad-btn" onclick="numpadPress('2');event.stopPropagation();" type="button" aria-label="2">2</button>
+        <button class="numpad-btn" onclick="numpadPress('3');event.stopPropagation();" type="button" aria-label="3">3</button>
+        <button class="numpad-btn" onclick="numpadPress('4');event.stopPropagation();" type="button" aria-label="4">4</button>
+        <button class="numpad-btn" onclick="numpadPress('5');event.stopPropagation();" type="button" aria-label="5">5</button>
+        <button class="numpad-btn" onclick="numpadPress('6');event.stopPropagation();" type="button" aria-label="6">6</button>
+        <button class="numpad-btn" onclick="numpadPress('7');event.stopPropagation();" type="button" aria-label="7">7</button>
+        <button class="numpad-btn" onclick="numpadPress('8');event.stopPropagation();" type="button" aria-label="8">8</button>
+        <button class="numpad-btn" onclick="numpadPress('9');event.stopPropagation();" type="button" aria-label="9">9</button>
+        <button class="numpad-btn clear-btn" onclick="numpadClear();event.stopPropagation();" type="button" aria-label="清除">✖</button>
+        <button class="numpad-btn" onclick="numpadPress('0');event.stopPropagation();" type="button" aria-label="0">0</button>
+        <button class="numpad-btn submit-num-btn" onclick="submitNumpad();event.stopPropagation();" type="button" aria-label="確定">✓ 確定</button>
       </div>`;
     document.getElementById('answer-hint').textContent = '輸入數字後按 ✓ 確認或按 Enter';
     // Add Enter key handler
@@ -977,12 +977,13 @@ function handleNumpadEnter(e) {
 
 function numpadPress(digit) {
   numpadValue += digit;
-  document.getElementById('numpad-display').textContent = numpadValue;
+  document.getElementById('numpad-display').value = numpadValue;
+  document.getElementById('numpad-display').focus();
 }
 
 function numpadClear() {
   numpadValue = '';
-  document.getElementById('numpad-display').textContent = '';
+  document.getElementById('numpad-display').value = '';
 }
 
 function submitNumpad() {
