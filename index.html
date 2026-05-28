@@ -126,14 +126,15 @@ section{position:fixed;inset:0;display:flex;flex-direction:column;align-items:ce
 .battle-answer{display:flex;flex-direction:column;gap:10px;width:clamp(280px,90vw,480px);margin:0 auto}
 .choices-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
 .choice-btn{min-height:56px;padding:12px 16px;font-size:1.2rem;font-weight:700;border:2px solid var(--border);border-radius:14px;background:var(--card);color:var(--text);cursor:pointer;transition:all .15s;touch-action:manipulation;font-family:inherit}
-.choice-btn:hover{background:#3d3d5c;border-color:var(--secondary)}
-.choice-btn.correct{background:#1e3a2f;border-color:var(--xp);color:var(--xp)}
+.choice-btn:hover{background:#4d4d7a;border-color:var(--secondary);transform:scale(1.02)}
+.choice-btn:active{transform:scale(0.97)}
+.choice-btn.correct{background:#1e3a2f;border-color:var(--xp);color:var(--xp);animation:pulse-correct .4s}
 .choice-btn.wrong{background:#3a1e1e;border-color:var(--hp);color:var(--hp);animation:shake .3s}
 .numpad{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
 .numpad-btn{min-height:52px;font-size:1.3rem;font-weight:700;border:2px solid var(--border);border-radius:12px;background:var(--card);color:var(--text);cursor:pointer;transition:all .15s;touch-action:manipulation;font-family:inherit}
 .numpad-btn:hover{background:#3d3d5c}
 .numpad-btn:active{transform:scale(.95)}
-.numpad-input-display{grid-column:1/-1;min-height:clamp(44px,8vw,56px);padding:clamp(8px,2vw,12px);font-size:clamp(1.2rem,4vw,1.6rem);font-weight:700;border:2px solid var(--primary);border-radius:12px;background:#1e1e2e;color:var(--gold);text-align:center;letter-spacing:.1em;width:100%;box-sizing:border-box}
+.numpad-input-display{grid-column:1/-1;min-height:clamp(44px,8vw,56px);padding:clamp(8px,2vw,12px);font-size:clamp(1.2rem,4vw,1.6rem);font-weight:700;border:2px solid var(--primary);border-radius:12px;background:#1e1e2e;color:var(--gold);text-align:center;letter-spacing:.15em;width:100%;box-sizing:border-box;box-shadow:0 0 12px rgba(108,92,231,.25)}
 .submit-num-btn{grid-column:span 2;background:linear-gradient(135deg,var(--primary),var(--secondary))!important;border-color:var(--primary)!important;color:#fff!important}
 .clear-btn{color:var(--hp)!important}
 
@@ -150,8 +151,9 @@ section{position:fixed;inset:0;display:flex;flex-direction:column;align-items:ce
 .skill-btn.shield{border-color:#3498db;color:#3498db}
 
 /* Battle Log */
-.battle-log{width:min(480px,95vw);max-height:60px;overflow-y:auto;background:rgba(0,0,0,.5);border-radius:10px;padding:8px 12px;font-size:.78rem;color:var(--text-dim);margin-top:8px;text-align:center}
-.log-entry{margin:2px 0}
+.battle-log{width:min(480px,95vw);max-height:60px;overflow-y:auto;background:rgba(0,0,0,.5);border-radius:10px;padding:8px 12px;font-size:.78rem;color:var(--text-dim);margin-top:8px;text-align:center;border:1px solid var(--border)}
+.log-entry{margin:2px 0;padding:2px 6px;border-radius:4px;transition:background .2s}
+.log-entry:nth-child(odd){background:rgba(255,255,255,.03)}
 
 /* Battle Result */
 #battle-result{background:rgba(0,0,0,.92)}
@@ -175,6 +177,7 @@ section{position:fixed;inset:0;display:flex;flex-direction:column;align-items:ce
 /* Effect Animations */
 @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
 @keyframes flash{0%,100%{opacity:1}50%{opacity:.3}}
+@keyframes pulse-correct{0%{transform:scale(1)}50%{transform:scale(1.12);border-color:var(--xp);box-shadow:0 0 16px var(--xp)}100%{transform:scale(1)}}
 .hit-flash{animation:flash .15s ease-out 3}
 
 /* HP/MP bar labels */
