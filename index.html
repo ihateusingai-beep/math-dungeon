@@ -680,7 +680,8 @@ let battleState = {
   questionsAnswered: 0,
   waveIndex: 0,
   enemiesPerStage: 3,
-  totalStageDamage: 0
+  totalStageDamage: 0,
+  turnIndex: 1  // 1=player attack, 2=monster attack, 3=player attack, 4=monster attack...
 };
 
 let numpadValue = '';
@@ -850,7 +851,8 @@ function startBattle() {
     waveIndex: 0,
     enemiesPerStage: 3,
     totalStageDamage: 0,
-    stunned: false
+    stunned: false,
+    turnIndex: 1
   };
 
   gameState.shieldActive = false;
@@ -889,6 +891,7 @@ function startBattle() {
   renderBattleAnswer(); // uses currentQuestion
   playBgm(isBoss ? 'boss' : 'battle');
   addLog(`⚔️ 戰鬥開始！遇到 ${battleState.monsterName}！`);
+  updateTurnIndicator();
 
   // Set character sprite
   const charImg = {
@@ -943,7 +946,7 @@ function renderBattleAnswer() {
     numpadValue = '';
     container.innerHTML = `
       <div class="numpad">
-        <input type="tel" class="numpad-input-display" id="numpad-display" inputmode="numeric" pattern="[0-9]*" aria-label="輸入數字" autocomplete="off">
+        <input type="tel" class="numpad-input-display" id="numpad-display" inputmode="numeric" pattern="[0-9]*" aria-label="輸入數字" autocomplete="off" style="position:absolute;left:-9999px;opacity:0;pointer-events:none" tabindex="-1">
         <button type="button" class="numpad-btn" onclick="numpadPress('1');event.stopPropagation();" aria-label="1">1</button>
         <button type="button" class="numpad-btn" onclick="numpadPress('2');event.stopPropagation();" aria-label="2">2</button>
         <button type="button" class="numpad-btn" onclick="numpadPress('3');event.stopPropagation();" aria-label="3">3</button>
@@ -981,7 +984,6 @@ function handleNumpadEnter(e) {
 function numpadPress(digit) {
   numpadValue += digit;
   document.getElementById('numpad-display').value = numpadValue;
-  document.getElementById('numpad-display').focus();
 }
 
 function numpadClear() {
@@ -1002,65 +1004,106 @@ function submitChoice(answer) {
 
   if (diff === 'hard') numpadClear();
 
-  if (answer === correct) {
-    battleState.correctCount++;
-    battleState.questionsAnswered++;
-    battleState.combo++;
-    if (battleState.combo > battleState.maxCombo) battleState.maxCombo = battleState.combo;
-    updateComboDisplay();
-    let dmg = battleState.playerATK;
-    if (battleState.usingSkill === 'critical') {
-      dmg *= 3; // Berserker critical x3
-      addLog('⚡ 暴擊！');
-    }
-    if (gameState.berserkStacks > 0) {
-      dmg *= 2;
-      gameState.berserkStacks--;
-      addLog(`💢 狂暴！雙倍伤害！`);
-    }
-    battleState.monsterHP = Math.max(0, battleState.monsterHP - dmg);
-    battleState.totalDamage += dmg;
-    showDmgNumber(dmg, false, battleState.usingSkill === 'critical');
-    playSound('correct');
-    showComboMilestone();
-    addLog(`✅ 回答正確！(${battleState.combo}連) 攻擊造成 ${dmg} 傷害！`);
-    flashSprite('monster-sprite');
+  // Determine whose turn it is: 1,3,5... = player attack | 2,4,6... = monster attack
+  const isPlayerTurn = (battleState.turnIndex % 2 === 1);
 
-    // Turn-based redesign: correct answer = shield for monster retaliation, then monster attacks
-    // Shield is granted BEFORE monster attacks so it reduces the retaliation damage
-    gameState.shieldActive = true;
-    gameState.shieldTurns = 1;
-    gameState.shieldReduction = 0.5; // 50% damage reduction from correct answer shield
-    addLog(`🛡️ 獲得護盾！下回合怪物攻擊減半！`);
+  if (isPlayerTurn) {
+    // ===== ODD TURN: Player attacks =====
+    if (answer === correct) {
+      battleState.correctCount++;
+      battleState.questionsAnswered++;
+      battleState.combo++;
+      if (battleState.combo > battleState.maxCombo) battleState.maxCombo = battleState.combo;
+      updateComboDisplay();
+      let dmg = battleState.playerATK;
+      if (battleState.usingSkill === 'critical') {
+        dmg *= 3;
+        addLog('⚡ 暴擊！');
+      }
+      if (gameState.berserkStacks > 0) {
+        dmg *= 2;
+        gameState.berserkStacks--;
+        addLog(`💢 狂暴！雙倍伤害！`);
+      }
+      battleState.monsterHP = Math.max(0, battleState.monsterHP - dmg);
+      battleState.totalDamage += dmg;
+      showDmgNumber(dmg, false, battleState.usingSkill === 'critical');
+      playSound('correct');
+      showComboMilestone();
+      addLog(`✅ 回答正確！(${battleState.combo}連) 攻擊造成 ${dmg} 傷害！`);
+      flashSprite('monster-sprite');
 
-    // Check if monster defeated
-    if (battleState.monsterHP > 0) {
-      setTimeout(() => {
-        monsterAttack(); // Monster counterattacks (shield reduces damage if active)
-        updateBattleUI();
-        if (battleState.monsterHP > 0) nextQuestion();
+      battleState.turnIndex++;
+      if (battleState.monsterHP > 0) {
+        nextQuestion();
+        updateTurnIndicator();
+      } else {
+        nextQuestion();
         checkBattleEnd();
-      }, 400);
+      }
     } else {
-      nextQuestion();
-      checkBattleEnd();
+      // Player attack wrong — attack misses, no damage to either side
+      battleState.wrongCount++;
+      battleState.questionsAnswered++;
+      battleState.combo = 0;
+      updateComboDisplay();
+      addLog(`❌ 攻擊失敗！`);
+      playSound('fail');
+
+      battleState.turnIndex++;
+      if (battleState.monsterHP > 0) {
+        nextQuestion();
+        updateTurnIndicator();
+        checkBattleEnd();
+      }
     }
   } else {
-    battleState.wrongCount++;
-    battleState.questionsAnswered++;
-    battleState.combo = 0;
-    updateComboDisplay();
-    // Wrong answer = no shield, monster attacks at full damage
-    addLog(`❌ 正確答案是 ${correct}！怪物反擊！`);
-    playSound('fail');
-    monsterAttack(); // Full damage since no shield
-    setTimeout(() => {
-      if (battleState.monsterHP > 0) nextQuestion();
-      checkBattleEnd();
-    }, 400);
-    updateBattleUI();
+    // ===== EVEN TURN: Monster attacks — player defends with correct answer =====
+    if (answer === correct) {
+      battleState.correctCount++;
+      battleState.questionsAnswered++;
+      battleState.combo++;
+      if (battleState.combo > battleState.maxCombo) battleState.maxCombo = battleState.combo;
+      updateComboDisplay();
+      // Defend: 0 damage taken
+      addLog(`✅ 防守成功！擋住 ${battleState.monsterName} 的攻擊！`);
+      playSound('correct');
+      showComboMilestone();
+
+      battleState.turnIndex++;
+      if (battleState.monsterHP > 0) {
+        nextQuestion();
+        updateTurnIndicator();
+        checkBattleEnd();
+      }
+    } else {
+      // Monster attacks — player failed to defend
+      battleState.wrongCount++;
+      battleState.questionsAnswered++;
+      battleState.combo = 0;
+      updateComboDisplay();
+      addLog(`❌ 防守失敗！${battleState.monsterName} 造成 ${battleState.monsterATK} 傷害！`);
+      playSound('fail');
+      battleState.playerHP = Math.max(0, battleState.playerHP - battleState.monsterATK);
+      flashSprite('char-sprite');
+
+      battleState.turnIndex++;
+      updateBattleUI();
+      if (battleState.playerHP > 0 && battleState.monsterHP > 0) {
+        nextQuestion();
+        updateTurnIndicator();
+        checkBattleEnd();
+      } else {
+        checkBattleEnd();
+      }
+    }
   }
   battleState.usingSkill = false;
+}
+
+function updateTurnIndicator() {
+  const isPlayerTurn = (battleState.turnIndex % 2 === 1);
+  document.getElementById('turn-indicator').textContent = isPlayerTurn ? '⚔️ 玩家進攻' : '👹 怪獸進攻';
 }
 
 function monsterAttack() {
@@ -1105,10 +1148,12 @@ function useSkill(skill) {
   battleState.playerMP -= cost;
   playSound('skill');
 
+  // Skills are used on player turns only — they consume the turn
+  const isPlayerTurn = (battleState.turnIndex % 2 === 1);
+
   switch (skill) {
     // ===== KNIGHT SKILLS =====
     case 'shield-bash':
-      // Knight: 15 damage + monster stunned (skip 1 counter-attack, tracked via flag)
       battleState.monsterHP = Math.max(0, battleState.monsterHP - 15);
       battleState.totalDamage += 15;
       battleState.stunned = true;
@@ -1116,58 +1161,33 @@ function useSkill(skill) {
       addLog(`🛡️ 盾牌猛擊！15傷害+暈住1回合！`);
       flashSprite('monster-sprite');
       playSound('correct');
-      setTimeout(() => {
-        if (!battleState.stunned) { monsterAttack(); }
-        battleState.stunned = false;
-        updateBattleUI();
-        if (battleState.monsterHP > 0) nextQuestion();
-        checkBattleEnd();
-      }, 400);
+      advanceTurn();
       break;
     case 'iron-fortress':
-      // Knight: 75% damage reduction for 3 turns
       gameState.shieldActive = true;
-      gameState.shieldTurns = 3;
+      gameState.shieldTurns = 99; // Long duration, cleared per-turn when monster attacks
       gameState.shieldReduction = 0.25;
-      addLog(`🏰 鋼鐵壁壘！75%減傷，持續3回合！`);
-      setTimeout(() => {
-        if (battleState.monsterHP > 0) { monsterAttack(); }
-        updateBattleUI();
-        if (battleState.monsterHP > 0) nextQuestion();
-        checkBattleEnd();
-      }, 400);
+      addLog(`🏰 鋼鐵壁壘！75%減傷！`);
+      advanceTurn();
       break;
     case 'holy-shield':
-      // Knight: Complete immunity for 4 turns
       gameState.shieldActive = true;
-      gameState.shieldTurns = 4;
+      gameState.shieldTurns = 99;
       gameState.shieldReduction = 0;
-      addLog(`✨ 聖光護盾！無敵4回合！`);
-      setTimeout(() => {
-        if (battleState.monsterHP > 0) { monsterAttack(); }
-        updateBattleUI();
-        if (battleState.monsterHP > 0) nextQuestion();
-        checkBattleEnd();
-      }, 400);
+      addLog(`✨ 聖光護盾！無敵！`);
+      advanceTurn();
       break;
     // ===== MAGE SKILLS =====
     case 'fireball':
-      // Mage: 40 damage
       battleState.monsterHP = Math.max(0, battleState.monsterHP - 40);
       battleState.totalDamage += 40;
       showDmgNumber(40, false);
       addLog(`🔥 火球術！40傷害！`);
       flashSprite('monster-sprite');
       playSound('correct');
-      setTimeout(() => {
-        if (battleState.monsterHP > 0) { monsterAttack(); }
-        updateBattleUI();
-        if (battleState.monsterHP > 0) nextQuestion();
-        checkBattleEnd();
-      }, 400);
+      advanceTurn();
       break;
     case 'frost-nova':
-      // Mage: 20 damage + freeze (monster skips 1 attack turn)
       battleState.monsterHP = Math.max(0, battleState.monsterHP - 20);
       battleState.totalDamage += 20;
       battleState.stunned = true;
@@ -1175,30 +1195,17 @@ function useSkill(skill) {
       addLog(`❄️ 冰凍術！20傷害+凍住1回合！`);
       flashSprite('monster-sprite');
       playSound('correct');
-      setTimeout(() => {
-        if (!battleState.stunned) { monsterAttack(); }
-        battleState.stunned = false;
-        updateBattleUI();
-        if (battleState.monsterHP > 0) nextQuestion();
-        checkBattleEnd();
-      }, 400);
+      advanceTurn();
       break;
     case 'heal':
-      // Mage: Heal 30 HP
       const healAmt = Math.min(30, battleState.playerMaxHP - battleState.playerHP);
       battleState.playerHP = Math.min(battleState.playerMaxHP, battleState.playerHP + 30);
       showDmgNumber(healAmt, true);
       addLog(`💚 治療術！恢復 ${healAmt} HP！`);
-      setTimeout(() => {
-        if (battleState.monsterHP > 0) { monsterAttack(); }
-        updateBattleUI();
-        if (battleState.monsterHP > 0) nextQuestion();
-        checkBattleEnd();
-      }, 400);
+      advanceTurn();
       break;
     // ===== BERSERKER SKILLS =====
     case 'bloodlust':
-      // Berserker: 25 damage + lifesteal (heal 15 HP)
       battleState.monsterHP = Math.max(0, battleState.monsterHP - 25);
       battleState.totalDamage += 25;
       const healBS = Math.min(15, battleState.playerMaxHP - battleState.playerHP);
@@ -1207,38 +1214,33 @@ function useSkill(skill) {
       addLog(`🩸 嗜血打擊！25傷+吸血${healBS}HP！`);
       flashSprite('monster-sprite');
       playSound('correct');
-      setTimeout(() => {
-        if (battleState.monsterHP > 0) { monsterAttack(); }
-        updateBattleUI();
-        if (battleState.monsterHP > 0) nextQuestion();
-        checkBattleEnd();
-      }, 400);
+      advanceTurn();
       break;
     case 'berserk-rage':
-      // Berserker: Double ATK for 2 turns (stackable)
       gameState.berserkStacks = (gameState.berserkStacks || 0) + 2;
       battleState.usingSkill = 'berserk';
       addLog(`💢 狂暴狀態！下2次攻擊雙倍傷害！`);
-      setTimeout(() => {
-        if (battleState.monsterHP > 0) { monsterAttack(); }
-        updateBattleUI();
-        if (battleState.monsterHP > 0) nextQuestion();
-        checkBattleEnd();
-      }, 400);
+      advanceTurn();
       break;
     case 'critical':
-      // Berserker: 3x critical hit
       battleState.usingSkill = 'critical';
       addLog(`⚡ 暴擊之刃！下次傷害×3！`);
-      setTimeout(() => {
-        if (battleState.monsterHP > 0) { monsterAttack(); }
-        updateBattleUI();
-        if (battleState.monsterHP > 0) nextQuestion();
-        checkBattleEnd();
-      }, 400);
+      advanceTurn();
       break;
   }
   updateBattleUI();
+}
+
+function advanceTurn() {
+  battleState.turnIndex++;
+  if (battleState.monsterHP > 0) {
+    nextQuestion();
+    updateTurnIndicator();
+    checkBattleEnd();
+  } else {
+    nextQuestion();
+    checkBattleEnd();
+  }
 }
 
 function updateSkillButtons() {
@@ -1276,7 +1278,7 @@ function updateBattleUI() {
   document.getElementById('monster-max-hp').textContent = battleState.monsterMaxHP;
   document.getElementById('monster-hp-bar').style.width = (battleState.monsterHP / battleState.monsterMaxHP * 100) + '%';
   document.getElementById('wave-indicator').textContent = `第 ${battleState.waveIndex + 1}/${battleState.enemiesPerStage} 波`;
-  document.getElementById('turn-indicator').textContent = gameState.shieldActive ? '🛡️ 防護盾生效' : '⚔️ 玩家進攻';
+  updateTurnIndicator();
   // XP bar
   const xpBar = document.getElementById('xp-bar');
   const xpText = document.getElementById('xp-text');
@@ -1349,7 +1351,7 @@ function spawnNextWave() {
   document.getElementById('monster-sprite').src = battleState.monsterImg;
   document.getElementById('monster-hp-text').textContent = `${battleState.monsterHP}/${battleState.monsterMaxHP}`;
   document.getElementById('wave-indicator').textContent = `第 ${battleState.waveIndex + 1}/${battleState.enemiesPerStage} 波`;
-  document.getElementById('turn-indicator').textContent = '⚔️ 玩家進攻';
+  updateTurnIndicator();
   updateBattleUI();
   addLog(`⚔️ 第 ${battleState.waveIndex + 1} 波！遇到 ${battleState.monsterName}！`);
 }
