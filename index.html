@@ -946,7 +946,7 @@ function renderBattleAnswer() {
     numpadValue = '';
     container.innerHTML = `
       <div class="numpad">
-        <input type="tel" class="numpad-input-display" id="numpad-display" inputmode="numeric" pattern="[0-9]*" aria-label="輸入數字" autocomplete="off" style="position:absolute;left:-9999px;opacity:0;pointer-events:none" tabindex="-1">
+        <input type="tel" id="numpad-display" readonly autocomplete="off" inputmode="none" aria-label="輸入數字" style="position:absolute;left:-9999px;opacity:0;pointer-events:none" tabindex="-1">
         <button type="button" class="numpad-btn" onclick="numpadPress('1');event.stopPropagation();" aria-label="1">1</button>
         <button type="button" class="numpad-btn" onclick="numpadPress('2');event.stopPropagation();" aria-label="2">2</button>
         <button type="button" class="numpad-btn" onclick="numpadPress('3');event.stopPropagation();" aria-label="3">3</button>
