@@ -490,156 +490,156 @@ section{position:fixed;inset:0;display:flex;flex-direction:column;align-items:ce
 
     <div class="battle-skills" id="battle-skills">
       <!-- Knight Skills -->
-      <button class="skill-btn fireball knight-only" id="sk-btn-0" onclick="useSkill('shield-bash');event.stopPropagation();" style="display:none" aria-label="盾牌猛擊" data-desc="盾牌猛擊：15傷害+暈住1回合｜花費8MP">
+      <button class="skill-btn fireball knight-only" data-skill="shield-bash" data-slot="0" onclick="useSkill('shield-bash');event.stopPropagation();" style="display:none" aria-label="盾牌猛擊" data-desc="盾牌猛擊：15傷害+暈住1回合｜花費8MP">
         <span class="sk-name">🛡️ 盾牌猛擊</span>
         <span class="sk-cost">8MP · 15傷+暈</span>
       </button>
-      <button class="skill-btn heal knight-only" id="sk-btn-1" onclick="useSkill('iron-fortress');event.stopPropagation();" style="display:none" aria-label="鋼鐵壁壘" data-desc="鋼鐵壁壘：75%減傷持續3回合｜花費15MP">
+      <button class="skill-btn heal knight-only" data-slot="1" onclick="useSkill('iron-fortress');event.stopPropagation();" style="display:none" aria-label="鋼鐵壁壘" data-desc="鋼鐵壁壘：75%減傷持續3回合｜花費15MP">
         <span class="sk-name">🏰 鋼鐵壁壘</span>
         <span class="sk-cost">15MP · 75%減3回</span>
       </button>
-      <button class="skill-btn shield knight-only" id="sk-btn-2" onclick="useSkill('holy-shield');event.stopPropagation();" style="display:none" aria-label="聖光護盾" data-desc="聖光護盾：無敵持續4回合｜花費15MP">
+      <button class="skill-btn shield knight-only" data-slot="2" onclick="useSkill('holy-shield');event.stopPropagation();" style="display:none" aria-label="聖光護盾" data-desc="聖光護盾：無敵持續4回合｜花費15MP">
         <span class="sk-name">✨ 聖光護盾</span>
         <span class="sk-cost">15MP · 防4回</span>
       </button>
       <!-- Mage Skills -->
-      <button class="skill-btn fireball mage-only" id="sk-btn-0" onclick="useSkill('fireball');event.stopPropagation();" style="display:none" aria-label="火球術" data-desc="火球術：40傷害｜花費15MP">
+      <button class="skill-btn fireball mage-only" data-slot="0" onclick="useSkill('fireball');event.stopPropagation();" style="display:none" aria-label="火球術" data-desc="火球術：40傷害｜花費15MP">
         <span class="sk-name">🔥 火球術</span>
         <span class="sk-cost" id="fireball-cost">15MP · 40傷</span>
       </button>
-      <button class="skill-btn heal mage-only" id="sk-btn-1" onclick="useSkill('frost-nova');event.stopPropagation();" style="display:none" aria-label="冰凍術" data-desc="冰凍術：20傷害+凍住1回合｜花費12MP">
+      <button class="skill-btn heal mage-only" data-slot="1" onclick="useSkill('frost-nova');event.stopPropagation();" style="display:none" aria-label="冰凍術" data-desc="冰凍術：20傷害+凍住1回合｜花費12MP">
         <span class="sk-name">❄️ 冰凍術</span>
         <span class="sk-cost">12MP · 20傷+凍</span>
       </button>
-      <button class="skill-btn critical mage-only" id="sk-btn-2" onclick="useSkill('heal');event.stopPropagation();" style="display:none" aria-label="治療術" data-desc="治療術：恢復30HP｜花費20MP">
+      <button class="skill-btn critical mage-only" data-slot="2" onclick="useSkill('heal');event.stopPropagation();" style="display:none" aria-label="治療術" data-desc="治療術：恢復30HP｜花費20MP">
         <span class="sk-name">💚 治療術</span>
         <span class="sk-cost">20MP · +30HP</span>
       </button>
       <!-- Berserker Skills -->
-      <button class="skill-btn fireball berserker-only" id="sk-btn-0" onclick="useSkill('bloodlust');event.stopPropagation();" style="display:none" aria-label="嗜血打擊" data-desc="嗜血打擊：25傷害+吸血15HP｜花費10MP">
+      <button class="skill-btn fireball berserker-only" data-slot="0" onclick="useSkill('bloodlust');event.stopPropagation();" style="display:none" aria-label="嗜血打擊" data-desc="嗜血打擊：25傷害+吸血15HP｜花費10MP">
         <span class="sk-name">🩸 嗜血打擊</span>
         <span class="sk-cost">10MP · 25傷+吸血</span>
       </button>
-      <button class="skill-btn heal berserker-only" id="sk-btn-1" onclick="useSkill('berserk-rage');event.stopPropagation();" style="display:none" aria-label="狂暴狀態" data-desc="狂暴狀態：下2次攻擊雙倍傷害｜花費15MP">
+      <button class="skill-btn heal berserker-only" data-slot="1" onclick="useSkill('berserk-rage');event.stopPropagation();" style="display:none" aria-label="狂暴狀態" data-desc="狂暴狀態：下2次攻擊雙倍傷害｜花費15MP">
         <span class="sk-name">💢 狂暴狀態</span>
         <span class="sk-cost">15MP · 2回雙倍</span>
       </button>
-      <button class="skill-btn critical berserker-only" id="sk-btn-2" onclick="useSkill('critical');event.stopPropagation();" style="display:none" aria-label="暴擊之刃" data-desc="暴擊之刃：下次傷害×3｜花費10MP">
+      <button class="skill-btn critical berserker-only" data-slot="2" onclick="useSkill('critical');event.stopPropagation();" style="display:none" aria-label="暴擊之刃" data-desc="暴擊之刃：下次傷害×3｜花費10MP">
         <span class="sk-name">⚡ 暴擊之刃</span>
         <span class="sk-cost">10MP · 3倍傷</span>
       </button>
       <!-- Assassin Skills -->
-      <button class="skill-btn fireball assassin-only" id="sk-btn-0" onclick="useSkill('shadow-strike');event.stopPropagation();" style="display:none" aria-label="影襲" data-desc="影襲：35傷害+暈住1回合｜花費10MP">
+      <button class="skill-btn fireball assassin-only" data-slot="0" onclick="useSkill('shadow-strike');event.stopPropagation();" style="display:none" aria-label="影襲" data-desc="影襲：35傷害+暈住1回合｜花費10MP">
         <span class="sk-name">🗡️ 影襲</span>
         <span class="sk-cost">10MP · 35傷+暈</span>
       </button>
-      <button class="skill-btn heal assassin-only" id="sk-btn-1" onclick="useSkill('smoke-bomb');event.stopPropagation();" style="display:none" aria-label="煙霧彈" data-desc="煙霧彈：迴避下次攻擊｜花費12MP">
+      <button class="skill-btn heal assassin-only" data-slot="1" onclick="useSkill('smoke-bomb');event.stopPropagation();" style="display:none" aria-label="煙霧彈" data-desc="煙霧彈：迴避下次攻擊｜花費12MP">
         <span class="sk-name">💨 煙霧彈</span>
         <span class="sk-cost">12MP · 迴避1次</span>
       </button>
-      <button class="skill-btn critical assassin-only" id="sk-btn-2" onclick="useSkill('poison-blade');event.stopPropagation();" style="display:none" aria-label="淬毒刃" data-desc="淬毒刃：20傷害+中毒3回合(每回8傷)｜花費15MP">
+      <button class="skill-btn critical assassin-only" data-slot="2" onclick="useSkill('poison-blade');event.stopPropagation();" style="display:none" aria-label="淬毒刃" data-desc="淬毒刃：20傷害+中毒3回合(每回8傷)｜花費15MP">
         <span class="sk-name">☠️ 淬毒刃</span>
         <span class="sk-cost">15MP · 20傷+毒</span>
       </button>
       <!-- Necromancer Skills -->
-      <button class="skill-btn fireball necromancer-only" id="sk-btn-0" onclick="useSkill('bone-shield');event.stopPropagation();" style="display:none" aria-label="白骨盾" data-desc="白骨盾：50%減傷2回合｜花費12MP">
+      <button class="skill-btn fireball necromancer-only" data-slot="0" onclick="useSkill('bone-shield');event.stopPropagation();" style="display:none" aria-label="白骨盾" data-desc="白骨盾：50%減傷2回合｜花費12MP">
         <span class="sk-name">💀 白骨盾</span>
         <span class="sk-cost">12MP · 50%減2回</span>
       </button>
-      <button class="skill-btn heal necromancer-only" id="sk-btn-1" onclick="useSkill('death-coil');event.stopPropagation();" style="display:none" aria-label="死亡纏繞" data-desc="死亡纏繞：25傷害+中毒3回合(每回5傷)｜花費15MP">
+      <button class="skill-btn heal necromancer-only" data-slot="1" onclick="useSkill('death-coil');event.stopPropagation();" style="display:none" aria-label="死亡纏繞" data-desc="死亡纏繞：25傷害+中毒3回合(每回5傷)｜花費15MP">
         <span class="sk-name">☠️ 死亡纏繞</span>
         <span class="sk-cost">15MP · 25傷+毒3回</span>
       </button>
-      <button class="skill-btn critical necromancer-only" id="sk-btn-2" onclick="useSkill('soul-drain');event.stopPropagation();" style="display:none" aria-label="靈魂吸取" data-desc="靈魂吸取：30傷害+吸取15HP｜花費18MP">
+      <button class="skill-btn critical necromancer-only" data-slot="2" onclick="useSkill('soul-drain');event.stopPropagation();" style="display:none" aria-label="靈魂吸取" data-desc="靈魂吸取：30傷害+吸取15HP｜花費18MP">
         <span class="sk-name">💜 靈魂吸取</span>
         <span class="sk-cost">18MP · 30傷+吸15HP</span>
       </button>
-      <button class="skill-btn shield necromancer-only" id="sk-btn-3" onclick="useSkill('summon-minion');event.stopPropagation();" style="display:none" aria-label="召喚僕從" data-desc="召喚僕從：下次攻擊+20傷害｜花費25MP">
+      <button class="skill-btn shield necromancer-only" data-slot="3" onclick="useSkill('summon-minion');event.stopPropagation();" style="display:none" aria-label="召喚僕從" data-desc="召喚僕從：下次攻擊+20傷害｜花費25MP">
         <span class="sk-name">👤 召喚僕從</span>
         <span class="sk-cost">25MP · 下次+20傷</span>
       </button>
       <!-- Paladin Skills -->
-      <button class="skill-btn fireball paladin-only" id="sk-btn-0" onclick="useSkill('divine-shield');event.stopPropagation();" style="display:none" aria-label="神聖庇護" data-desc="神聖庇護：無敵1回合｜花費10MP">
+      <button class="skill-btn fireball paladin-only" data-slot="0" onclick="useSkill('divine-shield');event.stopPropagation();" style="display:none" aria-label="神聖庇護" data-desc="神聖庇護：無敵1回合｜花費10MP">
         <span class="sk-name">🛡️ 神聖庇護</span>
         <span class="sk-cost">10MP · 無敵1回</span>
       </button>
-      <button class="skill-btn heal paladin-only" id="sk-btn-1" onclick="useSkill('holy-strike');event.stopPropagation();" style="display:none" aria-label="神聖打擊" data-desc="神聖打擊：20傷害+反傷3｜花費12MP">
+      <button class="skill-btn heal paladin-only" data-slot="1" onclick="useSkill('holy-strike');event.stopPropagation();" style="display:none" aria-label="神聖打擊" data-desc="神聖打擊：20傷害+反傷3｜花費12MP">
         <span class="sk-name">⚡ 神聖打擊</span>
         <span class="sk-cost">12MP · 20傷+反3傷</span>
       </button>
-      <button class="skill-btn critical paladin-only" id="sk-btn-2" onclick="useSkill('heal-aura');event.stopPropagation();" style="display:none" aria-label="治療光環" data-desc="治療光環：恢復25HP+持續回血｜花費20MP">
+      <button class="skill-btn critical paladin-only" data-slot="2" onclick="useSkill('heal-aura');event.stopPropagation();" style="display:none" aria-label="治療光環" data-desc="治療光環：恢復25HP+持續回血｜花費20MP">
         <span class="sk-name">💚 治療光環</span>
         <span class="sk-cost">20MP · 25HP+持續回血</span>
       </button>
-      <button class="skill-btn shield paladin-only" id="sk-btn-3" onclick="useSkill('hammer-judgement');event.stopPropagation();" style="display:none" aria-label="錘子審判" data-desc="錘子審判：35傷害+敵人攻擊-5｜花費18MP">
+      <button class="skill-btn shield paladin-only" data-slot="3" onclick="useSkill('hammer-judgement');event.stopPropagation();" style="display:none" aria-label="錘子審判" data-desc="錘子審判：35傷害+敵人攻擊-5｜花費18MP">
         <span class="sk-name">🔨 錘子審判</span>
         <span class="sk-cost">18MP · 35傷+降攻</span>
       </button>
       <!-- Druid Skills -->
-      <button class="skill-btn fireball druid-only" id="sk-btn-0" onclick="useSkill('wild-growth');event.stopPropagation();" style="display:none" aria-label="野性生長" data-desc="野性生長：恢復20HP+每回+3HP持續3回合｜花費10MP">
+      <button class="skill-btn fireball druid-only" data-slot="0" onclick="useSkill('wild-growth');event.stopPropagation();" style="display:none" aria-label="野性生長" data-desc="野性生長：恢復20HP+每回+3HP持續3回合｜花費10MP">
         <span class="sk-name">🌿 野性生長</span>
         <span class="sk-cost">10MP · 20HP+持續回血</span>
       </button>
-      <button class="skill-btn heal druid-only" id="sk-btn-1" onclick="useSkill('moonfire');event.stopPropagation();" style="display:none" aria-label="月火術" data-desc="月火術：22傷害+燃燒3回合(每回4傷)｜花費14MP">
+      <button class="skill-btn heal druid-only" data-slot="1" onclick="useSkill('moonfire');event.stopPropagation();" style="display:none" aria-label="月火術" data-desc="月火術：22傷害+燃燒3回合(每回4傷)｜花費14MP">
         <span class="sk-name">🌙 月火術</span>
         <span class="sk-cost">14MP · 22傷+燃燒</span>
       </button>
-      <button class="skill-btn critical druid-only" id="sk-btn-2" onclick="useSkill('starfall');event.stopPropagation();" style="display:none" aria-label="星落術" data-desc="星落術：40傷害｜花費22MP">
+      <button class="skill-btn critical druid-only" data-slot="2" onclick="useSkill('starfall');event.stopPropagation();" style="display:none" aria-label="星落術" data-desc="星落術：40傷害｜花費22MP">
         <span class="sk-name">✨ 星落術</span>
         <span class="sk-cost">22MP · 40傷害</span>
       </button>
-      <button class="skill-btn shield druid-only" id="sk-btn-3" onclick="useSkill('nature-shield');event.stopPropagation();" style="display:none" aria-label="自然護盾" data-desc="自然護盾：75%減傷2回合｜花費15MP">
+      <button class="skill-btn shield druid-only" data-slot="3" onclick="useSkill('nature-shield');event.stopPropagation();" style="display:none" aria-label="自然護盾" data-desc="自然護盾：75%減傷2回合｜花費15MP">
         <span class="sk-name">🌳 自然護盾</span>
         <span class="sk-cost">15MP · 75%減2回</span>
       </button>
       <!-- Viking Skills -->
-      <button class="skill-btn fireball viking-only" id="sk-btn-0" onclick="useSkill('axe-throw');event.stopPropagation();" style="display:none" aria-label="斧頭投擲" data-desc="斧頭投擲：18傷害+流血2回合(每回3傷)｜花費8MP">
+      <button class="skill-btn fireball viking-only" data-slot="0" onclick="useSkill('axe-throw');event.stopPropagation();" style="display:none" aria-label="斧頭投擲" data-desc="斧頭投擲：18傷害+流血2回合(每回3傷)｜花費8MP">
         <span class="sk-name">🪓 斧頭投擲</span>
         <span class="sk-cost">8MP · 18傷+流血</span>
       </button>
-      <button class="skill-btn heal viking-only" id="sk-btn-1" onclick="useSkill('battle-cry');event.stopPropagation();" style="display:none" aria-label="戰鬥怒吼" data-desc="戰鬥怒吼：攻擊+5，持續3回合｜花費10MP">
+      <button class="skill-btn heal viking-only" data-slot="1" onclick="useSkill('battle-cry');event.stopPropagation();" style="display:none" aria-label="戰鬥怒吼" data-desc="戰鬥怒吼：攻擊+5，持續3回合｜花費10MP">
         <span class="sk-name">📢 戰鬥怒吼</span>
         <span class="sk-cost">10MP · +5攻3回</span>
       </button>
-      <button class="skill-btn critical viking-only" id="sk-btn-2" onclick="useSkill('blood-rage');event.stopPropagation();" style="display:none" aria-label="血腥狂暴" data-desc="血腥狂暴：下2次攻擊1.5倍+吸血50%｜花費15MP">
+      <button class="skill-btn critical viking-only" data-slot="2" onclick="useSkill('blood-rage');event.stopPropagation();" style="display:none" aria-label="血腥狂暴" data-desc="血腥狂暴：下2次攻擊1.5倍+吸血50%｜花費15MP">
         <span class="sk-name">🩸 血腥狂暴</span>
         <span class="sk-cost">15MP · 2回1.5倍+吸血</span>
       </button>
-      <button class="skill-btn shield viking-only" id="sk-btn-3" onclick="useSkill('ground-smash');event.stopPropagation();" style="display:none" aria-label="大地粉碎" data-desc="大地粉碎：30傷害+暈1回合｜花費18MP">
+      <button class="skill-btn shield viking-only" data-slot="3" onclick="useSkill('ground-smash');event.stopPropagation();" style="display:none" aria-label="大地粉碎" data-desc="大地粉碎：30傷害+暈1回合｜花費18MP">
         <span class="sk-name">💥 大地粉碎</span>
         <span class="sk-cost">18MP · 30傷+暈</span>
       </button>
       <!-- Shadow Skills -->
-      <button class="skill-btn fireball shadow-only" id="sk-btn-0" onclick="useSkill('shadow-bolt');event.stopPropagation();" style="display:none" aria-label="暗影彈" data-desc="暗影彈：20傷害｜花費8MP">
+      <button class="skill-btn fireball shadow-only" data-slot="0" onclick="useSkill('shadow-bolt');event.stopPropagation();" style="display:none" aria-label="暗影彈" data-desc="暗影彈：20傷害｜花費8MP">
         <span class="sk-name">⚫ 暗影彈</span>
         <span class="sk-cost">8MP · 20傷</span>
       </button>
-      <button class="skill-btn heal shadow-only" id="sk-btn-1" onclick="useSkill('dark-reap');event.stopPropagation();" style="display:none" aria-label="暗影收割" data-desc="暗影收割：30傷害+吸收10MP｜花費14MP">
+      <button class="skill-btn heal shadow-only" data-slot="1" onclick="useSkill('dark-reap');event.stopPropagation();" style="display:none" aria-label="暗影收割" data-desc="暗影收割：30傷害+吸收10MP｜花費14MP">
         <span class="sk-name">💜 暗影收割</span>
         <span class="sk-cost">14MP · 30傷+吸MP</span>
       </button>
-      <button class="skill-btn critical shadow-only" id="sk-btn-2" onclick="useSkill('shadow-veil');event.stopPropagation();" style="display:none" aria-label="暗影面紗" data-desc="暗影面紗：迴避下次攻擊｜花費12MP">
+      <button class="skill-btn critical shadow-only" data-slot="2" onclick="useSkill('shadow-veil');event.stopPropagation();" style="display:none" aria-label="暗影面紗" data-desc="暗影面紗：迴避下次攻擊｜花費12MP">
         <span class="sk-name">🌑 暗影面紗</span>
         <span class="sk-cost">12MP · 迴避1次</span>
       </button>
-      <button class="skill-btn shield shadow-only" id="sk-btn-3" onclick="useSkill('void-blast');event.stopPropagation();" style="display:none" aria-label="虛空衝擊" data-desc="虛空衝擊：45傷害｜花費22MP">
+      <button class="skill-btn shield shadow-only" data-slot="3" onclick="useSkill('void-blast');event.stopPropagation();" style="display:none" aria-label="虛空衝擊" data-desc="虛空衝擊：45傷害｜花費22MP">
         <span class="sk-name">💥 虛空衝擊</span>
         <span class="sk-cost">22MP · 45傷</span>
       </button>
       <!-- Ranger Skills -->
-      <button class="skill-btn fireball ranger-only" id="sk-btn-0" onclick="useSkill('quick-shot');event.stopPropagation();" style="display:none" aria-label="快速射擊" data-desc="快速射擊：15傷害｜花費6MP">
+      <button class="skill-btn fireball ranger-only" data-slot="0" onclick="useSkill('quick-shot');event.stopPropagation();" style="display:none" aria-label="快速射擊" data-desc="快速射擊：15傷害｜花費6MP">
         <span class="sk-name">🏹 快速射擊</span>
         <span class="sk-cost">6MP · 15傷</span>
       </button>
-      <button class="skill-btn heal ranger-only" id="sk-btn-1" onclick="useSkill('poison-arrow');event.stopPropagation();" style="display:none" aria-label="毒箭" data-desc="毒箭：18傷害+中毒2回合(每回5傷)｜花費12MP">
+      <button class="skill-btn heal ranger-only" data-slot="1" onclick="useSkill('poison-arrow');event.stopPropagation();" style="display:none" aria-label="毒箭" data-desc="毒箭：18傷害+中毒2回合(每回5傷)｜花費12MP">
         <span class="sk-name">☠️ 毒箭</span>
         <span class="sk-cost">12MP · 18傷+中毒</span>
       </button>
-      <button class="skill-btn critical ranger-only" id="sk-btn-2" onclick="useSkill('multi-shot');event.stopPropagation();" style="display:none" aria-label="多重射擊" data-desc="多重射擊：3×12傷害｜花費18MP">
+      <button class="skill-btn critical ranger-only" data-slot="2" onclick="useSkill('multi-shot');event.stopPropagation();" style="display:none" aria-label="多重射擊" data-desc="多重射擊：3×12傷害｜花費18MP">
         <span class="sk-name">🎯 多重射擊</span>
         <span class="sk-cost">18MP · 3×12傷</span>
       </button>
-      <button class="skill-btn shield ranger-only" id="sk-btn-3" onclick="useSkill('eagle-eye');event.stopPropagation();" style="display:none" aria-label="鷹眼" data-desc="鷹眼：下次攻擊+8傷害｜花費10MP">
+      <button class="skill-btn shield ranger-only" data-slot="3" onclick="useSkill('eagle-eye');event.stopPropagation();" style="display:none" aria-label="鷹眼" data-desc="鷹眼：下次攻擊+8傷害｜花費10MP">
         <span class="sk-name">👁️ 鷹眼</span>
         <span class="sk-cost">10MP · 下次+8攻</span>
       </button>
@@ -2550,10 +2550,10 @@ function playBgm(type) {
   if (!bgmEnabled) return;
   stopBgm();
   const bgmFiles = {
-    menu: 'assets/bgm/menu-bgm.mp3',
-    battle: 'assets/bgm/battle-bgm.mp3',
-    boss: 'assets/bgm/boss-bgm.mp3',
-    victory: 'assets/bgm/victory-bgm.mp3'
+    menu: 'assets/audio/songs/title-screen-theme.mp3',
+    battle: 'assets/audio/songs/dungeon-depths-theme-full.mp3',
+    boss: 'assets/audio/songs/final-battle-theme-full.mp3',
+    victory: 'assets/audio/songs/victory-glory-theme-full.mp3'
   };
   const src = bgmFiles[type];
   if (!src) return;
