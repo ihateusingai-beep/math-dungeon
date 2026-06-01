@@ -2206,7 +2206,7 @@ function showPracticeSelectScreen() {
     html += `<div class="topic-btn" onclick="startPractice(${i})">
       <span class="t-num">×${i}</span>
       <span style="margin-left:12px;font-size:1rem">乘法表</span>
-      <span style="margin-left:auto;color:${best>=80?'#2ecc71':best>=50?'#fdcb6e':'#e74c3c'};font-size:.9rem">
+      <span style="margin-left:auto;color:${best!==null && best>=80?'#2ecc71':best!==null && best>=50?'#fdcb6e':'#e74c3c'};font-size:.9rem">
         ${best !== null ? best+'%' : '未測試'}
       </span>
     </div>`;
@@ -2355,7 +2355,7 @@ function showDashboardScreen() {
     const best = getBestScore(records);
     const recent = records[records.length - 1];
     const label = table === 0 ? '混合' : `×${table}`;
-    const color = best !== null && best >= 80 ? '#2ecc71' : best !== null && best >= 50 ? '#fdcb6e' : best === null ? '#888' : '#e74c3c';
+    const color = best !== null && best >= 80 ? '#2ecc71' : best !== null && best >= 50 ? '#fdcb6e' : '#888';
     const bestDisplay = best !== null ? best+'%' : '—';
     html += `<div style="background:var(--card);border-radius:16px;padding:18px 24px;display:flex;align-items:center;gap:16px">
       <div style="font-size:1.5rem;font-weight:900;color:${color};min-width:50px">${label}</div>
