@@ -2341,8 +2341,10 @@ function showDashboardScreen() {
 
   const allWeak = {};
   for (const [tableStr, records] of entries) {
+    if (!Array.isArray(records)) continue;
     for (const rec of records) {
-      if (rec.wrong) rec.wrong.forEach(w => {
+      if (rec && rec.wrong && Array.isArray(rec.wrong)) rec.wrong.forEach(w => {
+        if (typeof w !== 'string') return;
         const key = w.split('=')[0];
         allWeak[key] = (allWeak[key] || 0) + 1;
       });
@@ -2350,6 +2352,7 @@ function showDashboardScreen() {
   }
   let html = '<div style="display:flex;flex-direction:column;gap:12px">';
   for (const [tableStr, records] of entries) {
+    if (!Array.isArray(records)) continue;
     const table = parseInt(tableStr);
     if (table === 0) continue;
     const best = getBestScore(records);
@@ -2357,17 +2360,18 @@ function showDashboardScreen() {
     const label = table === 0 ? '混合' : `×${table}`;
     const color = best !== null && best >= 80 ? '#2ecc71' : best !== null && best >= 50 ? '#fdcb6e' : '#888';
     const bestDisplay = best !== null ? best+'%' : '—';
+    const barWidth = best !== null && isFinite(best) ? best : 0;
     html += `<div style="background:var(--card);border-radius:16px;padding:18px 24px;display:flex;align-items:center;gap:16px">
       <div style="font-size:1.5rem;font-weight:900;color:${color};min-width:50px">${label}</div>
       <div style="flex:1">
-        <div style="height:10px;background:#1e1e2e;border-radius:5px;overflow:hidden"><div style="height:100%;width:${best !== null ? best : 0}%;background:${color};border-radius:5px;transition:width .5s"></div></div>
+        <div style="height:10px;background:#1e1e2e;border-radius:5px;overflow:hidden"><div style="height:100%;width:${barWidth}%;background:${color};border-radius:5px;transition:width .5s"></div></div>
       </div>
       <div style="font-size:1.1rem;font-weight:700;color:${color}">${bestDisplay}</div>
       <div style="font-size:.8rem;color:var(--text-dim)">${records ? records.length : 0}次</div>
     </div>`;
   }
 
-  if (data[0] && data[0].length > 0) {
+  if (data[0] && Array.isArray(data[0]) && data[0].length > 0) {
     const mixedBest = getBestScore(data[0]) || 0;
     const mixedColor = mixedBest >= 80 ? '#2ecc71' : mixedBest >= 50 ? '#fdcb6e' : '#e74c3c';
     html = `<div style="background:var(--card);border-radius:16px;padding:18px 24px;display:flex;align-items:center;gap:16px;margin-bottom:12px">
