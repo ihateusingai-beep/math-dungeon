@@ -1360,7 +1360,7 @@ function submitChoice(answer) {
       battleState.questionsAnswered++;
       battleState.combo = 0;
       updateComboDisplay();
-      addLog(`❌ 攻擊失敗！`);
+      addLog(`❌ 攻擊失敗！正確答案：${q.a}×${q.b}=${correct}`);
       playSound('fail');
 
       battleState.turnIndex++;
@@ -1406,7 +1406,7 @@ function submitChoice(answer) {
         gameState.evadeNext = false;
         addLog(`💨 煙霧彈生效！迴避了 ${battleState.monsterName} 的攻擊！`);
       } else {
-        addLog(`❌ 防守失敗！${battleState.monsterName} 造成 ${battleState.monsterATK} 傷害！`);
+        addLog(`❌ 防守失敗！正確答案：${battleState.currentQuestion.a}×${battleState.currentQuestion.b}=${correct} — ${battleState.monsterName} 造成 ${battleState.monsterATK} 傷害！`);
         battleState.playerHP = Math.max(0, battleState.playerHP - battleState.monsterATK);
         flashSprite('char-sprite');
       }
@@ -2298,12 +2298,14 @@ function checkPracticeAnswer(selected, correct, q) {
   const fb = document.getElementById('practice-feedback');
   if (selected === correct) {
     practiceState.correct++;
-    fb.textContent = '✅ 正確！';
+    fb.textContent = `✅ 正確！${q.a}×${q.b}=${correct} —— 你記得啱！`;
     fb.style.color = '#2ecc71';
     SoundEngine.correct();
   } else {
     practiceState.wrong.push(`${q.a}×${q.b}=${correct}`);
-    fb.textContent = `❌ 正確答案：${correct}`;
+    const explain = q.b <= 5 ? `${q.a} 組 ${q.b}，加起來係 ${correct}（${Array(q.b).fill(q.a).join('+')}）`
+                             : `${q.a}×${q.b} 即係 ${correct}，試多次記住佢！`;
+    fb.textContent = `❌ 正確答案：${correct}（${explain}）`;
     fb.style.color = '#e74c3c';
     SoundEngine.fail();
   }
@@ -2369,38 +2371,44 @@ function showDashboardScreen() {
       });
     }
   }
+
   let html = '<div style="display:flex;flex-direction:column;gap:12px">';
+
+  // Mixed (table 0) first
+  if (data[0] && Array.isArray(data[0]) && data[0].length > 0) {
+    const recs = data[0];
+    const best = getBestScore(recs);
+    const recent = recs[recs.length - 1];
+    const stars = best >= 80 ? '⭐⭐⭐' : best >= 60 ? '⭐⭐' : best !== null && best >= 40 ? '⭐' : '';
+    const lastPct = recent ? Math.round(recent.correct / recent.total * 100) : null;
+    const color = best >= 80 ? '#2ecc71' : best >= 50 ? '#fdcb6e' : '#e74c3c';
+    html = `<div style="background:var(--card);border-radius:16px;padding:18px 24px;display:flex;align-items:center;gap:16px;cursor:pointer;margin-bottom:12px" onclick="startPractice(0)">
+      <div style="font-size:1.5rem;font-weight:900;color:${color};min-width:50px">🔀</div>
+      <div style="flex:1"><div style="height:10px;background:#1e1e2e;border-radius:5px;overflow:hidden"><div style="height:100%;width:${isFinite(best)?best:0}%;background:${color};border-radius:5px;transition:width .5s"></div></div></div>
+      <div style="font-size:1.1rem;font-weight:700;color:${color}">${best!==null?best+'%':'—'}</div>
+      <div style="font-size:.9rem;color:var(--text-dim)">${lastPct!==null?lastPct+'%':'—'}</div>
+      <div style="font-size:1.2rem">${stars}</div>
+      <div style="font-size:.8rem;color:var(--text-dim)">混合 ${recs.length}次</div>
+    </div>` + html;
+  }
+
   for (const [tableStr, records] of entries) {
     if (!Array.isArray(records)) continue;
     const table = parseInt(tableStr);
     if (table === 0) continue;
     const best = getBestScore(records);
     const recent = records[records.length - 1];
-    const label = table === 0 ? '混合' : `×${table}`;
-    const color = best !== null && best >= 80 ? '#2ecc71' : best !== null && best >= 50 ? '#fdcb6e' : '#888';
-    const bestDisplay = best !== null ? best+'%' : '—';
-    const barWidth = best !== null && isFinite(best) ? best : 0;
-    html += `<div style="background:var(--card);border-radius:16px;padding:18px 24px;display:flex;align-items:center;gap:16px">
-      <div style="font-size:1.5rem;font-weight:900;color:${color};min-width:50px">${label}</div>
-      <div style="flex:1">
-        <div style="height:10px;background:#1e1e2e;border-radius:5px;overflow:hidden"><div style="height:100%;width:${barWidth}%;background:${color};border-radius:5px;transition:width .5s"></div></div>
-      </div>
-      <div style="font-size:1.1rem;font-weight:700;color:${color}">${bestDisplay}</div>
-      <div style="font-size:.8rem;color:var(--text-dim)">${records ? records.length : 0}次</div>
+    const stars = best >= 80 ? '⭐⭐⭐' : best >= 60 ? '⭐⭐' : best !== null && best >= 40 ? '⭐' : '';
+    const lastPct = recent ? Math.round(recent.correct / recent.total * 100) : null;
+    const color = best >= 80 ? '#2ecc71' : best >= 50 ? '#fdcb6e' : '#e74c3c';
+    html += `<div style="background:var(--card);border-radius:16px;padding:18px 24px;display:flex;align-items:center;gap:16px;cursor:pointer" onclick="startPractice(${table})">
+      <div style="font-size:1.5rem;font-weight:900;color:${color};min-width:50px">×${table}</div>
+      <div style="flex:1"><div style="height:10px;background:#1e1e2e;border-radius:5px;overflow:hidden"><div style="height:100%;width:${isFinite(best)?best:0}%;background:${color};border-radius:5px;transition:width .5s"></div></div></div>
+      <div style="font-size:1.1rem;font-weight:700;color:${color}">${best!==null?best+'%':'—'}</div>
+      <div style="font-size:.9rem;color:var(--text-dim)">${lastPct!==null?lastPct+'%':'—'}</div>
+      <div style="font-size:1.2rem">${stars}</div>
+      <div style="font-size:.8rem;color:var(--text-dim)">${records.length}次</div>
     </div>`;
-  }
-
-  if (data[0] && Array.isArray(data[0]) && data[0].length > 0) {
-    const mixedBest = getBestScore(data[0]) || 0;
-    const mixedColor = mixedBest >= 80 ? '#2ecc71' : mixedBest >= 50 ? '#fdcb6e' : '#e74c3c';
-    html = `<div style="background:var(--card);border-radius:16px;padding:18px 24px;display:flex;align-items:center;gap:16px;margin-bottom:12px">
-      <div style="font-size:1.5rem;font-weight:900;color:${mixedColor};min-width:50px">🔀</div>
-      <div style="flex:1">
-        <div style="height:10px;background:#1e1e2e;border-radius:5px;overflow:hidden"><div style="height:100%;width:${mixedBest}%;background:${mixedColor};border-radius:5px;transition:width .5s"></div></div>
-      </div>
-      <div style="font-size:1.1rem;font-weight:700;color:${mixedColor}">${mixedBest}%</div>
-      <div style="font-size:.8rem;color:var(--text-dim)">混合 ${data[0].length}次</div>
-    </div>` + html;
   }
 
   if (Object.keys(allWeak).length > 0) {
