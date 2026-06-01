@@ -1275,7 +1275,9 @@ function numpadClear() {
 
 function submitNumpad() {
   if (!numpadValue) return;
-  submitChoice(parseInt(numpadValue));
+  const val = parseInt(numpadValue, 10);
+  if (isNaN(val) || val <= 0) return;
+  submitChoice(val);
 }
 
 function submitChoice(answer) {
