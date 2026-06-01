@@ -843,12 +843,12 @@ const STAGES_DATA = {
 
 // ==================== MONSTER STATS ====================
 const MONSTER_STATS = {
-  "slime-green": { name: "翠綠史萊姆", hp: 25, atk: 6, img: "assets/images/monsters/slime-green.png" },
-  "wolf": { name: "灰狼", hp: 40, atk: 10, img: "assets/images/monsters/wolf.png" },
-  "orc-warrior": { name: "獸人戰士", hp: 100, atk: 28, img: "assets/images/monsters/orc-warrior.png" },
-  "skeleton-warrior": { name: "骸骨戰士", hp: 55, atk: 20, img: "assets/images/monsters/skeleton-warrior.png" },
-  "skeleton-mage": { name: "骸骨法師", hp: 40, atk: 25, img: "assets/images/monsters/skeleton-mage.png" },
-  "dragon": { name: "巨龍", hp: 150, atk: 35, img: "assets/images/monsters/dragon.png" }
+  "slime-green": { name: "翠綠史萊姆", hp: 20, atk: 5, img: "assets/images/monsters/slime-green.png" },
+  "wolf": { name: "灰狼", hp: 30, atk: 8, img: "assets/images/monsters/wolf.png" },
+  "orc-warrior": { name: "獸人戰士", hp: 40, atk: 15, img: "assets/images/monsters/orc-warrior.png" },
+  "skeleton-warrior": { name: "骸骨戰士", hp: 35, atk: 12, img: "assets/images/monsters/skeleton-warrior.png" },
+  "skeleton-mage": { name: "骸骨法師", hp: 28, atk: 16, img: "assets/images/monsters/skeleton-mage.png" },
+  "dragon": { name: "巨龍", hp: 50, atk: 20, img: "assets/images/monsters/dragon.png" }
 };
 
 // ==================== BACKGROUND MAP ====================
@@ -1226,7 +1226,7 @@ function renderBattleAnswer() {
     numpadValue = '';
     container.innerHTML = `
       <div class="numpad">
-        <input type="tel" id="numpad-display" readonly autocomplete="off" inputmode="none" aria-label="輸入數字" style="position:absolute;left:-9999px;opacity:0;pointer-events:none" tabindex="-1">
+        <div class="numpad-input-display" id="numpad-display" style="grid-column:1/-1;margin-bottom:4px"></div>
         <button type="button" class="numpad-btn" onclick="numpadPress('1');event.stopPropagation();" aria-label="1">1</button>
         <button type="button" class="numpad-btn" onclick="numpadPress('2');event.stopPropagation();" aria-label="2">2</button>
         <button type="button" class="numpad-btn" onclick="numpadPress('3');event.stopPropagation();" aria-label="3">3</button>
@@ -1241,10 +1241,9 @@ function renderBattleAnswer() {
         <button type="button" class="numpad-btn submit-num-btn" onclick="submitNumpad();event.stopPropagation();" aria-label="確定">✓ 確定</button>
       </div>`;
     document.getElementById('answer-hint').textContent = '輸入數字後按 ✓ 確認或按 Enter';
-    // Add Enter key handler
     document.addEventListener('keydown', handleNumpadEnter);
   } else {
-    const choices = q.choices || [];
+    const choices = (q.choices || []).slice().sort(() => Math.random() - 0.5);
     const cols = diff === 'easy' ? 3 : 4;
     container.innerHTML = `<div class="choices-grid" style="grid-template-columns:repeat(${cols},1fr)">
       ${choices.map(c => `<button class="choice-btn" onclick="submitChoice(${c});event.stopPropagation();" aria-label="選項 ${c}">${c}</button>`).join('')}
@@ -1264,12 +1263,14 @@ function handleNumpadEnter(e) {
 function numpadPress(digit) {
   if (numpadValue.length >= 3) return;
   numpadValue += digit;
-  document.getElementById('numpad-display').value = numpadValue;
+  const el = document.getElementById('numpad-display');
+  if (el) el.textContent = numpadValue;
 }
 
 function numpadClear() {
   numpadValue = '';
-  document.getElementById('numpad-display').value = '';
+  const el = document.getElementById('numpad-display');
+  if (el) el.textContent = '';
 }
 
 function submitNumpad() {
