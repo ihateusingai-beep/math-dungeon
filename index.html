@@ -2236,9 +2236,9 @@ function startPractice(table) {
 function generateQuestions(table) {
   const qs = [];
   if (table === 0) {
-    for (let t = 2; t <= 12; t++) for (let m = 1; m <= 12; m++) qs.push({ a: t, b: m });
+    for (let t = 2; t <= 9; t++) for (let m = 2; m <= 9; m++) qs.push({ a: t, b: m });
   } else {
-    for (let i = 1; i <= 12; i++) qs.push({ a: table, b: i });
+    for (let i = 2; i <= 9; i++) qs.push({ a: table, b: i });
   }
   // shuffle
   for (let i = qs.length - 1; i > 0; i--) {
@@ -2274,8 +2274,9 @@ function renderPracticeQuestion() {
 function generateOptions(correct) {
   const opts = new Set([correct]);
   while (opts.size < 4) {
-    const delta = Math.floor(Math.random() * 10) - 5;
-    const candidate = correct + delta;
+    const delta = Math.floor(Math.random() * Math.max(correct * 0.8, 6)) + 1;
+    const sign = Math.random() < 0.5 ? -1 : 1;
+    const candidate = correct + sign * delta;
     if (candidate > 0 && candidate <= 144) opts.add(candidate);
   }
   return [...opts].sort(() => Math.random() - 0.5);
@@ -2339,7 +2340,7 @@ function showQuickPractice() {
 function nextQuickQuestion() {
   quickState.total++;
   const a = Math.floor(Math.random() * 8) + 2; // 2-9
-  const b = Math.floor(Math.random() * 9) + 1; // 1-9
+  const b = Math.floor(Math.random() * 8) + 2; // 2-9
   const ans = a * b;
   quickState.q = { a, b, ans };
 
@@ -2418,7 +2419,7 @@ function showDashboardScreen() {
     const best = getBestScore(records);
     const recent = records[records.length - 1];
     const label = table === 0 ? '混合' : `×${table}`;
-    const color = best >= 80 ? '#2ecc71' : best >= 50 ? '#fdcb6e' : '#e74c3c';
+    const color = best !== null && best >= 80 ? '#2ecc71' : best !== null && best >= 50 ? '#fdcb6e' : '#e74c3c';
 
     // find weak questions from all records
     for (const rec of records) {
@@ -2433,9 +2434,23 @@ function showDashboardScreen() {
       <div style="flex:1">
         <div style="height:10px;background:#1e1e2e;border-radius:5px;overflow:hidden"><div style="height:100%;width:${best}%;background:${color};border-radius:5px;transition:width .5s"></div></div>
       </div>
-      <div style="font-size:1.1rem;font-weight:700;color:${color}">${best}%</div>
-      <div style="font-size:.8rem;color:var(--text-dim)">${records.length}次</div>
+      <div style="font-size:1.1rem;font-weight:700;color:${color}">${best !== null ? best+'%' : '—'}</div>
+      <div style="font-size:.8rem;color:var(--text-dim)">${records ? records.length : 0}次</div>
     </div>`;
+  }
+
+  // Show mixed practice summary
+  if (data[0] && data[0].length > 0) {
+    const mixedBest = getBestScore(data[0]);
+    const mixedColor = mixedBest >= 80 ? '#2ecc71' : mixedBest >= 50 ? '#fdcb6e' : '#e74c3c';
+    html = `<div style="background:var(--card);border-radius:16px;padding:18px 24px;display:flex;align-items:center;gap:16px;margin-bottom:12px">
+      <div style="font-size:1.5rem;font-weight:900;color:${mixedColor};min-width:50px">🔀</div>
+      <div style="flex:1">
+        <div style="height:10px;background:#1e1e2e;border-radius:5px;overflow:hidden"><div style="height:100%;width:${mixedBest}%;background:${mixedColor};border-radius:5px;transition:width .5s"></div></div>
+      </div>
+      <div style="font-size:1.1rem;font-weight:700;color:${mixedColor}">${mixedBest}%</div>
+      <div style="font-size:.8rem;color:var(--text-dim)">混合 ${data[0].length}次</div>
+    </div>` + html;
   }
 
   if (Object.keys(allWeak).length > 0) {
