@@ -913,7 +913,7 @@ let numpadValue = '';
 
 // ==================== NAVIGATION ====================
 function hideAll() {
-  ['home-screen','name-screen','char-screen','map-screen','topic-screen','diff-screen','stage-screen','battle-screen','battle-result'].forEach(id => {
+  ['home-screen','name-screen','char-screen','map-screen','topic-screen','diff-screen','stage-screen','battle-screen','battle-result','practice-select-screen','practice-quiz-screen','practice-result-screen','dashboard-screen'].forEach(id => {
     document.getElementById(id).classList.add('hidden');
   });
 }
@@ -2074,7 +2074,8 @@ function showBattleResult(victory) {
   // 學習日誌記錄
   const accuracy = battleState.questionsAnswered > 0 ? Math.round(battleState.correctCount/battleState.questionsAnswered*100) : 0;
   const logKey = 'mathDungeon_learningLog';
-  const logData = JSON.parse(localStorage.getItem(logKey) || '[]');
+  let logData = [];
+  try { logData = JSON.parse(localStorage.getItem(logKey) || '[]'); if (!Array.isArray(logData)) logData = []; } catch(e) { logData = []; }
   logData.push({
     date: new Date().toLocaleString('zh-TW'),
     stageId: battleState.stageData?.id || 'unknown',
@@ -2143,17 +2144,20 @@ function retryBattle() {
 const SAVE_KEY = 'mathDungeon_progress';
 
 function saveProgress() {
-  const data = {
-    playerName: gameState.playerName,
-    character: gameState.character,
-    level: gameState.level,
-    xp: gameState.xp,
-    gold: gameState.gold,
-    playerMaxHP: gameState.playerMaxHP || 100,
-    playerMaxMP: gameState.playerMaxMP || 50,
-    playerATK: gameState.playerATK || 10
-  };
-  localStorage.setItem(SAVE_KEY, JSON.stringify(data));
+  try {
+    const data = {
+      playerName: gameState.playerName || '',
+      character: gameState.character || null,
+      level: gameState.level || 1,
+      xp: gameState.xp || 0,
+      xpToNext: gameState.xpToNext || 50,
+      gold: gameState.gold || 0,
+      playerMaxHP: gameState.playerMaxHP || 100,
+      playerMaxMP: gameState.playerMaxMP || 50,
+      playerATK: gameState.playerATK || 10
+    };
+    localStorage.setItem(SAVE_KEY, JSON.stringify(data));
+  } catch(e) {}
 }
 
 function loadProgress() {
@@ -2161,15 +2165,16 @@ function loadProgress() {
   if (!raw) { alert('沒有找到存檔！'); return; }
   try {
     const data = JSON.parse(raw);
-    gameState.playerName = data.playerName || '';
-    gameState.character = data.character || null;
-    gameState.level = data.level || 1;
-    gameState.xp = data.xp || 0;
-    gameState.xpToNext = data.xpToNext || 50;
-    gameState.gold = data.gold || 0;
-    gameState.playerMaxHP = data.playerMaxHP || 100;
-    gameState.playerMaxMP = data.playerMaxMP || 50;
-    gameState.playerATK = data.playerATK || 10;
+    if (typeof data !== 'object' || data === null) throw new Error('Invalid data');
+    gameState.playerName = typeof data.playerName === 'string' ? data.playerName : '';
+    gameState.character = typeof data.character === 'string' ? data.character : null;
+    gameState.level = typeof data.level === 'number' && data.level > 0 ? data.level : 1;
+    gameState.xp = typeof data.xp === 'number' ? data.xp : 0;
+    gameState.xpToNext = typeof data.xpToNext === 'number' && data.xpToNext > 0 ? data.xpToNext : 50;
+    gameState.gold = typeof data.gold === 'number' ? data.gold : 0;
+    gameState.playerMaxHP = typeof data.playerMaxHP === 'number' && data.playerMaxHP > 0 ? data.playerMaxHP : 100;
+    gameState.playerMaxMP = typeof data.playerMaxMP === 'number' && data.playerMaxMP > 0 ? data.playerMaxMP : 50;
+    gameState.playerATK = typeof data.playerATK === 'number' && data.playerATK > 0 ? data.playerATK : 10;
     if (!gameState.character) { showNameScreen(); return; }
     showMapScreen();
   } catch (e) {
@@ -2182,15 +2187,29 @@ const PRACTICE_KEY = 'math_dungeon_practice';
 let practiceState = { table: 0, questions: [], current: 0, correct: 0, wrong: [] };
 
 function getPracticeData() {
-  try { return JSON.parse(localStorage.getItem(PRACTICE_KEY)) || {}; }
-  catch { return {}; }
+  try {
+    const raw = localStorage.getItem(PRACTICE_KEY);
+    if (!raw) return {};
+    const data = JSON.parse(raw);
+    if (typeof data !== 'object' || data === null) return {};
+    return data;
+  } catch { return {}; }
 }
 
 function savePracticeResult(table, correct, total, wrong) {
-  const data = getPracticeData();
-  if (!data[table]) data[table] = [];
-  data[table].push({ correct, total, wrong, date: new Date().toISOString().split('T')[0] });
-  localStorage.setItem(PRACTICE_KEY, JSON.stringify(data));
+  try {
+    const data = getPracticeData();
+    if (!data[table]) data[table] = [];
+    if (!Array.isArray(data[table])) data[table] = [];
+    const record = {
+      correct: typeof correct === 'number' && correct >= 0 ? correct : 0,
+      total: typeof total === 'number' && total > 0 ? total : 1,
+      wrong: Array.isArray(wrong) ? wrong.filter(w => typeof w === 'string') : [],
+      date: typeof Date === 'function' ? new Date().toISOString().split('T')[0] : ''
+    };
+    data[table].push(record);
+    localStorage.setItem(PRACTICE_KEY, JSON.stringify(data));
+  } catch(e) {}
 }
 
 function showPracticeSelectScreen() {
