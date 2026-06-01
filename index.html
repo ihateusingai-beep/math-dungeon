@@ -426,6 +426,20 @@ section{position:fixed;inset:0;display:flex;flex-direction:column;align-items:ce
 <section id="battle-screen" class="hidden">
   <button class="back-btn" onclick="confirmExitBattle(); stopBgm()">✖</button>
   <button class="back-btn" id="bgm-toggle-btn" onclick="toggleBgm()" style="right:60px;background:#2d2d44" title="音樂開關">🔊</button>
+  <div style="position:absolute;top:8px;left:50%;transform:translateX(-50%);display:flex;gap:6px;z-index:10;flex-wrap:wrap;justify-content:center;max-width:95vw">
+    <button onclick="showDashboardScreen()" style="background:#2d2d44;border:1px solid var(--border);border-radius:8px;padding:4px 10px;font-size:.75rem;color:var(--text);cursor:pointer">📊</button>
+    <button onclick="showQuickPractice()" style="background:#2d2d44;border:1px solid var(--border);border-radius:8px;padding:4px 10px;font-size:.75rem;color:var(--text);cursor:pointer" id="quick-pract-btn">🧮</button>
+  </div>
+  <!-- Quick Practice Mini Overlay -->
+  <div id="quick-practice-overlay" class="hidden" style="position:absolute;inset:0;background:rgba(0,0,0,.85);z-index:20;display:flex;align-items:center;justify-content:center;padding:20px">
+    <div style="background:var(--card);border-radius:20px;padding:28px;width:min(400px,95vw);text-align:center;border:2px solid var(--border)">
+      <div style="font-size:1.2rem;font-weight:700;color:var(--gold);margin-bottom:.5em">🧮 快速溫習 ×2-9</div>
+      <div id="quick-question" style="font-size:2rem;font-weight:900;color:#fff;margin:.8em 0"></div>
+      <div id="quick-options" style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:.8em 0"></div>
+      <div id="quick-feedback" style="font-size:1rem;min-height:1.5em;font-weight:700"></div>
+      <button onclick="closeQuickPractice()" style="margin-top:1em;padding:8px 24px;background:#3d3d5c;border:none;border-radius:10px;color:var(--text);cursor:pointer;font-size:.9rem">關閉</button>
+    </div>
+  </div>
   <div class="battle-top-bar">
     <div class="player-hud">
       <div class="hud-name"><span id="battle-player-name">冒險者</span><span id="battle-player-lv">Lv.1</span></div>
@@ -2122,7 +2136,7 @@ function showBattleResult(victory) {
 }
 
 function confirmExitBattle() {
-  if (confirm('確定要逃離戰鬥嗎？')) backToMap();
+  if (confirm('確定要放棄戰鬥返回主頁？')) { stopBgm(); goHome(); }
 }
 
 function backToMap() {
@@ -2311,6 +2325,71 @@ function confirmExitPractice() {
   }
   practiceState = { table: 0, questions: [], current: 0, correct: 0, wrong: [] };
   showPracticeSelectScreen();
+}
+
+// ==================== QUICK PRACTICE (BATTLE) ====================
+let quickState = { q: null, correct: 0, total: 0, wrong: [] };
+
+function showQuickPractice() {
+  quickState = { q: null, correct: 0, total: 0, wrong: [] };
+  document.getElementById('quick-practice-overlay').classList.remove('hidden');
+  nextQuickQuestion();
+}
+
+function nextQuickQuestion() {
+  quickState.total++;
+  const a = Math.floor(Math.random() * 8) + 2; // 2-9
+  const b = Math.floor(Math.random() * 9) + 1; // 1-9
+  const ans = a * b;
+  quickState.q = { a, b, ans };
+
+  document.getElementById('quick-question').textContent = `${a} × ${b} = ?`;
+  document.getElementById('quick-feedback').textContent = '';
+  document.getElementById('quick-feedback').style.color = '';
+
+  const opts = generateOptions(ans);
+  const container = document.getElementById('quick-options');
+  container.innerHTML = '';
+  opts.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.style.cssText = 'padding:12px;font-size:1.3rem;background:#3d3d5c;border:2px solid var(--border);border-radius:10px;color:#fff;cursor:pointer;font-family:inherit';
+    btn.textContent = opt;
+    btn.onclick = () => checkQuickAnswer(opt, ans, `${a}×${b}`);
+    container.appendChild(btn);
+  });
+}
+
+function checkQuickAnswer(selected, correct, qStr) {
+  const fb = document.getElementById('quick-feedback');
+  if (selected === correct) {
+    quickState.correct++;
+    fb.textContent = '✅ 正確！';
+    fb.style.color = '#2ecc71';
+    SoundEngine.correct();
+  } else {
+    quickState.wrong.push(`${qStr}=${correct}`);
+    fb.textContent = `❌ ${correct}`;
+    fb.style.color = '#e74c3c';
+    SoundEngine.fail();
+  }
+  document.querySelectorAll('#quick-options button').forEach(b => b.disabled = true);
+  if (quickState.total < 5) {
+    setTimeout(() => nextQuickQuestion(), 1000);
+  } else {
+    setTimeout(() => {
+      savePracticeResult(0, quickState.correct, 5, quickState.wrong);
+      fb.textContent = `完成！${quickState.correct}/5 正確`;
+      fb.style.color = quickState.correct >= 4 ? '#2ecc71' : '#fdcb6e';
+    }, 800);
+  }
+}
+
+function closeQuickPractice() {
+  document.getElementById('quick-practice-overlay').classList.add('hidden');
+  // Save partial result
+  if (quickState.total > 0) {
+    savePracticeResult(0, quickState.correct, quickState.total, quickState.wrong);
+  }
 }
 
 // ==================== DASHBOARD ====================
