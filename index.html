@@ -223,6 +223,8 @@ section{position:fixed;inset:0;display:flex;flex-direction:column;align-items:ce
   <div class="home-motto">在奇幻世界中學習乘法！</div>
   <button class="home-btn" onclick="showNameScreen(); playBgm('battle')">🎮 開始冒險</button>
   <button class="home-btn" style="background:linear-gradient(135deg,#2d2d44,#3d3d5c)" onclick="loadProgress()">📖 繼續遊戲</button>
+  <button class="home-btn" style="background:linear-gradient(135deg,#00b894,#00cec9)" onclick="showPracticeSelectScreen()">🧮 溫習乘法</button>
+  <button class="home-btn" style="background:linear-gradient(135deg,#e17055,#d63031)" onclick="showDashboardScreen()">📊 學習進度</button>
 </section>
 
 <!-- ==================== NAME INPUT ==================== -->
@@ -327,6 +329,54 @@ section{position:fixed;inset:0;display:flex;flex-direction:column;align-items:ce
       <div class="domain-desc">敬請期待</div>
     </div>
   </div>
+</section>
+
+<!-- ==================== PRACTICE SELECT ==================== -->
+<section id="practice-select-screen" class="hidden">
+  <button class="back-btn" onclick="goHome()">✖</button>
+  <div class="screen-title">🧮 溫習乘法</div>
+  <div class="screen-sub">選擇想溫習的乘法表</div>
+  <div class="topic-list" id="practice-table-list"></div>
+</section>
+
+<!-- ==================== PRACTICE QUIZ ==================== -->
+<section id="practice-quiz-screen" class="hidden">
+  <button class="back-btn" onclick="confirmExitPractice()">✖</button>
+  <div class="battle-arena" style="justify-content:center">
+    <div id="practice-quiz-box" style="background:var(--card);border-radius:24px;padding:40px;width:min(460px,95vw);text-align:center;border:2px solid var(--border)">
+      <div id="practice-question" style="font-size:2.5rem;font-weight:900;color:var(--gold);margin-bottom:.5em"></div>
+      <div id="practice-options" style="display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:1.5em"></div>
+      <div id="practice-feedback" style="margin-top:1.2em;font-size:1.3rem;font-weight:700;min-height:2em"></div>
+      <div style="margin-top:1.5em;color:var(--text-dim);font-size:.9rem">
+        <span id="practice-progress"></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== PRACTICE RESULT ==================== -->
+<section id="practice-result-screen" class="hidden">
+  <button class="back-btn" onclick="showPracticeSelectScreen()">←</button>
+  <div class="battle-arena" style="justify-content:center">
+    <div style="background:var(--card);border-radius:24px;padding:40px;width:min(460px,95vw);text-align:center;border:2px solid var(--border)">
+      <div id="practice-result-stars" style="font-size:3rem;margin-bottom:.3em"></div>
+      <div class="screen-title" id="practice-result-title" style="font-size:1.8rem"></div>
+      <div id="practice-result-score" style="font-size:1.2rem;color:var(--text-dim);margin:1em 0"></div>
+      <div id="practice-result-weak" style="font-size:.95rem;color:var(--accent);margin-bottom:1.5em"></div>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <button class="home-btn" style="font-size:1rem;padding:14px 28px" onclick="retryPractice()">🔄 再試一次</button>
+        <button class="home-btn" style="font-size:1rem;padding:14px 28px;background:linear-gradient(135deg,#e17055,#d63031)" onclick="showDashboardScreen()">📊 查看進度</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== DASHBOARD ==================== -->
+<section id="dashboard-screen" class="hidden">
+  <button class="back-btn" onclick="goHome()">✖</button>
+  <div class="screen-title">📊 學習進度</div>
+  <div class="screen-sub" id="dash-summary"></div>
+  <div style="width:min(600px,95vw);max-height:70vh;overflow-y:auto;margin-top:1em" id="dash-content"></div>
 </section>
 
 <!-- ==================== TOPIC LIST ==================== -->
@@ -2119,6 +2169,208 @@ function loadProgress() {
   } catch (e) {
     alert('存檔讀取失敗！');
   }
+}
+
+// ==================== PRACTICE MODE ====================
+const PRACTICE_KEY = 'math_dungeon_practice';
+let practiceState = { table: 0, questions: [], current: 0, correct: 0, wrong: [] };
+
+function getPracticeData() {
+  try { return JSON.parse(localStorage.getItem(PRACTICE_KEY)) || {}; }
+  catch { return {}; }
+}
+
+function savePracticeResult(table, correct, total, wrong) {
+  const data = getPracticeData();
+  if (!data[table]) data[table] = [];
+  data[table].push({ correct, total, wrong, date: new Date().toISOString().split('T')[0] });
+  localStorage.setItem(PRACTICE_KEY, JSON.stringify(data));
+}
+
+function showPracticeSelectScreen() {
+  showScreen('practice-select-screen');
+  const list = document.getElementById('practice-table-list');
+  const data = getPracticeData();
+  let html = `<div class="topic-btn" style="cursor:pointer" onclick="startPractice(0)">
+    <span class="t-num" style="font-size:1.2rem">🔀</span>
+    <span style="font-size:1.1rem">混合練習（隨機）</span>
+  </div>`;
+  for (let i = 2; i <= 12; i++) {
+    const best = getBestScore(data[i]);
+    html += `<div class="topic-btn" onclick="startPractice(${i})">
+      <span class="t-num">×${i}</span>
+      <span style="margin-left:12px;font-size:1rem">乘法表</span>
+      <span style="margin-left:auto;color:${best>=80?'#2ecc71':best>=50?'#fdcb6e':'#e74c3c'};font-size:.9rem">
+        ${best !== null ? best+'%' : '未測試'}
+      </span>
+    </div>`;
+  }
+  list.innerHTML = html;
+}
+
+function getBestScore(arr) {
+  if (!arr || arr.length === 0) return null;
+  return Math.round(Math.max(...arr.map(r => Math.round(r.correct / r.total * 100))));
+}
+
+function startPractice(table) {
+  practiceState = { table, questions: generateQuestions(table), current: 0, correct: 0, wrong: [] };
+  showScreen('practice-quiz-screen');
+  renderPracticeQuestion();
+}
+
+function generateQuestions(table) {
+  const qs = [];
+  if (table === 0) {
+    for (let t = 2; t <= 12; t++) for (let m = 1; m <= 12; m++) qs.push({ a: t, b: m });
+  } else {
+    for (let i = 1; i <= 12; i++) qs.push({ a: table, b: i });
+  }
+  // shuffle
+  for (let i = qs.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [qs[i], qs[j]] = [qs[j], qs[i]];
+  }
+  return qs.slice(0, 10);
+}
+
+function renderPracticeQuestion() {
+  if (practiceState.current >= 10) {
+    showPracticeResult(); return;
+  }
+  const q = practiceState.questions[practiceState.current];
+  document.getElementById('practice-question').textContent = `${q.a} × ${q.b} = ?`;
+  document.getElementById('practice-progress').textContent = `第 ${practiceState.current + 1} / 10 題`;
+  document.getElementById('practice-feedback').textContent = '';
+
+  const correct = q.a * q.b;
+  const opts = generateOptions(correct);
+  const container = document.getElementById('practice-options');
+  container.innerHTML = '';
+  opts.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.className = 'confirm-btn';
+    btn.style.cssText = 'font-size:1.4rem;padding:16px';
+    btn.textContent = opt;
+    btn.onclick = () => checkPracticeAnswer(opt, correct, q);
+    container.appendChild(btn);
+  });
+}
+
+function generateOptions(correct) {
+  const opts = new Set([correct]);
+  while (opts.size < 4) {
+    const delta = Math.floor(Math.random() * 10) - 5;
+    const candidate = correct + delta;
+    if (candidate > 0 && candidate <= 144) opts.add(candidate);
+  }
+  return [...opts].sort(() => Math.random() - 0.5);
+}
+
+function checkPracticeAnswer(selected, correct, q) {
+  const fb = document.getElementById('practice-feedback');
+  if (selected === correct) {
+    practiceState.correct++;
+    fb.textContent = '✅ 正確！';
+    fb.style.color = '#2ecc71';
+    SoundEngine.correct();
+  } else {
+    practiceState.wrong.push(`${q.a}×${q.b}=${correct}`);
+    fb.textContent = `❌ 正確答案：${correct}`;
+    fb.style.color = '#e74c3c';
+    SoundEngine.fail();
+  }
+  // disable buttons
+  document.querySelectorAll('#practice-options button').forEach(b => b.disabled = true);
+  setTimeout(() => {
+    practiceState.current++;
+    renderPracticeQuestion();
+  }, 1200);
+}
+
+function showPracticeResult() {
+  const { table, correct, wrong } = practiceState;
+  savePracticeResult(table, correct, 10, wrong);
+  showScreen('practice-result-screen');
+  const stars = correct >= 9 ? '⭐⭐⭐' : correct >= 7 ? '⭐⭐' : correct >= 5 ? '⭐' : '💪';
+  document.getElementById('practice-result-stars').textContent = stars;
+  document.getElementById('practice-result-title').textContent =
+    correct >= 9 ? '太棒了！' : correct >= 7 ? '做得不錯！' : correct >= 5 ? '繼續努力！' : '再試試吧！';
+  document.getElementById('practice-result-score').textContent = `${correct} / 10 正確`;
+  document.getElementById('practice-result-weak').textContent =
+    wrong.length > 0 ? `需要加强：${wrong.join('、')}` : '全部正確！🎉';
+}
+
+function retryPractice() {
+  startPractice(practiceState.table);
+}
+
+function confirmExitPractice() {
+  if (practiceState.current > 0 && practiceState.current < 10) {
+    if (!confirm('確定要離開嗎？今次練習進度會失去。')) return;
+  }
+  practiceState = { table: 0, questions: [], current: 0, correct: 0, wrong: [] };
+  showPracticeSelectScreen();
+}
+
+// ==================== DASHBOARD ====================
+function showDashboardScreen() {
+  showScreen('dashboard-screen');
+  const data = getPracticeData();
+  const entries = Object.entries(data);
+  const total = entries.reduce((s,[,arr]) => s + arr.reduce((a,r) => a + r.total, 0), 0);
+  const totalCorrect = entries.reduce((s,[,arr]) => s + arr.reduce((a,r) => a + r.correct, 0), 0);
+  const overall = total > 0 ? Math.round(totalCorrect / total * 100) : 0;
+
+  document.getElementById('dash-summary').textContent =
+    total > 0 ? `整體準確率：${overall}%（${totalCorrect} / ${total} 題）` : '暫無練習記錄';
+
+  const container = document.getElementById('dash-content');
+  if (entries.length === 0) {
+    container.innerHTML = '<div style="text-align:center;color:var(--text-dim);padding:2em">尚未有任何練習記錄<br><br>快去<a href="#" onclick="showPracticeSelectScreen();return false" style="color:var(--accent)">溫習乘法</a>吧！</div>';
+    return;
+  }
+
+  let html = '<div style="display:flex;flex-direction:column;gap:12px">';
+  const allWeak = {};
+  for (const [tableStr, records] of entries) {
+    const table = parseInt(tableStr);
+    if (table === 0) continue;
+    const best = getBestScore(records);
+    const recent = records[records.length - 1];
+    const label = table === 0 ? '混合' : `×${table}`;
+    const color = best >= 80 ? '#2ecc71' : best >= 50 ? '#fdcb6e' : '#e74c3c';
+
+    // find weak questions from all records
+    for (const rec of records) {
+      if (rec.wrong) rec.wrong.forEach(w => {
+        const key = w.split('=')[0];
+        allWeak[key] = (allWeak[key] || 0) + 1;
+      });
+    }
+
+    html += `<div style="background:var(--card);border-radius:16px;padding:18px 24px;display:flex;align-items:center;gap:16px">
+      <div style="font-size:1.5rem;font-weight:900;color:${color};min-width:50px">${label}</div>
+      <div style="flex:1">
+        <div style="height:10px;background:#1e1e2e;border-radius:5px;overflow:hidden"><div style="height:100%;width:${best}%;background:${color};border-radius:5px;transition:width .5s"></div></div>
+      </div>
+      <div style="font-size:1.1rem;font-weight:700;color:${color}">${best}%</div>
+      <div style="font-size:.8rem;color:var(--text-dim)">${records.length}次</div>
+    </div>`;
+  }
+
+  if (Object.keys(allWeak).length > 0) {
+    const weakList = Object.entries(allWeak).sort((a,b) => b[1]-a[1]).slice(0,5);
+    html += `<div style="margin-top:1.5em;background:var(--card);border-radius:16px;padding:18px 24px">
+      <div style="font-weight:700;margin-bottom:.8em;color:var(--accent)">⚠️ 常錯題目</div>
+      ${weakList.map(([q,c]) => `<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #3d3d5c">
+        <span>${q}</span><span style="color:var(--hp)">×${c}次</span>
+      </div>`).join('')}
+    </div>`;
+  }
+
+  html += '</div>';
+  container.innerHTML = html;
 }
 
 // ==================== SOUND ENGINE ====================
