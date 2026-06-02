@@ -151,7 +151,7 @@ section{position:fixed;inset:0;display:flex;flex-direction:column;align-items:ce
 .skill-btn.shield{border-color:#3498db;color:#3498db}
 
 /* Battle Log */
-.battle-log{width:200px;flex-shrink:0;max-height:none;height:100vh;position:sticky;top:0;overflow-y:auto;overflow-wrap:break-word;background:rgba(10,10,30,.97);border-radius:12px;padding:14px;font-size:1.1rem;color:var(--gold);text-align:left;border:2px solid var(--gold);box-shadow:0 0 16px rgba(255,215,0,.15);line-height:1.8}
+.battle-log{width:220px;flex-shrink:0;max-height:none;height:100vh;position:sticky;top:0;overflow-y:auto;overflow-wrap:break-word;background:rgba(10,10,30,.97);border-radius:12px;padding:14px;font-size:1.2rem;color:var(--gold);text-align:left;border:2px solid var(--gold);box-shadow:0 0 16px rgba(255,215,0,.15);line-height:1.8}
 .log-entry{margin:2px 0;padding:2px 8px;border-radius:4px;transition:background .2s;color:var(--gold)}
 .log-entry:nth-child(odd){background:rgba(255,255,255,.04)}
 
@@ -647,6 +647,8 @@ section{position:fixed;inset:0;display:flex;flex-direction:column;align-items:ce
     <div class="result-buttons">
       <button class="result-btn primary" onclick="backToMap()">🏠 回主堡</button>
       <button class="result-btn secondary" onclick="retryBattle()">🔄 再戰一局</button>
+      <button class="result-btn" style="background:#6c5ce7;font-size:.9rem" onclick="showPracticeSelectScreen()">📖 再看一遍題目</button>
+      <button class="result-btn" style="background:#00b894;font-size:.9rem" onclick="showDashboardScreen()">📊 重點訓練</button>
     </div>
   </div>
 </section>
@@ -920,7 +922,8 @@ function hideAll() {
 
 function showScreen(id) { hideAll(); document.getElementById(id).classList.remove('hidden'); updateMultiTableBtn(); }
 
-function goHome() { saveProgress(); showScreen('home-screen'); stopBgm(); playBgm('menu'); }
+function goHome() {
+  if (!confirm('確定要返回首頁嗎？ current progress will be lost.')) return; saveProgress(); showScreen('home-screen'); stopBgm(); playBgm('menu'); }
 function showNameScreen() { showScreen('name-screen'); document.getElementById('playerNameInput').focus(); }
 function showCharScreen() { showScreen('char-screen'); }
 function showMapScreen() { updateMapInfo(); showScreen('map-screen'); }
@@ -1262,7 +1265,7 @@ function handleNumpadEnter(e) {
 }
 
 function numpadPress(digit) {
-  if (numpadValue.length >= 3) return;
+  if (numpadValue.length >= 4) return;
   numpadValue += digit;
   const el = document.getElementById('numpad-display');
   if (el) el.textContent = numpadValue;
@@ -2308,7 +2311,7 @@ function checkPracticeAnswer(selected, correct, q) {
     fb.style.color = '#2ecc71';
     SoundEngine.correct();
   } else {
-    practiceState.wrong.push(`${q.a}×${q.b}=${correct}`);
+    practiceState.wrong.push(`${q.a}×${q.b}=${correct}`); if (practiceState.wrong.length > 50) practiceState.wrong.shift();
     const explain = q.b <= 5 ? `${q.a} 組 ${q.b}，加起來係 ${correct}（${Array(q.b).fill(q.a).join('+')}）`
                              : `${q.a}×${q.b} 即係 ${correct}，試多次記住佢！`;
     fb.textContent = `❌ 正確答案：${correct}（${explain}）`;
