@@ -1054,8 +1054,9 @@ function renderStageConfirm() {
   const monsterNames = s.monsters.map(m => MONSTER_STATS[m]?.name || m).join(', ');
   const monsterHP = s.monsters.reduce((sum, m) => sum + (MONSTER_STATS[m]?.hp || 30), 0);
   const diffLabel = { easy: '🌱 初階 3選1', normal: '⚔️ 中階 4選1', hard: '💀 高階 數字輸入' };
+  const waveCount = s.isBoss ? s.monsters.length : 3;
   document.getElementById('confirm-info').innerHTML = `
-    <div>👹 ${monsterNames} × 3 波</div>
+    <div>👹 ${s.isBoss ? '👑 ' : ''}${monsterNames} × ${waveCount} 波</div>
     <div>❤️ 敵人 HP ${monsterHP}+/波</div>
     <div>${diffLabel[currentDiff]}</div>
   `;
