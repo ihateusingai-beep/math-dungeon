@@ -1360,7 +1360,8 @@ function submitChoice(answer) {
       battleState.questionsAnswered++;
       battleState.combo = 0;
       updateComboDisplay();
-      addLog(`❌ 攻擊失敗！正確答案：${q.a}×${q.b}=${correct}`);
+      const cq = battleState.currentQuestion;
+      addLog(`❌ 攻擊失敗！正確答案：${cq.a}×${cq.b}=${correct}`);
       playSound('fail');
 
       battleState.turnIndex++;
@@ -2012,6 +2013,10 @@ function addLog(msg) {
   const entry = document.createElement('div');
   entry.className = 'log-entry';
   entry.textContent = msg;
+  // Highlight wrong-answer feedback in red
+  if (msg.includes('正確答案')) {
+    entry.style.cssText = 'color:#e74c3c;font-weight:700;font-size:1.1rem;background:rgba(231,76,60,.15);border-radius:6px;padding:4px 8px;margin:4px 0';
+  }
   log.appendChild(entry);
   log.scrollTop = log.scrollHeight;
   // Keep only last 20 entries
