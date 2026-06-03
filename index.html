@@ -877,7 +877,9 @@ let gameState = {
   berserkStacks: 0,
   evadeNext: false,
   poisonStacks: 0,
-  poisonDamage: 0
+  poisonDamage: 0,
+  sessionGold: 0,
+  sessionXP: 0
 };
 
 let battleState = {
@@ -923,7 +925,7 @@ function hideAll() {
 function showScreen(id) { hideAll(); document.getElementById(id).classList.remove('hidden'); updateMultiTableBtn(); }
 
 function goHome() {
-  if (!confirm('確定要返回首頁嗎？ current progress will be lost.')) return; saveProgress(); showScreen('home-screen'); stopBgm(); playBgm('menu'); }
+  if (!confirm('確定要返回首頁嗎？ current progress will be lost.')) return; gameState.sessionGold = 0; gameState.sessionXP = 0; saveProgress(); showScreen('home-screen'); stopBgm(); playBgm('menu'); }
 function showNameScreen() { showScreen('name-screen'); document.getElementById('playerNameInput').focus(); }
 function showCharScreen() { showScreen('char-screen'); }
 function showMapScreen() { updateMapInfo(); showScreen('map-screen'); }
@@ -2077,6 +2079,8 @@ function spawnNextWave() {
 function showBattleResult(victory) {
   const xpGain = victory ? (10 + gameState.level * 5) : 5;
   const goldGain = victory ? (10 + gameState.level * 2) : 5;
+  gameState.sessionGold += goldGain;
+  gameState.sessionXP += xpGain;
   gameState.xp += xpGain;
   gameState.gold += goldGain;
 
@@ -2132,6 +2136,7 @@ function showBattleResult(victory) {
     <div class="result-stat"><span>正確率</span><span style="color:var(--accent)">${accuracy}% ${feedback}</span></div>
     <div class="result-stat"><span>最高Combo</span><span style="color:var(--gold)">${battleState.maxCombo}連</span></div>
     <div class="result-stat"><span>總傷害</span><span style="color:var(--hp)">${battleState.totalDamage}</span></div>
+    <div class="result-stat" style="background:rgba(253,203,110,.15);border:1px solid var(--gold)"><span>本次獲得</span><span style="color:var(--gold)">💰+${gameState.sessionGold} | ✨+${gameState.sessionXP}XP</span></div>
   `;
 
   showScreen('battle-result');
@@ -2142,6 +2147,8 @@ function confirmExitBattle() {
 }
 
 function backToMap() {
+  gameState.sessionGold = 0;
+  gameState.sessionXP = 0;
   showMapScreen();
 }
 
