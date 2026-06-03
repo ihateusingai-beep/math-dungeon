@@ -8,9 +8,10 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
---primary:#6c5ce7;--secondary:#a29bfe;--accent:#fd79a8;--gold:#fdcb6e;
---hp:#e74c3c;--mp:#3498db;--xp:#2ecc71;--bg:#1e1e2e;--card:#2d2d44;
---text:#dfe6e9;--text-dim:#b2bec3;--border:#636e72;
+--primary:#7c6df0;--secondary:#b8a9ff;--accent:#ff8fb3;--gold:#ffd470;
+--hp:#ff6b6b;--mp:#5bc8f5;--xp:#6dd97a;--bg:#2a2840;--card:#3d3860;
+--text:#f5f0ff;--text-dim:#c0b8db;--border:#6a6190;
+--radius-lg:24px;--radius-xl:32px;
 }
 html,body{height:100%;font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--text);overflow:hidden}
 
@@ -30,7 +31,7 @@ section{position:fixed;inset:0;display:flex;flex-direction:column;align-items:ce
 .home-logo{font-size:clamp(2.5rem,8vw,5rem);text-align:center;margin-bottom:.3em}
 .home-logo span{background:linear-gradient(135deg,var(--gold),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:900}
 .home-motto{color:var(--text-dim);margin-bottom:3em;font-size:1.1rem}
-.home-btn{min-width:220px;padding:16px 40px;font-size:1.2rem;font-weight:700;border:none;border-radius:16px;cursor:pointer;transition:all .2s;margin:10px;background:linear-gradient(135deg,var(--primary),var(--secondary));color:#fff;box-shadow:0 4px 20px rgba(108,92,231,.4);touch-action:manipulation}
+.home-btn{min-width:220px;padding:20px 40px;font-size:1.4rem;font-weight:700;border:none;border-radius:20px;cursor:pointer;transition:all .2s;margin:12px;background:linear-gradient(135deg,var(--primary),var(--secondary));color:#fff;box-shadow:0 6px 24px rgba(108,92,231,.5);touch-action:manipulation}
 .home-btn:hover{transform:translateY(-2px);box-shadow:0 6px 28px rgba(108,92,231,.6)}
 .home-btn:active{transform:translateY(0)}
 
@@ -116,6 +117,12 @@ section{position:fixed;inset:0;display:flex;flex-direction:column;align-items:ce
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
 @keyframes monsterIdle{0%,100%{transform:translateY(0) scaleX(-1)}50%{transform:translateY(-5px) scaleX(-1)}}
 @keyframes dmgFloat{0%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-50px) scale(1.3)}}
+@keyframes celebratePop{0%{transform:scale(0.5);opacity:0}50%{transform:scale(1.3)}100%{transform:scale(1);opacity:1}}
+@keyframes comfortShake{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+@keyframes confettiFall{0%{transform:translateY(-20px) rotate(0deg);opacity:1}100%{transform:translateY(60px) rotate(360deg);opacity:0}}
+@keyframes starBurst{0%{transform:scale(0) rotate(0deg);opacity:0}60%{transform:scale(1.4) rotate(180deg);opacity:1}100%{transform:scale(1) rotate(360deg);opacity:1}}
+@keyframes pulseGlow{0%,100%{box-shadow:0 0 8px rgba(253,203,110,.4)}50%{box-shadow:0 0 24px rgba(253,203,110,.9)}}
+.feedback-overlay{position:fixed;top:0;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center;z-index:999;pointer-events:none;font-size:clamp(3rem,15vw,6rem);font-weight:900;text-shadow:0 4px 20px rgba(0,0,0,.6)}.feedback-overlay.correct{animation:celebratePop .7s cubic-bezier(.17,.67,.35,1.4) forwards}.feedback-overlay.wrong{animation:comfortShake .8s ease-out forwards}.feedback-overlay.victory{position:fixed;top:0;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center;z-index:999;pointer-events:none;font-size:clamp(2.5rem,12vw,5rem);font-weight:900;animation:bounceIn .8s cubic-bezier(.17,.67,.35,1.4) forwards}.feedback-overlay .emoji-stack{position:relative;display:flex;align-items:center;justify-content:center}.feedback-overlay .emoji-stack span{position:absolute;animation:starBurst 1s ease-out forwards}.feedback-overlay .emoji-stack span:nth-child(2){animation-delay:.15s}.feedback-overlay .emoji-stack span:nth-child(3){animation-delay:.3s}.confetti-piece{position:fixed;width:10px;height:10px;border-radius:3px;z-index:998;animation:confettiFall 1.5s ease-in forwards;pointer-events:none}
 
 /* Battle Question */
 .battle-question{background:rgba(10,10,30,.95);border-radius:20px;padding:20px 24px;width:min(520px,95vw);text-align:center;border:2px solid var(--primary);margin-bottom:12px;box-shadow:0 0 20px rgba(108,92,231,.2)}
@@ -125,13 +132,13 @@ section{position:fixed;inset:0;display:flex;flex-direction:column;align-items:ce
 /* Answer Area */
 .battle-answer{display:flex;flex-direction:column;gap:10px;width:clamp(280px,90vw,480px);margin:0 auto}
 .choices-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
-.choice-btn{min-height:56px;padding:12px 16px;font-size:1.2rem;font-weight:700;border:2px solid var(--border);border-radius:14px;background:var(--card);color:var(--text);cursor:pointer;transition:all .15s;touch-action:manipulation;font-family:inherit}
+.choice-btn{min-height:64px;padding:12px 16px;font-size:1.3rem;font-weight:700;border:2px solid var(--border);border-radius:16px;background:var(--card);color:var(--text);cursor:pointer;transition:all .15s;touch-action:manipulation;font-family:inherit}
 .choice-btn:hover{background:#4d4d7a;border-color:var(--secondary);transform:scale(1.02)}
 .choice-btn:active{transform:scale(0.97)}
 .choice-btn.correct{background:#1e3a2f;border-color:var(--xp);color:var(--xp);animation:pulse-correct .4s}
 .choice-btn.wrong{background:#3a1e1e;border-color:var(--hp);color:var(--hp);animation:shake .3s}
 .numpad{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
-.numpad-btn{min-height:56px;font-size:1.4rem;font-weight:700;border:2px solid var(--border);border-radius:12px;background:var(--card);color:var(--text);cursor:pointer;transition:all .15s;touch-action:manipulation;font-family:inherit;padding:14px 0}
+.numpad-btn{min-height:72px;font-size:1.6rem;font-weight:700;border:2px solid var(--border);border-radius:16px;background:var(--card);color:var(--text);cursor:pointer;transition:all .15s;touch-action:manipulation;font-family:inherit;padding:18px 0;box-shadow:0 4px 12px rgba(0,0,0,.3)}
 .numpad-btn:hover{background:#3d3d5c}
 .numpad-btn:active{transform:scale(.95)}
 .numpad-input-display{grid-column:1/-1;min-height:clamp(44px,8vw,56px);padding:clamp(8px,2vw,12px);font-size:clamp(1.2rem,4vw,1.6rem);font-weight:700;border:2px solid var(--primary);border-radius:12px;background:#1e1e2e;color:var(--gold);text-align:center;letter-spacing:.15em;width:100%;box-sizing:border-box;box-shadow:0 0 12px rgba(108,92,231,.25)}
@@ -159,14 +166,14 @@ section{position:fixed;inset:0;display:flex;flex-direction:column;align-items:ce
 #battle-result{background:rgba(0,0,0,.92)}
 .result-box{background:var(--card);border-radius:24px;padding:40px;width:min(440px,95vw);text-align:center;border:2px solid var(--border)}
 .result-title{font-size:2.2rem;font-weight:900;margin-bottom:.5em}
-.result-title.victory{color:var(--gold);background:linear-gradient(135deg,var(--gold),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.result-title.victory{color:var(--gold);background:linear-gradient(135deg,var(--gold),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:pulseGlow 1.5s ease-in-out infinite;font-size:2.6rem}
 .result-title.defeat{color:var(--hp)}
 .result-stats{display:flex;flex-direction:column;gap:10px;margin:20px 0}
 .result-stat{display:flex;justify-content:space-between;padding:10px 18px;background:rgba(30,30,60,.8);border-radius:10px;font-size:1.05rem;border:1px solid rgba(255,255,255,.08)}
 .result-stat span:first-child{color:var(--text-dim)}
 .result-stat span:last-child{font-weight:700}
 .result-buttons{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
-.result-btn{padding:12px 28px;font-size:1rem;font-weight:700;border:none;border-radius:14px;cursor:pointer;transition:all .2s;touch-action:manipulation;font-family:inherit}
+.result-btn{padding:16px 36px;font-size:1.15rem;font-weight:700;border:none;border-radius:18px;cursor:pointer;transition:all .2s;touch-action:manipulation;font-family:inherit}
 .result-btn.primary{background:linear-gradient(135deg,var(--primary),var(--secondary));color:#fff}
 .result-btn.secondary{background:var(--card);border:2px solid var(--border);color:var(--text)}
 
@@ -1306,6 +1313,7 @@ function submitChoice(answer) {
       if (battleState.combo > battleState.maxCombo) battleState.maxCombo = battleState.combo;
       updateComboDisplay();
       const mpRegen = Math.min(3, battleState.playerMaxMP - battleState.playerMP);
+      showCorrectFeedback();
       if (mpRegen > 0) {
         battleState.playerMP = Math.min(battleState.playerMaxMP, battleState.playerMP + 3);
         addLog(`🔵 MP+${mpRegen}`);
@@ -1363,6 +1371,7 @@ function submitChoice(answer) {
     } else {
       // Player attack wrong — attack misses, no damage to either side
       battleState.wrongCount++;
+      showWrongFeedback();
       battleState.questionsAnswered++;
       battleState.combo = 0;
       updateComboDisplay();
@@ -1385,6 +1394,7 @@ function submitChoice(answer) {
       battleState.combo++;
       if (battleState.combo > battleState.maxCombo) battleState.maxCombo = battleState.combo;
       updateComboDisplay();
+      showCorrectFeedback();
       // Defend: 0 damage taken
       const defHeal = Math.min(5, battleState.playerMaxHP - battleState.playerHP);
       if (defHeal > 0) {
@@ -1405,6 +1415,7 @@ function submitChoice(answer) {
     } else {
       // Monster attacks — player failed to defend
       battleState.wrongCount++;
+      showWrongFeedback();
       battleState.questionsAnswered++;
       battleState.combo = 0;
       updateComboDisplay();
@@ -2029,6 +2040,46 @@ function addLog(msg) {
   while (log.children.length > 20) log.removeChild(log.firstChild);
 }
 
+function showCorrectFeedback() {
+  const existing = document.getElementById('feedback-overlay');
+  if (existing) existing.remove();
+  const overlay = document.createElement('div');
+  overlay.id = 'feedback-overlay';
+  overlay.className = 'feedback-overlay correct';
+  const emojis = ['✨', '🌟', '💖', '⭐'];
+  overlay.innerHTML = `<div class="emoji-stack">${emojis.map(e => `<span>${e}</span>`).join('')}</div>`;
+  document.body.appendChild(overlay);
+  // Spawn confetti
+  spawnConfetti();
+  setTimeout(() => overlay.remove(), 800);
+}
+
+function showWrongFeedback() {
+  const existing = document.getElementById('feedback-overlay');
+  if (existing) existing.remove();
+  const overlay = document.createElement('div');
+  overlay.id = 'feedback-overlay';
+  overlay.className = 'feedback-overlay wrong';
+  overlay.textContent = '🥺';
+  document.body.appendChild(overlay);
+  setTimeout(() => overlay.remove(), 900);
+}
+
+function spawnConfetti() {
+  const colors = ['#ffd470','#ff8fb3','#6dd97a','#5bc8f5','#b8a9ff'];
+  for (let i = 0; i < 18; i++) {
+    const piece = document.createElement('div');
+    piece.className = 'confetti-piece';
+    piece.style.left = (10 + Math.random() * 80) + '%';
+    piece.style.top = (20 + Math.random() * 30) + '%';
+    piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+    piece.style.animationDelay = (Math.random() * 0.3) + 's';
+    piece.style.transform = `rotate(${Math.random() * 360}deg)`;
+    document.body.appendChild(piece);
+    setTimeout(() => piece.remove(), 1500);
+  }
+}
+
 function checkBattleEnd() {
   if (battleState.monsterHP <= 0) {
     battleState.waveIndex++;
@@ -2140,6 +2191,24 @@ function showBattleResult(victory) {
   `;
 
   showScreen('battle-result');
+  if (victory) spawnVictoryCelebration();
+}
+
+function spawnVictoryCelebration() {
+  const colors = ['#ffd470','#ff8fb3','#6dd97a','#5bc8f5','#b8a9ff','#ff6b6b'];
+  for (let i = 0; i < 40; i++) {
+    const piece = document.createElement('div');
+    piece.className = 'confetti-piece';
+    piece.style.left = (5 + Math.random() * 90) + '%';
+    piece.style.top = (10 + Math.random() * 50) + '%';
+    piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+    piece.style.width = (8 + Math.random() * 10) + 'px';
+    piece.style.height = (8 + Math.random() * 10) + 'px';
+    piece.style.animationDelay = (Math.random() * 0.8) + 's';
+    piece.style.animationDuration = (1.5 + Math.random()) + 's';
+    document.body.appendChild(piece);
+    setTimeout(() => piece.remove(), 2500);
+  }
 }
 
 function confirmExitBattle() {
