@@ -3,15 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>數學地城 RPG - Math Dungeon</title>
+<title>æ¸å­¸å°å RPG - Math Dungeon</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
---primary:#7c6df0;--secondary:#b8a9ff;--accent:#ff8fb3;--gold:#ffd470;
---hp:#ff6b6b;--mp:#5bc8f5;--xp:#6dd97a;--bg:#2a2840;--card:#3d3860;
---text:#f5f0ff;--text-dim:#c0b8db;--border:#6a6190;
---radius-lg:24px;--radius-xl:32px;
+--primary:#6c5ce7;--secondary:#a29bfe;--accent:#fd79a8;--gold:#fdcb6e;
+--hp:#e74c3c;--mp:#3498db;--xp:#2ecc71;--bg:#1e1e2e;--card:#2d2d44;
+--text:#dfe6e9;--text-dim:#b2bec3;--border:#636e72;
 }
 html,body{height:100%;font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--text);overflow:hidden}
 
@@ -31,7 +30,7 @@ section{position:fixed;inset:0;display:flex;flex-direction:column;align-items:ce
 .home-logo{font-size:clamp(2.5rem,8vw,5rem);text-align:center;margin-bottom:.3em}
 .home-logo span{background:linear-gradient(135deg,var(--gold),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:900}
 .home-motto{color:var(--text-dim);margin-bottom:3em;font-size:1.1rem}
-.home-btn{min-width:220px;padding:20px 40px;font-size:1.4rem;font-weight:700;border:none;border-radius:20px;cursor:pointer;transition:all .2s;margin:12px;background:linear-gradient(135deg,var(--primary),var(--secondary));color:#fff;box-shadow:0 6px 24px rgba(108,92,231,.5);touch-action:manipulation}
+.home-btn{min-width:220px;padding:16px 40px;font-size:1.2rem;font-weight:700;border:none;border-radius:16px;cursor:pointer;transition:all .2s;margin:10px;background:linear-gradient(135deg,var(--primary),var(--secondary));color:#fff;box-shadow:0 4px 20px rgba(108,92,231,.4);touch-action:manipulation}
 .home-btn:hover{transform:translateY(-2px);box-shadow:0 6px 28px rgba(108,92,231,.6)}
 .home-btn:active{transform:translateY(0)}
 
@@ -88,10 +87,10 @@ section{position:fixed;inset:0;display:flex;flex-direction:column;align-items:ce
 
 /* ============ BATTLE SCREEN ============ */
 #battle-screen{background:#0a0a14;padding:0;justify-content:flex-start;overflow-y:auto;overscroll-behavior:contain;padding-top:env(safe-area-inset-top,0);padding-bottom:env(safe-area-inset-bottom,0)}
-.battle-content{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;width:100%;max-width:520px} .battle-arena{flex:1;width:100%;display:flex;flex-direction:row;align-items:flex-start;gap:12px;padding:clamp(8px,2vw,16px);padding-top:calc(clamp(8px,2vw,16px) + env(safe-area-inset-top,0));padding-bottom:calc(8px + env(safe-area-inset-bottom,0));position:relative;min-height:0;flex-wrap:nowrap}
+.battle-arena{flex:1;width:100%;display:flex;flex-direction:column;align-items:center;padding:clamp(8px,2vw,16px);padding-top:calc(clamp(8px,2vw,16px) + env(safe-area-inset-top,0));position:relative;min-height:0}
 
 /* Battle Top Bar */
-.battle-top-bar{flex:1;min-width:0;display:flex;justify-content:space-between;align-items:flex-start;gap:clamp(6px,2vw,12px);margin-bottom:clamp(6px,2vw,12px);flex-wrap:wrap}
+.battle-top-bar{width:100%;display:flex;justify-content:space-between;align-items:flex-start;gap:clamp(6px,2vw,12px);margin-bottom:clamp(6px,2vw,12px);flex-wrap:wrap}
 .player-hud{background:rgba(0,0,0,.6);border-radius:16px;padding:clamp(8px,2vw,14px);min-width:clamp(140px,25vw,180px);border:1px solid var(--border)}
 .hud-name{font-size:.9rem;font-weight:700;color:var(--gold);margin-bottom:6px;display:flex;justify-content:space-between}
 .hud-bar{height:14px;background:#1e1e2e;border-radius:7px;overflow:hidden;margin-bottom:4px;position:relative}
@@ -117,28 +116,22 @@ section{position:fixed;inset:0;display:flex;flex-direction:column;align-items:ce
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
 @keyframes monsterIdle{0%,100%{transform:translateY(0) scaleX(-1)}50%{transform:translateY(-5px) scaleX(-1)}}
 @keyframes dmgFloat{0%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-50px) scale(1.3)}}
-@keyframes celebratePop{0%{transform:scale(0.5);opacity:0}50%{transform:scale(1.3)}100%{transform:scale(1);opacity:1}}
-@keyframes comfortShake{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
-@keyframes confettiFall{0%{transform:translateY(-20px) rotate(0deg);opacity:1}100%{transform:translateY(60px) rotate(360deg);opacity:0}}
-@keyframes starBurst{0%{transform:scale(0) rotate(0deg);opacity:0}60%{transform:scale(1.4) rotate(180deg);opacity:1}100%{transform:scale(1) rotate(360deg);opacity:1}}
-@keyframes pulseGlow{0%,100%{box-shadow:0 0 8px rgba(253,203,110,.4)}50%{box-shadow:0 0 24px rgba(253,203,110,.9)}}
-.feedback-overlay{position:fixed;top:0;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center;z-index:999;pointer-events:none;font-size:clamp(3rem,15vw,6rem);font-weight:900;text-shadow:0 4px 20px rgba(0,0,0,.6)}.feedback-overlay.correct{animation:celebratePop .7s cubic-bezier(.17,.67,.35,1.4) forwards}.feedback-overlay.wrong{animation:comfortShake .8s ease-out forwards}.feedback-overlay.victory{position:fixed;top:0;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center;z-index:999;pointer-events:none;font-size:clamp(2.5rem,12vw,5rem);font-weight:900;animation:bounceIn .8s cubic-bezier(.17,.67,.35,1.4) forwards}.feedback-overlay .emoji-stack{position:relative;display:flex;align-items:center;justify-content:center}.feedback-overlay .emoji-stack span{position:absolute;animation:starBurst 1s ease-out forwards}.feedback-overlay .emoji-stack span:nth-child(2){animation-delay:.15s}.feedback-overlay .emoji-stack span:nth-child(3){animation-delay:.3s}.confetti-piece{position:fixed;width:10px;height:10px;border-radius:3px;z-index:998;animation:confettiFall 1.5s ease-in forwards;pointer-events:none}
 
 /* Battle Question */
-.battle-question{background:rgba(10,10,30,.95);border-radius:20px;padding:20px 24px;width:min(520px,95vw);text-align:center;border:2px solid var(--primary);margin-bottom:12px;box-shadow:0 0 20px rgba(108,92,231,.2)}
+.battle-question{background:rgba(0,0,0,.75);border-radius:20px;padding:20px 24px;width:min(480px,95vw);text-align:center;border:2px solid var(--primary);margin-bottom:12px}
 .question-text{font-size:clamp(1.2rem,4vw,2rem);font-weight:900;color:var(--gold);margin-bottom:.4em;word-break:break-word;overflow-wrap:break-word;line-height:1.2}
 .answer-hint{font-size:.85rem;color:var(--text-dim)}
 
 /* Answer Area */
 .battle-answer{display:flex;flex-direction:column;gap:10px;width:clamp(280px,90vw,480px);margin:0 auto}
 .choices-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
-.choice-btn{min-height:64px;padding:12px 16px;font-size:1.3rem;font-weight:700;border:2px solid var(--border);border-radius:16px;background:var(--card);color:var(--text);cursor:pointer;transition:all .15s;touch-action:manipulation;font-family:inherit}
+.choice-btn{min-height:56px;padding:12px 16px;font-size:1.2rem;font-weight:700;border:2px solid var(--border);border-radius:14px;background:var(--card);color:var(--text);cursor:pointer;transition:all .15s;touch-action:manipulation;font-family:inherit}
 .choice-btn:hover{background:#4d4d7a;border-color:var(--secondary);transform:scale(1.02)}
 .choice-btn:active{transform:scale(0.97)}
 .choice-btn.correct{background:#1e3a2f;border-color:var(--xp);color:var(--xp);animation:pulse-correct .4s}
 .choice-btn.wrong{background:#3a1e1e;border-color:var(--hp);color:var(--hp);animation:shake .3s}
 .numpad{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
-.numpad-btn{min-height:72px;font-size:1.6rem;font-weight:700;border:2px solid var(--border);border-radius:16px;background:var(--card);color:var(--text);cursor:pointer;transition:all .15s;touch-action:manipulation;font-family:inherit;padding:18px 0;box-shadow:0 4px 12px rgba(0,0,0,.3)}
+.numpad-btn{min-height:52px;font-size:1.3rem;font-weight:700;border:2px solid var(--border);border-radius:12px;background:var(--card);color:var(--text);cursor:pointer;transition:all .15s;touch-action:manipulation;font-family:inherit}
 .numpad-btn:hover{background:#3d3d5c}
 .numpad-btn:active{transform:scale(.95)}
 .numpad-input-display{grid-column:1/-1;min-height:clamp(44px,8vw,56px);padding:clamp(8px,2vw,12px);font-size:clamp(1.2rem,4vw,1.6rem);font-weight:700;border:2px solid var(--primary);border-radius:12px;background:#1e1e2e;color:var(--gold);text-align:center;letter-spacing:.15em;width:100%;box-sizing:border-box;box-shadow:0 0 12px rgba(108,92,231,.25)}
@@ -158,22 +151,22 @@ section{position:fixed;inset:0;display:flex;flex-direction:column;align-items:ce
 .skill-btn.shield{border-color:#3498db;color:#3498db}
 
 /* Battle Log */
-.battle-log{width:220px;flex-shrink:0;max-height:none;height:100vh;position:sticky;top:0;overflow-y:auto;overflow-wrap:break-word;background:rgba(10,10,30,.97);border-radius:12px;padding:14px;font-size:1.2rem;color:var(--gold);text-align:left;border:2px solid var(--gold);box-shadow:0 0 16px rgba(255,215,0,.15);line-height:1.8}
-.log-entry{margin:2px 0;padding:2px 8px;border-radius:4px;transition:background .2s;color:var(--gold)}
-.log-entry:nth-child(odd){background:rgba(255,255,255,.04)}
+.battle-log{width:min(520px,95vw);max-height:160px;overflow-y:auto;background:rgba(10,10,30,.97);border-radius:12px;padding:14px 18px;font-size:1.3rem;color:var(--gold);margin-top:8px;text-align:left;border:2px solid var(--gold);box-shadow:0 0 16px rgba(255,215,0,.15)}
+.log-entry{margin:0 0 10px 0;padding:6px 10px;border-radius:6px;line-height:28px;background:rgba(255,215,0,.06)}
+.log-entry:nth-child(odd){background:rgba(255,215,0,.1)}
 
 /* Battle Result */
 #battle-result{background:rgba(0,0,0,.92)}
 .result-box{background:var(--card);border-radius:24px;padding:40px;width:min(440px,95vw);text-align:center;border:2px solid var(--border)}
 .result-title{font-size:2.2rem;font-weight:900;margin-bottom:.5em}
-.result-title.victory{color:var(--gold);background:linear-gradient(135deg,var(--gold),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:pulseGlow 1.5s ease-in-out infinite;font-size:2.6rem}
+.result-title.victory{color:var(--gold);background:linear-gradient(135deg,var(--gold),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 .result-title.defeat{color:var(--hp)}
 .result-stats{display:flex;flex-direction:column;gap:10px;margin:20px 0}
-.result-stat{display:flex;justify-content:space-between;padding:10px 18px;background:rgba(30,30,60,.8);border-radius:10px;font-size:1.05rem;border:1px solid rgba(255,255,255,.08)}
+.result-stat{display:flex;justify-content:space-between;padding:8px 16px;background:#1e1e2e;border-radius:10px;font-size:1rem}
 .result-stat span:first-child{color:var(--text-dim)}
 .result-stat span:last-child{font-weight:700}
 .result-buttons{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
-.result-btn{padding:16px 36px;font-size:1.15rem;font-weight:700;border:none;border-radius:18px;cursor:pointer;transition:all .2s;touch-action:manipulation;font-family:inherit}
+.result-btn{padding:12px 28px;font-size:1rem;font-weight:700;border:none;border-radius:14px;cursor:pointer;transition:all .2s;touch-action:manipulation;font-family:inherit}
 .result-btn.primary{background:linear-gradient(135deg,var(--primary),var(--secondary));color:#fff}
 .result-btn.secondary{background:var(--card);border:2px solid var(--border);color:var(--text)}
 
@@ -209,7 +202,11 @@ section{position:fixed;inset:0;display:flex;flex-direction:column;align-items:ce
 .buff-icon.debuff{background:rgba(231,76,60,.2);border-color:#e74c3c}
 .buff-icon.evade{background:rgba(155,89,182,.2);border-color:#9b59b6}
 
-
+/* Turn Indicator */
+#turn-indicator{margin-top:4px;font-size:.85rem;padding:4px 8px;border-radius:6px;transition:all .3s;display:inline-block}
+#turn-indicator.player-turn{background:rgba(108,92,231,.3);border:1px solid var(--primary);color:var(--secondary);animation:turnPulse 1.5s ease-in-out infinite}
+#turn-indicator.monster-turn{background:rgba(253,121,168,.2);border:1px solid var(--accent);color:var(--accent)}
+@keyframes turnPulse{0%,100%{box-shadow:0 0 0 0 rgba(108,92,231,.4)}50%{box-shadow:0 0 8px 2px rgba(108,92,231,.6)}}
 
 /* Skill Button Tooltips */
 .skill-btn{position:relative}
@@ -222,129 +219,129 @@ section{position:fixed;inset:0;display:flex;flex-direction:column;align-items:ce
 
 <!-- ==================== HOME SCREEN ==================== -->
 <section id="home-screen">
-  <div class="home-logo">⚔️ <span>數學地城</span> RPG</div>
-  <div class="home-motto">在奇幻世界中學習乘法！</div>
-  <button class="home-btn" onclick="showNameScreen(); playBgm('battle')">🎮 開始冒險</button>
-  <button class="home-btn" style="background:linear-gradient(135deg,#2d2d44,#3d3d5c)" onclick="loadProgress()">📖 繼續遊戲</button>
-  <button class="home-btn" style="background:linear-gradient(135deg,#00b894,#00cec9)" onclick="showPracticeSelectScreen()">🧮 溫習乘法</button>
-  <button class="home-btn" style="background:linear-gradient(135deg,#e17055,#d63031)" onclick="showDashboardScreen()">📊 學習進度</button>
+  <div class="home-logo">âï¸ <span>æ¸å­¸å°å</span> RPG</div>
+  <div class="home-motto">å¨å¥å¹»ä¸çä¸­å­¸ç¿ä¹æ³ï¼</div>
+  <button class="home-btn" onclick="showNameScreen(); playBgm('battle')">ð® éå§åéª</button>
+  <button class="home-btn" style="background:linear-gradient(135deg,#2d2d44,#3d3d5c)" onclick="loadProgress()">ð ç¹¼çºéæ²</button>
+  <button class="home-btn" style="background:linear-gradient(135deg,#00b894,#00cec9)" onclick="showPracticeSelectScreen()">ð§® æº«ç¿ä¹æ³</button>
+  <button class="home-btn" style="background:linear-gradient(135deg,#e17055,#d63031)" onclick="showDashboardScreen()">ð å­¸ç¿é²åº¦</button>
 </section>
 
 <!-- ==================== NAME INPUT ==================== -->
 <section id="name-screen" class="hidden">
-  <button class="back-btn" onclick="goHome()">✖</button>
+  <button class="back-btn" onclick="goHome()">â</button>
   <div class="name-box">
-    <div class="screen-title">勇敢的冒險者</div>
-    <div class="screen-sub">請輸入你的名字</div>
-    <input type="text" class="name-input" id="playerNameInput" placeholder="輸入名字..." maxlength="12" onkeydown="if(event.key==='Enter')confirmName()">
-    <button class="confirm-btn" onclick="confirmName()">確定 ➜</button>
+    <div class="screen-title">åæ¢çåéªè</div>
+    <div class="screen-sub">è«è¼¸å¥ä½ çåå­</div>
+    <input type="text" class="name-input" id="playerNameInput" placeholder="è¼¸å¥åå­..." maxlength="12" onkeydown="if(event.key==='Enter')confirmName()">
+    <button class="confirm-btn" onclick="confirmName()">ç¢ºå® â</button>
   </div>
 </section>
 
 <!-- ==================== CHARACTER SELECT ==================== -->
 <section id="char-screen" class="hidden">
-  <button class="back-btn" onclick="showNameScreen()">←</button>
-  <div class="screen-title">選擇你的英雄</div>
-  <div class="screen-sub">每個英雄都有獨特的技能</div>
+  <button class="back-btn" onclick="showNameScreen()">â</button>
+  <div class="screen-title">é¸æä½ çè±é</div>
+  <div class="screen-sub">æ¯åè±éé½æç¨ç¹çæè½</div>
   <div class="char-grid">
     <div class="char-card" onclick="selectChar('knight')">
-      <img src="assets/images/knight-hero.png" alt="Knight" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect fill=%22%234a90e2%22 width=%22100%22 height=%22100%22 rx=%2210%22/><text y=%22.9em%22 font-size=%2280%22 x=%2210%22>⚔️</text></svg>'">
-      <div class="char-name">聖殿騎士</div>
-      <div class="char-desc">HP120 MP40 ATK12<br>🛡️護盾3回合・防禦型</div>
+      <img src="assets/images/knight-hero.png" alt="Knight" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect fill=%22%234a90e2%22 width=%22100%22 height=%22100%22 rx=%2210%22/><text y=%22.9em%22 font-size=%2280%22 x=%2210%22>âï¸</text></svg>'">
+      <div class="char-name">èæ®¿é¨å£«</div>
+      <div class="char-desc">HP120 MP40 ATK12<br>ð¡ï¸è­·ç¾3ååã»é²ç¦¦å</div>
     </div>
     <div class="char-card" onclick="selectChar('mage')">
-      <img src="assets/images/mage-hero.png" alt="Mage" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect fill=%22%239b59b6%22 width=%22100%22 height=%22100%22 rx=%2210%22/><text y=%22.9em%22 font-size=%2280%22 x=%2210%22>🔮</text></svg>'">
-      <div class="char-name">奧術師</div>
-      <div class="char-desc">HP80 MP70 ATK8<br>🔥火球40傷・魔法型</div>
+      <img src="assets/images/mage-hero.png" alt="Mage" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect fill=%22%239b59b6%22 width=%22100%22 height=%22100%22 rx=%2210%22/><text y=%22.9em%22 font-size=%2280%22 x=%2210%22>ð®</text></svg>'">
+      <div class="char-name">å¥§è¡å¸«</div>
+      <div class="char-desc">HP80 MP70 ATK8<br>ð¥ç«ç40å·ã»é­æ³å</div>
     </div>
     <div class="char-card" onclick="selectChar('berserker')">
-      <img src="assets/images/berserker-hero.png" alt="Berserker" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect fill=%22%23e67e22%22 width=%22100%22 height=%22100%22 rx=%2210%22/><text y=%22.9em%22 font-size=%2280%22 x=%2210%22>🪓</text></svg>'">
-      <div class="char-name">嗜血者</div>
-      <div class="char-desc">HP100 MP30 ATK15<br>⚡暴擊×3・攻擊型</div>
+      <img src="assets/images/berserker-hero.png" alt="Berserker" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect fill=%22%23e67e22%22 width=%22100%22 height=%22100%22 rx=%2210%22/><text y=%22.9em%22 font-size=%2280%22 x=%2210%22>ðª</text></svg>'">
+      <div class="char-name">åè¡è</div>
+      <div class="char-desc">HP100 MP30 ATK15<br>â¡æ´æÃ3ã»æ»æå</div>
     </div>
     <div class="char-card" onclick="selectChar('assassin')">
-      <img src="assets/images/characters/assassin/assassin.png" alt="Assassin" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect fill=%22%231a1a2e%22 width=%22100%22 height=%22100%22 rx=%2210%22/><text y=%22.9em%22 font-size=%2280%22 x=%2210%22>🗡️</text></svg>'">
-      <div class="char-name">暗影刺客</div>
-      <div class="char-desc">HP85 MP45 ATK18<br>🗡️影襲・暴擊型</div>
+      <img src="assets/images/characters/assassin/assassin.png" alt="Assassin" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect fill=%22%231a1a2e%22 width=%22100%22 height=%22100%22 rx=%2210%22/><text y=%22.9em%22 font-size=%2280%22 x=%2210%22>ð¡ï¸</text></svg>'">
+      <div class="char-name">æå½±åºå®¢</div>
+      <div class="char-desc">HP85 MP45 ATK18<br>ð¡ï¸å½±è¥²ã»æ´æå</div>
     </div>
     <div class="char-card" onclick="selectChar('necromancer')">
-      <img src="assets/images/characters/necromancer/necromancer.png" alt="Necromancer" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect fill=%22%232d2d44%22 width=%22100%22 height=%22100%22 rx=%2210%22/><text y=%22.9em%22 font-size=%2280%22 x=%2210%22>💀</text></svg>'">
-      <div class="char-name">死靈法師</div>
-      <div class="char-desc">HP90 MP55 ATK14<br>💀召喚・DoT型</div>
+      <img src="assets/images/characters/necromancer/necromancer.png" alt="Necromancer" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect fill=%22%232d2d44%22 width=%22100%22 height=%22100%22 rx=%2210%22/><text y=%22.9em%22 font-size=%2280%22 x=%2210%22>ð</text></svg>'">
+      <div class="char-name">æ­»éæ³å¸«</div>
+      <div class="char-desc">HP90 MP55 ATK14<br>ðå¬åã»DoTå</div>
     </div>
     <div class="char-card" onclick="selectChar('paladin')">
-      <img src="assets/images/characters/paladin/paladin.png" alt="Paladin" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect fill=%22%23fdcb6e%22 width=%22100%22 height=%22100%22 rx=%2210%22/><text y=%22.9em%22 font-size=%2280%22 x=%2210%22>⚜️</text></svg>'">
-      <div class="char-name">聖殿騎士</div>
-      <div class="char-desc">HP130 MP35 ATK10<br>🛡️治療・坦克型</div>
+      <img src="assets/images/characters/paladin/paladin.png" alt="Paladin" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect fill=%22%23fdcb6e%22 width=%22100%22 height=%22100%22 rx=%2210%22/><text y=%22.9em%22 font-size=%2280%22 x=%2210%22>âï¸</text></svg>'">
+      <div class="char-name">èæ®¿é¨å£«</div>
+      <div class="char-desc">HP130 MP35 ATK10<br>ð¡ï¸æ²»çã»å¦åå</div>
     </div>
     <div class="char-card" onclick="selectChar('druid')">
-      <img src="assets/images/characters/druid/druid.png" alt="Druid" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect fill=%22%232ecc71%22 width=%22100%22 height=%22100%22 rx=%2210%22/><text y=%22.9em%22 font-size=%2280%22 x=%2210%22>🌿</text></svg>'">
-      <div class="char-name">德魯伊</div>
-      <div class="char-desc">HP95 MP50 ATK12<br>🌙變身・DoT型</div>
+      <img src="assets/images/characters/druid/druid.png" alt="Druid" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect fill=%22%232ecc71%22 width=%22100%22 height=%22100%22 rx=%2210%22/><text y=%22.9em%22 font-size=%2280%22 x=%2210%22>ð¿</text></svg>'">
+      <div class="char-name">å¾·é­¯ä¼</div>
+      <div class="char-desc">HP95 MP50 ATK12<br>ðè®èº«ã»DoTå</div>
     </div>
     <div class="char-card" onclick="selectChar('viking')">
-      <img src="assets/images/characters/viking/viking.png" alt="Viking" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect fill=%22%23e67e22%22 width=%22100%22 height=%22100%22 rx=%2210%22/><text y=%22.9em%22 font-size=%2280%22 x=%2210%22>🪓</text></svg>'">
-      <div class="char-name">維京戰士</div>
-      <div class="char-desc">HP110 MP25 ATK16<br>🪓嗜血・吸血型</div>
+      <img src="assets/images/characters/viking/viking.png" alt="Viking" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect fill=%22%23e67e22%22 width=%22100%22 height=%22100%22 rx=%2210%22/><text y=%22.9em%22 font-size=%2280%22 x=%2210%22>ðª</text></svg>'">
+      <div class="char-name">ç¶­äº¬æ°å£«</div>
+      <div class="char-desc">HP110 MP25 ATK16<br>ðªåè¡ã»å¸è¡å</div>
     </div>
     <div class="char-card" onclick="selectChar('shadow')">
-      <img src="assets/images/characters/shadow/shadow_demon_hunter_v1.png" alt="Shadow" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect fill=%22%231a1a2e%22 width=%22100%22 height=%22100%22 rx=%2210%22/><text y=%22.9em%22 font-size=%2280%22 x=%2210%22>🌑</text></svg>'">
-      <div class="char-name">暗影主宰</div>
-      <div class="char-desc">HP80 MP60 ATK20<br>⚫高攻・魔法型</div>
+      <img src="assets/images/characters/shadow/shadow_demon_hunter_v1.png" alt="Shadow" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect fill=%22%231a1a2e%22 width=%22100%22 height=%22100%22 rx=%2210%22/><text y=%22.9em%22 font-size=%2280%22 x=%2210%22>ð</text></svg>'">
+      <div class="char-name">æå½±ä¸»å®°</div>
+      <div class="char-desc">HP80 MP60 ATK20<br>â«é«æ»ã»é­æ³å</div>
     </div>
     <div class="char-card" onclick="selectChar('ranger')">
-      <img src="assets/images/characters/ranger/ranger-male.jpeg" alt="Ranger" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect fill=%22%232ecc71%22 width=%22100%22 height=%22100%22 rx=%2210%22/><text y=%22.9em%22 font-size=%2280%22 x=%2210%22>🏹</text></svg>'">
-      <div class="char-name">精靈射手</div>
-      <div class="char-desc">HP75 MP40 ATK22<br>🏹遠程・射擊型</div>
+      <img src="assets/images/characters/ranger/ranger-male.jpeg" alt="Ranger" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect fill=%22%232ecc71%22 width=%22100%22 height=%22100%22 rx=%2210%22/><text y=%22.9em%22 font-size=%2280%22 x=%2210%22>ð¹</text></svg>'">
+      <div class="char-name">ç²¾éå°æ</div>
+      <div class="char-desc">HP75 MP40 ATK22<br>ð¹é ç¨ã»å°æå</div>
     </div>
   </div>
 </section>
 
 <!-- ==================== WORLD MAP ==================== -->
 <section id="map-screen" class="hidden">
-  <button class="back-btn" onclick="showCharScreen()">←</button>
-  <div class="screen-title">🗺️ 世界地圖</div>
+  <button class="back-btn" onclick="showCharScreen()">â</button>
+  <div class="screen-title">ðºï¸ ä¸çå°å</div>
   <div class="screen-sub" id="map-player-info"></div>
   <div class="map-grid">
     <div class="domain-card" onclick="selectDomain('multiplication')">
-      <div class="domain-icon">🌲</div>
-      <div class="domain-name">數字森林</div>
-      <div class="domain-desc">乘法修練之道</div>
+      <div class="domain-icon">ð²</div>
+      <div class="domain-name">æ¸å­æ£®æ</div>
+      <div class="domain-desc">ä¹æ³ä¿®ç·´ä¹é</div>
     </div>
     <div class="domain-card locked">
-      <div class="domain-icon">⛰️</div>
-      <div class="domain-name">運算山脈</div>
-      <div class="domain-desc">敬請期待</div>
+      <div class="domain-icon">â°ï¸</div>
+      <div class="domain-name">éç®å±±è</div>
+      <div class="domain-desc">æ¬è«æå¾</div>
     </div>
     <div class="domain-card locked">
-      <div class="domain-icon">🏰</div>
-      <div class="domain-name">圖形城堡</div>
-      <div class="domain-desc">敬請期待</div>
+      <div class="domain-icon">ð°</div>
+      <div class="domain-name">åå½¢åå ¡</div>
+      <div class="domain-desc">æ¬è«æå¾</div>
     </div>
     <div class="domain-card locked">
-      <div class="domain-icon">📊</div>
-      <div class="domain-name">數據殿堂</div>
-      <div class="domain-desc">敬請期待</div>
+      <div class="domain-icon">ð</div>
+      <div class="domain-name">æ¸ææ®¿å </div>
+      <div class="domain-desc">æ¬è«æå¾</div>
     </div>
     <div class="domain-card locked">
-      <div class="domain-icon">🔮</div>
-      <div class="domain-name">代數秘境</div>
-      <div class="domain-desc">敬請期待</div>
+      <div class="domain-icon">ð®</div>
+      <div class="domain-name">ä»£æ¸ç§å¢</div>
+      <div class="domain-desc">æ¬è«æå¾</div>
     </div>
   </div>
 </section>
 
 <!-- ==================== PRACTICE SELECT ==================== -->
 <section id="practice-select-screen" class="hidden">
-  <button class="back-btn" onclick="goHome()">✖</button>
-  <div class="screen-title">🧮 溫習乘法</div>
-  <div class="screen-sub">選擇想溫習的乘法表</div>
+  <button class="back-btn" onclick="goHome()">â</button>
+  <div class="screen-title">ð§® æº«ç¿ä¹æ³</div>
+  <div class="screen-sub">é¸ææ³æº«ç¿çä¹æ³è¡¨</div>
   <div class="topic-list" id="practice-table-list"></div>
 </section>
 
 <!-- ==================== PRACTICE QUIZ ==================== -->
 <section id="practice-quiz-screen" class="hidden">
-  <button class="back-btn" onclick="confirmExitPractice()">✖</button>
+  <button class="back-btn" onclick="confirmExitPractice()">â</button>
   <div class="battle-arena" style="justify-content:center">
     <div id="practice-quiz-box" style="background:var(--card);border-radius:24px;padding:40px;width:min(460px,95vw);text-align:center;border:2px solid var(--border)">
       <div id="practice-question" style="font-size:2.5rem;font-weight:900;color:var(--gold);margin-bottom:.5em"></div>
@@ -359,7 +356,7 @@ section{position:fixed;inset:0;display:flex;flex-direction:column;align-items:ce
 
 <!-- ==================== PRACTICE RESULT ==================== -->
 <section id="practice-result-screen" class="hidden">
-  <button class="back-btn" onclick="showPracticeSelectScreen()">←</button>
+  <button class="back-btn" onclick="showPracticeSelectScreen()">â</button>
   <div class="battle-arena" style="justify-content:center">
     <div style="background:var(--card);border-radius:24px;padding:40px;width:min(460px,95vw);text-align:center;border:2px solid var(--border)">
       <div id="practice-result-stars" style="font-size:3rem;margin-bottom:.3em"></div>
@@ -367,8 +364,8 @@ section{position:fixed;inset:0;display:flex;flex-direction:column;align-items:ce
       <div id="practice-result-score" style="font-size:1.2rem;color:var(--text-dim);margin:1em 0"></div>
       <div id="practice-result-weak" style="font-size:.95rem;color:var(--accent);margin-bottom:1.5em"></div>
       <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
-        <button class="home-btn" style="font-size:1rem;padding:14px 28px" onclick="retryPractice()">🔄 再試一次</button>
-        <button class="home-btn" style="font-size:1rem;padding:14px 28px;background:linear-gradient(135deg,#e17055,#d63031)" onclick="showDashboardScreen()">📊 查看進度</button>
+        <button class="home-btn" style="font-size:1rem;padding:14px 28px" onclick="retryPractice()">ð åè©¦ä¸æ¬¡</button>
+        <button class="home-btn" style="font-size:1rem;padding:14px 28px;background:linear-gradient(135deg,#e17055,#d63031)" onclick="showDashboardScreen()">ð æ¥çé²åº¦</button>
       </div>
     </div>
   </div>
@@ -376,65 +373,65 @@ section{position:fixed;inset:0;display:flex;flex-direction:column;align-items:ce
 
 <!-- ==================== DASHBOARD ==================== -->
 <section id="dashboard-screen" class="hidden">
-  <button class="back-btn" onclick="goHome()">✖</button>
-  <div class="screen-title">📊 學習進度</div>
+  <button class="back-btn" onclick="goHome()">â</button>
+  <div class="screen-title">ð å­¸ç¿é²åº¦</div>
   <div class="screen-sub" id="dash-summary"></div>
   <div style="width:min(600px,95vw);max-height:70vh;overflow-y:auto;margin-top:1em" id="dash-content"></div>
 </section>
 
 <!-- ==================== TOPIC LIST ==================== -->
 <section id="topic-screen" class="hidden">
-  <button class="back-btn" onclick="showMapScreen()">←</button>
-  <div class="screen-title" id="topic-title">📚 選擇關卡</div>
-  <div class="screen-sub">乘法練習</div>
+  <button class="back-btn" onclick="showMapScreen()">â</button>
+  <div class="screen-title" id="topic-title">ð é¸æéå¡</div>
+  <div class="screen-sub">ä¹æ³ç·´ç¿</div>
   <div class="topic-list" id="topic-list"></div>
 </section>
 
 <!-- ==================== DIFFICULTY SELECT ==================== -->
 <section id="diff-screen" class="hidden">
-  <button class="back-btn" onclick="showTopicScreen()">←</button>
-  <div class="screen-title" id="diff-title">⚔️ 選擇難度</div>
-  <div class="screen-sub" id="diff-sub">挑戰自我！</div>
+  <button class="back-btn" onclick="showTopicScreen()">â</button>
+  <div class="screen-title" id="diff-title">âï¸ é¸æé£åº¦</div>
+  <div class="screen-sub" id="diff-sub">ææ°èªæï¼</div>
   <div class="diff-grid">
     <button class="diff-btn easy" onclick="selectDiff('easy')">
-      <div class="diff-icon">🌱</div>
-      <div class="diff-name">初階</div>
-      <div class="diff-desc">3 選 1</div>
+      <div class="diff-icon">ð±</div>
+      <div class="diff-name">åé</div>
+      <div class="diff-desc">3 é¸ 1</div>
     </button>
     <button class="diff-btn normal" onclick="selectDiff('normal')">
-      <div class="diff-icon">⚔️</div>
-      <div class="diff-name">中階</div>
-      <div class="diff-desc">4 選 1</div>
+      <div class="diff-icon">âï¸</div>
+      <div class="diff-name">ä¸­é</div>
+      <div class="diff-desc">4 é¸ 1</div>
     </button>
     <button class="diff-btn hard" onclick="selectDiff('hard')">
-      <div class="diff-icon">💀</div>
-      <div class="diff-name">高階</div>
-      <div class="diff-desc">數字輸入</div>
+      <div class="diff-icon">ð</div>
+      <div class="diff-name">é«é</div>
+      <div class="diff-desc">æ¸å­è¼¸å¥</div>
     </button>
   </div>
 </section>
 
 <!-- ==================== STAGE CONFIRM ==================== -->
 <section id="stage-screen" class="hidden">
-  <button class="back-btn" onclick="showDiffScreen()">←</button>
+  <button class="back-btn" onclick="showDiffScreen()">â</button>
   <div class="confirm-box">
-    <div class="screen-title">關卡確認</div>
+    <div class="screen-title">éå¡ç¢ºèª</div>
     <div class="confirm-stage-name" id="confirm-stage-name"></div>
     <div class="confirm-info" id="confirm-info"></div>
-    <button class="confirm-btn" onclick="startBattle()">🚀 開始戰鬥！</button>
+    <button class="confirm-btn" onclick="startBattle()">ð éå§æ°é¬¥ï¼</button>
   </div>
 </section>
 
 <!-- ==================== BATTLE SCREEN ==================== -->
 <section id="battle-screen" class="hidden">
-  <button class="back-btn" onclick="confirmExitBattle(); stopBgm()">✖</button>
-  <button class="back-btn" id="bgm-toggle-btn" onclick="toggleBgm()" style="right:60px;background:#2d2d44" title="音樂開關">🔊</button>
+  <button class="back-btn" onclick="confirmExitBattle(); stopBgm()">â</button>
+  <button class="back-btn" id="bgm-toggle-btn" onclick="toggleBgm()" style="right:60px;background:#2d2d44" title="é³æ¨éé">ð</button>
   <div style="position:absolute;top:8px;left:50%;transform:translateX(-50%);display:flex;gap:6px;z-index:10;flex-wrap:wrap;justify-content:center;max-width:95vw">
-    <button onclick="showDashboardScreen()" style="background:#2d2d44;border:1px solid var(--border);border-radius:8px;padding:4px 10px;font-size:.75rem;color:var(--text);cursor:pointer">📊</button>
+    <button onclick="showDashboardScreen()" style="background:#2d2d44;border:1px solid var(--border);border-radius:8px;padding:4px 10px;font-size:.75rem;color:var(--text);cursor:pointer">ð</button>
   </div>
   <div class="battle-top-bar">
     <div class="player-hud">
-      <div class="hud-name"><span id="battle-player-name">冒險者</span><span id="battle-player-lv">Lv.1</span></div>
+      <div class="hud-name"><span id="battle-player-name">åéªè</span><span id="battle-player-lv">Lv.1</span></div>
       <div id="combo-display" style="font-size:.7rem;color:var(--gold);margin-bottom:4px;min-height:1em"></div>
       <div class="hud-bar">
         <div class="hud-bar-fill hud-hp-fill" id="player-hp-bar" style="width:100%"></div>
@@ -451,9 +448,10 @@ section{position:fixed;inset:0;display:flex;flex-direction:column;align-items:ce
       <div id="buff-indicator" style="display:flex;gap:4px;margin-top:4px;min-height:20px;flex-wrap:wrap"></div>
     </div>
     <div class="monster-hud">
-      <div class="monster-hud-name" id="monster-hud-name">史萊姆</div>
+      <div class="monster-hud-name" id="monster-hud-name">å²èå§</div>
       <div class="monster-hud-hp">HP <span id="monster-hp-text">30</span>/<span id="monster-max-hp">30</span></div>
-      <div id="wave-indicator" style="font-size:.7rem;color:var(--gold);margin-top:2px">第 1/3 波</div>
+      <div id="wave-indicator" style="font-size:.7rem;color:var(--gold);margin-top:2px">ç¬¬ 1/3 æ³¢</div>
+      <div class="monster-hud-hp" id="turn-indicator" style="margin-top:4px;font-size:.75rem;color:var(--accent)">âï¸ ç©å®¶é²æ»</div>
       <div class="hud-bar">
         <div class="hud-bar-fill hud-hp-fill" id="monster-hp-bar" style="width:100%"></div>
       </div>
@@ -469,10 +467,10 @@ section{position:fixed;inset:0;display:flex;flex-direction:column;align-items:ce
 
     <div class="battle-question">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
-        <div class="question-text" id="question-text">2 × 3 = ?</div>
+        <div class="question-text" id="question-text">2 Ã 3 = ?</div>
         <div id="question-counter" style="font-size:.8rem;color:var(--text-dim);white-space:nowrap;margin-left:12px">${battleState.qIndex}/${battleState.questions.length}</div>
       </div>
-      <div class="answer-hint" id="answer-hint">選擇正确答案進行攻擊！</div>
+      <div class="answer-hint" id="answer-hint">é¸ææ­£ç¡®ç­æ¡é²è¡æ»æï¼</div>
     </div>
 
     <div class="battle-answer" id="battle-answer">
@@ -481,176 +479,174 @@ section{position:fixed;inset:0;display:flex;flex-direction:column;align-items:ce
 
     <div class="battle-skills" id="battle-skills">
       <!-- Knight Skills -->
-      <button class="skill-btn fireball knight-only" data-skill="shield-bash" data-slot="0" onclick="useSkill('shield-bash');event.stopPropagation();" style="display:none" aria-label="盾牌猛擊" data-desc="盾牌猛擊：15傷害+暈住1回合｜花費8MP">
-        <span class="sk-name">🛡️ 盾牌猛擊</span>
-        <span class="sk-cost">8MP · 15傷+暈</span>
+      <button class="skill-btn fireball knight-only" data-skill="shield-bash" data-slot="0" onclick="useSkill('shield-bash');event.stopPropagation();" style="display:none" aria-label="ç¾ççæ" data-desc="ç¾ççæï¼15å·å®³+æä½1ååï½è±è²»8MP">
+        <span class="sk-name">ð¡ï¸ ç¾ççæ</span>
+        <span class="sk-cost">8MP Â· 15å·+æ</span>
       </button>
-      <button class="skill-btn heal knight-only" data-slot="1" onclick="useSkill('iron-fortress');event.stopPropagation();" style="display:none" aria-label="鋼鐵壁壘" data-desc="鋼鐵壁壘：75%減傷持續3回合｜花費15MP">
-        <span class="sk-name">🏰 鋼鐵壁壘</span>
-        <span class="sk-cost">15MP · 75%減3回</span>
+      <button class="skill-btn heal knight-only" data-slot="1" onclick="useSkill('iron-fortress');event.stopPropagation();" style="display:none" aria-label="é¼éµå£å£" data-desc="é¼éµå£å£ï¼75%æ¸å·æçº3ååï½è±è²»15MP">
+        <span class="sk-name">ð° é¼éµå£å£</span>
+        <span class="sk-cost">15MP Â· 75%æ¸3å</span>
       </button>
-      <button class="skill-btn shield knight-only" data-slot="2" onclick="useSkill('holy-shield');event.stopPropagation();" style="display:none" aria-label="聖光護盾" data-desc="聖光護盾：無敵持續4回合｜花費15MP">
-        <span class="sk-name">✨ 聖光護盾</span>
-        <span class="sk-cost">15MP · 防4回</span>
+      <button class="skill-btn shield knight-only" data-slot="2" onclick="useSkill('holy-shield');event.stopPropagation();" style="display:none" aria-label="èåè­·ç¾" data-desc="èåè­·ç¾ï¼ç¡æµæçº4ååï½è±è²»15MP">
+        <span class="sk-name">â¨ èåè­·ç¾</span>
+        <span class="sk-cost">15MP Â· é²4å</span>
       </button>
       <!-- Mage Skills -->
-      <button class="skill-btn fireball mage-only" data-slot="0" onclick="useSkill('fireball');event.stopPropagation();" style="display:none" aria-label="火球術" data-desc="火球術：40傷害｜花費15MP">
-        <span class="sk-name">🔥 火球術</span>
-        <span class="sk-cost" id="fireball-cost">15MP · 40傷</span>
+      <button class="skill-btn fireball mage-only" data-slot="0" onclick="useSkill('fireball');event.stopPropagation();" style="display:none" aria-label="ç«çè¡" data-desc="ç«çè¡ï¼40å·å®³ï½è±è²»15MP">
+        <span class="sk-name">ð¥ ç«çè¡</span>
+        <span class="sk-cost" id="fireball-cost">15MP Â· 40å·</span>
       </button>
-      <button class="skill-btn heal mage-only" data-slot="1" onclick="useSkill('frost-nova');event.stopPropagation();" style="display:none" aria-label="冰凍術" data-desc="冰凍術：20傷害+凍住1回合｜花費12MP">
-        <span class="sk-name">❄️ 冰凍術</span>
-        <span class="sk-cost">12MP · 20傷+凍</span>
+      <button class="skill-btn heal mage-only" data-slot="1" onclick="useSkill('frost-nova');event.stopPropagation();" style="display:none" aria-label="å°åè¡" data-desc="å°åè¡ï¼20å·å®³+åä½1ååï½è±è²»12MP">
+        <span class="sk-name">âï¸ å°åè¡</span>
+        <span class="sk-cost">12MP Â· 20å·+å</span>
       </button>
-      <button class="skill-btn critical mage-only" data-slot="2" onclick="useSkill('heal');event.stopPropagation();" style="display:none" aria-label="治療術" data-desc="治療術：恢復30HP｜花費20MP">
-        <span class="sk-name">💚 治療術</span>
-        <span class="sk-cost">20MP · +30HP</span>
+      <button class="skill-btn critical mage-only" data-slot="2" onclick="useSkill('heal');event.stopPropagation();" style="display:none" aria-label="æ²»çè¡" data-desc="æ²»çè¡ï¼æ¢å¾©30HPï½è±è²»20MP">
+        <span class="sk-name">ð æ²»çè¡</span>
+        <span class="sk-cost">20MP Â· +30HP</span>
       </button>
       <!-- Berserker Skills -->
-      <button class="skill-btn fireball berserker-only" data-slot="0" onclick="useSkill('bloodlust');event.stopPropagation();" style="display:none" aria-label="嗜血打擊" data-desc="嗜血打擊：25傷害+吸血15HP｜花費10MP">
-        <span class="sk-name">🩸 嗜血打擊</span>
-        <span class="sk-cost">10MP · 25傷+吸血</span>
+      <button class="skill-btn fireball berserker-only" data-slot="0" onclick="useSkill('bloodlust');event.stopPropagation();" style="display:none" aria-label="åè¡ææ" data-desc="åè¡ææï¼25å·å®³+å¸è¡15HPï½è±è²»10MP">
+        <span class="sk-name">ð©¸ åè¡ææ</span>
+        <span class="sk-cost">10MP Â· 25å·+å¸è¡</span>
       </button>
-      <button class="skill-btn heal berserker-only" data-slot="1" onclick="useSkill('berserk-rage');event.stopPropagation();" style="display:none" aria-label="狂暴狀態" data-desc="狂暴狀態：下2次攻擊雙倍傷害｜花費15MP">
-        <span class="sk-name">💢 狂暴狀態</span>
-        <span class="sk-cost">15MP · 2回雙倍</span>
+      <button class="skill-btn heal berserker-only" data-slot="1" onclick="useSkill('berserk-rage');event.stopPropagation();" style="display:none" aria-label="çæ´çæ" data-desc="çæ´çæï¼ä¸2æ¬¡æ»æéåå·å®³ï½è±è²»15MP">
+        <span class="sk-name">ð¢ çæ´çæ</span>
+        <span class="sk-cost">15MP Â· 2åéå</span>
       </button>
-      <button class="skill-btn critical berserker-only" data-slot="2" onclick="useSkill('critical');event.stopPropagation();" style="display:none" aria-label="暴擊之刃" data-desc="暴擊之刃：下次傷害×3｜花費10MP">
-        <span class="sk-name">⚡ 暴擊之刃</span>
-        <span class="sk-cost">10MP · 3倍傷</span>
+      <button class="skill-btn critical berserker-only" data-slot="2" onclick="useSkill('critical');event.stopPropagation();" style="display:none" aria-label="æ´æä¹å" data-desc="æ´æä¹åï¼ä¸æ¬¡å·å®³Ã3ï½è±è²»10MP">
+        <span class="sk-name">â¡ æ´æä¹å</span>
+        <span class="sk-cost">10MP Â· 3åå·</span>
       </button>
       <!-- Assassin Skills -->
-      <button class="skill-btn fireball assassin-only" data-slot="0" onclick="useSkill('shadow-strike');event.stopPropagation();" style="display:none" aria-label="影襲" data-desc="影襲：35傷害+暈住1回合｜花費10MP">
-        <span class="sk-name">🗡️ 影襲</span>
-        <span class="sk-cost">10MP · 35傷+暈</span>
+      <button class="skill-btn fireball assassin-only" data-slot="0" onclick="useSkill('shadow-strike');event.stopPropagation();" style="display:none" aria-label="å½±è¥²" data-desc="å½±è¥²ï¼35å·å®³+æä½1ååï½è±è²»10MP">
+        <span class="sk-name">ð¡ï¸ å½±è¥²</span>
+        <span class="sk-cost">10MP Â· 35å·+æ</span>
       </button>
-      <button class="skill-btn heal assassin-only" data-slot="1" onclick="useSkill('smoke-bomb');event.stopPropagation();" style="display:none" aria-label="煙霧彈" data-desc="煙霧彈：迴避下次攻擊｜花費12MP">
-        <span class="sk-name">💨 煙霧彈</span>
-        <span class="sk-cost">12MP · 迴避1次</span>
+      <button class="skill-btn heal assassin-only" data-slot="1" onclick="useSkill('smoke-bomb');event.stopPropagation();" style="display:none" aria-label="çé§å½" data-desc="çé§å½ï¼è¿´é¿ä¸æ¬¡æ»æï½è±è²»12MP">
+        <span class="sk-name">ð¨ çé§å½</span>
+        <span class="sk-cost">12MP Â· è¿´é¿1æ¬¡</span>
       </button>
-      <button class="skill-btn critical assassin-only" data-slot="2" onclick="useSkill('poison-blade');event.stopPropagation();" style="display:none" aria-label="淬毒刃" data-desc="淬毒刃：20傷害+中毒3回合(每回8傷)｜花費15MP">
-        <span class="sk-name">☠️ 淬毒刃</span>
-        <span class="sk-cost">15MP · 20傷+毒</span>
+      <button class="skill-btn critical assassin-only" data-slot="2" onclick="useSkill('poison-blade');event.stopPropagation();" style="display:none" aria-label="æ·¬æ¯å" data-desc="æ·¬æ¯åï¼20å·å®³+ä¸­æ¯3åå(æ¯å8å·)ï½è±è²»15MP">
+        <span class="sk-name">â ï¸ æ·¬æ¯å</span>
+        <span class="sk-cost">15MP Â· 20å·+æ¯</span>
       </button>
       <!-- Necromancer Skills -->
-      <button class="skill-btn fireball necromancer-only" data-slot="0" onclick="useSkill('bone-shield');event.stopPropagation();" style="display:none" aria-label="白骨盾" data-desc="白骨盾：50%減傷2回合｜花費12MP">
-        <span class="sk-name">💀 白骨盾</span>
-        <span class="sk-cost">12MP · 50%減2回</span>
+      <button class="skill-btn fireball necromancer-only" data-slot="0" onclick="useSkill('bone-shield');event.stopPropagation();" style="display:none" aria-label="ç½éª¨ç¾" data-desc="ç½éª¨ç¾ï¼50%æ¸å·2ååï½è±è²»12MP">
+        <span class="sk-name">ð ç½éª¨ç¾</span>
+        <span class="sk-cost">12MP Â· 50%æ¸2å</span>
       </button>
-      <button class="skill-btn heal necromancer-only" data-slot="1" onclick="useSkill('death-coil');event.stopPropagation();" style="display:none" aria-label="死亡纏繞" data-desc="死亡纏繞：25傷害+中毒3回合(每回5傷)｜花費15MP">
-        <span class="sk-name">☠️ 死亡纏繞</span>
-        <span class="sk-cost">15MP · 25傷+毒3回</span>
+      <button class="skill-btn heal necromancer-only" data-slot="1" onclick="useSkill('death-coil');event.stopPropagation();" style="display:none" aria-label="æ­»äº¡çºç¹" data-desc="æ­»äº¡çºç¹ï¼25å·å®³+ä¸­æ¯3åå(æ¯å5å·)ï½è±è²»15MP">
+        <span class="sk-name">â ï¸ æ­»äº¡çºç¹</span>
+        <span class="sk-cost">15MP Â· 25å·+æ¯3å</span>
       </button>
-      <button class="skill-btn critical necromancer-only" data-slot="2" onclick="useSkill('soul-drain');event.stopPropagation();" style="display:none" aria-label="靈魂吸取" data-desc="靈魂吸取：30傷害+吸取15HP｜花費18MP">
-        <span class="sk-name">💜 靈魂吸取</span>
-        <span class="sk-cost">18MP · 30傷+吸15HP</span>
+      <button class="skill-btn critical necromancer-only" data-slot="2" onclick="useSkill('soul-drain');event.stopPropagation();" style="display:none" aria-label="éé­å¸å" data-desc="éé­å¸åï¼30å·å®³+å¸å15HPï½è±è²»18MP">
+        <span class="sk-name">ð éé­å¸å</span>
+        <span class="sk-cost">18MP Â· 30å·+å¸15HP</span>
       </button>
-      <button class="skill-btn shield necromancer-only" data-slot="3" onclick="useSkill('summon-minion');event.stopPropagation();" style="display:none" aria-label="召喚僕從" data-desc="召喚僕從：下次攻擊+20傷害｜花費25MP">
-        <span class="sk-name">👤 召喚僕從</span>
-        <span class="sk-cost">25MP · 下次+20傷</span>
+      <button class="skill-btn shield necromancer-only" data-slot="3" onclick="useSkill('summon-minion');event.stopPropagation();" style="display:none" aria-label="å¬ååå¾" data-desc="å¬ååå¾ï¼ä¸æ¬¡æ»æ+20å·å®³ï½è±è²»25MP">
+        <span class="sk-name">ð¤ å¬ååå¾</span>
+        <span class="sk-cost">25MP Â· ä¸æ¬¡+20å·</span>
       </button>
       <!-- Paladin Skills -->
-      <button class="skill-btn fireball paladin-only" data-slot="0" onclick="useSkill('divine-shield');event.stopPropagation();" style="display:none" aria-label="神聖庇護" data-desc="神聖庇護：無敵1回合｜花費10MP">
-        <span class="sk-name">🛡️ 神聖庇護</span>
-        <span class="sk-cost">10MP · 無敵1回</span>
+      <button class="skill-btn fireball paladin-only" data-slot="0" onclick="useSkill('divine-shield');event.stopPropagation();" style="display:none" aria-label="ç¥èåºè­·" data-desc="ç¥èåºè­·ï¼ç¡æµ1ååï½è±è²»10MP">
+        <span class="sk-name">ð¡ï¸ ç¥èåºè­·</span>
+        <span class="sk-cost">10MP Â· ç¡æµ1å</span>
       </button>
-      <button class="skill-btn heal paladin-only" data-slot="1" onclick="useSkill('holy-strike');event.stopPropagation();" style="display:none" aria-label="神聖打擊" data-desc="神聖打擊：20傷害+反傷3｜花費12MP">
-        <span class="sk-name">⚡ 神聖打擊</span>
-        <span class="sk-cost">12MP · 20傷+反3傷</span>
+      <button class="skill-btn heal paladin-only" data-slot="1" onclick="useSkill('holy-strike');event.stopPropagation();" style="display:none" aria-label="ç¥èææ" data-desc="ç¥èææï¼20å·å®³+åå·3ï½è±è²»12MP">
+        <span class="sk-name">â¡ ç¥èææ</span>
+        <span class="sk-cost">12MP Â· 20å·+å3å·</span>
       </button>
-      <button class="skill-btn critical paladin-only" data-slot="2" onclick="useSkill('heal-aura');event.stopPropagation();" style="display:none" aria-label="治療光環" data-desc="治療光環：恢復25HP+持續回血｜花費20MP">
-        <span class="sk-name">💚 治療光環</span>
-        <span class="sk-cost">20MP · 25HP+持續回血</span>
+      <button class="skill-btn critical paladin-only" data-slot="2" onclick="useSkill('heal-aura');event.stopPropagation();" style="display:none" aria-label="æ²»çåç°" data-desc="æ²»çåç°ï¼æ¢å¾©25HP+æçºåè¡ï½è±è²»20MP">
+        <span class="sk-name">ð æ²»çåç°</span>
+        <span class="sk-cost">20MP Â· 25HP+æçºåè¡</span>
       </button>
-      <button class="skill-btn shield paladin-only" data-slot="3" onclick="useSkill('hammer-judgement');event.stopPropagation();" style="display:none" aria-label="錘子審判" data-desc="錘子審判：35傷害+敵人攻擊-5｜花費18MP">
-        <span class="sk-name">🔨 錘子審判</span>
-        <span class="sk-cost">18MP · 35傷+降攻</span>
+      <button class="skill-btn shield paladin-only" data-slot="3" onclick="useSkill('hammer-judgement');event.stopPropagation();" style="display:none" aria-label="éå­å¯©å¤" data-desc="éå­å¯©å¤ï¼35å·å®³+æµäººæ»æ-5ï½è±è²»18MP">
+        <span class="sk-name">ð¨ éå­å¯©å¤</span>
+        <span class="sk-cost">18MP Â· 35å·+éæ»</span>
       </button>
       <!-- Druid Skills -->
-      <button class="skill-btn fireball druid-only" data-slot="0" onclick="useSkill('wild-growth');event.stopPropagation();" style="display:none" aria-label="野性生長" data-desc="野性生長：恢復20HP+每回+3HP持續3回合｜花費10MP">
-        <span class="sk-name">🌿 野性生長</span>
-        <span class="sk-cost">10MP · 20HP+持續回血</span>
+      <button class="skill-btn fireball druid-only" data-slot="0" onclick="useSkill('wild-growth');event.stopPropagation();" style="display:none" aria-label="éæ§çé·" data-desc="éæ§çé·ï¼æ¢å¾©20HP+æ¯å+3HPæçº3ååï½è±è²»10MP">
+        <span class="sk-name">ð¿ éæ§çé·</span>
+        <span class="sk-cost">10MP Â· 20HP+æçºåè¡</span>
       </button>
-      <button class="skill-btn heal druid-only" data-slot="1" onclick="useSkill('moonfire');event.stopPropagation();" style="display:none" aria-label="月火術" data-desc="月火術：22傷害+燃燒3回合(每回4傷)｜花費14MP">
-        <span class="sk-name">🌙 月火術</span>
-        <span class="sk-cost">14MP · 22傷+燃燒</span>
+      <button class="skill-btn heal druid-only" data-slot="1" onclick="useSkill('moonfire');event.stopPropagation();" style="display:none" aria-label="æç«è¡" data-desc="æç«è¡ï¼22å·å®³+çç3åå(æ¯å4å·)ï½è±è²»14MP">
+        <span class="sk-name">ð æç«è¡</span>
+        <span class="sk-cost">14MP Â· 22å·+çç</span>
       </button>
-      <button class="skill-btn critical druid-only" data-slot="2" onclick="useSkill('starfall');event.stopPropagation();" style="display:none" aria-label="星落術" data-desc="星落術：40傷害｜花費22MP">
-        <span class="sk-name">✨ 星落術</span>
-        <span class="sk-cost">22MP · 40傷害</span>
+      <button class="skill-btn critical druid-only" data-slot="2" onclick="useSkill('starfall');event.stopPropagation();" style="display:none" aria-label="æè½è¡" data-desc="æè½è¡ï¼40å·å®³ï½è±è²»22MP">
+        <span class="sk-name">â¨ æè½è¡</span>
+        <span class="sk-cost">22MP Â· 40å·å®³</span>
       </button>
-      <button class="skill-btn shield druid-only" data-slot="3" onclick="useSkill('nature-shield');event.stopPropagation();" style="display:none" aria-label="自然護盾" data-desc="自然護盾：75%減傷2回合｜花費15MP">
-        <span class="sk-name">🌳 自然護盾</span>
-        <span class="sk-cost">15MP · 75%減2回</span>
+      <button class="skill-btn shield druid-only" data-slot="3" onclick="useSkill('nature-shield');event.stopPropagation();" style="display:none" aria-label="èªç¶è­·ç¾" data-desc="èªç¶è­·ç¾ï¼75%æ¸å·2ååï½è±è²»15MP">
+        <span class="sk-name">ð³ èªç¶è­·ç¾</span>
+        <span class="sk-cost">15MP Â· 75%æ¸2å</span>
       </button>
       <!-- Viking Skills -->
-      <button class="skill-btn fireball viking-only" data-slot="0" onclick="useSkill('axe-throw');event.stopPropagation();" style="display:none" aria-label="斧頭投擲" data-desc="斧頭投擲：18傷害+流血2回合(每回3傷)｜花費8MP">
-        <span class="sk-name">🪓 斧頭投擲</span>
-        <span class="sk-cost">8MP · 18傷+流血</span>
+      <button class="skill-btn fireball viking-only" data-slot="0" onclick="useSkill('axe-throw');event.stopPropagation();" style="display:none" aria-label="æ§é ­ææ²" data-desc="æ§é ­ææ²ï¼18å·å®³+æµè¡2åå(æ¯å3å·)ï½è±è²»8MP">
+        <span class="sk-name">ðª æ§é ­ææ²</span>
+        <span class="sk-cost">8MP Â· 18å·+æµè¡</span>
       </button>
-      <button class="skill-btn heal viking-only" data-slot="1" onclick="useSkill('battle-cry');event.stopPropagation();" style="display:none" aria-label="戰鬥怒吼" data-desc="戰鬥怒吼：攻擊+5，持續3回合｜花費10MP">
-        <span class="sk-name">📢 戰鬥怒吼</span>
-        <span class="sk-cost">10MP · +5攻3回</span>
+      <button class="skill-btn heal viking-only" data-slot="1" onclick="useSkill('battle-cry');event.stopPropagation();" style="display:none" aria-label="æ°é¬¥æå¼" data-desc="æ°é¬¥æå¼ï¼æ»æ+5ï¼æçº3ååï½è±è²»10MP">
+        <span class="sk-name">ð¢ æ°é¬¥æå¼</span>
+        <span class="sk-cost">10MP Â· +5æ»3å</span>
       </button>
-      <button class="skill-btn critical viking-only" data-slot="2" onclick="useSkill('blood-rage');event.stopPropagation();" style="display:none" aria-label="血腥狂暴" data-desc="血腥狂暴：下2次攻擊1.5倍+吸血50%｜花費15MP">
-        <span class="sk-name">🩸 血腥狂暴</span>
-        <span class="sk-cost">15MP · 2回1.5倍+吸血</span>
+      <button class="skill-btn critical viking-only" data-slot="2" onclick="useSkill('blood-rage');event.stopPropagation();" style="display:none" aria-label="è¡è¥çæ´" data-desc="è¡è¥çæ´ï¼ä¸2æ¬¡æ»æ1.5å+å¸è¡50%ï½è±è²»15MP">
+        <span class="sk-name">ð©¸ è¡è¥çæ´</span>
+        <span class="sk-cost">15MP Â· 2å1.5å+å¸è¡</span>
       </button>
-      <button class="skill-btn shield viking-only" data-slot="3" onclick="useSkill('ground-smash');event.stopPropagation();" style="display:none" aria-label="大地粉碎" data-desc="大地粉碎：30傷害+暈1回合｜花費18MP">
-        <span class="sk-name">💥 大地粉碎</span>
-        <span class="sk-cost">18MP · 30傷+暈</span>
+      <button class="skill-btn shield viking-only" data-slot="3" onclick="useSkill('ground-smash');event.stopPropagation();" style="display:none" aria-label="å¤§å°ç²ç¢" data-desc="å¤§å°ç²ç¢ï¼30å·å®³+æ1ååï½è±è²»18MP">
+        <span class="sk-name">ð¥ å¤§å°ç²ç¢</span>
+        <span class="sk-cost">18MP Â· 30å·+æ</span>
       </button>
       <!-- Shadow Skills -->
-      <button class="skill-btn fireball shadow-only" data-slot="0" onclick="useSkill('shadow-bolt');event.stopPropagation();" style="display:none" aria-label="暗影彈" data-desc="暗影彈：20傷害｜花費8MP">
-        <span class="sk-name">⚫ 暗影彈</span>
-        <span class="sk-cost">8MP · 20傷</span>
+      <button class="skill-btn fireball shadow-only" data-slot="0" onclick="useSkill('shadow-bolt');event.stopPropagation();" style="display:none" aria-label="æå½±å½" data-desc="æå½±å½ï¼20å·å®³ï½è±è²»8MP">
+        <span class="sk-name">â« æå½±å½</span>
+        <span class="sk-cost">8MP Â· 20å·</span>
       </button>
-      <button class="skill-btn heal shadow-only" data-slot="1" onclick="useSkill('dark-reap');event.stopPropagation();" style="display:none" aria-label="暗影收割" data-desc="暗影收割：30傷害+吸收10MP｜花費14MP">
-        <span class="sk-name">💜 暗影收割</span>
-        <span class="sk-cost">14MP · 30傷+吸MP</span>
+      <button class="skill-btn heal shadow-only" data-slot="1" onclick="useSkill('dark-reap');event.stopPropagation();" style="display:none" aria-label="æå½±æ¶å²" data-desc="æå½±æ¶å²ï¼30å·å®³+å¸æ¶10MPï½è±è²»14MP">
+        <span class="sk-name">ð æå½±æ¶å²</span>
+        <span class="sk-cost">14MP Â· 30å·+å¸MP</span>
       </button>
-      <button class="skill-btn critical shadow-only" data-slot="2" onclick="useSkill('shadow-veil');event.stopPropagation();" style="display:none" aria-label="暗影面紗" data-desc="暗影面紗：迴避下次攻擊｜花費12MP">
-        <span class="sk-name">🌑 暗影面紗</span>
-        <span class="sk-cost">12MP · 迴避1次</span>
+      <button class="skill-btn critical shadow-only" data-slot="2" onclick="useSkill('shadow-veil');event.stopPropagation();" style="display:none" aria-label="æå½±é¢ç´" data-desc="æå½±é¢ç´ï¼è¿´é¿ä¸æ¬¡æ»æï½è±è²»12MP">
+        <span class="sk-name">ð æå½±é¢ç´</span>
+        <span class="sk-cost">12MP Â· è¿´é¿1æ¬¡</span>
       </button>
-      <button class="skill-btn shield shadow-only" data-slot="3" onclick="useSkill('void-blast');event.stopPropagation();" style="display:none" aria-label="虛空衝擊" data-desc="虛空衝擊：45傷害｜花費22MP">
-        <span class="sk-name">💥 虛空衝擊</span>
-        <span class="sk-cost">22MP · 45傷</span>
+      <button class="skill-btn shield shadow-only" data-slot="3" onclick="useSkill('void-blast');event.stopPropagation();" style="display:none" aria-label="èç©ºè¡æ" data-desc="èç©ºè¡æï¼45å·å®³ï½è±è²»22MP">
+        <span class="sk-name">ð¥ èç©ºè¡æ</span>
+        <span class="sk-cost">22MP Â· 45å·</span>
       </button>
       <!-- Ranger Skills -->
-      <button class="skill-btn fireball ranger-only" data-slot="0" onclick="useSkill('quick-shot');event.stopPropagation();" style="display:none" aria-label="快速射擊" data-desc="快速射擊：15傷害｜花費6MP">
-        <span class="sk-name">🏹 快速射擊</span>
-        <span class="sk-cost">6MP · 15傷</span>
+      <button class="skill-btn fireball ranger-only" data-slot="0" onclick="useSkill('quick-shot');event.stopPropagation();" style="display:none" aria-label="å¿«éå°æ" data-desc="å¿«éå°æï¼15å·å®³ï½è±è²»6MP">
+        <span class="sk-name">ð¹ å¿«éå°æ</span>
+        <span class="sk-cost">6MP Â· 15å·</span>
       </button>
-      <button class="skill-btn heal ranger-only" data-slot="1" onclick="useSkill('poison-arrow');event.stopPropagation();" style="display:none" aria-label="毒箭" data-desc="毒箭：18傷害+中毒2回合(每回5傷)｜花費12MP">
-        <span class="sk-name">☠️ 毒箭</span>
-        <span class="sk-cost">12MP · 18傷+中毒</span>
+      <button class="skill-btn heal ranger-only" data-slot="1" onclick="useSkill('poison-arrow');event.stopPropagation();" style="display:none" aria-label="æ¯ç®­" data-desc="æ¯ç®­ï¼18å·å®³+ä¸­æ¯2åå(æ¯å5å·)ï½è±è²»12MP">
+        <span class="sk-name">â ï¸ æ¯ç®­</span>
+        <span class="sk-cost">12MP Â· 18å·+ä¸­æ¯</span>
       </button>
-      <button class="skill-btn critical ranger-only" data-slot="2" onclick="useSkill('multi-shot');event.stopPropagation();" style="display:none" aria-label="多重射擊" data-desc="多重射擊：3×12傷害｜花費18MP">
-        <span class="sk-name">🎯 多重射擊</span>
-        <span class="sk-cost">18MP · 3×12傷</span>
+      <button class="skill-btn critical ranger-only" data-slot="2" onclick="useSkill('multi-shot');event.stopPropagation();" style="display:none" aria-label="å¤éå°æ" data-desc="å¤éå°æï¼3Ã12å·å®³ï½è±è²»18MP">
+        <span class="sk-name">ð¯ å¤éå°æ</span>
+        <span class="sk-cost">18MP Â· 3Ã12å·</span>
       </button>
-      <button class="skill-btn shield ranger-only" data-slot="3" onclick="useSkill('eagle-eye');event.stopPropagation();" style="display:none" aria-label="鷹眼" data-desc="鷹眼：下次攻擊+8傷害｜花費10MP">
-        <span class="sk-name">👁️ 鷹眼</span>
-        <span class="sk-cost">10MP · 下次+8攻</span>
+      <button class="skill-btn shield ranger-only" data-slot="3" onclick="useSkill('eagle-eye');event.stopPropagation();" style="display:none" aria-label="é·¹ç¼" data-desc="é·¹ç¼ï¼ä¸æ¬¡æ»æ+8å·å®³ï½è±è²»10MP">
+        <span class="sk-name">ðï¸ é·¹ç¼</span>
+        <span class="sk-cost">10MP Â· ä¸æ¬¡+8æ»</span>
       </button>
     </div>
 
     <div class="battle-log" id="battle-log"></div>
   </div>
-  <button class="skills-toggle" id="skills-toggle" onclick="toggleSkills();event.stopPropagation();" aria-label="技能">⚔️</button>
+  <button class="skills-toggle" id="skills-toggle" onclick="toggleSkills();event.stopPropagation();" aria-label="æè½">âï¸</button>
 </section>
 
 <!-- ==================== BATTLE RESULT ==================== -->
 <section id="battle-result" class="hidden flex-center">
   <div class="result-box">
-    <div class="result-title" id="result-title">勝利！</div>
+    <div class="result-title" id="result-title">åå©ï¼</div>
     <div class="result-stats" id="result-stats"></div>
     <div class="result-buttons">
-      <button class="result-btn primary" onclick="backToMap()">🏠 回主堡</button>
-      <button class="result-btn secondary" onclick="retryBattle()">🔄 再戰一局</button>
-      <button class="result-btn" style="background:#6c5ce7;font-size:.9rem" onclick="showPracticeSelectScreen()">📖 再看一遍題目</button>
-      <button class="result-btn" style="background:#00b894;font-size:.9rem" onclick="showDashboardScreen()">📊 重點訓練</button>
+      <button class="result-btn primary" onclick="backToMap()">ð  åä¸»å ¡</button>
+      <button class="result-btn secondary" onclick="retryBattle()">ð åæ°ä¸å±</button>
     </div>
   </div>
 </section>
@@ -660,186 +656,186 @@ section{position:fixed;inset:0;display:flex;flex-direction:column;align-items:ce
 // ==================== GAME DATA (inline stages.json) ====================
 const STAGES_DATA = {
   multiplication: {
-    "2": { name: "2的乘法", stages: [
-      { id: "2-easy", name: "2的乘法·初", difficulty: "easy", enabled: true, monsters: ["slime-green"], bg: "forest",
+    "2": { name: "2çä¹æ³", stages: [
+      { id: "2-easy", name: "2çä¹æ³Â·å", difficulty: "easy", enabled: true, monsters: ["slime-green"], bg: "forest",
         questions: [
-          {q:"2 × 1 = ?",answer:2,choices:[1,2,3]},{q:"2 × 2 = ?",answer:4,choices:[3,4,5]},{q:"2 × 3 = ?",answer:6,choices:[5,6,7]},
-          {q:"2 × 4 = ?",answer:8,choices:[6,7,8]},{q:"2 × 5 = ?",answer:10,choices:[8,9,10]},{q:"2 × 6 = ?",answer:12,choices:[10,11,12]},
-          {q:"2 × 7 = ?",answer:14,choices:[12,14,16]},{q:"2 × 8 = ?",answer:16,choices:[14,15,16]},{q:"2 × 9 = ?",answer:18,choices:[16,18,20]},
-          {q:"2 × 10 = ?",answer:20,choices:[18,20,22]}
+          {q:"2 Ã 1 = ?",answer:2,choices:[1,2,3]},{q:"2 Ã 2 = ?",answer:4,choices:[3,4,5]},{q:"2 Ã 3 = ?",answer:6,choices:[5,6,7]},
+          {q:"2 Ã 4 = ?",answer:8,choices:[6,7,8]},{q:"2 Ã 5 = ?",answer:10,choices:[8,9,10]},{q:"2 Ã 6 = ?",answer:12,choices:[10,11,12]},
+          {q:"2 Ã 7 = ?",answer:14,choices:[12,14,16]},{q:"2 Ã 8 = ?",answer:16,choices:[14,15,16]},{q:"2 Ã 9 = ?",answer:18,choices:[16,18,20]},
+          {q:"2 Ã 10 = ?",answer:20,choices:[18,20,22]}
         ]},
-      { id: "2-normal", name: "2的乘法·中", difficulty: "normal", enabled: true, monsters: ["wolf"], bg: "forest",
+      { id: "2-normal", name: "2çä¹æ³Â·ä¸­", difficulty: "normal", enabled: true, monsters: ["wolf"], bg: "forest",
         questions: [
-          {q:"2 × 1 = ?",answer:2,choices:[1,2,3,4]},{q:"2 × 2 = ?",answer:4,choices:[2,3,4,5]},{q:"2 × 3 = ?",answer:6,choices:[4,5,6,7]},
-          {q:"2 × 4 = ?",answer:8,choices:[6,7,8,9]},{q:"2 × 5 = ?",answer:10,choices:[8,10,12,14]},{q:"2 × 6 = ?",answer:12,choices:[10,12,14,16]},
-          {q:"2 × 7 = ?",answer:14,choices:[12,14,16,18]},{q:"2 × 8 = ?",answer:16,choices:[14,15,16,18]},{q:"2 × 9 = ?",answer:18,choices:[16,17,18,20]},
-          {q:"2 × 10 = ?",answer:20,choices:[18,20,22,24]}
+          {q:"2 Ã 1 = ?",answer:2,choices:[1,2,3,4]},{q:"2 Ã 2 = ?",answer:4,choices:[2,3,4,5]},{q:"2 Ã 3 = ?",answer:6,choices:[4,5,6,7]},
+          {q:"2 Ã 4 = ?",answer:8,choices:[6,7,8,9]},{q:"2 Ã 5 = ?",answer:10,choices:[8,10,12,14]},{q:"2 Ã 6 = ?",answer:12,choices:[10,12,14,16]},
+          {q:"2 Ã 7 = ?",answer:14,choices:[12,14,16,18]},{q:"2 Ã 8 = ?",answer:16,choices:[14,15,16,18]},{q:"2 Ã 9 = ?",answer:18,choices:[16,17,18,20]},
+          {q:"2 Ã 10 = ?",answer:20,choices:[18,20,22,24]}
         ]},
-      { id: "2-hard", name: "2的乘法·終", difficulty: "hard", enabled: true, monsters: ["orc-warrior"], bg: "castle",
+      { id: "2-hard", name: "2çä¹æ³Â·çµ", difficulty: "hard", enabled: true, monsters: ["orc-warrior"], bg: "castle",
         questions: [
-          {q:"2 × 1 = ?",answer:2},{q:"2 × 2 = ?",answer:4},{q:"2 × 3 = ?",answer:6},{q:"2 × 4 = ?",answer:8},
-          {q:"2 × 5 = ?",answer:10},{q:"2 × 6 = ?",answer:12},{q:"2 × 7 = ?",answer:14},{q:"2 × 8 = ?",answer:16},
-          {q:"2 × 9 = ?",answer:18},{q:"2 × 10 = ?",answer:20}
+          {q:"2 Ã 1 = ?",answer:2},{q:"2 Ã 2 = ?",answer:4},{q:"2 Ã 3 = ?",answer:6},{q:"2 Ã 4 = ?",answer:8},
+          {q:"2 Ã 5 = ?",answer:10},{q:"2 Ã 6 = ?",answer:12},{q:"2 Ã 7 = ?",answer:14},{q:"2 Ã 8 = ?",answer:16},
+          {q:"2 Ã 9 = ?",answer:18},{q:"2 Ã 10 = ?",answer:20}
         ]}
     ]},
-    "3": { name: "3的乘法", stages: [
-      { id: "3-easy", name: "3的乘法·初", difficulty: "easy", enabled: true, monsters: ["slime-green"], bg: "forest",
+    "3": { name: "3çä¹æ³", stages: [
+      { id: "3-easy", name: "3çä¹æ³Â·å", difficulty: "easy", enabled: true, monsters: ["slime-green"], bg: "forest",
         questions: [
-          {q:"3 × 1 = ?",answer:3,choices:[2,3,4]},{q:"3 × 2 = ?",answer:6,choices:[5,6,7]},{q:"3 × 3 = ?",answer:9,choices:[8,9,10]},
-          {q:"3 × 4 = ?",answer:12,choices:[10,12,14]},{q:"3 × 5 = ?",answer:15,choices:[12,15,18]},{q:"3 × 6 = ?",answer:18,choices:[15,18,21]},
-          {q:"3 × 7 = ?",answer:21,choices:[18,21,24]},{q:"3 × 8 = ?",answer:24,choices:[21,24,27]},{q:"3 × 9 = ?",answer:27,choices:[24,27,30]},
-          {q:"3 × 10 = ?",answer:30,choices:[27,30,33]}
+          {q:"3 Ã 1 = ?",answer:3,choices:[2,3,4]},{q:"3 Ã 2 = ?",answer:6,choices:[5,6,7]},{q:"3 Ã 3 = ?",answer:9,choices:[8,9,10]},
+          {q:"3 Ã 4 = ?",answer:12,choices:[10,12,14]},{q:"3 Ã 5 = ?",answer:15,choices:[12,15,18]},{q:"3 Ã 6 = ?",answer:18,choices:[15,18,21]},
+          {q:"3 Ã 7 = ?",answer:21,choices:[18,21,24]},{q:"3 Ã 8 = ?",answer:24,choices:[21,24,27]},{q:"3 Ã 9 = ?",answer:27,choices:[24,27,30]},
+          {q:"3 Ã 10 = ?",answer:30,choices:[27,30,33]}
         ]},
-      { id: "3-normal", name: "3的乘法·中", difficulty: "normal", enabled: true, monsters: ["wolf"], bg: "forest",
+      { id: "3-normal", name: "3çä¹æ³Â·ä¸­", difficulty: "normal", enabled: true, monsters: ["wolf"], bg: "forest",
         questions: [
-          {q:"3 × 1 = ?",answer:3,choices:[2,3,4,5]},{q:"3 × 2 = ?",answer:6,choices:[4,5,6,7]},{q:"3 × 3 = ?",answer:9,choices:[6,7,9,10]},
-          {q:"3 × 4 = ?",answer:12,choices:[9,10,12,15]},{q:"3 × 5 = ?",answer:15,choices:[12,15,18,20]},{q:"3 × 6 = ?",answer:18,choices:[15,16,18,21]},
-          {q:"3 × 7 = ?",answer:21,choices:[18,20,21,24]},{q:"3 × 8 = ?",answer:24,choices:[21,24,27,30]},{q:"3 × 9 = ?",answer:27,choices:[24,27,30,33]},
-          {q:"3 × 10 = ?",answer:30,choices:[27,30,33,36]}
+          {q:"3 Ã 1 = ?",answer:3,choices:[2,3,4,5]},{q:"3 Ã 2 = ?",answer:6,choices:[4,5,6,7]},{q:"3 Ã 3 = ?",answer:9,choices:[6,7,9,10]},
+          {q:"3 Ã 4 = ?",answer:12,choices:[9,10,12,15]},{q:"3 Ã 5 = ?",answer:15,choices:[12,15,18,20]},{q:"3 Ã 6 = ?",answer:18,choices:[15,16,18,21]},
+          {q:"3 Ã 7 = ?",answer:21,choices:[18,20,21,24]},{q:"3 Ã 8 = ?",answer:24,choices:[21,24,27,30]},{q:"3 Ã 9 = ?",answer:27,choices:[24,27,30,33]},
+          {q:"3 Ã 10 = ?",answer:30,choices:[27,30,33,36]}
         ]},
-      { id: "3-hard", name: "3的乘法·終", difficulty: "hard", enabled: true, monsters: ["skeleton-warrior"], bg: "castle",
+      { id: "3-hard", name: "3çä¹æ³Â·çµ", difficulty: "hard", enabled: true, monsters: ["skeleton-warrior"], bg: "castle",
         questions: [
-          {q:"3 × 1 = ?",answer:3},{q:"3 × 2 = ?",answer:6},{q:"3 × 3 = ?",answer:9},{q:"3 × 4 = ?",answer:12},
-          {q:"3 × 5 = ?",answer:15},{q:"3 × 6 = ?",answer:18},{q:"3 × 7 = ?",answer:21},{q:"3 × 8 = ?",answer:24},
-          {q:"3 × 9 = ?",answer:27},{q:"3 × 10 = ?",answer:30}
+          {q:"3 Ã 1 = ?",answer:3},{q:"3 Ã 2 = ?",answer:6},{q:"3 Ã 3 = ?",answer:9},{q:"3 Ã 4 = ?",answer:12},
+          {q:"3 Ã 5 = ?",answer:15},{q:"3 Ã 6 = ?",answer:18},{q:"3 Ã 7 = ?",answer:21},{q:"3 Ã 8 = ?",answer:24},
+          {q:"3 Ã 9 = ?",answer:27},{q:"3 Ã 10 = ?",answer:30}
         ]}
     ]},
-    "4": { name: "4的乘法", stages: [
-      { id: "4-easy", name: "4的乘法·初", difficulty: "easy", enabled: true, monsters: ["slime-green"], bg: "forest",
+    "4": { name: "4çä¹æ³", stages: [
+      { id: "4-easy", name: "4çä¹æ³Â·å", difficulty: "easy", enabled: true, monsters: ["slime-green"], bg: "forest",
         questions: [
-          {q:"4 × 1 = ?",answer:4,choices:[3,4,5]},{q:"4 × 2 = ?",answer:8,choices:[6,8,10]},{q:"4 × 3 = ?",answer:12,choices:[10,12,14]},
-          {q:"4 × 4 = ?",answer:16,choices:[14,16,18]},{q:"4 × 5 = ?",answer:20,choices:[16,20,24]},{q:"4 × 6 = ?",answer:24,choices:[20,24,28]},
-          {q:"4 × 7 = ?",answer:28,choices:[24,28,32]},{q:"4 × 8 = ?",answer:32,choices:[28,32,36]},{q:"4 × 9 = ?",answer:36,choices:[32,36,40]},
-          {q:"4 × 10 = ?",answer:40,choices:[36,40,44]}
+          {q:"4 Ã 1 = ?",answer:4,choices:[3,4,5]},{q:"4 Ã 2 = ?",answer:8,choices:[6,8,10]},{q:"4 Ã 3 = ?",answer:12,choices:[10,12,14]},
+          {q:"4 Ã 4 = ?",answer:16,choices:[14,16,18]},{q:"4 Ã 5 = ?",answer:20,choices:[16,20,24]},{q:"4 Ã 6 = ?",answer:24,choices:[20,24,28]},
+          {q:"4 Ã 7 = ?",answer:28,choices:[24,28,32]},{q:"4 Ã 8 = ?",answer:32,choices:[28,32,36]},{q:"4 Ã 9 = ?",answer:36,choices:[32,36,40]},
+          {q:"4 Ã 10 = ?",answer:40,choices:[36,40,44]}
         ]},
-      { id: "4-normal", name: "4的乘法·中", difficulty: "normal", enabled: true, monsters: ["wolf"], bg: "forest",
+      { id: "4-normal", name: "4çä¹æ³Â·ä¸­", difficulty: "normal", enabled: true, monsters: ["wolf"], bg: "forest",
         questions: [
-          {q:"4 × 1 = ?",answer:4,choices:[2,4,6,8]},{q:"4 × 2 = ?",answer:8,choices:[6,8,10,12]},{q:"4 × 3 = ?",answer:12,choices:[10,12,14,16]},
-          {q:"4 × 4 = ?",answer:16,choices:[12,14,16,18]},{q:"4 × 5 = ?",answer:20,choices:[16,18,20,24]},{q:"4 × 6 = ?",answer:24,choices:[20,22,24,28]},
-          {q:"4 × 7 = ?",answer:28,choices:[24,26,28,32]},{q:"4 × 8 = ?",answer:32,choices:[28,30,32,36]},{q:"4 × 9 = ?",answer:36,choices:[32,34,36,40]},
-          {q:"4 × 10 = ?",answer:40,choices:[36,38,40,44]}
+          {q:"4 Ã 1 = ?",answer:4,choices:[2,4,6,8]},{q:"4 Ã 2 = ?",answer:8,choices:[6,8,10,12]},{q:"4 Ã 3 = ?",answer:12,choices:[10,12,14,16]},
+          {q:"4 Ã 4 = ?",answer:16,choices:[12,14,16,18]},{q:"4 Ã 5 = ?",answer:20,choices:[16,18,20,24]},{q:"4 Ã 6 = ?",answer:24,choices:[20,22,24,28]},
+          {q:"4 Ã 7 = ?",answer:28,choices:[24,26,28,32]},{q:"4 Ã 8 = ?",answer:32,choices:[28,30,32,36]},{q:"4 Ã 9 = ?",answer:36,choices:[32,34,36,40]},
+          {q:"4 Ã 10 = ?",answer:40,choices:[36,38,40,44]}
         ]},
-      { id: "4-hard", name: "4的乘法·終", difficulty: "hard", enabled: true, monsters: ["skeleton-warrior"], bg: "castle",
+      { id: "4-hard", name: "4çä¹æ³Â·çµ", difficulty: "hard", enabled: true, monsters: ["skeleton-warrior"], bg: "castle",
         questions: [
-          {q:"4 × 1 = ?",answer:4},{q:"4 × 2 = ?",answer:8},{q:"4 × 3 = ?",answer:12},{q:"4 × 4 = ?",answer:16},
-          {q:"4 × 5 = ?",answer:20},{q:"4 × 6 = ?",answer:24},{q:"4 × 7 = ?",answer:28},{q:"4 × 8 = ?",answer:32},
-          {q:"4 × 9 = ?",answer:36},{q:"4 × 10 = ?",answer:40}
+          {q:"4 Ã 1 = ?",answer:4},{q:"4 Ã 2 = ?",answer:8},{q:"4 Ã 3 = ?",answer:12},{q:"4 Ã 4 = ?",answer:16},
+          {q:"4 Ã 5 = ?",answer:20},{q:"4 Ã 6 = ?",answer:24},{q:"4 Ã 7 = ?",answer:28},{q:"4 Ã 8 = ?",answer:32},
+          {q:"4 Ã 9 = ?",answer:36},{q:"4 Ã 10 = ?",answer:40}
         ]}
     ]},
-    "6": { name: "6的乘法", stages: [
-      { id: "6-easy", name: "6的乘法·初", difficulty: "easy", enabled: true, monsters: ["slime-green"], bg: "forest",
+    "6": { name: "6çä¹æ³", stages: [
+      { id: "6-easy", name: "6çä¹æ³Â·å", difficulty: "easy", enabled: true, monsters: ["slime-green"], bg: "forest",
         questions: [
-          {q:"6 × 1 = ?",answer:6,choices:[5,6,7]},{q:"6 × 2 = ?",answer:12,choices:[10,12,14]},{q:"6 × 3 = ?",answer:18,choices:[15,18,21]},
-          {q:"6 × 4 = ?",answer:24,choices:[20,24,28]},{q:"6 × 5 = ?",answer:30,choices:[25,30,35]},{q:"6 × 6 = ?",answer:36,choices:[30,36,42]},
-          {q:"6 × 7 = ?",answer:42,choices:[36,42,48]},{q:"6 × 8 = ?",answer:48,choices:[42,48,54]},{q:"6 × 9 = ?",answer:54,choices:[48,54,60]},
-          {q:"6 × 10 = ?",answer:60,choices:[54,60,66]}
+          {q:"6 Ã 1 = ?",answer:6,choices:[5,6,7]},{q:"6 Ã 2 = ?",answer:12,choices:[10,12,14]},{q:"6 Ã 3 = ?",answer:18,choices:[15,18,21]},
+          {q:"6 Ã 4 = ?",answer:24,choices:[20,24,28]},{q:"6 Ã 5 = ?",answer:30,choices:[25,30,35]},{q:"6 Ã 6 = ?",answer:36,choices:[30,36,42]},
+          {q:"6 Ã 7 = ?",answer:42,choices:[36,42,48]},{q:"6 Ã 8 = ?",answer:48,choices:[42,48,54]},{q:"6 Ã 9 = ?",answer:54,choices:[48,54,60]},
+          {q:"6 Ã 10 = ?",answer:60,choices:[54,60,66]}
         ]},
-      { id: "6-normal", name: "6的乘法·中", difficulty: "normal", enabled: true, monsters: ["wolf"], bg: "forest",
+      { id: "6-normal", name: "6çä¹æ³Â·ä¸­", difficulty: "normal", enabled: true, monsters: ["wolf"], bg: "forest",
         questions: [
-          {q:"6 × 1 = ?",answer:6,choices:[4,6,8,10]},{q:"6 × 2 = ?",answer:12,choices:[8,10,12,14]},{q:"6 × 3 = ?",answer:18,choices:[14,16,18,20]},
-          {q:"6 × 4 = ?",answer:24,choices:[20,22,24,28]},{q:"6 × 5 = ?",answer:30,choices:[24,28,30,34]},{q:"6 × 6 = ?",answer:36,choices:[30,32,36,40]},
-          {q:"6 × 7 = ?",answer:42,choices:[36,40,42,46]},{q:"6 × 8 = ?",answer:48,choices:[42,44,48,52]},{q:"6 × 9 = ?",answer:54,choices:[48,52,54,58]},
-          {q:"6 × 10 = ?",answer:60,choices:[54,56,60,64]}
+          {q:"6 Ã 1 = ?",answer:6,choices:[4,6,8,10]},{q:"6 Ã 2 = ?",answer:12,choices:[8,10,12,14]},{q:"6 Ã 3 = ?",answer:18,choices:[14,16,18,20]},
+          {q:"6 Ã 4 = ?",answer:24,choices:[20,22,24,28]},{q:"6 Ã 5 = ?",answer:30,choices:[24,28,30,34]},{q:"6 Ã 6 = ?",answer:36,choices:[30,32,36,40]},
+          {q:"6 Ã 7 = ?",answer:42,choices:[36,40,42,46]},{q:"6 Ã 8 = ?",answer:48,choices:[42,44,48,52]},{q:"6 Ã 9 = ?",answer:54,choices:[48,52,54,58]},
+          {q:"6 Ã 10 = ?",answer:60,choices:[54,56,60,64]}
         ]},
-      { id: "6-hard", name: "6的乘法·終", difficulty: "hard", enabled: true, monsters: ["skeleton-mage"], bg: "castle",
+      { id: "6-hard", name: "6çä¹æ³Â·çµ", difficulty: "hard", enabled: true, monsters: ["skeleton-mage"], bg: "castle",
         questions: [
-          {q:"6 × 1 = ?",answer:6},{q:"6 × 2 = ?",answer:12},{q:"6 × 3 = ?",answer:18},{q:"6 × 4 = ?",answer:24},
-          {q:"6 × 5 = ?",answer:30},{q:"6 × 6 = ?",answer:36},{q:"6 × 7 = ?",answer:42},{q:"6 × 8 = ?",answer:48},
-          {q:"6 × 9 = ?",answer:54},{q:"6 × 10 = ?",answer:60}
+          {q:"6 Ã 1 = ?",answer:6},{q:"6 Ã 2 = ?",answer:12},{q:"6 Ã 3 = ?",answer:18},{q:"6 Ã 4 = ?",answer:24},
+          {q:"6 Ã 5 = ?",answer:30},{q:"6 Ã 6 = ?",answer:36},{q:"6 Ã 7 = ?",answer:42},{q:"6 Ã 8 = ?",answer:48},
+          {q:"6 Ã 9 = ?",answer:54},{q:"6 Ã 10 = ?",answer:60}
         ]}
     ]},
-    "7": { name: "7的乘法", stages: [
-      { id: "7-easy", name: "7的乘法·初", difficulty: "easy", enabled: true, monsters: ["slime-green"], bg: "forest",
+    "7": { name: "7çä¹æ³", stages: [
+      { id: "7-easy", name: "7çä¹æ³Â·å", difficulty: "easy", enabled: true, monsters: ["slime-green"], bg: "forest",
         questions: [
-          {q:"7 × 1 = ?",answer:7,choices:[6,7,8]},{q:"7 × 2 = ?",answer:14,choices:[12,14,16]},{q:"7 × 3 = ?",answer:21,choices:[18,21,24]},
-          {q:"7 × 4 = ?",answer:28,choices:[24,28,32]},{q:"7 × 5 = ?",answer:35,choices:[30,35,40]},{q:"7 × 6 = ?",answer:42,choices:[36,42,48]},
-          {q:"7 × 7 = ?",answer:49,choices:[42,49,56]},{q:"7 × 8 = ?",answer:56,choices:[48,56,64]},{q:"7 × 9 = ?",answer:63,choices:[56,63,70]},
-          {q:"7 × 10 = ?",answer:70,choices:[63,70,77]}
+          {q:"7 Ã 1 = ?",answer:7,choices:[6,7,8]},{q:"7 Ã 2 = ?",answer:14,choices:[12,14,16]},{q:"7 Ã 3 = ?",answer:21,choices:[18,21,24]},
+          {q:"7 Ã 4 = ?",answer:28,choices:[24,28,32]},{q:"7 Ã 5 = ?",answer:35,choices:[30,35,40]},{q:"7 Ã 6 = ?",answer:42,choices:[36,42,48]},
+          {q:"7 Ã 7 = ?",answer:49,choices:[42,49,56]},{q:"7 Ã 8 = ?",answer:56,choices:[48,56,64]},{q:"7 Ã 9 = ?",answer:63,choices:[56,63,70]},
+          {q:"7 Ã 10 = ?",answer:70,choices:[63,70,77]}
         ]},
-      { id: "7-normal", name: "7的乘法·中", difficulty: "normal", enabled: true, monsters: ["wolf"], bg: "forest",
+      { id: "7-normal", name: "7çä¹æ³Â·ä¸­", difficulty: "normal", enabled: true, monsters: ["wolf"], bg: "forest",
         questions: [
-          {q:"7 × 1 = ?",answer:7,choices:[5,7,9,11]},{q:"7 × 2 = ?",answer:14,choices:[10,12,14,16]},{q:"7 × 3 = ?",answer:21,choices:[15,18,21,24]},
-          {q:"7 × 4 = ?",answer:28,choices:[22,25,28,31]},{q:"7 × 5 = ?",answer:35,choices:[28,32,35,38]},{q:"7 × 6 = ?",answer:42,choices:[36,40,42,46]},
-          {q:"7 × 7 = ?",answer:49,choices:[42,45,49,52]},{q:"7 × 8 = ?",answer:56,choices:[48,52,56,60]},{q:"7 × 9 = ?",answer:63,choices:[56,60,63,66]},
-          {q:"7 × 10 = ?",answer:70,choices:[63,66,70,74]}
+          {q:"7 Ã 1 = ?",answer:7,choices:[5,7,9,11]},{q:"7 Ã 2 = ?",answer:14,choices:[10,12,14,16]},{q:"7 Ã 3 = ?",answer:21,choices:[15,18,21,24]},
+          {q:"7 Ã 4 = ?",answer:28,choices:[22,25,28,31]},{q:"7 Ã 5 = ?",answer:35,choices:[28,32,35,38]},{q:"7 Ã 6 = ?",answer:42,choices:[36,40,42,46]},
+          {q:"7 Ã 7 = ?",answer:49,choices:[42,45,49,52]},{q:"7 Ã 8 = ?",answer:56,choices:[48,52,56,60]},{q:"7 Ã 9 = ?",answer:63,choices:[56,60,63,66]},
+          {q:"7 Ã 10 = ?",answer:70,choices:[63,66,70,74]}
         ]},
-      { id: "7-hard", name: "7的乘法·終", difficulty: "hard", enabled: true, monsters: ["skeleton-warrior"], bg: "castle",
+      { id: "7-hard", name: "7çä¹æ³Â·çµ", difficulty: "hard", enabled: true, monsters: ["skeleton-warrior"], bg: "castle",
         questions: [
-          {q:"7 × 1 = ?",answer:7},{q:"7 × 2 = ?",answer:14},{q:"7 × 3 = ?",answer:21},{q:"7 × 4 = ?",answer:28},
-          {q:"7 × 5 = ?",answer:35},{q:"7 × 6 = ?",answer:42},{q:"7 × 7 = ?",answer:49},{q:"7 × 8 = ?",answer:56},
-          {q:"7 × 9 = ?",answer:63},{q:"7 × 10 = ?",answer:70}
+          {q:"7 Ã 1 = ?",answer:7},{q:"7 Ã 2 = ?",answer:14},{q:"7 Ã 3 = ?",answer:21},{q:"7 Ã 4 = ?",answer:28},
+          {q:"7 Ã 5 = ?",answer:35},{q:"7 Ã 6 = ?",answer:42},{q:"7 Ã 7 = ?",answer:49},{q:"7 Ã 8 = ?",answer:56},
+          {q:"7 Ã 9 = ?",answer:63},{q:"7 Ã 10 = ?",answer:70}
         ]}
     ]},
-    "8": { name: "8的乘法", stages: [
-      { id: "8-easy", name: "8的乘法·初", difficulty: "easy", enabled: true, monsters: ["slime-green"], bg: "forest",
+    "8": { name: "8çä¹æ³", stages: [
+      { id: "8-easy", name: "8çä¹æ³Â·å", difficulty: "easy", enabled: true, monsters: ["slime-green"], bg: "forest",
         questions: [
-          {q:"8 × 1 = ?",answer:8,choices:[7,8,9]},{q:"8 × 2 = ?",answer:16,choices:[14,16,18]},{q:"8 × 3 = ?",answer:24,choices:[21,24,27]},
-          {q:"8 × 4 = ?",answer:32,choices:[28,32,36]},{q:"8 × 5 = ?",answer:40,choices:[35,40,45]},{q:"8 × 6 = ?",answer:48,choices:[42,48,54]},
-          {q:"8 × 7 = ?",answer:56,choices:[48,56,64]},{q:"8 × 8 = ?",answer:64,choices:[56,64,72]},{q:"8 × 9 = ?",answer:72,choices:[64,72,80]},
-          {q:"8 × 10 = ?",answer:80,choices:[72,80,88]}
+          {q:"8 Ã 1 = ?",answer:8,choices:[7,8,9]},{q:"8 Ã 2 = ?",answer:16,choices:[14,16,18]},{q:"8 Ã 3 = ?",answer:24,choices:[21,24,27]},
+          {q:"8 Ã 4 = ?",answer:32,choices:[28,32,36]},{q:"8 Ã 5 = ?",answer:40,choices:[35,40,45]},{q:"8 Ã 6 = ?",answer:48,choices:[42,48,54]},
+          {q:"8 Ã 7 = ?",answer:56,choices:[48,56,64]},{q:"8 Ã 8 = ?",answer:64,choices:[56,64,72]},{q:"8 Ã 9 = ?",answer:72,choices:[64,72,80]},
+          {q:"8 Ã 10 = ?",answer:80,choices:[72,80,88]}
         ]},
-      { id: "8-normal", name: "8的乘法·中", difficulty: "normal", enabled: true, monsters: ["wolf"], bg: "forest",
+      { id: "8-normal", name: "8çä¹æ³Â·ä¸­", difficulty: "normal", enabled: true, monsters: ["wolf"], bg: "forest",
         questions: [
-          {q:"8 × 1 = ?",answer:8,choices:[6,8,10,12]},{q:"8 × 2 = ?",answer:16,choices:[12,14,16,18]},{q:"8 × 3 = ?",answer:24,choices:[18,21,24,27]},
-          {q:"8 × 4 = ?",answer:32,choices:[26,28,32,36]},{q:"8 × 5 = ?",answer:40,choices:[32,36,40,44]},{q:"8 × 6 = ?",answer:48,choices:[40,44,48,52]},
-          {q:"8 × 7 = ?",answer:56,choices:[48,52,56,60]},{q:"8 × 8 = ?",answer:64,choices:[56,60,64,68]},{q:"8 × 9 = ?",answer:72,choices:[64,68,72,76]},
-          {q:"8 × 10 = ?",answer:80,choices:[72,76,80,84]}
+          {q:"8 Ã 1 = ?",answer:8,choices:[6,8,10,12]},{q:"8 Ã 2 = ?",answer:16,choices:[12,14,16,18]},{q:"8 Ã 3 = ?",answer:24,choices:[18,21,24,27]},
+          {q:"8 Ã 4 = ?",answer:32,choices:[26,28,32,36]},{q:"8 Ã 5 = ?",answer:40,choices:[32,36,40,44]},{q:"8 Ã 6 = ?",answer:48,choices:[40,44,48,52]},
+          {q:"8 Ã 7 = ?",answer:56,choices:[48,52,56,60]},{q:"8 Ã 8 = ?",answer:64,choices:[56,60,64,68]},{q:"8 Ã 9 = ?",answer:72,choices:[64,68,72,76]},
+          {q:"8 Ã 10 = ?",answer:80,choices:[72,76,80,84]}
         ]},
-      { id: "8-hard", name: "8的乘法·終", difficulty: "hard", enabled: true, monsters: ["skeleton-mage"], bg: "castle",
+      { id: "8-hard", name: "8çä¹æ³Â·çµ", difficulty: "hard", enabled: true, monsters: ["skeleton-mage"], bg: "castle",
         questions: [
-          {q:"8 × 1 = ?",answer:8},{q:"8 × 2 = ?",answer:16},{q:"8 × 3 = ?",answer:24},{q:"8 × 4 = ?",answer:32},
-          {q:"8 × 5 = ?",answer:40},{q:"8 × 6 = ?",answer:48},{q:"8 × 7 = ?",answer:56},{q:"8 × 8 = ?",answer:64},
-          {q:"8 × 9 = ?",answer:72},{q:"8 × 10 = ?",answer:80}
+          {q:"8 Ã 1 = ?",answer:8},{q:"8 Ã 2 = ?",answer:16},{q:"8 Ã 3 = ?",answer:24},{q:"8 Ã 4 = ?",answer:32},
+          {q:"8 Ã 5 = ?",answer:40},{q:"8 Ã 6 = ?",answer:48},{q:"8 Ã 7 = ?",answer:56},{q:"8 Ã 8 = ?",answer:64},
+          {q:"8 Ã 9 = ?",answer:72},{q:"8 Ã 10 = ?",answer:80}
         ]}
     ]},
-    "9": { name: "9的乘法", stages: [
-      { id: "9-easy", name: "9的乘法·初", difficulty: "easy", enabled: true, monsters: ["slime-green"], bg: "forest",
+    "9": { name: "9çä¹æ³", stages: [
+      { id: "9-easy", name: "9çä¹æ³Â·å", difficulty: "easy", enabled: true, monsters: ["slime-green"], bg: "forest",
         questions: [
-          {q:"9 × 1 = ?",answer:9,choices:[8,9,10]},{q:"9 × 2 = ?",answer:18,choices:[16,18,20]},{q:"9 × 3 = ?",answer:27,choices:[24,27,30]},
-          {q:"9 × 4 = ?",answer:36,choices:[32,36,40]},{q:"9 × 5 = ?",answer:45,choices:[40,45,50]},{q:"9 × 6 = ?",answer:54,choices:[48,54,60]},
-          {q:"9 × 7 = ?",answer:63,choices:[56,63,70]},{q:"9 × 8 = ?",answer:72,choices:[64,72,80]},{q:"9 × 9 = ?",answer:81,choices:[72,81,90]},
-          {q:"9 × 10 = ?",answer:90,choices:[81,90,99]}
+          {q:"9 Ã 1 = ?",answer:9,choices:[8,9,10]},{q:"9 Ã 2 = ?",answer:18,choices:[16,18,20]},{q:"9 Ã 3 = ?",answer:27,choices:[24,27,30]},
+          {q:"9 Ã 4 = ?",answer:36,choices:[32,36,40]},{q:"9 Ã 5 = ?",answer:45,choices:[40,45,50]},{q:"9 Ã 6 = ?",answer:54,choices:[48,54,60]},
+          {q:"9 Ã 7 = ?",answer:63,choices:[56,63,70]},{q:"9 Ã 8 = ?",answer:72,choices:[64,72,80]},{q:"9 Ã 9 = ?",answer:81,choices:[72,81,90]},
+          {q:"9 Ã 10 = ?",answer:90,choices:[81,90,99]}
         ]},
-      { id: "9-normal", name: "9的乘法·中", difficulty: "normal", enabled: true, monsters: ["wolf"], bg: "forest",
+      { id: "9-normal", name: "9çä¹æ³Â·ä¸­", difficulty: "normal", enabled: true, monsters: ["wolf"], bg: "forest",
         questions: [
-          {q:"9 × 1 = ?",answer:9,choices:[7,9,11,13]},{q:"9 × 2 = ?",answer:18,choices:[14,16,18,20]},{q:"9 × 3 = ?",answer:27,choices:[21,24,27,30]},
-          {q:"9 × 4 = ?",answer:36,choices:[30,33,36,39]},{q:"9 × 5 = ?",answer:45,choices:[38,42,45,48]},{q:"9 × 6 = ?",answer:54,choices:[46,50,54,58]},
-          {q:"9 × 7 = ?",answer:63,choices:[54,58,63,66]},{q:"9 × 8 = ?",answer:72,choices:[64,68,72,76]},{q:"9 × 9 = ?",answer:81,choices:[72,77,81,85]},
-          {q:"9 × 10 = ?",answer:90,choices:[81,85,90,95]}
+          {q:"9 Ã 1 = ?",answer:9,choices:[7,9,11,13]},{q:"9 Ã 2 = ?",answer:18,choices:[14,16,18,20]},{q:"9 Ã 3 = ?",answer:27,choices:[21,24,27,30]},
+          {q:"9 Ã 4 = ?",answer:36,choices:[30,33,36,39]},{q:"9 Ã 5 = ?",answer:45,choices:[38,42,45,48]},{q:"9 Ã 6 = ?",answer:54,choices:[46,50,54,58]},
+          {q:"9 Ã 7 = ?",answer:63,choices:[54,58,63,66]},{q:"9 Ã 8 = ?",answer:72,choices:[64,68,72,76]},{q:"9 Ã 9 = ?",answer:81,choices:[72,77,81,85]},
+          {q:"9 Ã 10 = ?",answer:90,choices:[81,85,90,95]}
         ]},
-      { id: "9-hard", name: "9的乘法·終", difficulty: "hard", enabled: true, monsters: ["orc-warrior"], bg: "castle",
+      { id: "9-hard", name: "9çä¹æ³Â·çµ", difficulty: "hard", enabled: true, monsters: ["orc-warrior"], bg: "castle",
         questions: [
-          {q:"9 × 1 = ?",answer:9},{q:"9 × 2 = ?",answer:18},{q:"9 × 3 = ?",answer:27},{q:"9 × 4 = ?",answer:36},
-          {q:"9 × 5 = ?",answer:45},{q:"9 × 6 = ?",answer:54},{q:"9 × 7 = ?",answer:63},{q:"9 × 8 = ?",answer:72},
-          {q:"9 × 9 = ?",answer:81},{q:"9 × 10 = ?",answer:90}
+          {q:"9 Ã 1 = ?",answer:9},{q:"9 Ã 2 = ?",answer:18},{q:"9 Ã 3 = ?",answer:27},{q:"9 Ã 4 = ?",answer:36},
+          {q:"9 Ã 5 = ?",answer:45},{q:"9 Ã 6 = ?",answer:54},{q:"9 Ã 7 = ?",answer:63},{q:"9 Ã 8 = ?",answer:72},
+          {q:"9 Ã 9 = ?",answer:81},{q:"9 Ã 10 = ?",answer:90}
         ]}
     ]},
-    "5": { name: "5的乘法", stages: [
-      { id: "5-easy", name: "5的乘法·初", difficulty: "easy", enabled: true, monsters: ["slime-green"], bg: "forest",
+    "5": { name: "5çä¹æ³", stages: [
+      { id: "5-easy", name: "5çä¹æ³Â·å", difficulty: "easy", enabled: true, monsters: ["slime-green"], bg: "forest",
         questions: [
-          {q:"5 × 1 = ?",answer:5,choices:[4,5,6]},{q:"5 × 2 = ?",answer:10,choices:[8,10,12]},{q:"5 × 3 = ?",answer:15,choices:[12,15,18]},
-          {q:"5 × 4 = ?",answer:20,choices:[15,20,25]},{q:"5 × 5 = ?",answer:25,choices:[20,25,30]},{q:"5 × 6 = ?",answer:30,choices:[25,30,35]},
-          {q:"5 × 7 = ?",answer:35,choices:[30,35,40]},{q:"5 × 8 = ?",answer:40,choices:[35,40,45]},{q:"5 × 9 = ?",answer:45,choices:[40,45,50]},
-          {q:"5 × 10 = ?",answer:50,choices:[45,50,55]}
+          {q:"5 Ã 1 = ?",answer:5,choices:[4,5,6]},{q:"5 Ã 2 = ?",answer:10,choices:[8,10,12]},{q:"5 Ã 3 = ?",answer:15,choices:[12,15,18]},
+          {q:"5 Ã 4 = ?",answer:20,choices:[15,20,25]},{q:"5 Ã 5 = ?",answer:25,choices:[20,25,30]},{q:"5 Ã 6 = ?",answer:30,choices:[25,30,35]},
+          {q:"5 Ã 7 = ?",answer:35,choices:[30,35,40]},{q:"5 Ã 8 = ?",answer:40,choices:[35,40,45]},{q:"5 Ã 9 = ?",answer:45,choices:[40,45,50]},
+          {q:"5 Ã 10 = ?",answer:50,choices:[45,50,55]}
         ]},
-      { id: "5-normal", name: "5的乘法·中", difficulty: "normal", enabled: true, monsters: ["wolf"], bg: "forest",
+      { id: "5-normal", name: "5çä¹æ³Â·ä¸­", difficulty: "normal", enabled: true, monsters: ["wolf"], bg: "forest",
         questions: [
-          {q:"5 × 1 = ?",answer:5,choices:[3,5,7,9]},{q:"5 × 2 = ?",answer:10,choices:[8,10,12,14]},{q:"5 × 3 = ?",answer:15,choices:[10,12,15,18]},
-          {q:"5 × 4 = ?",answer:20,choices:[15,18,20,25]},{q:"5 × 5 = ?",answer:25,choices:[20,25,30,35]},{q:"5 × 6 = ?",answer:30,choices:[25,28,30,35]},
-          {q:"5 × 7 = ?",answer:35,choices:[30,35,40,45]},{q:"5 × 8 = ?",answer:40,choices:[35,38,40,45]},{q:"5 × 9 = ?",answer:45,choices:[40,42,45,50]},
-          {q:"5 × 10 = ?",answer:50,choices:[45,50,55,60]}
+          {q:"5 Ã 1 = ?",answer:5,choices:[3,5,7,9]},{q:"5 Ã 2 = ?",answer:10,choices:[8,10,12,14]},{q:"5 Ã 3 = ?",answer:15,choices:[10,12,15,18]},
+          {q:"5 Ã 4 = ?",answer:20,choices:[15,18,20,25]},{q:"5 Ã 5 = ?",answer:25,choices:[20,25,30,35]},{q:"5 Ã 6 = ?",answer:30,choices:[25,28,30,35]},
+          {q:"5 Ã 7 = ?",answer:35,choices:[30,35,40,45]},{q:"5 Ã 8 = ?",answer:40,choices:[35,38,40,45]},{q:"5 Ã 9 = ?",answer:45,choices:[40,42,45,50]},
+          {q:"5 Ã 10 = ?",answer:50,choices:[45,50,55,60]}
         ]},
-      { id: "5-hard", name: "5的乘法·終", difficulty: "hard", enabled: true, monsters: ["skeleton-mage"], bg: "castle",
+      { id: "5-hard", name: "5çä¹æ³Â·çµ", difficulty: "hard", enabled: true, monsters: ["skeleton-mage"], bg: "castle",
         questions: [
-          {q:"5 × 1 = ?",answer:5},{q:"5 × 2 = ?",answer:10},{q:"5 × 3 = ?",answer:15},{q:"5 × 4 = ?",answer:20},
-          {q:"5 × 5 = ?",answer:25},{q:"5 × 6 = ?",answer:30},{q:"5 × 7 = ?",answer:35},{q:"5 × 8 = ?",answer:40},
-          {q:"5 × 9 = ?",answer:45},{q:"5 × 10 = ?",answer:50}
+          {q:"5 Ã 1 = ?",answer:5},{q:"5 Ã 2 = ?",answer:10},{q:"5 Ã 3 = ?",answer:15},{q:"5 Ã 4 = ?",answer:20},
+          {q:"5 Ã 5 = ?",answer:25},{q:"5 Ã 6 = ?",answer:30},{q:"5 Ã 7 = ?",answer:35},{q:"5 Ã 8 = ?",answer:40},
+          {q:"5 Ã 9 = ?",answer:45},{q:"5 Ã 10 = ?",answer:50}
         ]}
     ]},
-    boss: { name: "乘法Boss關", stages: [
-      { id: "boss-easy", name: "史萊姆之王", difficulty: "easy", enabled: true, monsters: ["dragon"], bg: "boss_room", isBoss: true,
+    boss: { name: "ä¹æ³Bossé", stages: [
+      { id: "boss-easy", name: "å²èå§ä¹ç", difficulty: "easy", enabled: true, monsters: ["dragon"], bg: "boss_room", isBoss: true,
         questions: [
-          {q:"2 × 7 = ?",answer:14,choices:[12,14,16]},{q:"3 × 5 = ?",answer:15,choices:[12,15,18]},{q:"4 × 6 = ?",answer:24,choices:[20,22,24]},{q:"5 × 8 = ?",answer:40,choices:[35,40,45]},{q:"6 × 7 = ?",answer:42,choices:[36,42,48]},{q:"7 × 9 = ?",answer:63,choices:[56,63,70]},{q:"8 × 4 = ?",answer:32,choices:[28,30,32]},{q:"9 × 3 = ?",answer:27,choices:[24,27,30]},{q:"2 × 9 = ?",answer:18,choices:[16,18,20]},{q:"5 × 6 = ?",answer:30,choices:[25,30,35]}
+          {q:"2 Ã 7 = ?",answer:14,choices:[12,14,16]},{q:"3 Ã 5 = ?",answer:15,choices:[12,15,18]},{q:"4 Ã 6 = ?",answer:24,choices:[20,22,24]},{q:"5 Ã 8 = ?",answer:40,choices:[35,40,45]},{q:"6 Ã 7 = ?",answer:42,choices:[36,42,48]},{q:"7 Ã 9 = ?",answer:63,choices:[56,63,70]},{q:"8 Ã 4 = ?",answer:32,choices:[28,30,32]},{q:"9 Ã 3 = ?",answer:27,choices:[24,27,30]},{q:"2 Ã 9 = ?",answer:18,choices:[16,18,20]},{q:"5 Ã 6 = ?",answer:30,choices:[25,30,35]}
         ]}
     ]}
   }
@@ -847,12 +843,12 @@ const STAGES_DATA = {
 
 // ==================== MONSTER STATS ====================
 const MONSTER_STATS = {
-  "slime-green": { name: "翠綠史萊姆", hp: 20, atk: 5, img: "assets/images/monsters/slime-green.png" },
-  "wolf": { name: "灰狼", hp: 30, atk: 8, img: "assets/images/monsters/wolf.png" },
-  "orc-warrior": { name: "獸人戰士", hp: 40, atk: 15, img: "assets/images/monsters/orc-warrior.png" },
-  "skeleton-warrior": { name: "骸骨戰士", hp: 35, atk: 12, img: "assets/images/monsters/skeleton-warrior.png" },
-  "skeleton-mage": { name: "骸骨法師", hp: 28, atk: 16, img: "assets/images/monsters/skeleton-mage.png" },
-  "dragon": { name: "巨龍", hp: 50, atk: 20, img: "assets/images/monsters/dragon.png" }
+  "slime-green": { name: "ç¿ ç¶ å²èå§", hp: 20, atk: 5, img: "assets/images/monsters/slime-green.png" },
+  "wolf": { name: "ç°ç¼", hp: 30, atk: 8, img: "assets/images/monsters/wolf.png" },
+  "orc-warrior": { name: "ç¸äººæ°å£«", hp: 40, atk: 15, img: "assets/images/monsters/orc-warrior.png" },
+  "skeleton-warrior": { name: "éª¸éª¨æ°å£«", hp: 35, atk: 12, img: "assets/images/monsters/skeleton-warrior.png" },
+  "skeleton-mage": { name: "éª¸éª¨æ³å¸«", hp: 28, atk: 16, img: "assets/images/monsters/skeleton-mage.png" },
+  "dragon": { name: "å·¨é¾", hp: 50, atk: 20, img: "assets/images/monsters/dragon.png" }
 };
 
 // ==================== BACKGROUND MAP ====================
@@ -879,9 +875,7 @@ let gameState = {
   berserkStacks: 0,
   evadeNext: false,
   poisonStacks: 0,
-  poisonDamage: 0,
-  sessionGold: 0,
-  sessionXP: 0
+  poisonDamage: 0
 };
 
 let battleState = {
@@ -926,8 +920,7 @@ function hideAll() {
 
 function showScreen(id) { hideAll(); document.getElementById(id).classList.remove('hidden'); updateMultiTableBtn(); }
 
-function goHome() {
-  if (!confirm('確定要返回首頁嗎？ current progress will be lost.')) return; gameState.sessionGold = 0; gameState.sessionXP = 0; saveProgress(); showScreen('home-screen'); stopBgm(); playBgm('menu'); }
+function goHome() { saveProgress(); showScreen('home-screen'); stopBgm(); playBgm('menu'); }
 function showNameScreen() { showScreen('name-screen'); document.getElementById('playerNameInput').focus(); }
 function showCharScreen() { showScreen('char-screen'); }
 function showMapScreen() { updateMapInfo(); showScreen('map-screen'); }
@@ -938,7 +931,7 @@ function showStageScreen() { showScreen('stage-screen'); }
 // ==================== NAME & CHARACTER ====================
 function confirmName() {
   const name = document.getElementById('playerNameInput').value.trim();
-  if (!name) { alert('請輸入名字！'); return; }
+  if (!name) { alert('è«è¼¸å¥åå­ï¼'); return; }
   gameState.playerName = name;
   showCharScreen();
 }
@@ -980,24 +973,6 @@ function selectChar(char) {
   charSelectTimeout = setTimeout(() => { charSelectTimeout = null; showMapScreen(); }, 400);
 }
 
-function speakQuestion(text) {
-  if (!window.speechSynthesis) return;
-  window.speechSynthesis.cancel();
-  const spoken = text
-    .replace(/×/g, '乘').replace(/\*/g, '乘').replace(/\+/g, '加').replace(/-/g, '減').replace(/÷/g, '除以')
-    .replace(/=/g, '等於').replace(/\?/g, '幾多').replace(/1/g, '一').replace(/2/g, '二')
-    .replace(/3/g, '三').replace(/4/g, '四').replace(/5/g, '五').replace(/6/g, '六')
-    .replace(/7/g, '七').replace(/8/g, '八').replace(/9/g, '九').replace(/0/g, '零');
-  const utt = new SpeechSynthesisUtterance(spoken);
-  utt.lang = 'zh-HK';
-  utt.rate = 0.85;
-  utt.pitch = 1.1;
-  const voices = window.speechSynthesis.getVoices();
-  const cantonese = voices.find(v => v.lang.includes('HK') || v.lang.includes('zh-HK') || v.lang.includes('zh-TW'));
-  if (cantonese) utt.voice = cantonese;
-  window.speechSynthesis.speak(utt);
-}
-
 function escapeHtml(str) {
   const div = document.createElement('div');
   div.textContent = str;
@@ -1006,7 +981,7 @@ function escapeHtml(str) {
 
 function updateMapInfo() {
   const info = document.getElementById('map-player-info');
-  info.textContent = `${gameState.playerName} · Lv.${gameState.level} · 💰${gameState.gold}`;
+  info.textContent = `${gameState.playerName} Â· Lv.${gameState.level} Â· ð°${gameState.gold}`;
 }
 
 // ==================== DOMAIN / TOPIC / DIFFICULTY ====================
@@ -1016,7 +991,7 @@ let currentDiff = '';
 let currentStage = null;
 
 function selectDomain(domain) {
-  if (domain !== 'multiplication') { alert('敬請期待！'); return; }
+  if (domain !== 'multiplication') { alert('æ¬è«æå¾ï¼'); return; }
   currentDomain = domain;
   renderTopicScreen();
   showTopicScreen();
@@ -1032,14 +1007,14 @@ function renderDiffScreen() {
   const domain = STAGES_DATA[currentDomain];
   const topic = domain[currentTopic];
   if (!topic) return;
-  document.getElementById('diff-title').textContent = '📚 ' + topic.name + ' — 選擇難度';
+  document.getElementById('diff-title').textContent = 'ð ' + topic.name + ' â é¸æé£åº¦';
 }
 
 function renderTopicScreen() {
   const list = document.getElementById('topic-list');
   const domain = STAGES_DATA[currentDomain];
   if (!domain) return;
-  document.getElementById('topic-title').textContent = '📚 ' + domain.name;
+  document.getElementById('topic-title').textContent = 'ð ' + domain.name;
 
   let html = '';
   const topicOrder = Object.keys(domain).filter(k => k !== 'name').sort((a, b) => {
@@ -1053,12 +1028,12 @@ function renderTopicScreen() {
     const stageCount = topicData.stages.filter(s => s.enabled).length;
     if (stageCount === 0) return;
     html += `<button class="topic-btn" onclick="selectTopic('${key}')">
-      <span class="t-num">${key === 'boss' ? '👑 乘法Boss關' : key + '的乘法'}</span>
-      <span style="color:var(--text-dim);font-size:.85rem">${stageCount}個難度</span>
-      <span class="t-arrow">選擇 →</span>
+      <span class="t-num">${key === 'boss' ? 'ð ä¹æ³Bossé' : key + 'çä¹æ³'}</span>
+      <span style="color:var(--text-dim);font-size:.85rem">${stageCount}åé£åº¦</span>
+      <span class="t-arrow">é¸æ â</span>
     </button>`;
   });
-  list.innerHTML = html || '<div style="color:var(--text-dim);text-align:center;padding:2em">暫無關卡</div>';
+  list.innerHTML = html || '<div style="color:var(--text-dim);text-align:center;padding:2em">æ«ç¡éå¡</div>';
 }
 
 function selectDiff(diff) {
@@ -1078,11 +1053,11 @@ function renderStageConfirm() {
   document.getElementById('confirm-stage-name').textContent = s.name;
   const monsterNames = s.monsters.map(m => MONSTER_STATS[m]?.name || m).join(', ');
   const monsterHP = s.monsters.reduce((sum, m) => sum + (MONSTER_STATS[m]?.hp || 30), 0);
-  const diffLabel = { easy: '🌱 初階 3選1', normal: '⚔️ 中階 4選1', hard: '💀 高階 數字輸入' };
+  const diffLabel = { easy: 'ð± åé 3é¸1', normal: 'âï¸ ä¸­é 4é¸1', hard: 'ð é«é æ¸å­è¼¸å¥' };
   const waveCount = s.isBoss ? s.monsters.length : 3;
   document.getElementById('confirm-info').innerHTML = `
-    <div>👹 ${s.isBoss ? '👑 ' : ''}${monsterNames} × ${waveCount} 波</div>
-    <div>❤️ 敵人 HP ${monsterHP}+/波</div>
+    <div>ð¹ ${s.isBoss ? 'ð ' : ''}${monsterNames} Ã ${waveCount} æ³¢</div>
+    <div>â¤ï¸ æµäºº HP ${monsterHP}+/æ³¢</div>
     <div>${diffLabel[currentDiff]}</div>
   `;
 }
@@ -1146,7 +1121,7 @@ function startBattle() {
 
   // Monster setup for wave 0
   const monsterKey = s.monsters[0];
-  const ms = MONSTER_STATS[monsterKey] || { name: '怪物', hp: 30, atk: 5, img: '' };
+  const ms = MONSTER_STATS[monsterKey] || { name: 'æªç©', hp: 30, atk: 5, img: '' };
   const multiplier = currentDiff === 'hard' ? 1.5 : currentDiff === 'normal' ? 1.2 : 1;
   battleState.monsterMaxHP = Math.round(ms.hp * multiplier);
   battleState.monsterHP = battleState.monsterMaxHP;
@@ -1160,7 +1135,7 @@ function startBattle() {
   const skillsEl = document.getElementById('battle-skills');
   const btnEl = document.getElementById('skills-toggle');
   if (skillsEl) skillsEl.classList.remove('collapsed');
-  if (btnEl) { btnEl.textContent = '✖️'; btnEl.title = '隱藏技能'; }
+  if (btnEl) { btnEl.textContent = 'âï¸'; btnEl.title = 'é±èæè½'; }
   // Reset per-battle state
   gameState.shieldActive = false;
   gameState.shieldTurns = 0;
@@ -1189,7 +1164,7 @@ function startBattle() {
   nextQuestion(); // sets currentQuestion first
   renderBattleAnswer(); // uses currentQuestion
   playBgm(isBoss ? 'boss' : 'battle');
-  addLog(`⚔️ 戰鬥開始！遇到 ${battleState.monsterName}！`);
+  addLog(`âï¸ æ°é¬¥éå§ï¼éå° ${battleState.monsterName}ï¼`);
   updateTurnIndicator();
 
   // Set character sprite
@@ -1214,6 +1189,7 @@ function startBattle() {
   // Set background
   const bg = BG_MAP[s.bg] || BG_MAP.forest;
   document.getElementById('battle-bg').style.backgroundImage = `url('${bg}')`;
+  document.getElementById('turn-indicator').textContent = 'âï¸ ç©å®¶é²æ»';
 }
 
 function shuffleArray(arr) {
@@ -1228,12 +1204,11 @@ function nextQuestion() {
   if (battleState.qIndex >= battleState.questions.length) {
     battleState.questions = shuffleArray([...battleState.stageData.questions]);
     battleState.qIndex = 0;
-    addLog('🔄 題目重新洗牌！');
+    addLog('ð é¡ç®éæ°æ´çï¼');
   }
   battleState.currentQuestion = battleState.questions[battleState.qIndex];
   battleState.qIndex++;
   document.getElementById('question-text').textContent = battleState.currentQuestion.q;
-  speakQuestion(battleState.currentQuestion.q);
   const totalQ = battleState.questions.length * battleState.enemiesPerStage;
   const currentQ = battleState.qIndex;
   document.getElementById('question-counter').textContent = `${currentQ}/${totalQ}`;
@@ -1262,19 +1237,19 @@ function renderBattleAnswer() {
         <button type="button" class="numpad-btn" onclick="numpadPress('7');event.stopPropagation();" aria-label="7">7</button>
         <button type="button" class="numpad-btn" onclick="numpadPress('8');event.stopPropagation();" aria-label="8">8</button>
         <button type="button" class="numpad-btn" onclick="numpadPress('9');event.stopPropagation();" aria-label="9">9</button>
-        <button type="button" class="numpad-btn clear-btn" onclick="numpadClear();event.stopPropagation();" aria-label="清除">✖</button>
+        <button type="button" class="numpad-btn clear-btn" onclick="numpadClear();event.stopPropagation();" aria-label="æ¸é¤">â</button>
         <button type="button" class="numpad-btn" onclick="numpadPress('0');event.stopPropagation();" aria-label="0">0</button>
-        <button type="button" class="numpad-btn submit-num-btn" onclick="submitNumpad();event.stopPropagation();" aria-label="確定">✓ 確定</button>
+        <button type="button" class="numpad-btn submit-num-btn" onclick="submitNumpad();event.stopPropagation();" aria-label="ç¢ºå®">â ç¢ºå®</button>
       </div>`;
-    document.getElementById('answer-hint').textContent = '輸入數字後按 ✓ 確認或按 Enter';
+    document.getElementById('answer-hint').textContent = 'è¼¸å¥æ¸å­å¾æ â ç¢ºèªææ Enter';
     document.addEventListener('keydown', handleNumpadEnter);
   } else {
     const choices = (q.choices || []).slice().sort(() => Math.random() - 0.5);
     const cols = diff === 'easy' ? 3 : 4;
     container.innerHTML = `<div class="choices-grid" style="grid-template-columns:repeat(${cols},1fr)">
-      ${choices.map(c => `<button class="choice-btn" onclick="submitChoice(${c});event.stopPropagation();" aria-label="選項 ${c}">${c}</button>`).join('')}
+      ${choices.map(c => `<button class="choice-btn" onclick="submitChoice(${c});event.stopPropagation();" aria-label="é¸é  ${c}">${c}</button>`).join('')}
     </div>`;
-    document.getElementById('answer-hint').textContent = diff === 'easy' ? '3 選 1' : '4 選 1';
+    document.getElementById('answer-hint').textContent = diff === 'easy' ? '3 é¸ 1' : '4 é¸ 1';
   }
   updateSkillButtons();
 }
@@ -1287,7 +1262,7 @@ function handleNumpadEnter(e) {
 }
 
 function numpadPress(digit) {
-  if (numpadValue.length >= 4) return;
+  if (numpadValue.length >= 3) return;
   numpadValue += digit;
   const el = document.getElementById('numpad-display');
   if (el) el.textContent = numpadValue;
@@ -1314,147 +1289,207 @@ function submitChoice(answer) {
 
   if (diff === 'hard') numpadClear();
 
-  if (answer === correct) {
-    // ✅ 答對：玩家攻擊怪物
-    battleState.correctCount++;
-    battleState.questionsAnswered++;
-    battleState.combo++;
-    if (battleState.combo > battleState.maxCombo) battleState.maxCombo = battleState.combo;
-    updateComboDisplay();
-    showCorrectFeedback();
-    const mpRegen = Math.min(3, battleState.playerMaxMP - battleState.playerMP);
-    if (mpRegen > 0) {
-      battleState.playerMP = Math.min(battleState.playerMaxMP, battleState.playerMP + 3);
-      addLog(`🔵 MP+${mpRegen}`);
-    }
-    let dmg = battleState.playerATK;
-    if (battleState.usingSkill === 'critical') {
-      dmg *= 3;
-      addLog('⚡ 暴擊！');
-    }
-    if (gameState.berserkStacks > 0) {
-      dmg *= 2;
-      gameState.berserkStacks--;
-      addLog(`💢 狂暴！雙倍伤害！`);
-    }
-    if (gameState.battleCryStacks > 0) {
-      dmg += 5;
-      gameState.battleCryStacks--;
-      addLog(`📢 戰鬥怒吼！+5傷害！`);
-    }
-    if (gameState.bloodRageStacks > 0) {
-      dmg = Math.round(dmg * 1.5);
-      const lifesteal = Math.round(dmg * 0.5);
-      const healLR = Math.min(lifesteal, battleState.playerMaxHP - battleState.playerHP);
-      battleState.playerHP = Math.min(battleState.playerMaxHP, battleState.playerHP + healLR);
-      gameState.bloodRageStacks--;
-      addLog(`🩸 血腥狂暴！1.5倍傷害+吸血${healLR}！`);
-    }
-    if (gameState.minionBonus) {
-      dmg += 20;
-      gameState.minionBonus = false;
-      addLog(`👤 僕從加成！+20傷害！`);
-    }
-    if (gameState.eagleEyeActive) {
-      dmg += 8;
-      gameState.eagleEyeActive = false;
-      addLog(`👁️ 鷹眼！+8傷害！`);
-    }
-    battleState.monsterHP = Math.max(0, battleState.monsterHP - dmg);
-    battleState.totalDamage += dmg;
-    showDmgNumber(dmg, false, battleState.usingSkill === 'critical');
-    playSound('correct');
-    if (gameState.character === 'assassin') playVoice('attack');
-    showComboMilestone();
-    addLog(`✅ 回答正確！(${battleState.combo}連) 攻擊造成 ${dmg} 傷害！`);
-    flashSprite('monster-sprite');
+  // Determine whose turn it is: 1,3,5... = player attack | 2,4,6... = monster attack
+  const isPlayerTurn = (battleState.turnIndex % 2 === 1);
 
-    if (battleState.monsterHP > 0) {
-      nextQuestion();
+  if (isPlayerTurn) {
+    // ===== ODD TURN: Player attacks =====
+    if (answer === correct) {
+      battleState.correctCount++;
+      battleState.questionsAnswered++;
+      battleState.combo++;
+      if (battleState.combo > battleState.maxCombo) battleState.maxCombo = battleState.combo;
+      updateComboDisplay();
+      const mpRegen = Math.min(3, battleState.playerMaxMP - battleState.playerMP);
+      if (mpRegen > 0) {
+        battleState.playerMP = Math.min(battleState.playerMaxMP, battleState.playerMP + 3);
+        addLog(`ðµ MP+${mpRegen}`);
+      }
+      let dmg = battleState.playerATK;
+      if (battleState.usingSkill === 'critical') {
+        dmg *= 3;
+        addLog('â¡ æ´æï¼');
+      }
+      if (gameState.berserkStacks > 0) {
+        dmg *= 2;
+        gameState.berserkStacks--;
+        addLog(`ð¢ çæ´ï¼éåä¼¤å®³ï¼`);
+      }
+      if (gameState.battleCryStacks > 0) {
+        dmg += 5;
+        gameState.battleCryStacks--;
+        addLog(`ð¢ æ°é¬¥æå¼ï¼+5å·å®³ï¼`);
+      }
+      if (gameState.bloodRageStacks > 0) {
+        dmg = Math.round(dmg * 1.5);
+        const lifesteal = Math.round(dmg * 0.5);
+        const healLR = Math.min(lifesteal, battleState.playerMaxHP - battleState.playerHP);
+        battleState.playerHP = Math.min(battleState.playerMaxHP, battleState.playerHP + healLR);
+        gameState.bloodRageStacks--;
+        addLog(`ð©¸ è¡è¥çæ´ï¼1.5åå·å®³+å¸è¡${healLR}ï¼`);
+      }
+      if (gameState.minionBonus) {
+        dmg += 20;
+        gameState.minionBonus = false;
+        addLog(`ð¤ åå¾å æï¼+20å·å®³ï¼`);
+      }
+      if (gameState.eagleEyeActive) {
+        dmg += 8;
+        gameState.eagleEyeActive = false;
+        addLog(`ðï¸ é·¹ç¼ï¼+8å·å®³ï¼`);
+      }
+      battleState.monsterHP = Math.max(0, battleState.monsterHP - dmg);
+      battleState.totalDamage += dmg;
+      showDmgNumber(dmg, false, battleState.usingSkill === 'critical');
+      playSound('correct');
+      if (gameState.character === 'assassin') playVoice('attack');
+      showComboMilestone();
+      addLog(`â åç­æ­£ç¢ºï¼(${battleState.combo}é£) æ»æé æ ${dmg} å·å®³ï¼`);
+      flashSprite('monster-sprite');
+
+      battleState.turnIndex++;
+      if (battleState.monsterHP > 0) {
+        nextQuestion();
+        updateTurnIndicator();
+      } else {
+        nextQuestion();
+        checkBattleEnd();
+      }
     } else {
-      checkBattleEnd();
+      // Player attack wrong â attack misses, no damage to either side
+      battleState.wrongCount++;
+      battleState.questionsAnswered++;
+      battleState.combo = 0;
+      updateComboDisplay();
+      const cq = battleState.currentQuestion;
+      addLog(`â æ»æå¤±æï¼æ­£ç¢ºç­æ¡ï¼${cq.a}Ã${cq.b}=${correct}`);
+      playSound('fail');
+
+      battleState.turnIndex++;
+      if (battleState.monsterHP > 0) {
+        nextQuestion();
+        updateTurnIndicator();
+        checkBattleEnd();
+      }
     }
   } else {
-    // ❌ 答錯：怪物反擊，玩家扣HP
-    battleState.wrongCount++;
-    showWrongFeedback();
-    battleState.questionsAnswered++;
-    battleState.combo = 0;
-    updateComboDisplay();
-    const cq = battleState.currentQuestion;
-    if (gameState.evadeNext) {
-      gameState.evadeNext = false;
-      addLog(`❌ 攻擊失敗！正確答案：${cq.a}×${cq.b}=${correct}`);
-      addLog(`💨 煙霧彈生效！迴避了 ${battleState.monsterName} 的攻擊！`);
-    } else {
-      addLog(`❌ 攻擊失敗！正確答案：${cq.a}×${cq.b}=${correct}`);
-      addLog(`👹 ${battleState.monsterName} 反擊！造成 ${battleState.monsterATK} 傷害！`);
-      battleState.playerHP = Math.max(0, battleState.playerHP - battleState.monsterATK);
-      flashSprite('char-sprite');
-    }
-    playSound('fail');
+    // ===== EVEN TURN: Monster attacks â player defends with correct answer =====
+    if (answer === correct) {
+      battleState.correctCount++;
+      battleState.questionsAnswered++;
+      battleState.combo++;
+      if (battleState.combo > battleState.maxCombo) battleState.maxCombo = battleState.combo;
+      updateComboDisplay();
+      // Defend: 0 damage taken
+      const defHeal = Math.min(5, battleState.playerMaxHP - battleState.playerHP);
+      if (defHeal > 0) {
+        battleState.playerHP = Math.min(battleState.playerMaxHP, battleState.playerHP + 5);
+        addLog(`â é²å®æåï¼æä½ ${battleState.monsterName} çæ»æï¼ð HP+${defHeal}`);
+      } else {
+        addLog(`â é²å®æåï¼æä½ ${battleState.monsterName} çæ»æï¼`);
+      }
+      playSound('correct');
+      showComboMilestone();
 
-    updateBattleUI();
-    if (battleState.playerHP > 0 && battleState.monsterHP > 0) {
-      nextQuestion();
+      battleState.turnIndex++;
+      if (battleState.monsterHP > 0) {
+        nextQuestion();
+        updateTurnIndicator();
+        checkBattleEnd();
+      }
     } else {
-      checkBattleEnd();
+      // Monster attacks â player failed to defend
+      battleState.wrongCount++;
+      battleState.questionsAnswered++;
+      battleState.combo = 0;
+      updateComboDisplay();
+      // Check evade before applying damage
+      if (gameState.evadeNext) {
+        gameState.evadeNext = false;
+        addLog(`ð¨ çé§å½çæï¼è¿´é¿äº ${battleState.monsterName} çæ»æï¼`);
+      } else {
+        addLog(`â é²å®å¤±æï¼æ­£ç¢ºç­æ¡ï¼${battleState.currentQuestion.a}Ã${battleState.currentQuestion.b}=${correct} â ${battleState.monsterName} é æ ${battleState.monsterATK} å·å®³ï¼`);
+        battleState.playerHP = Math.max(0, battleState.playerHP - battleState.monsterATK);
+        flashSprite('char-sprite');
+      }
+
+      battleState.turnIndex++;
+      updateBattleUI();
+      if (battleState.playerHP > 0 && battleState.monsterHP > 0) {
+        nextQuestion();
+        updateTurnIndicator();
+        checkBattleEnd();
+      } else {
+        checkBattleEnd();
+      }
     }
   }
   battleState.usingSkill = false;
 }
 
+function updateTurnIndicator() {
+  const el = document.getElementById('turn-indicator');
+  const isPlayerTurn = (battleState.turnIndex % 2 === 1);
+  if (isPlayerTurn) {
+    el.textContent = 'âï¸ ç©å®¶é²æ»';
+    el.className = battleState.battleActive ? 'player-turn' : '';
+  } else {
+    el.textContent = 'ð¹ æªç¸é²æ»';
+    el.className = 'monster-turn';
+  }
+}
+
 function monsterAttack() {
   if (battleState.stunned) {
     battleState.stunned = false;
-    addLog(`💤 ${battleState.monsterName} 被暈住了！`);
+    addLog(`ð¤ ${battleState.monsterName} è¢«æä½äºï¼`);
     return;
   }
   // Apply poison damage (Assassin, Ranger)
   if (battleState.poisonStacks > 0) {
     const pDmg = Math.min(battleState.poisonStacks * battleState.poisonDamage, battleState.monsterHP);
     battleState.monsterHP = Math.max(0, battleState.monsterHP - pDmg);
-    addLog(`☠️ 中毒！受到 ${pDmg} 傷害！`);
+    addLog(`â ï¸ ä¸­æ¯ï¼åå° ${pDmg} å·å®³ï¼`);
     battleState.poisonStacks--;
-    if (battleState.poisonStacks === 0) addLog(`☠️毒素消退！`);
+    if (battleState.poisonStacks === 0) addLog(`â ï¸æ¯ç´ æ¶éï¼`);
   }
   // Apply burn damage (Druid moonfire)
   if (gameState.burnStacks > 0) {
     const bDmg = Math.min(gameState.burnStacks * gameState.burnDamage, battleState.monsterHP);
     battleState.monsterHP = Math.max(0, battleState.monsterHP - bDmg);
-    addLog(`🔥 燃燒！受到 ${bDmg} 傷害！`);
+    addLog(`ð¥ ççï¼åå° ${bDmg} å·å®³ï¼`);
     gameState.burnStacks--;
-    if (gameState.burnStacks === 0) addLog(`🔥燃燒消退！`);
+    if (gameState.burnStacks === 0) addLog(`ð¥ççæ¶éï¼`);
   }
   // Apply bleed damage (Viking axe-throw)
   if (gameState.bleedStacks > 0) {
     const blDmg = Math.min(gameState.bleedStacks * gameState.bleedDamage, battleState.monsterHP);
     battleState.monsterHP = Math.max(0, battleState.monsterHP - blDmg);
-    addLog(`🩸 流血！受到 ${blDmg} 傷害！`);
+    addLog(`ð©¸ æµè¡ï¼åå° ${blDmg} å·å®³ï¼`);
     gameState.bleedStacks--;
-    if (gameState.bleedStacks === 0) addLog(`🩸流血消退！`);
+    if (gameState.bleedStacks === 0) addLog(`ð©¸æµè¡æ¶éï¼`);
   }
   // Apply wild growth healing (Druid)
   if (gameState.wildGrowthStacks > 0) {
     const healWG = Math.min(3, battleState.playerMaxHP - battleState.playerHP);
     battleState.playerHP = Math.min(battleState.playerMaxHP, battleState.playerHP + healWG);
-    addLog(`🌿 野性生長！恢復 ${healWG} HP！`);
+    addLog(`ð¿ éæ§çé·ï¼æ¢å¾© ${healWG} HPï¼`);
     gameState.wildGrowthStacks--;
-    if (gameState.wildGrowthStacks === 0) addLog(`🌿野性生長消退！`);
+    if (gameState.wildGrowthStacks === 0) addLog(`ð¿éæ§çé·æ¶éï¼`);
   }
   // Apply heal aura (Paladin)
   if (gameState.healAuraStacks > 0) {
     const healHA = Math.min(5, battleState.playerMaxHP - battleState.playerHP);
     battleState.playerHP = Math.min(battleState.playerMaxHP, battleState.playerHP + healHA);
-    addLog(`💚 治療光環！恢復 ${healHA} HP！`);
+    addLog(`ð æ²»çåç°ï¼æ¢å¾© ${healHA} HPï¼`);
     gameState.healAuraStacks--;
-    if (gameState.healAuraStacks === 0) addLog(`💚治療光環消退！`);
+    if (gameState.healAuraStacks === 0) addLog(`ðæ²»çåç°æ¶éï¼`);
   }
   // Check evade
   if (gameState.evadeNext) {
     gameState.evadeNext = false;
-    addLog(`💨 煙霧彈生效！迴避了攻擊！`);
-    document.getElementById('turn-indicator').textContent = '👹 怪獸進攻';
+    addLog(`ð¨ çé§å½çæï¼è¿´é¿äºæ»æï¼`);
+    document.getElementById('turn-indicator').textContent = 'ð¹ æªç¸é²æ»';
     updateBattleUI();
     return;
   }
@@ -1462,14 +1497,14 @@ function monsterAttack() {
   if (gameState.monsterAtkDebuff > 0) {
     atk = Math.max(0, atk - gameState.monsterAtkDebuff);
     gameState.monsterAtkDebuff--;
-    if (gameState.monsterAtkDebuff === 0) addLog(`🔨 審判減攻消退！`);
+    if (gameState.monsterAtkDebuff === 0) addLog(`ð¨ å¯©å¤æ¸æ»æ¶éï¼`);
   }
   if (gameState.shieldActive) {
     const reduction = gameState.shieldReduction !== undefined ? gameState.shieldReduction : 0.5;
     atk = Math.round(atk * reduction);
-    addLog(`🛡️ 護盾減傷！受到 ${atk} 傷害！`);
+    addLog(`ð¡ï¸ è­·ç¾æ¸å·ï¼åå° ${atk} å·å®³ï¼`);
   } else {
-    addLog(`💥 ${battleState.monsterName} 攻擊！造成 ${atk} 傷害！`);
+    addLog(`ð¥ ${battleState.monsterName} æ»æï¼é æ ${atk} å·å®³ï¼`);
   }
   battleState.playerHP = Math.max(0, battleState.playerHP - atk);
   flashSprite('char-sprite');
@@ -1479,7 +1514,7 @@ function monsterAttack() {
       gameState.shieldActive = false;
     }
   }
-  document.getElementById('turn-indicator').textContent = '👹 怪獸進攻';
+  document.getElementById('turn-indicator').textContent = 'ð¹ æªç¸é²æ»';
   updateBattleUI();
 }
 
@@ -1506,11 +1541,14 @@ function useSkill(skill) {
   };
   const cost = costs[skill] || 15;
   if (battleState.playerMP < cost) {
-    addLog(`❌ MP不足！需要 ${cost} MP`);
+    addLog(`â MPä¸è¶³ï¼éè¦ ${cost} MP`);
     return;
   }
   battleState.playerMP -= cost;
   playSound('skill');
+
+  // Skills are used on player turns only â they consume the turn
+  const isPlayerTurn = (battleState.turnIndex % 2 === 1);
 
   switch (skill) {
     // ===== KNIGHT SKILLS =====
@@ -1519,7 +1557,7 @@ function useSkill(skill) {
       battleState.totalDamage += 15;
       battleState.stunned = true;
       showDmgNumber(15, false);
-      addLog(`🛡️ 盾牌猛擊！15傷害+暈住1回合！`);
+      addLog(`ð¡ï¸ ç¾ççæï¼15å·å®³+æä½1ååï¼`);
       flashSprite('monster-sprite');
       playSound('correct');
       advanceTurn();
@@ -1528,14 +1566,14 @@ function useSkill(skill) {
       gameState.shieldActive = true;
       gameState.shieldTurns = 3;
       gameState.shieldReduction = 0.25;
-      addLog(`🏰 鋼鐵壁壘！75%減傷！`);
+      addLog(`ð° é¼éµå£å£ï¼75%æ¸å·ï¼`);
       advanceTurn();
       break;
     case 'holy-shield':
       gameState.shieldActive = true;
       gameState.shieldTurns = 4;
       gameState.shieldReduction = 0;
-      addLog(`✨ 聖光護盾！無敵！`);
+      addLog(`â¨ èåè­·ç¾ï¼ç¡æµï¼`);
       advanceTurn();
       break;
     // ===== MAGE SKILLS =====
@@ -1543,7 +1581,7 @@ function useSkill(skill) {
       battleState.monsterHP = Math.max(0, battleState.monsterHP - 40);
       battleState.totalDamage += 40;
       showDmgNumber(40, false);
-      addLog(`🔥 火球術！40傷害！`);
+      addLog(`ð¥ ç«çè¡ï¼40å·å®³ï¼`);
       flashSprite('monster-sprite');
       playSound('correct');
       advanceTurn();
@@ -1553,7 +1591,7 @@ function useSkill(skill) {
       battleState.totalDamage += 20;
       battleState.stunned = true;
       showDmgNumber(20, false);
-      addLog(`❄️ 冰凍術！20傷害+凍住1回合！`);
+      addLog(`âï¸ å°åè¡ï¼20å·å®³+åä½1ååï¼`);
       flashSprite('monster-sprite');
       playSound('correct');
       advanceTurn();
@@ -1562,7 +1600,7 @@ function useSkill(skill) {
       const healAmt = Math.min(30, battleState.playerMaxHP - battleState.playerHP);
       battleState.playerHP = Math.min(battleState.playerMaxHP, battleState.playerHP + 30);
       showDmgNumber(healAmt, true);
-      addLog(`💚 治療術！恢復 ${healAmt} HP！`);
+      addLog(`ð æ²»çè¡ï¼æ¢å¾© ${healAmt} HPï¼`);
       advanceTurn();
       break;
     // ===== BERSERKER SKILLS =====
@@ -1572,7 +1610,7 @@ function useSkill(skill) {
       const healBS = Math.min(15, battleState.playerMaxHP - battleState.playerHP);
       battleState.playerHP = Math.min(battleState.playerMaxHP, battleState.playerHP + healBS);
       showDmgNumber(25, false);
-      addLog(`🩸 嗜血打擊！25傷+吸血${healBS}HP！`);
+      addLog(`ð©¸ åè¡ææï¼25å·+å¸è¡${healBS}HPï¼`);
       flashSprite('monster-sprite');
       playSound('correct');
       advanceTurn();
@@ -1580,12 +1618,12 @@ function useSkill(skill) {
     case 'berserk-rage':
       gameState.berserkStacks = (gameState.berserkStacks || 0) + 2;
       battleState.usingSkill = 'berserk';
-      addLog(`💢 狂暴狀態！下2次攻擊雙倍傷害！`);
+      addLog(`ð¢ çæ´çæï¼ä¸2æ¬¡æ»æéåå·å®³ï¼`);
       advanceTurn();
       break;
     case 'critical':
       battleState.usingSkill = 'critical';
-      addLog(`⚡ 暴擊之刃！下次傷害×3！`);
+      addLog(`â¡ æ´æä¹åï¼ä¸æ¬¡å·å®³Ã3ï¼`);
       advanceTurn();
       break;
     // ===== ASSASSIN SKILLS =====
@@ -1594,7 +1632,7 @@ function useSkill(skill) {
       battleState.totalDamage += 35;
       battleState.stunned = true;
       showDmgNumber(35, false);
-      addLog(`🗡️ 影襲！35傷害+暈住1回合！`);
+      addLog(`ð¡ï¸ å½±è¥²ï¼35å·å®³+æä½1ååï¼`);
       flashSprite('monster-sprite');
       playSound('correct');
       if (gameState.character === 'assassin') playVoice('skill1');
@@ -1602,7 +1640,7 @@ function useSkill(skill) {
       break;
     case 'smoke-bomb':
       gameState.evadeNext = true;
-      addLog(`💨 煙霧彈！迴避下次攻擊！`);
+      addLog(`ð¨ çé§å½ï¼è¿´é¿ä¸æ¬¡æ»æï¼`);
       if (gameState.character === 'assassin') playVoice('skill2');
       advanceTurn();
       break;
@@ -1612,7 +1650,7 @@ function useSkill(skill) {
       battleState.poisonStacks = 3;
       battleState.poisonDamage = 8;
       showDmgNumber(20, false);
-      addLog(`☠️ 淬毒刃！20傷害+中毒3回合(每回8傷)！`);
+      addLog(`â ï¸ æ·¬æ¯åï¼20å·å®³+ä¸­æ¯3åå(æ¯å8å·)ï¼`);
       flashSprite('monster-sprite');
       playSound('correct');
       if (gameState.character === 'assassin') playVoice('skill3');
@@ -1624,7 +1662,7 @@ function useSkill(skill) {
       gameState.shieldActive = true;
       gameState.shieldTurns = 2;
       gameState.shieldReduction = 0.5;
-      addLog(`💀 白骨盾！50%減傷2回合！`);
+      addLog(`ð ç½éª¨ç¾ï¼50%æ¸å·2ååï¼`);
       advanceTurn();
       break;
     case 'death-coil':
@@ -1633,7 +1671,7 @@ function useSkill(skill) {
       battleState.poisonStacks = 3;
       battleState.poisonDamage = 5;
       showDmgNumber(25, false);
-      addLog(`☠️ 死亡纏繞！25傷害+中毒3回合(每回5傷)！`);
+      addLog(`â ï¸ æ­»äº¡çºç¹ï¼25å·å®³+ä¸­æ¯3åå(æ¯å5å·)ï¼`);
       flashSprite('monster-sprite');
       playSound('correct');
       advanceTurn();
@@ -1644,14 +1682,14 @@ function useSkill(skill) {
       const healSD = Math.min(15, battleState.playerMaxHP - battleState.playerHP);
       battleState.playerHP = Math.min(battleState.playerMaxHP, battleState.playerHP + healSD);
       showDmgNumber(30, false);
-      addLog(`💜 靈魂吸取！30傷害+吸取15HP！`);
+      addLog(`ð éé­å¸åï¼30å·å®³+å¸å15HPï¼`);
       flashSprite('monster-sprite');
       playSound('correct');
       advanceTurn();
       break;
     case 'summon-minion':
       gameState.minionBonus = true;
-      addLog(`👤 召喚僕從！下次攻擊+20傷害！`);
+      addLog(`ð¤ å¬ååå¾ï¼ä¸æ¬¡æ»æ+20å·å®³ï¼`);
       advanceTurn();
       break;
     // ===== PALADIN SKILLS =====
@@ -1659,14 +1697,14 @@ function useSkill(skill) {
       gameState.shieldActive = true;
       gameState.shieldTurns = 1;
       gameState.shieldReduction = 0;
-      addLog(`🛡️ 神聖庇護！無敵1回合！`);
+      addLog(`ð¡ï¸ ç¥èåºè­·ï¼ç¡æµ1ååï¼`);
       advanceTurn();
       break;
     case 'holy-strike':
       battleState.monsterHP = Math.max(0, battleState.monsterHP - 20);
       battleState.totalDamage += 20;
       showDmgNumber(20, false);
-      addLog(`⚡ 神聖打擊！20傷害+反傷3！`);
+      addLog(`â¡ ç¥èææï¼20å·å®³+åå·3ï¼`);
       flashSprite('monster-sprite');
       playSound('correct');
       advanceTurn();
@@ -1676,7 +1714,7 @@ function useSkill(skill) {
       battleState.playerHP = Math.min(battleState.playerMaxHP, battleState.playerHP + 25);
       gameState.healAuraStacks = 2;
       showDmgNumber(healHA, true);
-      addLog(`💚 治療光環！恢復25HP+持續回血！`);
+      addLog(`ð æ²»çåç°ï¼æ¢å¾©25HP+æçºåè¡ï¼`);
       advanceTurn();
       break;
     case 'hammer-judgement':
@@ -1684,7 +1722,7 @@ function useSkill(skill) {
       battleState.totalDamage += 35;
       gameState.monsterAtkDebuff = 5;
       showDmgNumber(35, false);
-      addLog(`🔨 錘子審判！35傷害+敵人攻擊-5！`);
+      addLog(`ð¨ éå­å¯©å¤ï¼35å·å®³+æµäººæ»æ-5ï¼`);
       flashSprite('monster-sprite');
       playSound('correct');
       advanceTurn();
@@ -1695,7 +1733,7 @@ function useSkill(skill) {
       battleState.playerHP = Math.min(battleState.playerMaxHP, battleState.playerHP + 20);
       gameState.wildGrowthStacks = 3;
       showDmgNumber(healWG, true);
-      addLog(`🌿 野性生長！恢復20HP+每回+3HP持續3回合！`);
+      addLog(`ð¿ éæ§çé·ï¼æ¢å¾©20HP+æ¯å+3HPæçº3ååï¼`);
       advanceTurn();
       break;
     case 'moonfire':
@@ -1704,7 +1742,7 @@ function useSkill(skill) {
       gameState.burnStacks = 3;
       gameState.burnDamage = 4;
       showDmgNumber(22, false);
-      addLog(`🌙 月火術！22傷害+燃燒3回合(每回4傷)！`);
+      addLog(`ð æç«è¡ï¼22å·å®³+çç3åå(æ¯å4å·)ï¼`);
       flashSprite('monster-sprite');
       playSound('correct');
       advanceTurn();
@@ -1713,7 +1751,7 @@ function useSkill(skill) {
       battleState.monsterHP = Math.max(0, battleState.monsterHP - 40);
       battleState.totalDamage += 40;
       showDmgNumber(40, false);
-      addLog(`✨ 星落術！40傷害！`);
+      addLog(`â¨ æè½è¡ï¼40å·å®³ï¼`);
       flashSprite('monster-sprite');
       playSound('correct');
       advanceTurn();
@@ -1722,7 +1760,7 @@ function useSkill(skill) {
       gameState.shieldActive = true;
       gameState.shieldTurns = 2;
       gameState.shieldReduction = 0.25;
-      addLog(`🌳 自然護盾！75%減傷2回合！`);
+      addLog(`ð³ èªç¶è­·ç¾ï¼75%æ¸å·2ååï¼`);
       advanceTurn();
       break;
     // ===== VIKING SKILLS =====
@@ -1732,7 +1770,7 @@ function useSkill(skill) {
       gameState.bleedStacks = 2;
       gameState.bleedDamage = 3;
       showDmgNumber(18, false);
-      addLog(`🪓 斧頭投擲！18傷害+流血2回合(每回3傷)！`);
+      addLog(`ðª æ§é ­ææ²ï¼18å·å®³+æµè¡2åå(æ¯å3å·)ï¼`);
       flashSprite('monster-sprite');
       playSound('correct');
       advanceTurn();
@@ -1740,12 +1778,12 @@ function useSkill(skill) {
     case 'battle-cry':
       gameState.battleCryStacks = 3;
       battleState.playerATK = battleState.playerATK + 5;
-      addLog(`📢 戰鬥怒吼！攻擊+5，持續3回合！`);
+      addLog(`ð¢ æ°é¬¥æå¼ï¼æ»æ+5ï¼æçº3ååï¼`);
       advanceTurn();
       break;
     case 'blood-rage':
       gameState.bloodRageStacks = 2;
-      addLog(`🩸 血腥狂暴！下2次攻擊1.5倍+吸血50%！`);
+      addLog(`ð©¸ è¡è¥çæ´ï¼ä¸2æ¬¡æ»æ1.5å+å¸è¡50%ï¼`);
       advanceTurn();
       break;
     case 'ground-smash':
@@ -1753,7 +1791,7 @@ function useSkill(skill) {
       battleState.totalDamage += 30;
       battleState.stunned = true;
       showDmgNumber(30, false);
-      addLog(`💥 大地粉碎！30傷害+暈1回合！`);
+      addLog(`ð¥ å¤§å°ç²ç¢ï¼30å·å®³+æ1ååï¼`);
       flashSprite('monster-sprite');
       playSound('correct');
       advanceTurn();
@@ -1763,7 +1801,7 @@ function useSkill(skill) {
       battleState.monsterHP = Math.max(0, battleState.monsterHP - 20);
       battleState.totalDamage += 20;
       showDmgNumber(20, false);
-      addLog(`⚫ 暗影彈！20傷害！`);
+      addLog(`â« æå½±å½ï¼20å·å®³ï¼`);
       flashSprite('monster-sprite');
       playSound('correct');
       advanceTurn();
@@ -1774,21 +1812,21 @@ function useSkill(skill) {
       const mpDrain = Math.min(10, battleState.playerMaxMP - battleState.playerMP);
       battleState.playerMP = Math.min(battleState.playerMaxMP, battleState.playerMP + mpDrain);
       showDmgNumber(30, false);
-      addLog(`💜 暗影收割！30傷害+吸收10MP！`);
+      addLog(`ð æå½±æ¶å²ï¼30å·å®³+å¸æ¶10MPï¼`);
       flashSprite('monster-sprite');
       playSound('correct');
       advanceTurn();
       break;
     case 'shadow-veil':
       gameState.evadeNext = true;
-      addLog(`🌑 暗影面紗！迴避下次攻擊！`);
+      addLog(`ð æå½±é¢ç´ï¼è¿´é¿ä¸æ¬¡æ»æï¼`);
       advanceTurn();
       break;
     case 'void-blast':
       battleState.monsterHP = Math.max(0, battleState.monsterHP - 45);
       battleState.totalDamage += 45;
       showDmgNumber(45, false);
-      addLog(`💥 虛空衝擊！45傷害！`);
+      addLog(`ð¥ èç©ºè¡æï¼45å·å®³ï¼`);
       flashSprite('monster-sprite');
       playSound('correct');
       advanceTurn();
@@ -1798,7 +1836,7 @@ function useSkill(skill) {
       battleState.monsterHP = Math.max(0, battleState.monsterHP - 15);
       battleState.totalDamage += 15;
       showDmgNumber(15, false);
-      addLog(`🏹 快速射擊！15傷害！`);
+      addLog(`ð¹ å¿«éå°æï¼15å·å®³ï¼`);
       flashSprite('monster-sprite');
       playSound('correct');
       advanceTurn();
@@ -1809,7 +1847,7 @@ function useSkill(skill) {
       battleState.poisonStacks = 2;
       battleState.poisonDamage = 5;
       showDmgNumber(18, false);
-      addLog(`☠️ 毒箭！18傷害+中毒2回合(每回5傷)！`);
+      addLog(`â ï¸ æ¯ç®­ï¼18å·å®³+ä¸­æ¯2åå(æ¯å5å·)ï¼`);
       flashSprite('monster-sprite');
       playSound('correct');
       advanceTurn();
@@ -1820,14 +1858,14 @@ function useSkill(skill) {
         battleState.totalDamage += 12;
         showDmgNumber(12, false);
       }
-      addLog(`🎯 多重射擊！3×12傷害！`);
+      addLog(`ð¯ å¤éå°æï¼3Ã12å·å®³ï¼`);
       flashSprite('monster-sprite');
       playSound('correct');
       advanceTurn();
       break;
     case 'eagle-eye':
       gameState.eagleEyeActive = true;
-      addLog(`👁️ 鷹眼！下次攻擊+8傷害！`);
+      addLog(`ðï¸ é·¹ç¼ï¼ä¸æ¬¡æ»æ+8å·å®³ï¼`);
       advanceTurn();
       break;
   }
@@ -1838,6 +1876,7 @@ function advanceTurn() {
   battleState.turnIndex++;
   if (battleState.monsterHP > 0) {
     nextQuestion();
+    updateTurnIndicator();
     checkBattleEnd();
   } else {
     nextQuestion();
@@ -1887,46 +1926,46 @@ function updateBuffDisplay() {
   let html = '';
   if (gameState.shieldActive) {
     const pct = Math.round((1 - (gameState.shieldReduction || 0.5)) * 100);
-    html += `<div class="buff-icon shield" title="護盾 ${pct}%減傷(${gameState.shieldTurns}回合)">🛡️</div>`;
+    html += `<div class="buff-icon shield" title="è­·ç¾ ${pct}%æ¸å·(${gameState.shieldTurns}åå)">ð¡ï¸</div>`;
   }
   if (gameState.evadeNext) {
-    html += `<div class="buff-icon evade" title="迴避下次攻擊">💨</div>`;
+    html += `<div class="buff-icon evade" title="è¿´é¿ä¸æ¬¡æ»æ">ð¨</div>`;
   }
   if (gameState.berserkStacks > 0) {
-    html += `<div class="buff-icon buff" title="狂暴雙倍(${gameState.berserkStacks}次)">💢${gameState.berserkStacks}</div>`;
+    html += `<div class="buff-icon buff" title="çæ´éå(${gameState.berserkStacks}æ¬¡)">ð¢${gameState.berserkStacks}</div>`;
   }
   if (gameState.battleCryStacks > 0) {
-    html += `<div class="buff-icon buff" title="戰鬥怒吼+5ATK(${gameState.battleCryStacks}回)">📢${gameState.battleCryStacks}</div>`;
+    html += `<div class="buff-icon buff" title="æ°é¬¥æå¼+5ATK(${gameState.battleCryStacks}å)">ð¢${gameState.battleCryStacks}</div>`;
   }
   if (gameState.bloodRageStacks > 0) {
-    html += `<div class="buff-icon buff" title="血腥狂暴1.5倍(${gameState.bloodRageStacks}次)">🩸${gameState.bloodRageStacks}</div>`;
+    html += `<div class="buff-icon buff" title="è¡è¥çæ´1.5å(${gameState.bloodRageStacks}æ¬¡)">ð©¸${gameState.bloodRageStacks}</div>`;
   }
   if (gameState.eagleEyeActive) {
-    html += `<div class="buff-icon buff" title="鷹眼下次+8">👁️</div>`;
+    html += `<div class="buff-icon buff" title="é·¹ç¼ä¸æ¬¡+8">ðï¸</div>`;
   }
   if (gameState.wildGrowthStacks > 0) {
-    html += `<div class="buff-icon buff" title="野性生長+3HP/回(${gameState.wildGrowthStacks}回)">🌿${gameState.wildGrowthStacks}</div>`;
+    html += `<div class="buff-icon buff" title="éæ§çé·+3HP/å(${gameState.wildGrowthStacks}å)">ð¿${gameState.wildGrowthStacks}</div>`;
   }
   if (gameState.healAuraStacks > 0) {
-    html += `<div class="buff-icon buff" title="治療光環+5HP/回(${gameState.healAuraStacks}回)">💚${gameState.healAuraStacks}</div>`;
+    html += `<div class="buff-icon buff" title="æ²»çåç°+5HP/å(${gameState.healAuraStacks}å)">ð${gameState.healAuraStacks}</div>`;
   }
   if (gameState.boneShieldActive) {
-    html += `<div class="buff-icon shield" title="白骨盾50%減傷(${gameState.shieldTurns}回合)">💀</div>`;
+    html += `<div class="buff-icon shield" title="ç½éª¨ç¾50%æ¸å·(${gameState.shieldTurns}åå)">ð</div>`;
   }
   if (gameState.minionBonus) {
-    html += `<div class="buff-icon buff" title="僕從加成下次+20">👤</div>`;
+    html += `<div class="buff-icon buff" title="åå¾å æä¸æ¬¡+20">ð¤</div>`;
   }
   if (battleState.poisonStacks > 0) {
-    html += `<div class="buff-icon debuff" title="中毒每回${battleState.poisonDamage}傷(${battleState.poisonStacks}回)">☠️${battleState.poisonStacks}</div>`;
+    html += `<div class="buff-icon debuff" title="ä¸­æ¯æ¯å${battleState.poisonDamage}å·(${battleState.poisonStacks}å)">â ï¸${battleState.poisonStacks}</div>`;
   }
   if (gameState.burnStacks > 0) {
-    html += `<div class="buff-icon debuff" title="燃燒每回${gameState.burnDamage}傷(${gameState.burnStacks}回)">🔥${gameState.burnStacks}</div>`;
+    html += `<div class="buff-icon debuff" title="ççæ¯å${gameState.burnDamage}å·(${gameState.burnStacks}å)">ð¥${gameState.burnStacks}</div>`;
   }
   if (gameState.bleedStacks > 0) {
-    html += `<div class="buff-icon debuff" title="流血每回${gameState.bleedDamage}傷(${gameState.bleedStacks}回)">🩸${gameState.bleedStacks}</div>`;
+    html += `<div class="buff-icon debuff" title="æµè¡æ¯å${gameState.bleedDamage}å·(${gameState.bleedStacks}å)">ð©¸${gameState.bleedStacks}</div>`;
   }
   if (gameState.monsterAtkDebuff > 0) {
-    html += `<div class="buff-icon buff" title="敵人攻擊-5(${gameState.monsterAtkDebuff}回)">🔨</div>`;
+    html += `<div class="buff-icon buff" title="æµäººæ»æ-5(${gameState.monsterAtkDebuff}å)">ð¨</div>`;
   }
   container.innerHTML = html;
 }
@@ -1942,7 +1981,7 @@ function updateBattleUI() {
   document.getElementById('monster-hp-text').textContent = battleState.monsterHP;
   document.getElementById('monster-max-hp').textContent = battleState.monsterMaxHP;
   document.getElementById('monster-hp-bar').style.width = (battleState.monsterHP / battleState.monsterMaxHP * 100) + '%';
-  document.getElementById('wave-indicator').textContent = `第 ${battleState.waveIndex + 1}/${battleState.enemiesPerStage} 波`;
+  document.getElementById('wave-indicator').textContent = `ç¬¬ ${battleState.waveIndex + 1}/${battleState.enemiesPerStage} æ³¢`;
   updateTurnIndicator();
   updateBuffDisplay();
   // XP bar
@@ -1976,7 +2015,7 @@ function addLog(msg) {
   entry.className = 'log-entry';
   entry.textContent = msg;
   // Highlight wrong-answer feedback in red
-  if (msg.includes('正確答案')) {
+  if (msg.includes('æ­£ç¢ºç­æ¡')) {
     entry.style.cssText = 'color:#e74c3c;font-weight:700;font-size:1.1rem;background:rgba(231,76,60,.15);border-radius:6px;padding:4px 8px;margin:4px 0';
   }
   log.appendChild(entry);
@@ -1985,50 +2024,10 @@ function addLog(msg) {
   while (log.children.length > 20) log.removeChild(log.firstChild);
 }
 
-function showCorrectFeedback() {
-  const existing = document.getElementById('feedback-overlay');
-  if (existing) existing.remove();
-  const overlay = document.createElement('div');
-  overlay.id = 'feedback-overlay';
-  overlay.className = 'feedback-overlay correct';
-  const emojis = ['✨', '🌟', '💖', '⭐'];
-  overlay.innerHTML = `<div class="emoji-stack">${emojis.map(e => `<span>${e}</span>`).join('')}</div>`;
-  document.body.appendChild(overlay);
-  // Spawn confetti
-  spawnConfetti();
-  setTimeout(() => overlay.remove(), 800);
-}
-
-function showWrongFeedback() {
-  const existing = document.getElementById('feedback-overlay');
-  if (existing) existing.remove();
-  const overlay = document.createElement('div');
-  overlay.id = 'feedback-overlay';
-  overlay.className = 'feedback-overlay wrong';
-  overlay.textContent = '🥺';
-  document.body.appendChild(overlay);
-  setTimeout(() => overlay.remove(), 900);
-}
-
-function spawnConfetti() {
-  const colors = ['#ffd470','#ff8fb3','#6dd97a','#5bc8f5','#b8a9ff'];
-  for (let i = 0; i < 18; i++) {
-    const piece = document.createElement('div');
-    piece.className = 'confetti-piece';
-    piece.style.left = (10 + Math.random() * 80) + '%';
-    piece.style.top = (20 + Math.random() * 30) + '%';
-    piece.style.background = colors[Math.floor(Math.random() * colors.length)];
-    piece.style.animationDelay = (Math.random() * 0.3) + 's';
-    piece.style.transform = `rotate(${Math.random() * 360}deg)`;
-    document.body.appendChild(piece);
-    setTimeout(() => piece.remove(), 1500);
-  }
-}
-
 function checkBattleEnd() {
   if (battleState.monsterHP <= 0) {
     battleState.waveIndex++;
-    addLog(`💀 擊敗 ${battleState.monsterName}！`);
+    addLog(`ð ææ ${battleState.monsterName}ï¼`);
     if (battleState.waveIndex >= battleState.enemiesPerStage) {
       // All enemies defeated
       battleState.battleActive = false;
@@ -2049,7 +2048,7 @@ function spawnNextWave() {
   const waveIdx = battleState.waveIndex;
   // Pick monster for this wave (cycle through the monsters array)
   const monsterKey = monsters[waveIdx % monsters.length];
-  const ms = MONSTER_STATS[monsterKey] || { name: '怪物', hp: 30, atk: 5, img: '' };
+  const ms = MONSTER_STATS[monsterKey] || { name: 'æªç©', hp: 30, atk: 5, img: '' };
   const multiplier = battleState.difficulty === 'hard' ? 1.5 : battleState.difficulty === 'normal' ? 1.2 : 1;
 
   battleState.monsterMaxHP = Math.round(ms.hp * multiplier);
@@ -2061,26 +2060,24 @@ function spawnNextWave() {
   const mpRestore = Math.min(10, battleState.playerMaxMP - battleState.playerMP);
   if (mpRestore > 0) {
     battleState.playerMP = Math.min(battleState.playerMaxMP, battleState.playerMP + 10);
-    addLog(`🔵 MP+${mpRestore} (戰鬥恢復)`);
+    addLog(`ðµ MP+${mpRestore} (æ°é¬¥æ¢å¾©)`);
   }
 
   document.getElementById('monster-sprite').src = battleState.monsterImg;
   document.getElementById('monster-hp-text').textContent = `${battleState.monsterHP}/${battleState.monsterMaxHP}`;
-  document.getElementById('wave-indicator').textContent = `第 ${battleState.waveIndex + 1}/${battleState.enemiesPerStage} 波`;
+  document.getElementById('wave-indicator').textContent = `ç¬¬ ${battleState.waveIndex + 1}/${battleState.enemiesPerStage} æ³¢`;
   updateTurnIndicator();
   updateBattleUI();
-  addLog(`⚔️ 第 ${battleState.waveIndex + 1} 波！遇到 ${battleState.monsterName}！`);
+  addLog(`âï¸ ç¬¬ ${battleState.waveIndex + 1} æ³¢ï¼éå° ${battleState.monsterName}ï¼`);
 }
 
 function showBattleResult(victory) {
   const xpGain = victory ? (10 + gameState.level * 5) : 5;
   const goldGain = victory ? (10 + gameState.level * 2) : 5;
-  gameState.sessionGold += goldGain;
-  gameState.sessionXP += xpGain;
   gameState.xp += xpGain;
   gameState.gold += goldGain;
 
-  // 學習日誌記錄
+  // å­¸ç¿æ¥èªè¨é
   const accuracy = battleState.questionsAnswered > 0 ? Math.round(battleState.correctCount/battleState.questionsAnswered*100) : 0;
   const logKey = 'mathDungeon_learningLog';
   let logData = [];
@@ -2096,7 +2093,7 @@ function showBattleResult(victory) {
     maxCombo: battleState.maxCombo,
     totalDamage: battleState.totalDamage
   });
-  localStorage.setItem(logKey, JSON.stringify(logData.slice(-50))); // 保留最近50場
+  localStorage.setItem(logKey, JSON.stringify(logData.slice(-50))); // ä¿çæè¿50å ´
 
   // Level up check
   if (gameState.xp >= gameState.xpToNext) {
@@ -2110,59 +2107,38 @@ function showBattleResult(victory) {
     gameState.playerMP = gameState.playerMaxMP;
     battleState.playerMaxHP = gameState.playerMaxHP;
     battleState.playerMaxMP = gameState.playerMaxMP;
-    addLog(`🎉 等級提升！現在是 Lv.${gameState.level}！`);
+    addLog(`ð ç­ç´æåï¼ç¾å¨æ¯ Lv.${gameState.level}ï¼`);
     playSound('levelUp');
   }
 
   saveProgress();
 
   const title = document.getElementById('result-title');
-  title.textContent = victory ? '🎉 勝利！' : '💀 戰敗...';
+  title.textContent = victory ? 'ð åå©ï¼' : 'ð æ°æ...';
   if (victory) { stopBgm(); playBgm('victory'); }
   title.className = 'result-title ' + (victory ? 'victory' : 'defeat');
 
-  const feedback = accuracy >= 80 ? '🌟 做得好！' : accuracy >= 50 ? '💪 繼續加油！' : '📚 需要多練習！';
+  const feedback = accuracy >= 80 ? 'ð åå¾å¥½ï¼' : accuracy >= 50 ? 'ðª ç¹¼çºå æ²¹ï¼' : 'ð éè¦å¤ç·´ç¿ï¼';
   document.getElementById('result-stats').innerHTML = `
-    <div class="result-stat"><span>獲得經驗</span><span style="color:var(--xp)">+${xpGain} XP</span></div>
-    <div class="result-stat"><span>升級進度</span><span>${gameState.xp}/${gameState.xpToNext}</span></div>
-    <div class="result-stat"><span>獲得金幣</span><span style="color:var(--gold)">+${goldGain} 💰</span></div>
-    <div class="result-stat"><span>玩家等級</span><span>Lv.${gameState.level}</span></div>
-    <div class="result-stat"><span>總金幣</span><span>${gameState.gold} 💰</span></div>
-    <div class="result-stat"><span>答對</span><span style="color:var(--xp)">${battleState.correctCount}/${battleState.questionsAnswered}</span></div>
-    <div class="result-stat"><span>正確率</span><span style="color:var(--accent)">${accuracy}% ${feedback}</span></div>
-    <div class="result-stat"><span>最高Combo</span><span style="color:var(--gold)">${battleState.maxCombo}連</span></div>
-    <div class="result-stat"><span>總傷害</span><span style="color:var(--hp)">${battleState.totalDamage}</span></div>
-    <div class="result-stat" style="background:rgba(253,203,110,.15);border:1px solid var(--gold)"><span>本次獲得</span><span style="color:var(--gold)">💰+${gameState.sessionGold} | ✨+${gameState.sessionXP}XP</span></div>
+    <div class="result-stat"><span>ç²å¾ç¶é©</span><span style="color:var(--xp)">+${xpGain} XP</span></div>
+    <div class="result-stat"><span>åç´é²åº¦</span><span>${gameState.xp}/${gameState.xpToNext}</span></div>
+    <div class="result-stat"><span>ç²å¾éå¹£</span><span style="color:var(--gold)">+${goldGain} ð°</span></div>
+    <div class="result-stat"><span>ç©å®¶ç­ç´</span><span>Lv.${gameState.level}</span></div>
+    <div class="result-stat"><span>ç¸½éå¹£</span><span>${gameState.gold} ð°</span></div>
+    <div class="result-stat"><span>ç­å°</span><span style="color:var(--xp)">${battleState.correctCount}/${battleState.questionsAnswered}</span></div>
+    <div class="result-stat"><span>æ­£ç¢ºç</span><span style="color:var(--accent)">${accuracy}% ${feedback}</span></div>
+    <div class="result-stat"><span>æé«Combo</span><span style="color:var(--gold)">${battleState.maxCombo}é£</span></div>
+    <div class="result-stat"><span>ç¸½å·å®³</span><span style="color:var(--hp)">${battleState.totalDamage}</span></div>
   `;
 
   showScreen('battle-result');
-  if (victory) spawnVictoryCelebration();
-}
-
-function spawnVictoryCelebration() {
-  const colors = ['#ffd470','#ff8fb3','#6dd97a','#5bc8f5','#b8a9ff','#ff6b6b'];
-  for (let i = 0; i < 40; i++) {
-    const piece = document.createElement('div');
-    piece.className = 'confetti-piece';
-    piece.style.left = (5 + Math.random() * 90) + '%';
-    piece.style.top = (10 + Math.random() * 50) + '%';
-    piece.style.background = colors[Math.floor(Math.random() * colors.length)];
-    piece.style.width = (8 + Math.random() * 10) + 'px';
-    piece.style.height = (8 + Math.random() * 10) + 'px';
-    piece.style.animationDelay = (Math.random() * 0.8) + 's';
-    piece.style.animationDuration = (1.5 + Math.random()) + 's';
-    document.body.appendChild(piece);
-    setTimeout(() => piece.remove(), 2500);
-  }
 }
 
 function confirmExitBattle() {
-  if (confirm('確定要放棄戰鬥返回主頁？')) { stopBgm(); goHome(); }
+  if (confirm('ç¢ºå®è¦æ¾æ£æ°é¬¥è¿åä¸»é ï¼')) { stopBgm(); goHome(); }
 }
 
 function backToMap() {
-  gameState.sessionGold = 0;
-  gameState.sessionXP = 0;
   showMapScreen();
 }
 
@@ -2192,7 +2168,7 @@ function saveProgress() {
 
 function loadProgress() {
   const raw = localStorage.getItem(SAVE_KEY);
-  if (!raw) { alert('沒有找到存檔！'); return; }
+  if (!raw) { alert('æ²ææ¾å°å­æªï¼'); return; }
   try {
     const data = JSON.parse(raw);
     if (typeof data !== 'object' || data === null) throw new Error('Invalid data');
@@ -2208,7 +2184,7 @@ function loadProgress() {
     if (!gameState.character) { showNameScreen(); return; }
     showMapScreen();
   } catch (e) {
-    alert('存檔讀取失敗！');
+    alert('å­æªè®åå¤±æï¼');
   }
 }
 
@@ -2247,16 +2223,16 @@ function showPracticeSelectScreen() {
   const list = document.getElementById('practice-table-list');
   const data = getPracticeData();
   let html = `<div class="topic-btn" style="cursor:pointer" onclick="startPractice(0)">
-    <span class="t-num" style="font-size:1.2rem">🔀</span>
-    <span style="font-size:1.1rem">混合練習（隨機）</span>
+    <span class="t-num" style="font-size:1.2rem">ð</span>
+    <span style="font-size:1.1rem">æ··åç·´ç¿ï¼é¨æ©ï¼</span>
   </div>`;
   for (let i = 2; i <= 12; i++) {
     const best = getBestScore(data[i]);
     html += `<div class="topic-btn" onclick="startPractice(${i})">
-      <span class="t-num">×${i}</span>
-      <span style="margin-left:12px;font-size:1rem">乘法表</span>
+      <span class="t-num">Ã${i}</span>
+      <span style="margin-left:12px;font-size:1rem">ä¹æ³è¡¨</span>
       <span style="margin-left:auto;color:${best!==null && best>=80?'#2ecc71':best!==null && best>=50?'#fdcb6e':'#e74c3c'};font-size:.9rem">
-        ${best !== null ? best+'%' : '未測試'}
+        ${best !== null ? best+'%' : 'æªæ¸¬è©¦'}
       </span>
     </div>`;
   }
@@ -2277,7 +2253,7 @@ function startPractice(table) {
 function generateQuestions(table) {
   const qs = [];
   if (table === 0) {
-    // Mixed: all combos ×2 to ×12
+    // Mixed: all combos Ã2 to Ã12
     for (let t = 2; t <= 12; t++) for (let m = 2; m <= 12; m++) qs.push({ a: t, b: m });
   } else {
     for (let i = 2; i <= 12; i++) qs.push({ a: table, b: i });
@@ -2295,9 +2271,8 @@ function renderPracticeQuestion() {
     showPracticeResult(); return;
   }
   const q = practiceState.questions[practiceState.current];
-  document.getElementById('practice-question').textContent = `${q.a} × ${q.b} = ?`;
-  speakQuestion(`${q.a}乘${q.b}等於幾多？`);
-  document.getElementById('practice-progress').textContent = `第 ${practiceState.current + 1} / 10 題`;
+  document.getElementById('practice-question').textContent = `${q.a} Ã ${q.b} = ?`;
+  document.getElementById('practice-progress').textContent = `ç¬¬ ${practiceState.current + 1} / 10 é¡`;
   document.getElementById('practice-feedback').textContent = '';
 
   const correct = q.a * q.b;
@@ -2329,14 +2304,14 @@ function checkPracticeAnswer(selected, correct, q) {
   const fb = document.getElementById('practice-feedback');
   if (selected === correct) {
     practiceState.correct++;
-    fb.textContent = `✅ 正確！${q.a}×${q.b}=${correct} —— 你記得啱！`;
+    fb.textContent = `â æ­£ç¢ºï¼${q.a}Ã${q.b}=${correct} ââ ä½ è¨å¾å±ï¼`;
     fb.style.color = '#2ecc71';
     SoundEngine.correct();
   } else {
-    practiceState.wrong.push(`${q.a}×${q.b}=${correct}`); if (practiceState.wrong.length > 50) practiceState.wrong.shift();
-    const explain = q.b <= 5 ? `${q.a} 組 ${q.b}，加起來係 ${correct}（${Array(q.b).fill(q.a).join('+')}）`
-                             : `${q.a}×${q.b} 即係 ${correct}，試多次記住佢！`;
-    fb.textContent = `❌ 正確答案：${correct}（${explain}）`;
+    practiceState.wrong.push(`${q.a}Ã${q.b}=${correct}`);
+    const explain = q.b <= 5 ? `${q.a} çµ ${q.b}ï¼å èµ·ä¾ä¿ ${correct}ï¼${Array(q.b).fill(q.a).join('+')}ï¼`
+                             : `${q.a}Ã${q.b} å³ä¿ ${correct}ï¼è©¦å¤æ¬¡è¨ä½ä½¢ï¼`;
+    fb.textContent = `â æ­£ç¢ºç­æ¡ï¼${correct}ï¼${explain}ï¼`;
     fb.style.color = '#e74c3c';
     SoundEngine.fail();
   }
@@ -2352,13 +2327,13 @@ function showPracticeResult() {
   const { table, correct, wrong } = practiceState;
   savePracticeResult(table, correct, 10, wrong);
   showScreen('practice-result-screen');
-  const stars = correct >= 9 ? '⭐⭐⭐' : correct >= 7 ? '⭐⭐' : correct >= 5 ? '⭐' : '💪';
+  const stars = correct >= 9 ? 'â­â­â­' : correct >= 7 ? 'â­â­' : correct >= 5 ? 'â­' : 'ðª';
   document.getElementById('practice-result-stars').textContent = stars;
   document.getElementById('practice-result-title').textContent =
-    correct >= 9 ? '太棒了！' : correct >= 7 ? '做得不錯！' : correct >= 5 ? '繼續努力！' : '再試試吧！';
-  document.getElementById('practice-result-score').textContent = `${correct} / 10 正確`;
+    correct >= 9 ? 'å¤ªæ£äºï¼' : correct >= 7 ? 'åå¾ä¸é¯ï¼' : correct >= 5 ? 'ç¹¼çºåªåï¼' : 'åè©¦è©¦å§ï¼';
+  document.getElementById('practice-result-score').textContent = `${correct} / 10 æ­£ç¢º`;
   document.getElementById('practice-result-weak').textContent =
-    wrong.length > 0 ? `需要加强：${wrong.join('、')}` : '全部正確！🎉';
+    wrong.length > 0 ? `éè¦å å¼ºï¼${wrong.join('ã')}` : 'å¨é¨æ­£ç¢ºï¼ð';
 }
 
 function retryPractice() {
@@ -2367,7 +2342,7 @@ function retryPractice() {
 
 function confirmExitPractice() {
   if (practiceState.current > 0 && practiceState.current < 10) {
-    if (!confirm('確定要離開嗎？今次練習進度會失去。')) return;
+    if (!confirm('ç¢ºå®è¦é¢éåï¼ä»æ¬¡ç·´ç¿é²åº¦æå¤±å»ã')) return;
   }
   practiceState = { table: 0, questions: [], current: 0, correct: 0, wrong: [] };
   showPracticeSelectScreen();
@@ -2383,11 +2358,11 @@ function showDashboardScreen() {
   const overall = total > 0 ? Math.round(totalCorrect / total * 100) : 0;
 
   document.getElementById('dash-summary').textContent =
-    total > 0 ? `整體準確率：${overall}%（${totalCorrect} / ${total} 題）` : '暫無練習記錄';
+    total > 0 ? `æ´é«æºç¢ºçï¼${overall}%ï¼${totalCorrect} / ${total} é¡ï¼` : 'æ«ç¡ç·´ç¿è¨é';
 
   const container = document.getElementById('dash-content');
   if (entries.length === 0) {
-    container.innerHTML = '<div style="text-align:center;color:var(--text-dim);padding:2em">尚未有任何練習記錄<br><br>快去<a href="#" onclick="showPracticeSelectScreen();return false" style="color:var(--accent)">溫習乘法</a>吧！</div>';
+    container.innerHTML = '<div style="text-align:center;color:var(--text-dim);padding:2em">å°æªæä»»ä½ç·´ç¿è¨é<br><br>å¿«å»<a href="#" onclick="showPracticeSelectScreen();return false" style="color:var(--accent)">æº«ç¿ä¹æ³</a>å§ï¼</div>';
     return;
   }
 
@@ -2410,16 +2385,16 @@ function showDashboardScreen() {
     const recs = data[0];
     const best = getBestScore(recs);
     const recent = recs[recs.length - 1];
-    const stars = best >= 80 ? '⭐⭐⭐' : best >= 60 ? '⭐⭐' : best !== null && best >= 40 ? '⭐' : '';
+    const stars = best >= 80 ? 'â­â­â­' : best >= 60 ? 'â­â­' : best !== null && best >= 40 ? 'â­' : '';
     const lastPct = recent ? Math.round(recent.correct / recent.total * 100) : null;
     const color = best >= 80 ? '#2ecc71' : best >= 50 ? '#fdcb6e' : '#e74c3c';
     html = `<div style="background:var(--card);border-radius:16px;padding:18px 24px;display:flex;align-items:center;gap:16px;cursor:pointer;margin-bottom:12px" onclick="startPractice(0)">
-      <div style="font-size:1.5rem;font-weight:900;color:${color};min-width:50px">🔀</div>
+      <div style="font-size:1.5rem;font-weight:900;color:${color};min-width:50px">ð</div>
       <div style="flex:1"><div style="height:10px;background:#1e1e2e;border-radius:5px;overflow:hidden"><div style="height:100%;width:${isFinite(best)?best:0}%;background:${color};border-radius:5px;transition:width .5s"></div></div></div>
-      <div style="font-size:1.1rem;font-weight:700;color:${color}">${best!==null?best+'%':'—'}</div>
-      <div style="font-size:.9rem;color:var(--text-dim)">${lastPct!==null?lastPct+'%':'—'}</div>
+      <div style="font-size:1.1rem;font-weight:700;color:${color}">${best!==null?best+'%':'â'}</div>
+      <div style="font-size:.9rem;color:var(--text-dim)">${lastPct!==null?lastPct+'%':'â'}</div>
       <div style="font-size:1.2rem">${stars}</div>
-      <div style="font-size:.8rem;color:var(--text-dim)">混合 ${recs.length}次</div>
+      <div style="font-size:.8rem;color:var(--text-dim)">æ··å ${recs.length}æ¬¡</div>
     </div>` + html;
   }
 
@@ -2429,25 +2404,25 @@ function showDashboardScreen() {
     if (table === 0) continue;
     const best = getBestScore(records);
     const recent = records[records.length - 1];
-    const stars = best >= 80 ? '⭐⭐⭐' : best >= 60 ? '⭐⭐' : best !== null && best >= 40 ? '⭐' : '';
+    const stars = best >= 80 ? 'â­â­â­' : best >= 60 ? 'â­â­' : best !== null && best >= 40 ? 'â­' : '';
     const lastPct = recent ? Math.round(recent.correct / recent.total * 100) : null;
     const color = best >= 80 ? '#2ecc71' : best >= 50 ? '#fdcb6e' : '#e74c3c';
     html += `<div style="background:var(--card);border-radius:16px;padding:18px 24px;display:flex;align-items:center;gap:16px;cursor:pointer" onclick="startPractice(${table})">
-      <div style="font-size:1.5rem;font-weight:900;color:${color};min-width:50px">×${table}</div>
+      <div style="font-size:1.5rem;font-weight:900;color:${color};min-width:50px">Ã${table}</div>
       <div style="flex:1"><div style="height:10px;background:#1e1e2e;border-radius:5px;overflow:hidden"><div style="height:100%;width:${isFinite(best)?best:0}%;background:${color};border-radius:5px;transition:width .5s"></div></div></div>
-      <div style="font-size:1.1rem;font-weight:700;color:${color}">${best!==null?best+'%':'—'}</div>
-      <div style="font-size:.9rem;color:var(--text-dim)">${lastPct!==null?lastPct+'%':'—'}</div>
+      <div style="font-size:1.1rem;font-weight:700;color:${color}">${best!==null?best+'%':'â'}</div>
+      <div style="font-size:.9rem;color:var(--text-dim)">${lastPct!==null?lastPct+'%':'â'}</div>
       <div style="font-size:1.2rem">${stars}</div>
-      <div style="font-size:.8rem;color:var(--text-dim)">${records.length}次</div>
+      <div style="font-size:.8rem;color:var(--text-dim)">${records.length}æ¬¡</div>
     </div>`;
   }
 
   if (Object.keys(allWeak).length > 0) {
     const weakList = Object.entries(allWeak).sort((a,b) => b[1]-a[1]).slice(0,5);
     html += `<div style="margin-top:1.5em;background:var(--card);border-radius:16px;padding:18px 24px">
-      <div style="font-weight:700;margin-bottom:.8em;color:var(--accent)">⚠️ 常錯題目</div>
+      <div style="font-weight:700;margin-bottom:.8em;color:var(--accent)">â ï¸ å¸¸é¯é¡ç®</div>
       ${weakList.map(([q,c]) => `<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #3d3d5c">
-        <span>${q}</span><span style="color:var(--hp)">×${c}次</span>
+        <span>${q}</span><span style="color:var(--hp)">Ã${c}æ¬¡</span>
       </div>`).join('')}
     </div>`;
   }
@@ -2564,9 +2539,9 @@ function toggleBgm() {
   bgmEnabled = !bgmEnabled;
   if (!bgmEnabled) {
     stopBgm();
-    document.getElementById('bgm-toggle-btn').textContent = '🔇';
+    document.getElementById('bgm-toggle-btn').textContent = 'ð';
   } else {
-    document.getElementById('bgm-toggle-btn').textContent = '🔊';
+    document.getElementById('bgm-toggle-btn').textContent = 'ð';
     playBgm('battle');
   }
   return bgmEnabled;
@@ -2577,7 +2552,7 @@ function toggleBgm() {
 // ==================== COMBO SYSTEM ====================
 function showComboMilestone() {
   const combo = battleState.combo;
-  const milestone = combo >= 10 ? '💥 火力全開！' : combo >= 5 ? '🔥 熱辣辣！' : combo >= 3 ? '⚔️Combo×' + combo : '';
+  const milestone = combo >= 10 ? 'ð¥ ç«åå¨éï¼' : combo >= 5 ? 'ð¥ ç±è¾£è¾£ï¼' : combo >= 3 ? 'âï¸ComboÃ' + combo : '';
   if (milestone) {
     playComboSound(combo);
     if (gameState.character === 'assassin' && combo >= 5) playVoice('crit');
@@ -2597,8 +2572,8 @@ function toggleSkills() {
   const btn = document.getElementById('skills-toggle');
   skillsVisible = !skillsVisible;
   skills.classList.toggle('collapsed', !skillsVisible);
-  btn.textContent = skillsVisible ? '✖️' : '⚔️';
-  btn.title = skillsVisible ? '隱藏技能' : '顯示技能';
+  btn.textContent = skillsVisible ? 'âï¸' : 'âï¸';
+  btn.title = skillsVisible ? 'é±èæè½' : 'é¡¯ç¤ºæè½';
   // Ensure character-specific skill buttons are visible when opening
   if (skillsVisible) updateSkillButtons();
 }
@@ -2607,7 +2582,7 @@ function updateComboDisplay() {
   const el = document.getElementById('combo-display');
   if (!el) return;
   if (battleState.combo >= 3) {
-    el.innerHTML = `<span style="color:var(--gold)">🔥 ${battleState.combo}連 Combo！</span>`;
+    el.innerHTML = `<span style="color:var(--gold)">ð¥ ${battleState.combo}é£ Comboï¼</span>`;
   } else {
     el.innerHTML = '';
   }
@@ -2623,19 +2598,19 @@ window.addEventListener('DOMContentLoaded', () => {
 <div id="multiplicationTableModal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.88);z-index:2000;align-items:center;justify-content:center;padding:16px">
   <div style="background:#1e1b2e;border:3px solid #8b5cf6;border-radius:16px;width:min(520px,100%);max-height:90vh;overflow:auto;box-shadow:0 0 30px rgba(139,92,246,.6)">
     <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-bottom:2px solid #4c1d95;background:#2a2544;border-radius:14px 14px 0 0">
-      <span style="font-size:1.2rem;font-weight:700;color:#fff">📖 十十乘法表</span>
-      <button onclick="hideMultiplicationTable()" style="background:#4c1d95;border:none;border-radius:8px;padding:6px 12px;color:#fff;font-size:1rem;cursor:pointer">✕ 關閉</button>
+      <span style="font-size:1.2rem;font-weight:700;color:#fff">ð ååä¹æ³è¡¨</span>
+      <button onclick="hideMultiplicationTable()" style="background:#4c1d95;border:none;border-radius:8px;padding:6px 12px;color:#fff;font-size:1rem;cursor:pointer">â éé</button>
     </div>
     <div style="padding:12px;overflow-x:auto">
       <table id="multiTable" style="width:100%;border-collapse:collapse;font-size:14px;background:#2a2544">
       </table>
     </div>
-    <p style="text-align:center;padding:10px;color:#a5b4fc;font-size:.85rem;margin:0">遇到不會的題目可以隨時看喔～</p>
+    <p style="text-align:center;padding:10px;color:#a5b4fc;font-size:.85rem;margin:0">éå°ä¸æçé¡ç®å¯ä»¥é¨æçåï½</p>
   </div>
 </div>
 
 <!-- Floating multiplication table button -->
-<button id="multiTableBtn" onclick="showMultiplicationTable()" style="display:none;position:fixed;bottom:22px;right:22px;z-index:999;background:linear-gradient(135deg,#7c3aed,#6d28d9);color:#fff;border:none;border-radius:50%;width:56px;height:56px;font-size:26px;box-shadow:0 4px 15px rgba(0,0,0,.5);cursor:pointer;line-height:1">📖</button>
+<button id="multiTableBtn" onclick="showMultiplicationTable()" style="display:none;position:fixed;bottom:22px;right:22px;z-index:999;background:linear-gradient(135deg,#7c3aed,#6d28d9);color:#fff;border:none;border-radius:50%;width:56px;height:56px;font-size:26px;box-shadow:0 4px 15px rgba(0,0,0,.5);cursor:pointer;line-height:1">ð</button>
 
 <script>
 // ==================== MULTIPLICATION TABLE ====================
@@ -2644,7 +2619,7 @@ function showMultiplicationTable() {
   const table = document.getElementById('multiTable');
   table.innerHTML = '';
   // Header row
-  let html = '<tr><th style="background:#6d28d9;color:#fff;padding:7px 5px;border:1px solid #4c3f7a">×</th>';
+  let html = '<tr><th style="background:#6d28d9;color:#fff;padding:7px 5px;border:1px solid #4c3f7a">Ã</th>';
   for (let i = 1; i <= 10; i++) html += '<th style="background:#6d28d9;color:#fff;padding:7px 5px;border:1px solid #4c3f7a">'+i+'</th>';
   html += '</tr>';
   // Content rows
