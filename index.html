@@ -12,6 +12,39 @@
 --hp:#ff6b6b;--mp:#5bc8f5;--xp:#6dd97a;--bg:#2a2840;--card:#3d3860;
 --text:#f5f0ff;--text-dim:#c0b8db;--border:#6a6190;
 --radius-lg:24px;--radius-xl:32px;
+  /* === NUMPAD SIZE SETTINGS === */
+  /* Default: PC / Smartboard (≥1200px) */
+  --numpad-btn-h:110px;
+  --numpad-btn-fs:2.4rem;
+  --numpad-radius:24px;
+  --numpad-gap:14px;
+  --numpad-input-h:60px;
+  --numpad-input-fs:2rem;
+  --numpad-shadow:0 8px 20px rgba(0,0,0,.5);
+}
+@media (max-width:1024px){
+  :root{
+    /* iPad / Tablet (≤1024px) */
+    --numpad-btn-h:88px;
+    --numpad-btn-fs:2rem;
+    --numpad-radius:20px;
+    --numpad-gap:12px;
+    --numpad-input-h:52px;
+    --numpad-input-fs:1.6rem;
+    --numpad-shadow:0 6px 16px rgba(0,0,0,.4);
+  }
+}
+@media (max-width:600px){
+  :root{
+    /* Phone / Small tablet (≤600px) */
+    --numpad-btn-h:72px;
+    --numpad-btn-fs:1.6rem;
+    --numpad-radius:16px;
+    --numpad-gap:8px;
+    --numpad-input-h:44px;
+    --numpad-input-fs:1.4rem;
+    --numpad-shadow:0 4px 12px rgba(0,0,0,.4);
+  }
 }
 html,body{height:100%;font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--text);overflow:hidden}
 
@@ -137,13 +170,56 @@ section{position:fixed;inset:0;display:flex;flex-direction:column;align-items:ce
 .choice-btn:active{transform:scale(0.97)}
 .choice-btn.correct{background:#1e3a2f;border-color:var(--xp);color:var(--xp);animation:pulse-correct .4s}
 .choice-btn.wrong{background:#3a1e1e;border-color:var(--hp);color:var(--hp);animation:shake .3s}
-.numpad{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
-.numpad-btn{min-height:100px;font-size:2.2rem;font-weight:700;border:3px solid var(--border);border-radius:20px;background:var(--card);color:var(--text);cursor:pointer;transition:all .15s;touch-action:manipulation;font-family:inherit;padding:24px 0;box-shadow:0 6px 16px rgba(0,0,0,.4)}
-.numpad-btn:hover{background:#3d3d5c}
+.numpad{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--numpad-gap)}
+.numpad-btn{
+  min-height:var(--numpad-btn-h);
+  font-size:var(--numpad-btn-fs);
+  font-weight:700;
+  border:3px solid var(--border);
+  border-radius:var(--numpad-radius);
+  background:var(--card);
+  color:var(--text);
+  cursor:pointer;
+  transition:all .15s;
+  touch-action:manipulation;
+  font-family:inherit;
+  padding:16px 0;
+  box-shadow:var(--numpad-shadow);
+  display:flex;align-items:center;justify-content:center;
+}
+.numpad-btn:hover{background:#3d3d5c;border-color:var(--secondary)}
 .numpad-btn:active{transform:scale(.95)}
-.numpad-input-display{grid-column:1/-1;min-height:clamp(44px,8vw,56px);padding:clamp(8px,2vw,12px);font-size:clamp(1.2rem,4vw,1.6rem);font-weight:700;border:2px solid var(--primary);border-radius:12px;background:#1e1e2e;color:var(--gold);text-align:center;letter-spacing:.15em;width:100%;box-sizing:border-box;box-shadow:0 0 12px rgba(108,92,231,.25)}
-.submit-num-btn{grid-column:span 2;min-height:100px;font-size:2rem;background:linear-gradient(135deg,var(--primary),var(--secondary))!important;border-color:var(--primary)!important;color:#fff!important;border-radius:20px!important}
-.clear-btn{color:var(--hp)!important;font-size:2rem!important}
+.numpad-input-display{
+  grid-column:1/-1;
+  min-height:var(--numpad-input-h);
+  padding:clamp(8px,2vw,12px);
+  font-size:var(--numpad-input-fs);
+  font-weight:700;
+  border:2px solid var(--primary);
+  border-radius:var(--numpad-radius);
+  background:#1e1e2e;
+  color:var(--gold);
+  text-align:center;
+  letter-spacing:.15em;
+  width:100%;
+  box-sizing:border-box;
+  box-shadow:0 0 12px rgba(108,92,231,.25);
+}
+.submit-num-btn{
+  grid-column:span 2;
+  min-height:var(--numpad-btn-h)!important;
+  font-size:calc(var(--numpad-btn-fs) * 0.85)!important;
+  background:linear-gradient(135deg,var(--primary),var(--secondary))!important;
+  border-color:var(--primary)!important;
+  border-radius:var(--numpad-radius)!important;
+  color:#fff!important;
+}
+.submit-num-btn:hover{background:#6b5ce0!important}
+.clear-btn{
+  color:var(--hp)!important;
+  font-size:calc(var(--numpad-btn-fs) * 0.85)!important;
+}
+.clear-btn:hover{background:#3d1a1a!important}
 
 /* Skills */
 .battle-skills{display:flex;gap:8px;width:min(480px,95vw);margin-top:8px;flex-wrap:wrap}
@@ -1230,6 +1306,13 @@ function nextQuestion() {
     addLog('🔄 題目重新洗牌！');
   }
   battleState.currentQuestion = battleState.questions[battleState.qIndex];
+  // Parse operands from question text (format: "X × Y = ?")
+  const q = battleState.currentQuestion;
+  if (q.a === undefined || q.b === undefined) {
+    const parts = q.q.match(/(\d+)\s*[×x]\s*(\d+)/i);
+    if (parts) { q.a = parseInt(parts[1], 10); q.b = parseInt(parts[2], 10); }
+    else { q.a = 0; q.b = 0; }
+  }
   battleState.qIndex++;
   document.getElementById('question-text').textContent = battleState.currentQuestion.q;
   speakQuestion(battleState.currentQuestion.q);
@@ -1306,6 +1389,8 @@ function submitNumpad() {
 }
 
 function submitChoice(answer) {
+  const skillUsed = battleState.usingSkill;
+  battleState.usingSkill = false;
   if (!battleState.battleActive) return;
   const correct = battleState.currentQuestion.answer;
   const diff = battleState.difficulty;
@@ -1327,7 +1412,7 @@ function submitChoice(answer) {
       addLog(`🔵 MP+${mpRegen}`);
     }
     let dmg = battleState.playerATK;
-    if (battleState.usingSkill === 'critical') {
+    if (skillUsed === 'critical') {
       dmg *= 3;
       addLog('⚡ 暴擊！');
     }
@@ -1361,7 +1446,7 @@ function submitChoice(answer) {
     }
     battleState.monsterHP = Math.max(0, battleState.monsterHP - dmg);
     battleState.totalDamage += dmg;
-    showDmgNumber(dmg, false, battleState.usingSkill === 'critical');
+    showDmgNumber(dmg, false, skillUsed === 'critical');
     playSound('correct');
     if (gameState.character === 'assassin') playVoice('attack');
     showComboMilestone();
@@ -1400,7 +1485,6 @@ function submitChoice(answer) {
       checkBattleEnd();
     }
   }
-  battleState.usingSkill = false;
 }
 
 function monsterAttack() {
