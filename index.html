@@ -141,6 +141,8 @@ section{position:fixed;inset:0;display:flex;flex-direction:column;align-items:ce
 .battle-bg{position:absolute;inset:0;border-radius:20px;background-size:cover;background-position:center;opacity:.45}
 .char-sprite{width:30%;aspect-ratio:1;object-fit:contain;z-index:2;animation:float 3s ease-in-out infinite}
 .monster-sprite{width:40%;aspect-ratio:1;object-fit:contain;z-index:2;animation:monsterIdle 2s ease-in-out infinite}
+.monster-sprite.enraged{filter:drop-shadow(0 0 12px #ff4757) drop-shadow(0 0 6px #ff6b35) hue-rotate(-10deg) brightness(1.1);animation:monsterIdle 2s ease-in-out infinite,enragedPulse 0.7s ease-in-out infinite}
+@keyframes enragedPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
 
 /* Damage/Heal Numbers */
 .dmg-number{position:absolute;font-size:2rem;font-weight:900;color:var(--hp);z-index:10;pointer-events:none;animation:dmgFloat .8s ease-out forwards;text-shadow:2px 2px 4px rgba(0,0,0,.8)}
@@ -163,11 +165,26 @@ section{position:fixed;inset:0;display:flex;flex-direction:column;align-items:ce
 .answer-hint{font-size:.85rem;color:var(--text-dim)}
 
 /* P0-4a: Question countdown progress bar */
-.question-timer{position:relative;width:100%;height:8px;background:rgba(255,255,255,.1);border-radius:4px;overflow:hidden;margin-bottom:8px}
-.question-timer-bar{height:100%;background:linear-gradient(90deg,var(--xp,#6dd97a),var(--gold,#ffd470));border-radius:4px;transform-origin:left center;transition:none}
-.question-timer-bar.warn{background:linear-gradient(90deg,var(--gold,#ffd470),var(--hp,#ff6b6b))}
-.question-timer-bar.danger{background:linear-gradient(90deg,var(--hp,#ff6b6b),#c0392b);animation:timer-pulse 0.6s ease-in-out infinite}
-@keyframes timer-pulse{0%,100%{opacity:1}50%{opacity:.6}}
+/* Sprint 3 #2: 4-stage visual (green/amber/orange/red) + 倒計時數字浮層 + 滴答 pulse */
+.question-timer{position:relative;width:100%;height:14px;background:rgba(255,255,255,.1);border-radius:7px;overflow:visible;margin-bottom:8px}
+.question-timer-bar{height:100%;background:linear-gradient(90deg,#6dd97a,#7ed957);border-radius:7px;transform-origin:left center;transition:none;box-shadow:0 0 6px rgba(109,217,122,.4)}
+.question-timer-bar.caution{background:linear-gradient(90deg,#ffd470,#f4a73a);box-shadow:0 0 8px rgba(255,212,112,.5)}
+.question-timer-bar.warn{background:linear-gradient(90deg,#ff8c42,#ff6b35);box-shadow:0 0 10px rgba(255,107,53,.6)}
+.question-timer-bar.danger{background:linear-gradient(90deg,#ff4757,#c0392b);animation:timer-pulse 0.5s ease-in-out infinite;box-shadow:0 0 14px rgba(255,71,87,.8)}
+@keyframes timer-pulse{0%,100%{opacity:1;transform:scaleX(var(--scale,1))}50%{opacity:.55;transform:scaleX(var(--scale,1))}}
+.question-timer-num{position:absolute;right:6px;top:50%;transform:translateY(-50%);font-size:.75rem;font-weight:700;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.6);pointer-events:none;display:none;letter-spacing:.5px}
+.question-timer-num.visible{display:block}
+.question-timer-num.caution{color:#ffd470}
+.question-timer-num.warn{color:#ff8c42}
+.question-timer-num.danger{color:#ff4757;animation:num-pulse 0.5s ease-in-out infinite}
+@keyframes num-pulse{0%,100%{transform:translateY(-50%) scale(1)}50%{transform:translateY(-50%) scale(1.15)}}
+
+/* Sprint 3 #5: Boss 三階段視覺（battle-arena 容器） */
+.battle-arena.boss-phase-0{box-shadow:inset 0 0 60px rgba(109,217,122,.15)}
+.battle-arena.boss-phase-1{box-shadow:inset 0 0 80px rgba(255,212,112,.25);animation:bossPhase1Aura 1.2s ease-in-out infinite}
+.battle-arena.boss-phase-2{box-shadow:inset 0 0 100px rgba(255,71,87,.4);animation:bossPhase2Aura 0.6s ease-in-out infinite}
+@keyframes bossPhase1Aura{0%,100%{box-shadow:inset 0 0 80px rgba(255,212,112,.25)}50%{box-shadow:inset 0 0 100px rgba(255,212,112,.4)}}
+@keyframes bossPhase2Aura{0%,100%{box-shadow:inset 0 0 100px rgba(255,71,87,.4)}50%{box-shadow:inset 0 0 130px rgba(255,71,87,.7)}}
 
 /* Answer Area */
 .battle-answer{display:flex;flex-direction:column;gap:10px;width:clamp(280px,90vw,480px);margin:0 auto}
@@ -569,6 +586,7 @@ section{position:fixed;inset:0;display:flex;flex-direction:column;align-items:ce
     <div class="battle-question">
       <div class="question-timer" id="question-timer" hidden>
         <div class="question-timer-bar" id="question-timer-bar"></div>
+        <div class="question-timer-num" id="question-timer-num"></div>
       </div>
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
         <div class="question-text" id="question-text">2 × 3 = ?</div>
@@ -1286,6 +1304,9 @@ function startBattle() {
     enemiesPerStage: s.isBoss ? s.monsters.length : 3,
     totalStageDamage: 0,
     stunned: false,
+    enraged: 0, // Sprint 3 #3: 激怒剩餘回合數，0=未激怒。答錯+2，答對-1，3連對清零
+    startTime: Date.now(), // Sprint 3 #4: 戰鬥開始時間（用於 avgTime 評星維度）
+    bossPhase: 0, // Sprint 3 #5: Boss 三階段（0=第一, 1=第二, 2=狂暴）。非 boss 關卡永遠 0
   };
 
   resetBattleBuffs();
@@ -1375,14 +1396,21 @@ function getMonsterMod(difficulty) {
 const QUESTION_TIME_LIMIT_MS = 30000;
 let questionTimerHandle = null;
 let questionTimerStart = 0;
+let questionTimerTickHandle = null; // Sprint 3 #2: 倒計時數字 1Hz tick
 
 function clearQuestionTimer() {
   if (questionTimerHandle !== null) {
     clearTimeout(questionTimerHandle);
     questionTimerHandle = null;
   }
+  if (questionTimerTickHandle !== null) {
+    clearTimeout(questionTimerTickHandle);
+    questionTimerTickHandle = null;
+  }
   const bar = document.getElementById('question-timer-bar');
+  const num = document.getElementById('question-timer-num');
   if (bar) bar.style.transform = 'scaleX(1)';
+  if (num) { num.textContent = ''; num.className = 'question-timer-num'; }
 }
 
 function startQuestionTimer() {
@@ -1390,6 +1418,7 @@ function startQuestionTimer() {
   if (!battleState.battleActive) return;
   const wrap = document.getElementById('question-timer');
   const bar = document.getElementById('question-timer-bar');
+  const num = document.getElementById('question-timer-num');
   if (!wrap || !bar) return;
   wrap.hidden = false;
   bar.className = 'question-timer-bar';
@@ -1399,11 +1428,34 @@ function startQuestionTimer() {
   void bar.offsetWidth;
   bar.style.transition = `transform ${QUESTION_TIME_LIMIT_MS}ms linear`;
   bar.style.transform = 'scaleX(0)';
-  // Color shift at 10s remaining (warn) and 5s remaining (danger)
-  const warnAt = QUESTION_TIME_LIMIT_MS - 10000;
-  const dangerAt = QUESTION_TIME_LIMIT_MS - 5000;
-  setTimeout(() => { if (questionTimerHandle !== null) bar.classList.add('warn'); }, warnAt);
-  setTimeout(() => { if (questionTimerHandle !== null) bar.classList.add('danger'); }, dangerAt);
+
+  // Sprint 3 #2: 4-stage visual + 倒計時數字
+  // 30-15s 綠（無 class）/ 15-10s 黃 (caution) / 10-5s 橙 (warn) / 5-0s 紅 (danger + pulse)
+  const cautionAt = QUESTION_TIME_LIMIT_MS - 15000; // 15s 剩
+  const warnAt = QUESTION_TIME_LIMIT_MS - 10000;    // 10s 剩
+  const dangerAt = QUESTION_TIME_LIMIT_MS - 5000;   // 5s 剩
+  setTimeout(() => { if (questionTimerHandle !== null) { bar.classList.add('caution'); if (num) num.classList.add('caution'); } }, cautionAt);
+  setTimeout(() => { if (questionTimerHandle !== null) { bar.classList.add('warn'); if (num) num.classList.add('warn'); } }, warnAt);
+  setTimeout(() => { if (questionTimerHandle !== null) { bar.classList.add('danger'); if (num) num.classList.add('danger'); } }, dangerAt);
+
+  // 倒計時數字浮層：最後 15s 顯示（之前綠色階段太早，沒張力）
+  const updateNum = () => {
+    if (questionTimerHandle === null || !num) return;
+    const remaining = Math.max(0, Math.ceil((QUESTION_TIME_LIMIT_MS - (Date.now() - questionTimerStart)) / 1000));
+    if (remaining <= 15) {
+      num.textContent = remaining + 's';
+      num.classList.add('visible');
+    } else {
+      num.textContent = '';
+      num.classList.remove('visible');
+    }
+    // 遞迴 setTimeout 而不是 setInterval（沙盒友好：setInterval 不一定 host-defined）
+    if (questionTimerHandle !== null) {
+      questionTimerTickHandle = setTimeout(updateNum, 250);
+    }
+  };
+  updateNum();
+
   questionTimerStart = Date.now();
   questionTimerHandle = setTimeout(() => {
     questionTimerHandle = null;
@@ -1416,17 +1468,45 @@ function startQuestionTimer() {
 }
 
 // ==================== P0-4b: Battle Stars Rating ====================
-// SPEC L743-760, L1042-1111: 5 星評級（基於 accuracy）
-// v1 保守公式：純 accuracy（≥90=5星, ≥75=4星, ≥50=3星, ≥25=2星, >0=1星, 0=0星）
-// 後續 v2 可加 avgTime + maxCombo 權重
-function computeBattleStars(accuracy) {
-  // 戰敗永遠 0 星（v1 保守）
-  if (typeof accuracy !== 'number' || isNaN(accuracy) || accuracy <= 0) return 0;
-  if (accuracy >= 90) return 5;
-  if (accuracy >= 75) return 4;
-  if (accuracy >= 50) return 3;
-  if (accuracy >= 25) return 2;
-  return 1; // 0 < accuracy < 25
+// SPEC L743-760, L1042-1111: 5 星評級
+// Sprint 3 #4 (v2): 多維度加權
+//   - accuracy 60%（核心答對率）
+//   - HP 剩餘比例 20%（獎勵「打得漂亮」而非只求答對）
+//   - max combo 10%（鼓勵連對穩定度）
+//   - avg time 10%（快速答題）
+// 加權後 0-100 分，0/25/50/65/80/90 切 0/1/2/3/4/5 星
+// 戰敗永遠 0 星。向後兼容：只傳 accuracy 時退化為純 accuracy 評分。
+function computeBattleStars(accuracy, hpRatio, maxCombo, avgTimeSec) {
+  // 向後兼容：舊 call site 只傳 1 個參數
+  if (arguments.length === 1 || hpRatio === undefined) {
+    if (typeof accuracy !== 'number' || isNaN(accuracy) || accuracy <= 0) return 0;
+    if (accuracy >= 90) return 5;
+    if (accuracy >= 75) return 4;
+    if (accuracy >= 50) return 3;
+    if (accuracy >= 25) return 2;
+    return 1;
+  }
+  // v2 多維度評分
+  if (typeof accuracy !== 'number' || isNaN(accuracy)) accuracy = 0;
+  if (typeof hpRatio !== 'number' || isNaN(hpRatio)) hpRatio = 0;
+  if (typeof maxCombo !== 'number' || isNaN(maxCombo)) maxCombo = 0;
+  if (typeof avgTimeSec !== 'number' || isNaN(avgTimeSec)) avgTimeSec = 30;
+
+  // sub-score 0-100
+  const accScore = accuracy; // 已經是 0-100
+  const hpScore = Math.max(0, Math.min(100, hpRatio * 100)); // 0.0-1.0 → 0-100
+  // max combo: 5+ 滿分；< 5 按比例
+  const comboScore = Math.max(0, Math.min(100, maxCombo * 20)); // 5 combo = 100
+  // avg time: < 5s 滿分；30s+ 0 分；中間線性
+  const timeScore = Math.max(0, Math.min(100, (30 - avgTimeSec) / 25 * 100));
+
+  const total = accScore * 0.6 + hpScore * 0.2 + comboScore * 0.1 + timeScore * 0.1;
+  if (total >= 90) return 5;
+  if (total >= 80) return 4;
+  if (total >= 65) return 3;
+  if (total >= 50) return 2;
+  if (total >= 25) return 1;
+  return 0;
 }
 
 function renderBattleStars(stars) {
@@ -1565,10 +1645,16 @@ function submitChoice(answer) {
     if (battleState.combo > battleState.maxCombo) battleState.maxCombo = battleState.combo;
     updateComboDisplay();
     showCorrectFeedback();
-    const mpRegen = Math.min(3, battleState.playerMaxMP - battleState.playerMP);
+    // Sprint 3 #1: Combo → MP 加速。基礎 +3，combo 5+ 加成到 +5，10+ 加成到 +7。
+    // 鼓勵玩家「手正熱」時多答題，給 combo 額外 MP 回饋（搭配 SPEC §能量系統 v1 預留）。
+    let mpBase = 3;
+    if (battleState.combo >= 10) mpBase = 7;
+    else if (battleState.combo >= 5) mpBase = 5;
+    const mpRegen = Math.min(mpBase, battleState.playerMaxMP - battleState.playerMP);
     if (mpRegen > 0) {
-      battleState.playerMP = Math.min(battleState.playerMaxMP, battleState.playerMP + 3);
-      addLog(`🔵 MP+${mpRegen}`);
+      battleState.playerMP = Math.min(battleState.playerMaxMP, battleState.playerMP + mpBase);
+      const comboTag = mpBase > 3 ? ` (🔥x${battleState.combo} combo)` : '';
+      addLog(`🔵 MP+${mpRegen}${comboTag}`);
     }
     let dmg = battleState.playerATK;
     if (skillUsed === 'critical') {
@@ -1605,6 +1691,21 @@ function submitChoice(answer) {
     }
     battleState.monsterHP = Math.max(0, battleState.monsterHP - dmg);
     battleState.totalDamage += dmg;
+    // Sprint 3 #5: Boss 三階段切換（在 HP 扣除後檢查）
+    if (battleState.stageData?.isBoss) {
+      const ratio = battleState.monsterHP / battleState.monsterMaxHP;
+      if (battleState.bossPhase === 0 && ratio <= 0.66) {
+        battleState.bossPhase = 1;
+        addLog('⚡ 史萊姆之王進入第二型態！');
+        const ar = document.querySelector('.battle-arena');
+        if (ar) { ar.classList.remove('boss-phase-0'); ar.classList.add('boss-phase-1'); }
+      } else if (battleState.bossPhase === 1 && ratio <= 0.33) {
+        battleState.bossPhase = 2;
+        addLog('🔥 史萊姆之王狂暴化！攻擊力 +20%！');
+        const ar2 = document.querySelector('.battle-arena');
+        if (ar2) { ar2.classList.remove('boss-phase-1'); ar2.classList.add('boss-phase-2'); }
+      }
+    }
     showDmgNumber(dmg, false, skillUsed === 'critical');
     playSound('correct');
     if (gameState.character === 'assassin') playVoice('attack');
@@ -1617,6 +1718,15 @@ function submitChoice(answer) {
     } else {
       checkBattleEnd();
     }
+    // Sprint 3 #3: 答對時激怒計數 -1（3 連對清零，給「答錯代價」時序意義）
+    if (battleState.enraged > 0) {
+      battleState.enraged = Math.max(0, battleState.enraged - 1);
+      if (battleState.enraged === 0) {
+        const mSprite = document.getElementById('monster-sprite');
+        if (mSprite) mSprite.classList.remove('enraged');
+        addLog('😌 怪物冷靜下來');
+      }
+    }
   } else {
     // ❌ 答錯：怪物反擊，玩家扣HP
     battleState.wrongCount++;
@@ -1625,14 +1735,23 @@ function submitChoice(answer) {
     battleState.combo = 0;
     updateComboDisplay();
     const cq = battleState.currentQuestion;
+    // Sprint 3 #3: 答錯觸發激怒 2 回合。激怒時反擊傷害 ×1.3。
+    // Sprint 3 #5: Boss 狂暴（phase 2）時反擊 ×1.2。兩個 debuff 可疊加。
+    const wasEnraged = battleState.enraged > 0;
+    battleState.enraged = 2;
+    const mSprite = document.getElementById('monster-sprite');
+    if (mSprite && !wasEnraged) mSprite.classList.add('enraged');
+    addLog(wasEnraged ? '😡 怪物持續激怒！反擊維持 +30%' : '😡 怪物被激怒了！反擊傷害 +30%，持續 2 回合');
+    const bossFuryMod = battleState.stageData?.isBoss && battleState.bossPhase === 2 ? 1.2 : 1.0;
+    const enragedAtk = Math.round(battleState.monsterATK * 1.3 * bossFuryMod);
     if (gameState.evadeNext) {
       gameState.evadeNext = false;
       addLog(`❌ 攻擊失敗！正確答案：${cq.a}×${cq.b}=${correct}`);
       addLog(`💨 煙霧彈生效！迴避了 ${battleState.monsterName} 的攻擊！`);
     } else {
       addLog(`❌ 攻擊失敗！正確答案：${cq.a}×${cq.b}=${correct}`);
-      addLog(`👹 ${battleState.monsterName} 反擊！造成 ${battleState.monsterATK} 傷害！`);
-      battleState.playerHP = Math.max(0, battleState.playerHP - battleState.monsterATK);
+      addLog(`👹 ${battleState.monsterName} 反擊！造成 ${enragedAtk} 傷害！${wasEnraged ? '(激怒)' : ''}`);
+      battleState.playerHP = Math.max(0, battleState.playerHP - enragedAtk);
       flashSprite('char-sprite');
     }
     playSound('fail');
@@ -2179,6 +2298,10 @@ function spawnNextWave() {
   battleState.monsterATK = Math.round(ms.atk * monsterMod.atk);
   battleState.monsterName = ms.name;
   battleState.monsterImg = ms.img;
+  // Sprint 3 #3: 新怪物進場重置激怒狀態（每隻怪物獨立激怒計數）
+  battleState.enraged = 0;
+  const mSpriteEl = document.getElementById('monster-sprite');
+  if (mSpriteEl) mSpriteEl.classList.remove('enraged');
 
   const mpRestore = Math.min(10, battleState.playerMaxMP - battleState.playerMP);
   if (mpRestore > 0) {
@@ -2203,9 +2326,13 @@ function showBattleResult(victory) {
 
   // 學習日誌記錄
   const accuracy = battleState.questionsAnswered > 0 ? Math.round(battleState.correctCount/battleState.questionsAnswered*100) : 0;
+  // Sprint 3 #4: 評星 v2 統計（HP 剩餘、max combo、avg time）
+  const hpRatio = battleState.playerMaxHP > 0 ? battleState.playerHP / battleState.playerMaxHP : 0;
+  const elapsedSec = (Date.now() - (battleState.startTime || Date.now())) / 1000;
+  const avgTimeSec = battleState.questionsAnswered > 0 ? elapsedSec / battleState.questionsAnswered : 30;
 
-  // P0-4b: 計算戰鬥評星（v1 純 accuracy；戰敗 0 星）
-  const stars = victory ? computeBattleStars(accuracy) : 0;
+  // P0-4b: 計算戰鬥評星（v2 多維度；戰敗 0 星）
+  const stars = victory ? computeBattleStars(accuracy, hpRatio, battleState.maxCombo || 0, avgTimeSec) : 0;
   const stageId = battleState.stageData?.id || 'unknown';
   saveBattleResultToLocal(stageId, stars, accuracy, victory);
   const logKey = 'mathDungeon_learningLog';
