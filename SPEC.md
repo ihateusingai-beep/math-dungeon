@@ -535,6 +535,8 @@ Combo倍率：
 6. 玩家HP歸零 → 復活點重生 或 遊戲結束
 ```
 
+> ✅ **已實作 (sprint2/spec-gaps P0-4a)**：每題 30 秒倒計時（`nextQuestion` 啟動 setTimeout），超時自動算答錯觸發 `submitChoice(0)`，題目上方 progress bar 漸變紅色。v1 寬鬆 30s，後續可調。
+
 ### 🎯 職業被動技能（Passive Skills）
 
 | 職業 | 被動技能 | 效果 |
@@ -553,6 +555,8 @@ Combo倍率：
 | **新手領域** | 1~6的乘法 | Slime, Bat, Goblin |
 | **老兵領域** | 7~9的乘法, 2位數×1位數 | Goblin Shaman, Skeleton, Wolf, Orc |
 | **傳奇領域** | 3位數×2位數, 混合運算 | Orc Warrior, Ice Elemental, Dragon Boss |
+
+> ✅ **已實作 (sprint2/spec-gaps P0-4c)**：題目難度與怪物強度掛鈎表 `MONSTER_MOD_BY_DIFF`（easy=0.8x, normal=1.0x, hard=1.2x, boss=1.5x，HP/ATK 同倍率），套用在 `spawnNextWave` + `startBattle` 創建 monster 時。未知 difficulty fallback 到 "easy" 保留向後兼容。
 
 ---
 
@@ -757,6 +761,8 @@ assets/images/effects/
 | ⭐⭐⭐ | +20% | +10% |
 | ⭐⭐ | +0% | +0% |
 | ⭐ | -50% | -50% |
+
+> ✅ **已實作 (sprint2/spec-gaps P0-4b)**：`computeBattleStars(accuracy)` 純 accuracy 保守公式（≥90%=5星, ≥75%=4星, ≥50%=3星, ≥25%=2星, >0%=1星, 0%=0星），`showBattleResult` 渲染 5 顆星 UI（emoji ⭐ + CSS 動畫），localStorage 持久化到 `mathDungeon_battleResult_<stageId>` 加 `stars` 字段（保留歷史最高星）。後續 v2 可加 avgTime + maxCombo 權重。獎勵表（+100%/+50%/+20%/+0%/-50% 硬幣）為 v2 待實作。
 
 ---
 
@@ -1107,6 +1113,8 @@ HP > 0
 - ⭐⭐⭐：銅色光芒，普通勝利音效
 - ⭐⭐：灰暗色調，顯示「再接再厲」
 - ⭐：紅色警示，鼓勵再挑戰
+
+> ✅ **已實作 (sprint2/spec-gaps P0-4b)**：v1 評星動畫簡化為統一 `star-pop` keyframe（每顆星 stagger 0.12s 進入 + 金色光暈），5 星級標籤文字（完美/優秀/良好/一般/勉強/再接再厲）替代完整 5 套史詩動畫。BGM 仍由 `playBgm('victory')` 觸發，character 起飛 / 銀色光環 / 銅色光芒 / 灰暗 / 紅色警示特效為 v2 待實作。
 
 ---
 
