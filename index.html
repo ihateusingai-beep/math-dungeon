@@ -225,9 +225,12 @@ section{position:fixed;inset:0;display:flex;flex-direction:column;align-items:ce
 .battle-skills{display:flex;gap:8px;width:min(480px,95vw);margin-top:8px;flex-wrap:wrap}
 .skill-btn{min-height:clamp(44px,8vw,52px);padding:clamp(6px,1.5vw,10px) clamp(8px,2vw,14px);font-size:clamp(.7rem,2vw,.85rem);font-weight:700;border:2px solid var(--border);border-radius:12px;background:var(--card);color:var(--text);cursor:pointer;transition:all .15s;touch-action:manipulation;font-family:inherit;display:flex;flex-direction:column;align-items:center;gap:2px}
 .skill-btn:hover{background:#3d3d5c}
+/* P1-8: keyboard focus ring (only on keyboard, not mouse click) */
+.skill-btn:focus-visible{outline:3px solid var(--gold);outline-offset:2px;background:#3d3d5c}
 .skill-btn .sk-name{font-size:.9rem}
 .skill-btn .sk-cost{font-size:.7rem;color:var(--mp)}
 .skill-btn.disabled{opacity:.4;cursor:not-allowed}
+.skill-btn.disabled:focus-visible{outline-color:var(--text);opacity:.6}
 .skill-btn.fireball{border-color:#e67e22;color:#e67e22}
 .skill-btn.heal{border-color:#2ecc71;color:#2ecc71}
 .skill-btn.critical{border-color:#e74c3c;color:#e74c3c}
@@ -557,9 +560,9 @@ section{position:fixed;inset:0;display:flex;flex-direction:column;align-items:ce
 
     <div class="battle-skills" id="battle-skills">
       <!-- Knight Skills -->
-      <button class="skill-btn fireball knight-only" data-skill="shield-bash" data-slot="0" onclick="useSkill('shield-bash');event.stopPropagation();" style="display:none" aria-label="盾牌猛擊" data-desc="盾牌猛擊：15傷害+暈住1回合｜花費8MP">
+      <button class="skill-btn fireball knight-only" data-skill="shield-bash" data-slot="0" onclick="useSkill('shield-bash');event.stopPropagation();" style="display:none" aria-label="盾牌猛擊" data-desc="盾牌猛擊：15傷害｜花費8MP">
         <span class="sk-name">🛡️ 盾牌猛擊</span>
-        <span class="sk-cost">8MP · 15傷+暈</span>
+        <span class="sk-cost">8MP · 15傷</span>
       </button>
       <button class="skill-btn heal knight-only" data-slot="1" onclick="useSkill('iron-fortress');event.stopPropagation();" style="display:none" aria-label="鋼鐵壁壘" data-desc="鋼鐵壁壘：75%減傷持續3回合｜花費15MP">
         <span class="sk-name">🏰 鋼鐵壁壘</span>
@@ -574,9 +577,9 @@ section{position:fixed;inset:0;display:flex;flex-direction:column;align-items:ce
         <span class="sk-name">🔥 火球術</span>
         <span class="sk-cost" id="fireball-cost">15MP · 40傷</span>
       </button>
-      <button class="skill-btn heal mage-only" data-slot="1" onclick="useSkill('frost-nova');event.stopPropagation();" style="display:none" aria-label="冰凍術" data-desc="冰凍術：20傷害+凍住1回合｜花費12MP">
+      <button class="skill-btn heal mage-only" data-slot="1" onclick="useSkill('frost-nova');event.stopPropagation();" style="display:none" aria-label="冰凍術" data-desc="冰凍術：20傷害｜花費12MP">
         <span class="sk-name">❄️ 冰凍術</span>
-        <span class="sk-cost">12MP · 20傷+凍</span>
+        <span class="sk-cost">12MP · 20傷</span>
       </button>
       <button class="skill-btn critical mage-only" data-slot="2" onclick="useSkill('heal');event.stopPropagation();" style="display:none" aria-label="治療術" data-desc="治療術：恢復30HP｜花費20MP">
         <span class="sk-name">💚 治療術</span>
@@ -596,9 +599,9 @@ section{position:fixed;inset:0;display:flex;flex-direction:column;align-items:ce
         <span class="sk-cost">10MP · 3倍傷</span>
       </button>
       <!-- Assassin Skills -->
-      <button class="skill-btn fireball assassin-only" data-slot="0" onclick="useSkill('shadow-strike');event.stopPropagation();" style="display:none" aria-label="影襲" data-desc="影襲：35傷害+暈住1回合｜花費10MP">
+      <button class="skill-btn fireball assassin-only" data-slot="0" onclick="useSkill('shadow-strike');event.stopPropagation();" style="display:none" aria-label="影襲" data-desc="影襲：35傷害｜花費10MP">
         <span class="sk-name">🗡️ 影襲</span>
-        <span class="sk-cost">10MP · 35傷+暈</span>
+        <span class="sk-cost">10MP · 35傷</span>
       </button>
       <button class="skill-btn heal assassin-only" data-slot="1" onclick="useSkill('smoke-bomb');event.stopPropagation();" style="display:none" aria-label="煙霧彈" data-desc="煙霧彈：迴避下次攻擊｜花費12MP">
         <span class="sk-name">💨 煙霧彈</span>
@@ -672,9 +675,9 @@ section{position:fixed;inset:0;display:flex;flex-direction:column;align-items:ce
         <span class="sk-name">🩸 血腥狂暴</span>
         <span class="sk-cost">15MP · 2回1.5倍+吸血</span>
       </button>
-      <button class="skill-btn shield viking-only" data-slot="3" onclick="useSkill('ground-smash');event.stopPropagation();" style="display:none" aria-label="大地粉碎" data-desc="大地粉碎：30傷害+暈1回合｜花費18MP">
+      <button class="skill-btn shield viking-only" data-slot="3" onclick="useSkill('ground-smash');event.stopPropagation();" style="display:none" aria-label="大地粉碎" data-desc="大地粉碎：30傷害｜花費18MP">
         <span class="sk-name">💥 大地粉碎</span>
-        <span class="sk-cost">18MP · 30傷+暈</span>
+        <span class="sk-cost">18MP · 30傷</span>
       </button>
       <!-- Shadow Skills -->
       <button class="skill-btn fireball shadow-only" data-slot="0" onclick="useSkill('shadow-bolt');event.stopPropagation();" style="display:none" aria-label="暗影彈" data-desc="暗影彈：20傷害｜花費8MP">
@@ -712,7 +715,7 @@ section{position:fixed;inset:0;display:flex;flex-direction:column;align-items:ce
       </button>
     </div>
 
-    <div class="battle-log" id="battle-log"></div>
+    <div class="battle-log" id="battle-log" aria-live="polite" aria-atomic="false"></div>
   </div>
   <button class="skills-toggle" id="skills-toggle" onclick="toggleSkills();event.stopPropagation();" aria-label="技能">⚔️</button>
 </section>
@@ -988,7 +991,6 @@ let battleState = {
   waveIndex: 0,
   enemiesPerStage: 3,
   totalStageDamage: 0,
-  turnIndex: 1  // 1=player attack, 2=monster attack, 3=player attack, 4=monster attack...
 };
 
 let numpadValue = '';
@@ -1000,7 +1002,18 @@ function hideAll() {
   });
 }
 
-function showScreen(id) { hideAll(); document.getElementById(id).classList.remove('hidden'); updateMultiTableBtn(); }
+function showScreen(id) {
+  hideAll();
+  const el = document.getElementById(id);
+  el.classList.remove('hidden');
+  updateMultiTableBtn();
+  // P1-8: focus the first focusable element in the new screen for keyboard users.
+  // Skip in headless smoke (no real focus) — guarded by a try so missing targets don't break flow.
+  try {
+    const first = el.querySelector('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+    if (first && typeof first.focus === 'function') first.focus({ preventScroll: true });
+  } catch (e) { /* a11y best-effort */ }
+}
 
 function goHome() {
   if (!confirm('確定要返回首頁嗎？ current progress will be lost.')) return; gameState.sessionGold = 0; gameState.sessionXP = 0; saveProgress(); showScreen('home-screen'); stopBgm(); playBgm('menu'); }
@@ -1164,6 +1177,60 @@ function renderStageConfirm() {
 }
 
 // ==================== BATTLE SYSTEM ====================
+
+// P1-7: single source of truth for skill MP cost (was duplicated in
+// useSkill / updateSkillButtons — flagged in code-quality-report.md §P1-1).
+const SKILL_DEFS = {
+  // Knight
+  'shield-bash': 8, 'iron-fortress': 15, 'holy-shield': 15,
+  // Mage
+  'fireball': 15, 'frost-nova': 12, 'heal': 20,
+  // Berserker
+  'bloodlust': 10, 'berserk-rage': 15, 'critical': 10,
+  // Assassin
+  'shadow-strike': 10, 'smoke-bomb': 12, 'poison-blade': 15,
+  // Necromancer
+  'bone-shield': 12, 'death-coil': 15, 'soul-drain': 18, 'summon-minion': 25,
+  // Paladin
+  'divine-shield': 10, 'holy-strike': 12, 'heal-aura': 20, 'hammer-judgement': 18,
+  // Druid
+  'wild-growth': 10, 'moonfire': 14, 'starfall': 22, 'nature-shield': 15,
+  // Viking
+  'axe-throw': 8, 'battle-cry': 10, 'blood-rage': 15, 'ground-smash': 18,
+  // Shadow
+  'shadow-bolt': 8, 'dark-reap': 14, 'shadow-veil': 12, 'void-blast': 22,
+  // Ranger
+  'quick-shot': 6, 'poison-arrow': 12, 'multi-shot': 18, 'eagle-eye': 10
+};
+const DEFAULT_SKILL_COST = 15;
+
+
+// P1-3: reset all per-battle buff/debuff stacks + shield flags to defaults.
+// Called twice in startBattle (once before monster setup, once before UI
+// update); extracted to remove the byte-identical duplication flagged in
+// code-quality-report.md §P0-3 / final-review.md §2 (lines 1203-1221 / 1241-1259).
+function resetBattleBuffs() {
+  gameState.shieldActive = false;
+  gameState.shieldTurns = 0;
+  gameState.shieldReduction = 0.5;
+  gameState.berserkStacks = 0;
+  gameState.evadeNext = false;
+  gameState.poisonStacks = 0;
+  gameState.poisonDamage = 0;
+  gameState.boneShieldActive = false;
+  gameState.minionBonus = false;
+  gameState.healAuraStacks = 0;
+  gameState.monsterAtkDebuff = 0;
+  gameState.wildGrowthStacks = 0;
+  gameState.burnStacks = 0;
+  gameState.burnDamage = 0;
+  gameState.battleCryStacks = 0;
+  gameState.bloodRageStacks = 0;
+  gameState.bleedStacks = 0;
+  gameState.bleedDamage = 0;
+  gameState.eagleEyeActive = false;
+}
+
 function startBattle() {
   const s = currentStage;
   if (!s) return;
@@ -1174,7 +1241,6 @@ function startBattle() {
     playerMaxHP: gameState.playerMaxHP || 100,
     playerMaxMP: gameState.playerMaxMP || 50,
     playerATK: gameState.playerATK || 10,
-    stunned: false,
     monsterMaxHP: 0,
     monsterATK: 0,
     monsterName: '',
@@ -1197,28 +1263,9 @@ function startBattle() {
     enemiesPerStage: s.isBoss ? s.monsters.length : 3,
     totalStageDamage: 0,
     stunned: false,
-    turnIndex: 1
   };
 
-  gameState.shieldActive = false;
-  gameState.shieldTurns = 0;
-  gameState.shieldReduction = 0.5;
-  gameState.berserkStacks = 0;
-  gameState.evadeNext = false;
-  gameState.poisonStacks = 0;
-  gameState.poisonDamage = 0;
-  gameState.boneShieldActive = false;
-  gameState.minionBonus = false;
-  gameState.healAuraStacks = 0;
-  gameState.monsterAtkDebuff = 0;
-  gameState.wildGrowthStacks = 0;
-  gameState.burnStacks = 0;
-  gameState.burnDamage = 0;
-  gameState.battleCryStacks = 0;
-  gameState.bloodRageStacks = 0;
-  gameState.bleedStacks = 0;
-  gameState.bleedDamage = 0;
-  gameState.eagleEyeActive = false;
+  resetBattleBuffs();
 
   // Monster setup for wave 0
   const monsterKey = s.monsters[0];
@@ -1237,26 +1284,9 @@ function startBattle() {
   const btnEl = document.getElementById('skills-toggle');
   if (skillsEl) skillsEl.classList.remove('collapsed');
   if (btnEl) { btnEl.textContent = '✖️'; btnEl.title = '隱藏技能'; }
-  // Reset per-battle state
-  gameState.shieldActive = false;
-  gameState.shieldTurns = 0;
-  gameState.shieldReduction = 0.5;
-  gameState.berserkStacks = 0;
-  gameState.evadeNext = false;
-  gameState.poisonStacks = 0;
-  gameState.poisonDamage = 0;
-  gameState.boneShieldActive = false;
-  gameState.minionBonus = false;
-  gameState.healAuraStacks = 0;
-  gameState.monsterAtkDebuff = 0;
-  gameState.wildGrowthStacks = 0;
-  gameState.burnStacks = 0;
-  gameState.burnDamage = 0;
-  gameState.battleCryStacks = 0;
-  gameState.bloodRageStacks = 0;
-  gameState.bleedStacks = 0;
-  gameState.bleedDamage = 0;
-  gameState.eagleEyeActive = false;
+  // Reset per-battle state (second call retained to reset any buff applied
+  // during monster setup or by `updateSkillButtons` side-effects).
+  resetBattleBuffs();
   updateSkillButtons();
 
   const isBoss = battleState.stageData?.isBoss;
@@ -1390,7 +1420,6 @@ function submitNumpad() {
 
 function submitChoice(answer) {
   const skillUsed = battleState.usingSkill;
-  battleState.usingSkill = false;
   if (!battleState.battleActive) return;
   const correct = battleState.currentQuestion.answer;
   const diff = battleState.difficulty;
@@ -1485,107 +1514,15 @@ function submitChoice(answer) {
       checkBattleEnd();
     }
   }
-}
-
-function monsterAttack() {
-  if (battleState.stunned) {
-    battleState.stunned = false;
-    addLog(`💤 ${battleState.monsterName} 被暈住了！`);
-    return;
-  }
-  // Apply poison damage (Assassin, Ranger)
-  if (battleState.poisonStacks > 0) {
-    const pDmg = Math.min(battleState.poisonStacks * battleState.poisonDamage, battleState.monsterHP);
-    battleState.monsterHP = Math.max(0, battleState.monsterHP - pDmg);
-    addLog(`☠️ 中毒！受到 ${pDmg} 傷害！`);
-    battleState.poisonStacks--;
-    if (battleState.poisonStacks === 0) addLog(`☠️毒素消退！`);
-  }
-  // Apply burn damage (Druid moonfire)
-  if (gameState.burnStacks > 0) {
-    const bDmg = Math.min(gameState.burnStacks * gameState.burnDamage, battleState.monsterHP);
-    battleState.monsterHP = Math.max(0, battleState.monsterHP - bDmg);
-    addLog(`🔥 燃燒！受到 ${bDmg} 傷害！`);
-    gameState.burnStacks--;
-    if (gameState.burnStacks === 0) addLog(`🔥燃燒消退！`);
-  }
-  // Apply bleed damage (Viking axe-throw)
-  if (gameState.bleedStacks > 0) {
-    const blDmg = Math.min(gameState.bleedStacks * gameState.bleedDamage, battleState.monsterHP);
-    battleState.monsterHP = Math.max(0, battleState.monsterHP - blDmg);
-    addLog(`🩸 流血！受到 ${blDmg} 傷害！`);
-    gameState.bleedStacks--;
-    if (gameState.bleedStacks === 0) addLog(`🩸流血消退！`);
-  }
-  // Apply wild growth healing (Druid)
-  if (gameState.wildGrowthStacks > 0) {
-    const healWG = Math.min(3, battleState.playerMaxHP - battleState.playerHP);
-    battleState.playerHP = Math.min(battleState.playerMaxHP, battleState.playerHP + healWG);
-    addLog(`🌿 野性生長！恢復 ${healWG} HP！`);
-    gameState.wildGrowthStacks--;
-    if (gameState.wildGrowthStacks === 0) addLog(`🌿野性生長消退！`);
-  }
-  // Apply heal aura (Paladin)
-  if (gameState.healAuraStacks > 0) {
-    const healHA = Math.min(5, battleState.playerMaxHP - battleState.playerHP);
-    battleState.playerHP = Math.min(battleState.playerMaxHP, battleState.playerHP + healHA);
-    addLog(`💚 治療光環！恢復 ${healHA} HP！`);
-    gameState.healAuraStacks--;
-    if (gameState.healAuraStacks === 0) addLog(`💚治療光環消退！`);
-  }
-  // Check evade
-  if (gameState.evadeNext) {
-    gameState.evadeNext = false;
-    addLog(`💨 煙霧彈生效！迴避了攻擊！`);
-    updateBattleUI();
-    return;
-  }
-  let atk = battleState.monsterATK;
-  if (gameState.monsterAtkDebuff > 0) {
-    atk = Math.max(0, atk - gameState.monsterAtkDebuff);
-    gameState.monsterAtkDebuff--;
-    if (gameState.monsterAtkDebuff === 0) addLog(`🔨 審判減攻消退！`);
-  }
-  if (gameState.shieldActive) {
-    const reduction = gameState.shieldReduction !== undefined ? gameState.shieldReduction : 0.5;
-    atk = Math.round(atk * reduction);
-    addLog(`🛡️ 護盾減傷！受到 ${atk} 傷害！`);
-  } else {
-    addLog(`💥 ${battleState.monsterName} 攻擊！造成 ${atk} 傷害！`);
-  }
-  battleState.playerHP = Math.max(0, battleState.playerHP - atk);
-  flashSprite('char-sprite');
-  if (gameState.shieldActive) {
-    gameState.shieldTurns--;
-    if (gameState.shieldTurns <= 0) {
-      gameState.shieldActive = false;
-    }
-  }
-  updateBattleUI();
+  // P1-1: reset usingSkill at the end so the value persists through the
+  // whole function (needed for crit visualization at line ~1449 + correct branch).
+  battleState.usingSkill = false;
 }
 
 function useSkill(skill) {
   if (!battleState.battleActive) return;
   const char = gameState.character;
-  const costs = {
-    'shield-bash': 8, 'iron-fortress': 15, 'holy-shield': 15,
-    'fireball': 15, 'frost-nova': 12, 'heal': 20,
-    'bloodlust': 10, 'berserk-rage': 15, 'critical': 10,
-    'shadow-strike': 10, 'smoke-bomb': 12, 'poison-blade': 15,
-    // Necromancer
-    'bone-shield': 12, 'death-coil': 15, 'soul-drain': 18, 'summon-minion': 25,
-    // Paladin
-    'divine-shield': 10, 'holy-strike': 12, 'heal-aura': 20, 'hammer-judgement': 18,
-    // Druid
-    'wild-growth': 10, 'moonfire': 14, 'starfall': 22, 'nature-shield': 15,
-    // Viking
-    'axe-throw': 8, 'battle-cry': 10, 'blood-rage': 15, 'ground-smash': 18,
-    // Shadow
-    'shadow-bolt': 8, 'dark-reap': 14, 'shadow-veil': 12, 'void-blast': 22,
-    // Ranger
-    'quick-shot': 6, 'poison-arrow': 12, 'multi-shot': 18, 'eagle-eye': 10
-  };
-  const cost = costs[skill] || 15;
+  const cost = SKILL_DEFS[skill] != null ? SKILL_DEFS[skill] : DEFAULT_SKILL_COST;
   if (battleState.playerMP < cost) {
     addLog(`❌ MP不足！需要 ${cost} MP`);
     return;
@@ -1598,9 +1535,8 @@ function useSkill(skill) {
     case 'shield-bash':
       battleState.monsterHP = Math.max(0, battleState.monsterHP - 15);
       battleState.totalDamage += 15;
-      battleState.stunned = true;
       showDmgNumber(15, false);
-      addLog(`🛡️ 盾牌猛擊！15傷害+暈住1回合！`);
+      addLog(`🛡️ 盾牌猛擊！15傷害！`);
       flashSprite('monster-sprite');
       playSound('correct');
       advanceTurn();
@@ -1632,9 +1568,8 @@ function useSkill(skill) {
     case 'frost-nova':
       battleState.monsterHP = Math.max(0, battleState.monsterHP - 20);
       battleState.totalDamage += 20;
-      battleState.stunned = true;
       showDmgNumber(20, false);
-      addLog(`❄️ 冰凍術！20傷害+凍住1回合！`);
+      addLog(`❄️ 冰凍術！20傷害！`);
       flashSprite('monster-sprite');
       playSound('correct');
       advanceTurn();
@@ -1673,9 +1608,8 @@ function useSkill(skill) {
     case 'shadow-strike':
       battleState.monsterHP = Math.max(0, battleState.monsterHP - 35);
       battleState.totalDamage += 35;
-      battleState.stunned = true;
       showDmgNumber(35, false);
-      addLog(`🗡️ 影襲！35傷害+暈住1回合！`);
+      addLog(`🗡️ 影襲！35傷害！`);
       flashSprite('monster-sprite');
       playSound('correct');
       if (gameState.character === 'assassin') playVoice('skill1');
@@ -1832,9 +1766,8 @@ function useSkill(skill) {
     case 'ground-smash':
       battleState.monsterHP = Math.max(0, battleState.monsterHP - 30);
       battleState.totalDamage += 30;
-      battleState.stunned = true;
       showDmgNumber(30, false);
-      addLog(`💥 大地粉碎！30傷害+暈1回合！`);
+      addLog(`💥 大地粉碎！30傷害！`);
       flashSprite('monster-sprite');
       playSound('correct');
       advanceTurn();
@@ -1916,14 +1849,8 @@ function useSkill(skill) {
 }
 
 function advanceTurn() {
-  battleState.turnIndex++;
-  if (battleState.monsterHP > 0) {
-    nextQuestion();
-    checkBattleEnd();
-  } else {
-    nextQuestion();
-    checkBattleEnd();
-  }
+  nextQuestion();
+  checkBattleEnd();
 }
 
 function updateSkillButtons() {
@@ -1937,27 +1864,9 @@ function updateSkillButtons() {
   });
 
   // Check MP and apply disabled state only to visible buttons
-  const visibleCosts = {
-    'shield-bash': 8, 'iron-fortress': 15, 'holy-shield': 15,
-    'fireball': 15, 'frost-nova': 12, 'heal': 20,
-    'bloodlust': 10, 'berserk-rage': 15, 'critical': 10,
-    'shadow-strike': 10, 'smoke-bomb': 12, 'poison-blade': 15,
-    // Necromancer
-    'bone-shield': 12, 'death-coil': 15, 'soul-drain': 18, 'summon-minion': 25,
-    // Paladin
-    'divine-shield': 10, 'holy-strike': 12, 'heal-aura': 20, 'hammer-judgement': 18,
-    // Druid
-    'wild-growth': 10, 'moonfire': 14, 'starfall': 22, 'nature-shield': 15,
-    // Viking
-    'axe-throw': 8, 'battle-cry': 10, 'blood-rage': 15, 'ground-smash': 18,
-    // Shadow
-    'shadow-bolt': 8, 'dark-reap': 14, 'shadow-veil': 12, 'void-blast': 22,
-    // Ranger
-    'quick-shot': 6, 'poison-arrow': 12, 'multi-shot': 18, 'eagle-eye': 10
-  };
   document.querySelectorAll(`.${char}-only`).forEach(btn => {
     const skillKey = btn.classList[1]; // second class is the skill key
-    const cost = visibleCosts[skillKey] || 0;
+    const cost = SKILL_DEFS[skillKey] != null ? SKILL_DEFS[skillKey] : 0;
     btn.classList.toggle('disabled', battleState.playerMP < cost);
   });
 }
@@ -2306,6 +2215,12 @@ function getPracticeData() {
 }
 
 function savePracticeResult(table, correct, total, wrong) {
+  // P1-6: guard against mis-callers passing a result object as `table`
+  // (caught by smoke §3.3 — produced localStorage key "[object Object]").
+  if (typeof table !== 'number' || !Number.isInteger(table) || table < 0) {
+    console.warn('[savePracticeResult] table must be a non-negative integer, got', table);
+    return;
+  }
   try {
     const data = getPracticeData();
     if (!data[table]) data[table] = [];
