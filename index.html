@@ -168,6 +168,23 @@ section{position:fixed;inset:0;display:flex;flex-direction:column;align-items:ce
 .question-text{font-size:clamp(1.2rem,4vw,2rem);font-weight:900;color:var(--gold);margin-bottom:.4em;word-break:break-word;overflow-wrap:break-word;line-height:1.2}
 .answer-hint{font-size:.85rem;color:var(--text-dim)}
 
+/* Sprint 5: 裝備系統 UI */
+.equip-slot{background:rgba(0,0,0,.3);border:2px solid var(--border);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;transition:all .2s}
+.equip-slot:hover{border-color:var(--gold);background:rgba(255,212,112,.1)}
+.equip-slot-label{font-size:.7rem;color:var(--text-dim);margin-bottom:4px}
+.equip-slot-item{font-size:.8rem;color:var(--text);min-height:1.4em}
+.equip-slot-item .item-name{font-weight:600}
+.filter-btn{background:rgba(0,0,0,.3);border:1px solid var(--border);border-radius:6px;padding:4px 10px;font-size:.7rem;color:var(--text);cursor:pointer;transition:all .2s}
+.filter-btn:hover{border-color:var(--gold)}
+.filter-btn.active{background:var(--gold);color:#000;border-color:var(--gold)}
+.inventory-item{background:rgba(0,0,0,.3);border:2px solid var(--border);border-radius:8px;padding:8px;cursor:pointer;transition:all .2s;text-align:center;font-size:.75rem;position:relative}
+.inventory-item:hover{transform:translateY(-2px);box-shadow:0 4px 8px rgba(0,0,0,.4)}
+.inventory-item.equipped{border-color:var(--gold);box-shadow:0 0 8px rgba(255,212,112,.3)}
+.inventory-item .item-icon{font-size:1.4rem;display:block;margin-bottom:2px}
+.inventory-item .item-name{font-weight:600;display:block;margin-bottom:2px}
+.inventory-item .item-stat{font-size:.7rem;color:var(--text-dim);display:block}
+.inventory-item .item-equipped-badge{position:absolute;top:2px;right:2px;background:var(--gold);color:#000;font-size:.55rem;padding:1px 4px;border-radius:4px;font-weight:700}
+
 /* P0-4a: Question countdown progress bar */
 /* Sprint 3 #2: 4-stage visual (green/amber/orange/red) + 倒計時數字浮層 + 滴答 pulse */
 .question-timer{position:relative;width:100%;height:14px;background:rgba(255,255,255,.1);border-radius:7px;overflow:visible;margin-bottom:8px}
@@ -347,7 +364,45 @@ section{position:fixed;inset:0;display:flex;flex-direction:column;align-items:ce
   <button class="home-btn" onclick="showNameScreen(); playBgm('battle')">🎮 開始冒險</button>
   <button class="home-btn" style="background:linear-gradient(135deg,#2d2d44,#3d3d5c)" onclick="loadProgress()">📖 繼續遊戲</button>
   <button class="home-btn" style="background:linear-gradient(135deg,#00b894,#00cec9)" onclick="showPracticeSelectScreen()">🧮 溫習乘法</button>
+  <button class="home-btn" style="background:linear-gradient(135deg,#6c5ce7,#a29bfe)" onclick="showEquipScreen()">🎒 裝備</button>
   <button class="home-btn" style="background:linear-gradient(135deg,#e17055,#d63031)" onclick="showDashboardScreen()">📊 學習進度</button>
+</section>
+
+<!-- ==================== EQUIPMENT SCREEN ==================== -->
+<section id="equip-screen" class="hidden">
+  <button class="back-btn" onclick="goHome()">✖</button>
+  <div class="screen-title">🎒 裝備</div>
+  <div style="max-width:600px;margin:0 auto;padding:0 16px">
+    <div style="background:rgba(255,255,255,.05);border-radius:12px;padding:14px;margin-bottom:14px;border:1px solid var(--border)">
+      <div style="font-size:.85rem;color:var(--text-dim);margin-bottom:8px">已裝備</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px" id="equipped-slots">
+        <div class="equip-slot" data-type="weapon" onclick="showInventory('weapon')">
+          <div class="equip-slot-label">⚔️ 武器</div>
+          <div class="equip-slot-item" id="slot-weapon">—</div>
+        </div>
+        <div class="equip-slot" data-type="armor" onclick="showInventory('armor')">
+          <div class="equip-slot-label">🛡️ 防具</div>
+          <div class="equip-slot-item" id="slot-armor">—</div>
+        </div>
+        <div class="equip-slot" data-type="accessory" onclick="showInventory('accessory')">
+          <div class="equip-slot-label">💍 飾品</div>
+          <div class="equip-slot-item" id="slot-accessory">—</div>
+        </div>
+      </div>
+    </div>
+    <div style="background:rgba(255,255,255,.05);border-radius:12px;padding:14px;border:1px solid var(--border)">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <div style="font-size:.85rem;color:var(--text-dim)">背包 <span id="inventory-count" style="color:var(--text)">(0)</span></div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap" id="inventory-filter">
+          <button class="filter-btn active" data-filter="all" onclick="setInventoryFilter('all')">全部</button>
+          <button class="filter-btn" data-filter="weapon" onclick="setInventoryFilter('weapon')">⚔️</button>
+          <button class="filter-btn" data-filter="armor" onclick="setInventoryFilter('armor')">🛡️</button>
+          <button class="filter-btn" data-filter="accessory" onclick="setInventoryFilter('accessory')">💍</button>
+        </div>
+      </div>
+      <div id="inventory-list" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px"></div>
+    </div>
+  </div>
 </section>
 
 <!-- ==================== NAME INPUT ==================== -->
@@ -1231,6 +1286,48 @@ function renderStageConfirm() {
   `;
 }
 
+// ==================== Sprint 5 #1: 裝備資料結構 ====================
+// 3 類型（weapon/armor/accessory）× 5 稀有度 = 15 件裝備。
+// 屬性加成：weapon=ATK、armor=HP、accessory=MP。
+// 稀有度：common/uncommon/rare/epic/legendary（白/綠/藍/紫/金）。
+// 重量：0=無限（starting）；1-3=中；4-5=稀有。v1 全部 weight=0（玩家無限擁有）。
+const EQUIPMENT_DEFS = [
+  // Weapon (5)
+  { id: 'wpn_wood_sword', name: '木劍', type: 'weapon', rarity: 'common', atk: 2, icon: '🗡️' },
+  { id: 'wpn_iron_sword', name: '鐵劍', type: 'weapon', rarity: 'uncommon', atk: 5, icon: '⚔️' },
+  { id: 'wpn_steel_sword', name: '鋼劍', type: 'weapon', rarity: 'rare', atk: 10, icon: '🗡️' },
+  { id: 'wpn_magic_blade', name: '魔刃', type: 'weapon', rarity: 'epic', atk: 20, icon: '✨' },
+  { id: 'wpn_dragon_slayer', name: '屠龍劍', type: 'weapon', rarity: 'legendary', atk: 40, icon: '🐉' },
+  // Armor (5)
+  { id: 'arm_leather', name: '皮甲', type: 'armor', rarity: 'common', hp: 10, icon: '🥋' },
+  { id: 'arm_chain', name: '鎖子甲', type: 'armor', rarity: 'uncommon', hp: 25, icon: '🛡️' },
+  { id: 'arm_plate', name: '板甲', type: 'armor', rarity: 'rare', hp: 50, icon: '🛡️' },
+  { id: 'arm_mythril', name: '祕銀甲', type: 'armor', rarity: 'epic', hp: 100, icon: '✨' },
+  { id: 'arm_divine', name: '神聖鎧甲', type: 'armor', rarity: 'legendary', hp: 200, icon: '🌟' },
+  // Accessory (5)
+  { id: 'acc_copper_ring', name: '銅戒', type: 'accessory', rarity: 'common', mp: 5, icon: '💍' },
+  { id: 'acc_silver_ring', name: '銀戒', type: 'accessory', rarity: 'uncommon', mp: 12, icon: '💍' },
+  { id: 'acc_ruby_amulet', name: '紅寶護符', type: 'accessory', rarity: 'rare', mp: 25, icon: '📿' },
+  { id: 'acc_sapphire_crown', name: '藍寶王冠', type: 'accessory', rarity: 'epic', mp: 50, icon: '👑' },
+  { id: 'acc_arcane_orb', name: '奧術寶珠', type: 'accessory', rarity: 'legendary', mp: 100, icon: '🔮' },
+];
+
+const RARITY_COLORS = {
+  common: '#cccccc',      // 白
+  uncommon: '#3aff5e',    // 綠
+  rare: '#5e9bff',        // 藍
+  epic: '#b15eff',        // 紫
+  legendary: '#ffd700',   // 金
+};
+
+const RARITY_LABELS = {
+  common: '普通',
+  uncommon: '優秀',
+  rare: '稀有',
+  epic: '史詩',
+  legendary: '傳說',
+};
+
 // ==================== BATTLE SYSTEM ====================
 
 // P1-7: single source of truth for skill MP cost (was duplicated in
@@ -1284,6 +1381,132 @@ function resetBattleBuffs() {
   gameState.bleedStacks = 0;
   gameState.bleedDamage = 0;
   gameState.eagleEyeActive = false;
+}
+
+// ==================== Sprint 5: 裝備系統 ====================
+// gameState.equipped = { weapon: null, armor: null, accessory: null }  ← 槽位
+// gameState.inventory = ['wpn_iron_sword', 'arm_leather', ...]        ← 玩家擁有的裝備 ID
+// 玩家持有（inventory）vs 裝備中（equipped）— 可持有但沒裝。
+let _inventoryFilter = 'all';
+
+function getEquipmentDef(id) { return EQUIPMENT_DEFS.find(e => e.id === id); }
+function getEquipmentStat(item, stat) { return item && item[stat] ? item[stat] : 0; }
+
+// 計算裝備總加成
+function getEquipmentBonus() {
+  const eq = gameState.equipped || {};
+  let atk = 0, hp = 0, mp = 0;
+  for (const slot of ['weapon', 'armor', 'accessory']) {
+    const item = eq[slot] ? getEquipmentDef(eq[slot]) : null;
+    if (!item) continue;
+    atk += getEquipmentStat(item, 'atk');
+    hp += getEquipmentStat(item, 'hp');
+    mp += getEquipmentStat(item, 'mp');
+  }
+  return { atk, hp, mp };
+}
+
+// 重新計算玩家屬性（base + level + 覺醒 + 裝備）
+function recomputePlayerStats() {
+  if (!gameState.level) gameState.level = 1;
+  // 基礎值（先 reset，不疊加）
+  gameState.playerMaxHP = 100 + (gameState.level - 1) * 10;
+  gameState.playerMaxMP = 50 + (gameState.level - 1) * 5;
+  gameState.playerATK = 10 + (gameState.level - 1) * 2;
+  // 覺醒 ×1.5
+  if (gameState.awakened) {
+    gameState.playerMaxHP = Math.round(gameState.playerMaxHP * 1.5);
+    gameState.playerMaxMP = Math.round(gameState.playerMaxMP * 1.5);
+    gameState.playerATK = Math.round(gameState.playerATK * 1.5);
+  }
+  // 裝備加成
+  const bonus = getEquipmentBonus();
+  gameState.playerMaxHP += bonus.hp;
+  gameState.playerMaxMP += bonus.mp;
+  gameState.playerATK += bonus.atk;
+}
+
+// 穿/卸裝備
+function equipItem(id) {
+  const item = getEquipmentDef(id);
+  if (!item) return;
+  if (!gameState.equipped) gameState.equipped = { weapon: null, armor: null, accessory: null };
+  if (!gameState.inventory) gameState.inventory = [];
+  if (!gameState.inventory.includes(id)) {
+    addLog(`❌ 背包裡沒有 ${item.name}`);
+    return;
+  }
+  const slot = item.type;
+  if (gameState.equipped[slot] === id) {
+    // 已裝備 → 卸下
+    gameState.equipped[slot] = null;
+    addLog(`🔓 卸下 ${item.icon} ${item.name}`);
+  } else {
+    gameState.equipped[slot] = id;
+    const statText = item.atk ? `+${item.atk} ATK` : item.hp ? `+${item.hp} HP` : `+${item.mp} MP`;
+    addLog(`✨ 裝備 ${item.icon} ${item.name} (${statText})`);
+  }
+  recomputePlayerStats();
+  saveProgress();
+  renderEquipmentScreen();
+  if (typeof updateBattleUI === 'function') updateBattleUI();
+}
+
+function showEquipScreen() {
+  showScreen('equip-screen');
+  if (!gameState.equipped) gameState.equipped = { weapon: null, armor: null, accessory: null };
+  if (!gameState.inventory) gameState.inventory = [];
+  renderEquipmentScreen();
+}
+
+function setInventoryFilter(f) {
+  _inventoryFilter = f;
+  for (const btn of document.querySelectorAll('#inventory-filter .filter-btn')) {
+    btn.classList.toggle('active', btn.dataset.filter === f);
+  }
+  renderInventoryList();
+}
+
+function renderEquipmentScreen() {
+  // 槽位
+  const eq = gameState.equipped || {};
+  for (const slot of ['weapon', 'armor', 'accessory']) {
+    const el = document.getElementById('slot-' + slot);
+    if (!el) continue;
+    const id = eq[slot];
+    if (id) {
+      const item = getEquipmentDef(id);
+      el.innerHTML = `<span class="item-name" style="color:${RARITY_COLORS[item.rarity]}">${item.icon} ${item.name}</span>`;
+    } else {
+      el.innerHTML = '<span style="color:var(--text-dim)">空</span>';
+    }
+  }
+  renderInventoryList();
+}
+
+function renderInventoryList() {
+  const list = document.getElementById('inventory-list');
+  if (!list) return;
+  const inv = gameState.inventory || [];
+  document.getElementById('inventory-count').textContent = `(${inv.length})`;
+  // 過濾
+  let items = inv.map(id => getEquipmentDef(id)).filter(Boolean);
+  if (_inventoryFilter !== 'all') items = items.filter(it => it.type === _inventoryFilter);
+  if (items.length === 0) {
+    list.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--text-dim);padding:20px">背包空的。打贏 Boss 或完成困難關卡有裝備掉落。</div>';
+    return;
+  }
+  const eq = gameState.equipped || {};
+  list.innerHTML = items.map(item => {
+    const equipped = eq[item.type] === item.id;
+    const statText = item.atk ? `+${item.atk} ATK` : item.hp ? `+${item.hp} HP` : `+${item.mp} MP`;
+    return `<div class="inventory-item${equipped ? ' equipped' : ''}" onclick="equipItem('${item.id}')" style="border-color:${RARITY_COLORS[item.rarity]}">
+      ${equipped ? '<div class="item-equipped-badge">已裝</div>' : ''}
+      <span class="item-icon">${item.icon}</span>
+      <span class="item-name" style="color:${RARITY_COLORS[item.rarity]}">${item.name}</span>
+      <span class="item-stat">${statText}</span>
+    </div>`;
+  }).join('');
 }
 
 function startBattle() {
@@ -1872,10 +2095,8 @@ function useUltimate() {
 function triggerAwakening() {
   if (gameState.awakened) return;
   gameState.awakened = true;
-  // 屬性 ×1.5 並 round
-  gameState.playerMaxHP = Math.round(gameState.playerMaxHP * 1.5);
-  gameState.playerMaxMP = Math.round(gameState.playerMaxMP * 1.5);
-  gameState.playerATK = Math.round(gameState.playerATK * 1.5);
+  // Sprint 5: 用 recomputePlayerStats 統一計算（涵蓋 level + 覺醒 + 裝備）
+  recomputePlayerStats();
   // 同步 battle state
   if (typeof battleState !== 'undefined' && battleState) {
     battleState.playerMaxHP = gameState.playerMaxHP;
@@ -2479,6 +2700,26 @@ function showBattleResult(victory) {
   gameState.xp += xpGain;
   gameState.gold += goldGain;
 
+  // Sprint 5 #4: 戰鬥勝利隨機掉落裝備（30% 普通、25% 優秀、20% 稀有、15% 史詩、10% 傳說）
+  if (victory && typeof addLog === 'function') {
+    const dropRoll = Math.random();
+    let dropRarity = null;
+    if (dropRoll < 0.30) dropRarity = 'common';
+    else if (dropRoll < 0.55) dropRarity = 'uncommon';
+    else if (dropRoll < 0.75) dropRarity = 'rare';
+    else if (dropRoll < 0.90) dropRarity = 'epic';
+    else dropRarity = 'legendary';
+    // 從該稀有度的裝備池中隨機選一件
+    const pool = EQUIPMENT_DEFS.filter(e => e.rarity === dropRarity);
+    if (pool.length > 0) {
+      const item = pool[Math.floor(Math.random() * pool.length)];
+      if (!gameState.inventory) gameState.inventory = [];
+      // 重複裝備也加入（顯示用：玩家「持有」是 list，裝備是 slot，可以同時擁有同類型多件）
+      gameState.inventory.push(item.id);
+      addLog(`🎁 掉落裝備：${item.icon} <span style="color:${RARITY_COLORS[item.rarity]}">${item.name}</span>（${RARITY_LABELS[item.rarity]}）`);
+    }
+  }
+
   // 學習日誌記錄
   const accuracy = battleState.questionsAnswered > 0 ? Math.round(battleState.correctCount/battleState.questionsAnswered*100) : 0;
   // Sprint 3 #4: 評星 v2 統計（HP 剩餘、max combo、avg time）
@@ -2511,9 +2752,8 @@ function showBattleResult(victory) {
     gameState.level++;
     gameState.xp -= gameState.xpToNext;
     gameState.xpToNext = gameState.level * 100;
-    gameState.playerMaxHP = 100 + (gameState.level - 1) * 10;
-    gameState.playerMaxMP = 50 + (gameState.level - 1) * 5;
-    gameState.playerATK = 10 + (gameState.level - 1) * 2;
+    // Sprint 5: 用 recomputePlayerStats 統一計算（涵蓋覺醒 + 裝備加成）
+    recomputePlayerStats();
     gameState.playerHP = gameState.playerMaxHP;
     gameState.playerMP = gameState.playerMaxMP;
     battleState.playerMaxHP = gameState.playerMaxHP;
@@ -2600,7 +2840,10 @@ function saveProgress() {
       playerMaxMP: gameState.playerMaxMP || 50,
       playerATK: gameState.playerATK || 10,
       // Sprint 4 #2: 覺醒狀態持久化
-      awakened: !!gameState.awakened
+      awakened: !!gameState.awakened,
+      // Sprint 5: 裝備持久化
+      equipped: gameState.equipped || { weapon: null, armor: null, accessory: null },
+      inventory: Array.isArray(gameState.inventory) ? gameState.inventory : []
     };
     localStorage.setItem(SAVE_KEY, JSON.stringify(data));
   } catch(e) {}
@@ -2623,7 +2866,12 @@ function loadProgress() {
     gameState.playerATK = typeof data.playerATK === 'number' && data.playerATK > 0 ? data.playerATK : 10;
     // Sprint 4 #2: 載入覺醒狀態
     gameState.awakened = !!data.awakened;
+    // Sprint 5: 載入裝備
+    gameState.equipped = (typeof data.equipped === 'object' && data.equipped) ? data.equipped : { weapon: null, armor: null, accessory: null };
+    gameState.inventory = Array.isArray(data.inventory) ? data.inventory : [];
     if (!gameState.character) { showNameScreen(); return; }
+    // Sprint 5: 載入後重算屬性（level + 覺醒 + 裝備）
+    if (typeof recomputePlayerStats === 'function') recomputePlayerStats();
     showMapScreen();
   } catch (e) {
     alert('存檔讀取失敗！');
