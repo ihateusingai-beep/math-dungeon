@@ -162,6 +162,13 @@ section{position:fixed;inset:0;display:flex;flex-direction:column;align-items:ce
 .question-text{font-size:clamp(1.2rem,4vw,2rem);font-weight:900;color:var(--gold);margin-bottom:.4em;word-break:break-word;overflow-wrap:break-word;line-height:1.2}
 .answer-hint{font-size:.85rem;color:var(--text-dim)}
 
+/* P0-4a: Question countdown progress bar */
+.question-timer{position:relative;width:100%;height:8px;background:rgba(255,255,255,.1);border-radius:4px;overflow:hidden;margin-bottom:8px}
+.question-timer-bar{height:100%;background:linear-gradient(90deg,var(--xp,#6dd97a),var(--gold,#ffd470));border-radius:4px;transform-origin:left center;transition:none}
+.question-timer-bar.warn{background:linear-gradient(90deg,var(--gold,#ffd470),var(--hp,#ff6b6b))}
+.question-timer-bar.danger{background:linear-gradient(90deg,var(--hp,#ff6b6b),#c0392b);animation:timer-pulse 0.6s ease-in-out infinite}
+@keyframes timer-pulse{0%,100%{opacity:1}50%{opacity:.6}}
+
 /* Answer Area */
 .battle-answer{display:flex;flex-direction:column;gap:10px;width:clamp(280px,90vw,480px);margin:0 auto}
 .choices-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
@@ -248,6 +255,14 @@ section{position:fixed;inset:0;display:flex;flex-direction:column;align-items:ce
 .result-title.victory{color:var(--gold);background:linear-gradient(135deg,var(--gold),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:pulseGlow 1.5s ease-in-out infinite;font-size:2.6rem}
 .result-title.defeat{color:var(--hp)}
 .result-stats{display:flex;flex-direction:column;gap:10px;margin:20px 0}
+
+/* P0-4b: Battle stars rating */
+.result-stars{display:flex;justify-content:center;gap:8px;margin:16px 0 8px;font-size:2.4rem;line-height:1;letter-spacing:2px}
+.result-star{color:rgba(255,255,255,.18);transition:color .3s,transform .3s;display:inline-block}
+.result-star.filled{color:var(--gold,#ffd470);text-shadow:0 0 8px rgba(255,212,112,.6)}
+.result-star.filled.animated{animation:star-pop .5s ease-out}
+@keyframes star-pop{0%{transform:scale(.3) rotate(-20deg);opacity:0}60%{transform:scale(1.25) rotate(8deg);opacity:1}100%{transform:scale(1) rotate(0);opacity:1}}
+.result-stars-label{text-align:center;font-size:.9rem;color:var(--text-dim);margin-bottom:8px}
 .result-stat{display:flex;justify-content:space-between;padding:10px 18px;background:rgba(30,30,60,.8);border-radius:10px;font-size:1.05rem;border:1px solid rgba(255,255,255,.08)}
 .result-stat span:first-child{color:var(--text-dim)}
 .result-stat span:last-child{font-weight:700}
@@ -490,6 +505,11 @@ section{position:fixed;inset:0;display:flex;flex-direction:column;align-items:ce
       <div class="diff-name">高階</div>
       <div class="diff-desc">數字輸入</div>
     </button>
+    <button class="diff-btn boss" onclick="selectDiff('boss')">
+      <div class="diff-icon">👑</div>
+      <div class="diff-name">Boss</div>
+      <div class="diff-desc">史萊姆之王</div>
+    </button>
   </div>
 </section>
 
@@ -547,6 +567,9 @@ section{position:fixed;inset:0;display:flex;flex-direction:column;align-items:ce
     </div>
 
     <div class="battle-question">
+      <div class="question-timer" id="question-timer" hidden>
+        <div class="question-timer-bar" id="question-timer-bar"></div>
+      </div>
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
         <div class="question-text" id="question-text">2 × 3 = ?</div>
         <div id="question-counter" style="font-size:.8rem;color:var(--text-dim);white-space:nowrap;margin-left:12px">${battleState.qIndex}/${battleState.questions.length}</div>
@@ -916,7 +939,7 @@ const STAGES_DATA = {
         ]}
     ]},
     boss: { name: "乘法Boss關", stages: [
-      { id: "boss-easy", name: "史萊姆之王", difficulty: "easy", enabled: true, monsters: ["dragon"], bg: "boss_room", isBoss: true,
+      { id: "boss-easy", name: "史萊姆之王", difficulty: "boss", enabled: true, monsters: ["dragon"], bg: "boss_room", isBoss: true,
         questions: [
           {q:"2 × 7 = ?",answer:14,choices:[12,14,16]},{q:"3 × 5 = ?",answer:15,choices:[12,15,18]},{q:"4 × 6 = ?",answer:24,choices:[20,22,24]},{q:"5 × 8 = ?",answer:40,choices:[35,40,45]},{q:"6 × 7 = ?",answer:42,choices:[36,42,48]},{q:"7 × 9 = ?",answer:63,choices:[56,63,70]},{q:"8 × 4 = ?",answer:32,choices:[28,30,32]},{q:"9 × 3 = ?",answer:27,choices:[24,27,30]},{q:"2 × 9 = ?",answer:18,choices:[16,18,20]},{q:"5 × 6 = ?",answer:30,choices:[25,30,35]}
         ]}
@@ -1167,7 +1190,7 @@ function renderStageConfirm() {
   document.getElementById('confirm-stage-name').textContent = s.name;
   const monsterNames = s.monsters.map(m => MONSTER_STATS[m]?.name || m).join(', ');
   const monsterHP = s.monsters.reduce((sum, m) => sum + (MONSTER_STATS[m]?.hp || 30), 0);
-  const diffLabel = { easy: '🌱 初階 3選1', normal: '⚔️ 中階 4選1', hard: '💀 高階 數字輸入' };
+  const diffLabel = { easy: '🌱 初階 3選1', normal: '⚔️ 中階 4選1', hard: '💀 高階 數字輸入', boss: '👑 Boss 1.5x 強度' };
   const waveCount = s.isBoss ? s.monsters.length : 3;
   document.getElementById('confirm-info').innerHTML = `
     <div>👹 ${s.isBoss ? '👑 ' : ''}${monsterNames} × ${waveCount} 波</div>
@@ -1267,13 +1290,13 @@ function startBattle() {
 
   resetBattleBuffs();
 
-  // Monster setup for wave 0
+  // Monster setup for wave 0 (P0-4c: monsterMod from stage difficulty)
   const monsterKey = s.monsters[0];
   const ms = MONSTER_STATS[monsterKey] || { name: '怪物', hp: 30, atk: 5, img: '' };
-  const multiplier = currentDiff === 'hard' ? 1.5 : currentDiff === 'normal' ? 1.2 : 1;
-  battleState.monsterMaxHP = Math.round(ms.hp * multiplier);
+  const monsterMod = getMonsterMod(s.difficulty || currentDiff);
+  battleState.monsterMaxHP = Math.round(ms.hp * monsterMod.hp);
   battleState.monsterHP = battleState.monsterMaxHP;
-  battleState.monsterATK = Math.round(ms.atk * multiplier);
+  battleState.monsterATK = Math.round(ms.atk * monsterMod.atk);
   battleState.monsterName = ms.name;
   battleState.monsterImg = ms.img;
 
@@ -1292,6 +1315,7 @@ function startBattle() {
   const isBoss = battleState.stageData?.isBoss;
   showScreen('battle-screen');
   updateBattleUI();
+  clearQuestionTimer(); // P0-4a: 殘留 timer 清理
   nextQuestion(); // sets currentQuestion first
   renderBattleAnswer(); // uses currentQuestion
   playBgm(isBoss ? 'boss' : 'battle');
@@ -1329,6 +1353,109 @@ function shuffleArray(arr) {
   return arr;
 }
 
+// ==================== P0-4c: Difficulty → Monster Modifier ====================
+// SPEC L549-557: 題目難度與怪物強度掛鈎
+// v1 預設倍率：easy=0.8x, normal=1.0x, hard=1.2x, boss=1.5x（HP 與 ATK 同倍率）
+// 後續 v2 可拆 hp / atk 為不同權重
+const MONSTER_MOD_BY_DIFF = {
+  easy:   { hp: 0.8, atk: 0.8 },
+  normal: { hp: 1.0, atk: 1.0 },
+  hard:   { hp: 1.2, atk: 1.2 },
+  boss:   { hp: 1.5, atk: 1.5 }
+};
+function getMonsterMod(difficulty) {
+  // 向後兼容：未知 difficulty fallback 到 "easy"
+  return MONSTER_MOD_BY_DIFF[difficulty] || MONSTER_MOD_BY_DIFF.easy;
+}
+
+// ==================== P0-4a: Question Countdown ====================
+// SPEC L521-536: 每題 30s 超時自動算答錯
+// v1 保守：純 setTimeout 觸發 submitChoice(0) 走答錯分支
+// 後續可調：v2 加 per-difficulty 調整（easy=45s, normal=30s, hard=20s）
+const QUESTION_TIME_LIMIT_MS = 30000;
+let questionTimerHandle = null;
+let questionTimerStart = 0;
+
+function clearQuestionTimer() {
+  if (questionTimerHandle !== null) {
+    clearTimeout(questionTimerHandle);
+    questionTimerHandle = null;
+  }
+  const bar = document.getElementById('question-timer-bar');
+  if (bar) bar.style.transform = 'scaleX(1)';
+}
+
+function startQuestionTimer() {
+  clearQuestionTimer();
+  if (!battleState.battleActive) return;
+  const wrap = document.getElementById('question-timer');
+  const bar = document.getElementById('question-timer-bar');
+  if (!wrap || !bar) return;
+  wrap.hidden = false;
+  bar.className = 'question-timer-bar';
+  bar.style.transition = 'none';
+  bar.style.transform = 'scaleX(1)';
+  // Force reflow so the next transition re-animates
+  void bar.offsetWidth;
+  bar.style.transition = `transform ${QUESTION_TIME_LIMIT_MS}ms linear`;
+  bar.style.transform = 'scaleX(0)';
+  // Color shift at 10s remaining (warn) and 5s remaining (danger)
+  const warnAt = QUESTION_TIME_LIMIT_MS - 10000;
+  const dangerAt = QUESTION_TIME_LIMIT_MS - 5000;
+  setTimeout(() => { if (questionTimerHandle !== null) bar.classList.add('warn'); }, warnAt);
+  setTimeout(() => { if (questionTimerHandle !== null) bar.classList.add('danger'); }, dangerAt);
+  questionTimerStart = Date.now();
+  questionTimerHandle = setTimeout(() => {
+    questionTimerHandle = null;
+    // 超時 = 自動算答錯：傳 0（永遠不等於正確答案）
+    if (battleState.battleActive) {
+      addLog('⏰ 超時！算答錯。');
+      submitChoice(0);
+    }
+  }, QUESTION_TIME_LIMIT_MS);
+}
+
+// ==================== P0-4b: Battle Stars Rating ====================
+// SPEC L743-760, L1042-1111: 5 星評級（基於 accuracy）
+// v1 保守公式：純 accuracy（≥90=5星, ≥75=4星, ≥50=3星, ≥25=2星, >0=1星, 0=0星）
+// 後續 v2 可加 avgTime + maxCombo 權重
+function computeBattleStars(accuracy) {
+  // 戰敗永遠 0 星（v1 保守）
+  if (typeof accuracy !== 'number' || isNaN(accuracy) || accuracy <= 0) return 0;
+  if (accuracy >= 90) return 5;
+  if (accuracy >= 75) return 4;
+  if (accuracy >= 50) return 3;
+  if (accuracy >= 25) return 2;
+  return 1; // 0 < accuracy < 25
+}
+
+function renderBattleStars(stars) {
+  const n = Math.max(0, Math.min(5, stars|0));
+  let html = '<div class="result-stars" aria-label="戰鬥評分 ' + n + ' 顆星">';
+  for (let i = 0; i < 5; i++) {
+    const filled = i < n;
+    const cls = 'result-star' + (filled ? ' filled' : '') + (filled ? ' animated' : '');
+    html += `<span class="${cls}" style="animation-delay:${i * 0.12}s">⭐</span>`;
+  }
+  html += '</div>';
+  const labelText = n >= 5 ? '完美！' : n >= 4 ? '優秀' : n >= 3 ? '良好' : n >= 2 ? '一般' : n >= 1 ? '勉強' : '再接再厲';
+  html += `<div class="result-stars-label">${labelText}（${n}/5）</div>`;
+  return html;
+}
+
+function saveBattleResultToLocal(stageId, stars, accuracy, victory) {
+  // SPEC §D 持久化：localStorage mathDungeon_battleResult_<stageId> 加 stars 字段
+  if (typeof stageId !== 'string' || !stageId) return;
+  const key = `mathDungeon_battleResult_${stageId}`;
+  let data = {};
+  try { data = JSON.parse(localStorage.getItem(key) || '{}'); } catch(e) { data = {}; }
+  data.stars = Math.max(data.stars|0, stars|0); // 保留歷史最高星
+  data.lastAccuracy = accuracy|0;
+  data.lastVictory = !!victory;
+  data.lastPlayed = new Date().toLocaleString('zh-TW');
+  try { localStorage.setItem(key, JSON.stringify(data)); } catch(e) {}
+}
+
 function nextQuestion() {
   if (battleState.qIndex >= battleState.questions.length) {
     battleState.questions = shuffleArray([...battleState.stageData.questions]);
@@ -1350,6 +1477,7 @@ function nextQuestion() {
   const currentQ = battleState.qIndex;
   document.getElementById('question-counter').textContent = `${currentQ}/${totalQ}`;
   renderBattleAnswer();
+  startQuestionTimer();
 }
 
 function renderBattleAnswer() {
@@ -1421,6 +1549,8 @@ function submitNumpad() {
 function submitChoice(answer) {
   const skillUsed = battleState.usingSkill;
   if (!battleState.battleActive) return;
+  // P0-4a: 玩家答題後清除倒計時 timer
+  clearQuestionTimer();
   const correct = battleState.currentQuestion.answer;
   const diff = battleState.difficulty;
   playSound('click');
@@ -2015,6 +2145,8 @@ function spawnConfetti() {
 }
 
 function checkBattleEnd() {
+  // P0-4a: 戰鬥結束時清除倒計時
+  clearQuestionTimer();
   if (battleState.monsterHP <= 0) {
     battleState.waveIndex++;
     addLog(`💀 擊敗 ${battleState.monsterName}！`);
@@ -2039,11 +2171,12 @@ function spawnNextWave() {
   // Pick monster for this wave (cycle through the monsters array)
   const monsterKey = monsters[waveIdx % monsters.length];
   const ms = MONSTER_STATS[monsterKey] || { name: '怪物', hp: 30, atk: 5, img: '' };
-  const multiplier = battleState.difficulty === 'hard' ? 1.5 : battleState.difficulty === 'normal' ? 1.2 : 1;
+  // P0-4c: 從 stage difficulty 套 monsterMod（向後兼容：缺欄位 fallback easy）
+  const monsterMod = getMonsterMod(s.difficulty || battleState.difficulty);
 
-  battleState.monsterMaxHP = Math.round(ms.hp * multiplier);
+  battleState.monsterMaxHP = Math.round(ms.hp * monsterMod.hp);
   battleState.monsterHP = battleState.monsterMaxHP;
-  battleState.monsterATK = Math.round(ms.atk * multiplier);
+  battleState.monsterATK = Math.round(ms.atk * monsterMod.atk);
   battleState.monsterName = ms.name;
   battleState.monsterImg = ms.img;
 
@@ -2070,6 +2203,11 @@ function showBattleResult(victory) {
 
   // 學習日誌記錄
   const accuracy = battleState.questionsAnswered > 0 ? Math.round(battleState.correctCount/battleState.questionsAnswered*100) : 0;
+
+  // P0-4b: 計算戰鬥評星（v1 純 accuracy；戰敗 0 星）
+  const stars = victory ? computeBattleStars(accuracy) : 0;
+  const stageId = battleState.stageData?.id || 'unknown';
+  saveBattleResultToLocal(stageId, stars, accuracy, victory);
   const logKey = 'mathDungeon_learningLog';
   let logData = [];
   try { logData = JSON.parse(localStorage.getItem(logKey) || '[]'); if (!Array.isArray(logData)) logData = []; } catch(e) { logData = []; }
@@ -2110,7 +2248,9 @@ function showBattleResult(victory) {
   title.className = 'result-title ' + (victory ? 'victory' : 'defeat');
 
   const feedback = accuracy >= 80 ? '🌟 做得好！' : accuracy >= 50 ? '💪 繼續加油！' : '📚 需要多練習！';
-  document.getElementById('result-stats').innerHTML = `
+  // P0-4b: 5 星評級 UI（僅 victory 顯示，戰敗顯示「再接再厲」）
+  const starsHtml = renderBattleStars(stars);
+  document.getElementById('result-stats').innerHTML = starsHtml + `
     <div class="result-stat"><span>獲得經驗</span><span style="color:var(--xp)">+${xpGain} XP</span></div>
     <div class="result-stat"><span>升級進度</span><span>${gameState.xp}/${gameState.xpToNext}</span></div>
     <div class="result-stat"><span>獲得金幣</span><span style="color:var(--gold)">+${goldGain} 💰</span></div>

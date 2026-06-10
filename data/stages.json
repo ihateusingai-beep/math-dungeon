@@ -163,7 +163,7 @@
       "name": "乘法Boss關",
       "stages": [
         {
-          "id": "boss-easy", "name": "史萊姆之王", "difficulty": "easy", "enabled": true,
+          "id": "boss-easy", "name": "史萊姆之王", "difficulty": "boss", "enabled": true,
           "monsters": ["dragon"], "bg": "boss_room", "isBoss": true,
           "questions": [
             {"q": "7 × 1 = ?", "answer": 7, "choices": [5, 6, 7]},
