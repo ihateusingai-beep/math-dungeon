@@ -131,6 +131,10 @@ section{position:fixed;inset:0;display:flex;flex-direction:column;align-items:ce
 .hud-bar-fill{height:100%;border-radius:7px;transition:width .4s}
 .hud-hp-fill{background:linear-gradient(90deg,var(--hp),#c0392b)}
 .hud-mp-fill{background:linear-gradient(90deg,var(--mp),#2980b9)}
+/* Sprint 4 #1: 能量條 — 金色漸變 + 100% 時脈動發光 */
+.hud-energy-fill{background:linear-gradient(90deg,var(--gold),#ff6b35);box-shadow:0 0 4px rgba(255,212,112,.3);transition:width .3s}
+.hud-energy-fill.ready{box-shadow:0 0 14px rgba(255,212,112,.9),0 0 28px rgba(255,107,53,.5);animation:energyReady 1s ease-in-out infinite}
+@keyframes energyReady{0%,100%{box-shadow:0 0 14px rgba(255,212,112,.9),0 0 28px rgba(255,107,53,.5)}50%{box-shadow:0 0 22px rgba(255,212,112,1),0 0 40px rgba(255,107,53,.7)}}
 .hud-text{font-size:.7rem;color:var(--text-dim);margin-top:2px}
 .monster-hud{background:rgba(0,0,0,.6);border-radius:16px;padding:clamp(8px,2vw,14px);min-width:clamp(140px,25vw,180px);border:1px solid var(--border);text-align:right}
 .monster-hud-name{font-size:.9rem;font-weight:700;color:var(--accent);margin-bottom:6px}
@@ -185,6 +189,11 @@ section{position:fixed;inset:0;display:flex;flex-direction:column;align-items:ce
 .battle-arena.boss-phase-2{box-shadow:inset 0 0 100px rgba(255,71,87,.4);animation:bossPhase2Aura 0.6s ease-in-out infinite}
 @keyframes bossPhase1Aura{0%,100%{box-shadow:inset 0 0 80px rgba(255,212,112,.25)}50%{box-shadow:inset 0 0 100px rgba(255,212,112,.4)}}
 @keyframes bossPhase2Aura{0%,100%{box-shadow:inset 0 0 100px rgba(255,71,87,.4)}50%{box-shadow:inset 0 0 130px rgba(255,71,87,.7)}}
+
+/* Sprint 4 #1: 大招全屏閃光 */
+#ultimate-flash{position:absolute;inset:0;background:radial-gradient(circle,rgba(255,212,112,.95) 0%,rgba(255,107,53,.7) 40%,transparent 80%);opacity:0;pointer-events:none;z-index:9999;transition:opacity .3s}
+#ultimate-flash.active{opacity:1;animation:ultimateFlash .6s ease-out}
+@keyframes ultimateFlash{0%{opacity:0;transform:scale(.8)}20%{opacity:1;transform:scale(1.1)}100%{opacity:0;transform:scale(1.5)}}
 
 /* Answer Area */
 .battle-answer{display:flex;flex-direction:column;gap:10px;width:clamp(280px,90vw,480px);margin:0 auto}
@@ -543,6 +552,7 @@ section{position:fixed;inset:0;display:flex;flex-direction:column;align-items:ce
 
 <!-- ==================== BATTLE SCREEN ==================== -->
 <section id="battle-screen" class="hidden">
+  <div id="ultimate-flash"></div>
   <button class="back-btn" onclick="confirmExitBattle(); stopBgm()">✖</button>
   <button class="back-btn" id="bgm-toggle-btn" onclick="toggleBgm()" style="right:60px;background:#2d2d44" title="音樂開關">🔊</button>
   <div style="position:absolute;top:8px;left:50%;transform:translateX(-50%);display:flex;gap:6px;z-index:10;flex-wrap:wrap;justify-content:center;max-width:95vw">
@@ -550,7 +560,7 @@ section{position:fixed;inset:0;display:flex;flex-direction:column;align-items:ce
   </div>
   <div class="battle-top-bar">
     <div class="player-hud">
-      <div class="hud-name"><span id="battle-player-name">冒險者</span><span id="battle-player-lv">Lv.1</span></div>
+      <div class="hud-name"><span id="battle-player-name">冒險者</span><span id="battle-player-lv">Lv.1</span><span id="awaken-badge" style="display:none;color:var(--gold);font-size:.7rem;margin-left:4px">🌟覺醒</span></div>
       <div id="combo-display" style="font-size:.7rem;color:var(--gold);margin-bottom:4px;min-height:1em"></div>
       <div class="hud-bar">
         <div class="hud-bar-fill hud-hp-fill" id="player-hp-bar" style="width:100%"></div>
@@ -560,6 +570,10 @@ section{position:fixed;inset:0;display:flex;flex-direction:column;align-items:ce
         <div class="hud-bar-fill hud-mp-fill" id="player-mp-bar" style="width:100%"></div>
       </div>
       <div class="hud-text">MP <span id="player-mp-text">50</span>/50</div>
+      <div class="hud-bar" style="margin-top:4px">
+        <div class="hud-bar-fill hud-energy-fill" id="player-energy-bar" style="width:0%"></div>
+      </div>
+      <div class="hud-text">能量 <span id="player-energy-text">0</span>/100 <span id="energy-ultimate-hint" style="display:none;color:var(--gold);font-weight:bold">[E 大招]</span></div>
       <div class="hud-bar" style="margin-top:4px;background:#222">
         <div class="hud-bar-fill" id="xp-bar" style="width:0%;background:var(--accent);height:8px;border-radius:4px"></div>
       </div>
@@ -1307,6 +1321,7 @@ function startBattle() {
     enraged: 0, // Sprint 3 #3: 激怒剩餘回合數，0=未激怒。答錯+2，答對-1，3連對清零
     startTime: Date.now(), // Sprint 3 #4: 戰鬥開始時間（用於 avgTime 評星維度）
     bossPhase: 0, // Sprint 3 #5: Boss 三階段（0=第一, 1=第二, 2=狂暴）。非 boss 關卡永遠 0
+    energy: 0, // Sprint 4 #1: 能量（0-100）。答對+10，答錯-20，100% 可按 E 觸發大招
   };
 
   resetBattleBuffs();
@@ -1644,6 +1659,12 @@ function submitChoice(answer) {
     battleState.combo++;
     if (battleState.combo > battleState.maxCombo) battleState.maxCombo = battleState.combo;
     updateComboDisplay();
+    // Sprint 4 #1: 答對 +10 能量
+    battleState.energy = Math.min(100, (battleState.energy || 0) + 10);
+    if (battleState.energy === 100 && !battleState.energyReadyLogged) {
+      addLog('⚡ 能量已滿！按 E 鍵釋放大招！');
+      battleState.energyReadyLogged = true;
+    }
     showCorrectFeedback();
     // Sprint 3 #1: Combo → MP 加速。基礎 +3，combo 5+ 加成到 +5，10+ 加成到 +7。
     // 鼓勵玩家「手正熱」時多答題，給 combo 額外 MP 回饋（搭配 SPEC §能量系統 v1 預留）。
@@ -1734,6 +1755,9 @@ function submitChoice(answer) {
     battleState.questionsAnswered++;
     battleState.combo = 0;
     updateComboDisplay();
+    // Sprint 4 #1: 答錯 -20 能量
+    battleState.energy = Math.max(0, (battleState.energy || 0) - 20);
+    battleState.energyReadyLogged = false;
     const cq = battleState.currentQuestion;
     // Sprint 3 #3: 答錯觸發激怒 2 回合。激怒時反擊傷害 ×1.3。
     // Sprint 3 #5: Boss 狂暴（phase 2）時反擊 ×1.2。兩個 debuff 可疊加。
@@ -1766,6 +1790,122 @@ function submitChoice(answer) {
   // P1-1: reset usingSkill at the end so the value persists through the
   // whole function (needed for crit visualization at line ~1449 + correct branch).
   battleState.usingSkill = false;
+}
+
+// ==================== Sprint 4 #1: 能量 / 大招系統 ====================
+// 答對 +10、答錯 -20，滿 100% 按 E 鍵觸發。每職業一個效果。
+function useUltimate() {
+  if (!battleState.battleActive) return;
+  if ((battleState.energy || 0) < 100) {
+    addLog('⚡ 能量不足！需要 100% 才能釋放大招。');
+    return;
+  }
+  battleState.energy = 0;
+  battleState.energyReadyLogged = false;
+  const char = gameState.character;
+  addLog(`✨ 釋放大招！職業：${char || 'unknown'}`);
+  // 全屏閃光（CSS 動畫，600ms 內復原）
+  const flash = document.getElementById('ultimate-flash');
+  if (flash) { flash.classList.add('active'); setTimeout(() => flash.classList.remove('active'), 600); }
+  switch (char) {
+    case 'mage':
+      // 奧術爆發：造成 50% 怪物 MaxHP 傷害
+      const mageDmg = Math.max(1, Math.round(battleState.monsterMaxHP * 0.5));
+      battleState.monsterHP = Math.max(0, battleState.monsterHP - mageDmg);
+      addLog(`🔮 奧術爆發！造成 ${mageDmg} 魔法傷害！`);
+      showDmgNumber(mageDmg, true, false);
+      flashSprite('monster-sprite');
+      break;
+    case 'knight':
+      // 聖光突襲：回復 30% HP，怪物暈眩 1 回合（跳過下次反擊）
+      const healAmt = Math.round(battleState.playerMaxHP * 0.3);
+      battleState.playerHP = Math.min(battleState.playerMaxHP, battleState.playerHP + healAmt);
+      battleState.stunned = true;
+      addLog(`🛡️ 聖光突擊！回復 ${healAmt} HP，怪物暈眩 1 回合！`);
+      break;
+    case 'berserker':
+      // 血氣爆發：下 3 次攻擊 ×2 傷害（沿用現有 berserkStacks 機制）
+      gameState.berserkStacks = (gameState.berserkStacks || 0) + 3;
+      addLog(`💢 血氣爆發！下 3 次攻擊 ×2！`);
+      break;
+    case 'assassin':
+      // 暗影步：下次攻擊必暴擊 + 50% 額外傷害
+      gameState.assassinUlt = true;
+      addLog(`🗡️ 暗影步！下次攻擊必暴擊 + 50% 額外傷害！`);
+      break;
+    case 'priest':
+      // 神聖治療：回復 50% HP + 解除怪物激怒
+      const priestHeal = Math.round(battleState.playerMaxHP * 0.5);
+      battleState.playerHP = Math.min(battleState.playerMaxHP, battleState.playerHP + priestHeal);
+      battleState.enraged = 0;
+      const mSprite3 = document.getElementById('monster-sprite');
+      if (mSprite3) mSprite3.classList.remove('enraged');
+      addLog(`✨ 神聖治療！回復 ${priestHeal} HP，解除怪物激怒！`);
+      break;
+    case 'ranger':
+      // 萬箭齊發：對怪物造成 200% ATK 傷害
+      const rangerDmg = Math.round(battleState.playerATK * 2);
+      battleState.monsterHP = Math.max(0, battleState.monsterHP - rangerDmg);
+      addLog(`🏹 萬箭齊發！造成 ${rangerDmg} 傷害！`);
+      showDmgNumber(rangerDmg, false, false);
+      flashSprite('monster-sprite');
+      break;
+    default:
+      // 預設：100% 玩家 ATK 傷害（unknown 職業或沒選職業時）
+      const defaultDmg = battleState.playerATK;
+      battleState.monsterHP = Math.max(0, battleState.monsterHP - defaultDmg);
+      addLog(`⚔️ 必殺一擊！造成 ${defaultDmg} 傷害！`);
+      showDmgNumber(defaultDmg, false, false);
+      flashSprite('monster-sprite');
+  }
+  if (battleState.monsterHP <= 0) {
+    checkBattleEnd();
+  } else {
+    nextQuestion();
+  }
+  updateBattleUI();
+}
+
+// ==================== Sprint 4 #2: 覺醒系統 ====================
+// Lv.30 自動覺醒，任務簡化為「達 Lv.30 即可」。覺醒後所有基礎屬性 ×1.5，
+// 永久生效（localStorage 持久化）。UI 顯示金色「覺醒」徽章。
+function triggerAwakening() {
+  if (gameState.awakened) return;
+  gameState.awakened = true;
+  // 屬性 ×1.5 並 round
+  gameState.playerMaxHP = Math.round(gameState.playerMaxHP * 1.5);
+  gameState.playerMaxMP = Math.round(gameState.playerMaxMP * 1.5);
+  gameState.playerATK = Math.round(gameState.playerATK * 1.5);
+  // 同步 battle state
+  if (typeof battleState !== 'undefined' && battleState) {
+    battleState.playerMaxHP = gameState.playerMaxHP;
+    battleState.playerMaxMP = gameState.playerMaxMP;
+    battleState.playerHP = gameState.playerMaxHP;
+    battleState.playerMP = gameState.playerMaxMP;
+  }
+  addLog('🌟✨ 你達到了 Lv.30，覺醒成功！所有屬性 ×1.5！');
+  // 全屏金色閃光
+  const flash = document.getElementById('ultimate-flash');
+  if (flash) { flash.classList.add('active'); setTimeout(() => flash.classList.remove('active'), 1200); }
+  playSound('levelUp');
+  saveProgress();
+  updateBattleUI();
+}
+
+// E 鍵監聽（綁在 document，等進入戰鬥後啟用）
+let _ultimateKeyBound = false;
+function bindUltimateKey() {
+  if (_ultimateKeyBound) return;
+  _ultimateKeyBound = true;
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'e' || e.key === 'E') {
+      // 只在戰鬥 screen 啟用
+      const battleScreen = document.getElementById('battle-screen');
+      if (battleScreen && !battleScreen.classList.contains('hidden')) {
+        useUltimate();
+      }
+    }
+  });
 }
 
 function useSkill(skill) {
@@ -2173,10 +2313,25 @@ function updateBuffDisplay() {
 function updateBattleUI() {
   document.getElementById('battle-player-name').textContent = gameState.playerName;
   document.getElementById('battle-player-lv').textContent = `Lv.${gameState.level}`;
+  // Sprint 4 #2: 覺醒徽章
+  const awakenBadge = document.getElementById('awaken-badge');
+  if (awakenBadge) awakenBadge.style.display = gameState.awakened ? 'inline' : 'none';
   document.getElementById('player-hp-text').textContent = battleState.playerHP;
   document.getElementById('player-mp-text').textContent = battleState.playerMP;
   document.getElementById('player-hp-bar').style.width = (battleState.playerHP / battleState.playerMaxHP * 100) + '%';
   document.getElementById('player-mp-bar').style.width = (battleState.playerMP / battleState.playerMaxMP * 100) + '%';
+  // Sprint 4 #1: 能量條 + 100% 提示
+  const energy = battleState.energy || 0;
+  const energyBar = document.getElementById('player-energy-bar');
+  const energyText = document.getElementById('player-energy-text');
+  const energyHint = document.getElementById('energy-ultimate-hint');
+  if (energyBar) {
+    energyBar.style.width = energy + '%';
+    if (energy >= 100) energyBar.classList.add('ready');
+    else energyBar.classList.remove('ready');
+  }
+  if (energyText) energyText.textContent = energy;
+  if (energyHint) energyHint.style.display = energy >= 100 ? 'inline' : 'none';
   document.getElementById('monster-hud-name').textContent = battleState.monsterName;
   document.getElementById('monster-hp-text').textContent = battleState.monsterHP;
   document.getElementById('monster-max-hp').textContent = battleState.monsterMaxHP;
@@ -2365,6 +2520,10 @@ function showBattleResult(victory) {
     battleState.playerMaxMP = gameState.playerMaxMP;
     addLog(`🎉 等級提升！現在是 Lv.${gameState.level}！`);
     playSound('levelUp');
+    // Sprint 4 #2: 覺醒觸發（Lv.30 自動覺醒，任務簡化為「達 Lv.30 即可」）
+    if (gameState.level >= 30 && !gameState.awakened) {
+      triggerAwakening();
+    }
   }
 
   saveProgress();
@@ -2439,7 +2598,9 @@ function saveProgress() {
       gold: gameState.gold || 0,
       playerMaxHP: gameState.playerMaxHP || 100,
       playerMaxMP: gameState.playerMaxMP || 50,
-      playerATK: gameState.playerATK || 10
+      playerATK: gameState.playerATK || 10,
+      // Sprint 4 #2: 覺醒狀態持久化
+      awakened: !!gameState.awakened
     };
     localStorage.setItem(SAVE_KEY, JSON.stringify(data));
   } catch(e) {}
@@ -2460,6 +2621,8 @@ function loadProgress() {
     gameState.playerMaxHP = typeof data.playerMaxHP === 'number' && data.playerMaxHP > 0 ? data.playerMaxHP : 100;
     gameState.playerMaxMP = typeof data.playerMaxMP === 'number' && data.playerMaxMP > 0 ? data.playerMaxMP : 50;
     gameState.playerATK = typeof data.playerATK === 'number' && data.playerATK > 0 ? data.playerATK : 10;
+    // Sprint 4 #2: 載入覺醒狀態
+    gameState.awakened = !!data.awakened;
     if (!gameState.character) { showNameScreen(); return; }
     showMapScreen();
   } catch (e) {
@@ -2876,6 +3039,8 @@ function updateComboDisplay() {
 
 // ==================== INIT ====================
 window.addEventListener('DOMContentLoaded', () => {
+  // Sprint 4 #1: 綁定 E 鍵觸發大招
+  bindUltimateKey();
   // Show home screen by default
 });
 </script>
