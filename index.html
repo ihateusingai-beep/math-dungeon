@@ -667,7 +667,7 @@ section{position:fixed;inset:0;display:flex;flex-direction:column;align-items:ce
       <div id="buff-indicator" style="display:flex;gap:4px;margin-top:4px;min-height:20px;flex-wrap:wrap"></div>
     </div>
     <div class="monster-hud">
-      <div class="monster-hud-name" id="monster-hud-name">史萊姆</div>
+      <div class="monster-hud-name" id="monster-hud-name">史萊姆 <span id="monster-element-icon" style="font-size:.8rem"></span></div>
       <div class="monster-hud-hp">HP <span id="monster-hp-text">30</span>/<span id="monster-max-hp">30</span></div>
       <div id="wave-indicator" style="font-size:.7rem;color:var(--gold);margin-top:2px">第 1/3 波</div>
       <div class="hud-bar">
@@ -1066,13 +1066,39 @@ const STAGES_DATA = {
 };
 
 // ==================== MONSTER STATS ====================
+// ==================== Sprint 7: 元素系統 ====================
+// 4 元素：fire/water/wind/earth + 剋制矩陣（剋 = ×1.5，被剋 = ×0.7）
+const ELEMENTS = {
+  fire:  { name: '火', icon: '🔥', color: '#ff6b35' },
+  water: { name: '水', icon: '💧', color: '#5eb3ff' },
+  wind:  { name: '風', icon: '🍃', color: '#7ed957' },
+  earth: { name: '土', icon: '🌍', color: '#c9a05e' },
+  none:  { name: '無', icon: '⚪', color: '#888888' },
+};
+// 剋制：A 剋 B = A 攻 B 傷害 ×1.5，B 攻 A ×0.7
+// 火 > 風, 風 > 土, 土 > 水, 水 > 火
+const ELEMENT_ADVANTAGE = {
+  fire: 'wind', wind: 'earth', earth: 'water', water: 'fire',
+};
+function getElementMultiplier(attackerEl, defenderEl) {
+  if (!attackerEl || !defenderEl || attackerEl === 'none' || defenderEl === 'none') return 1.0;
+  if (ELEMENT_ADVANTAGE[attackerEl] === defenderEl) return 1.5;  // 剋
+  if (ELEMENT_ADVANTAGE[defenderEl] === attackerEl) return 0.7;  // 被剋
+  return 1.0;
+}
+function getElementStatus(attackerEl, defenderEl) {
+  if (ELEMENT_ADVANTAGE[attackerEl] === defenderEl) return '剋制';
+  if (ELEMENT_ADVANTAGE[defenderEl] === attackerEl) return '被剋';
+  return '普通';
+}
+
 const MONSTER_STATS = {
-  "slime-green": { name: "翠綠史萊姆", hp: 20, atk: 5, img: "assets/images/monsters/slime-green.png" },
-  "wolf": { name: "灰狼", hp: 30, atk: 8, img: "assets/images/monsters/wolf.png" },
-  "orc-warrior": { name: "獸人戰士", hp: 40, atk: 15, img: "assets/images/monsters/orc-warrior.png" },
-  "skeleton-warrior": { name: "骸骨戰士", hp: 35, atk: 12, img: "assets/images/monsters/skeleton-warrior.png" },
-  "skeleton-mage": { name: "骸骨法師", hp: 28, atk: 16, img: "assets/images/monsters/skeleton-mage.png" },
-  "dragon": { name: "巨龍", hp: 50, atk: 20, img: "assets/images/monsters/dragon.png" }
+  "slime-green":     { name: "翠綠史萊姆", hp: 20, atk: 5,  element: 'water', img: "assets/images/monsters/slime-green.png" },
+  "wolf":            { name: "灰狼",       hp: 30, atk: 8,  element: 'wind',  img: "assets/images/monsters/wolf.png" },
+  "orc-warrior":     { name: "獸人戰士",   hp: 40, atk: 15, element: 'earth', img: "assets/images/monsters/orc-warrior.png" },
+  "skeleton-warrior":{ name: "骸骨戰士",   hp: 35, atk: 12, element: 'none',  img: "assets/images/monsters/skeleton-warrior.png" },
+  "skeleton-mage":   { name: "骸骨法師",   hp: 28, atk: 16, element: 'fire',  img: "assets/images/monsters/skeleton-mage.png" },
+  "dragon":          { name: "巨龍",       hp: 50, atk: 20, element: 'fire',  img: "assets/images/monsters/dragon.png" },
 };
 
 // ==================== BACKGROUND MAP ====================
@@ -1115,6 +1141,7 @@ let battleState = {
   monsterATK: 0,
   monsterName: '',
   monsterImg: '',
+  monsterElement: 'none',  // Sprint 7: 怪物元素
   currentQuestion: null,
   qIndex: 0,
   questions: [],
@@ -1132,6 +1159,13 @@ let battleState = {
   waveIndex: 0,
   enemiesPerStage: 3,
   totalStageDamage: 0,
+  // Sprint 7: DoT/CC 狀態（按元素分流）
+  burnStacks: 0,         // 🔥 燃燒：每回合 5% MaxHP，剩餘回合數
+  freezeStacks: 0,       // 💧 冰凍：50% skip 玩家回合，剩餘回合數
+  poisonStacks: 0,       // 🌍 中毒：每回合 6% MaxHP，剩餘回合數
+  playerBurn: 0,         // 玩家被燃燒（怪物反擊時套用）
+  playerFreeze: 0,       // 玩家被冰凍
+  playerPoison: 0,       // 玩家被中毒
 };
 
 let numpadValue = '';
@@ -1734,6 +1768,14 @@ function startBattle() {
   battleState.monsterATK = Math.round(ms.atk * monsterMod.atk);
   battleState.monsterName = ms.name;
   battleState.monsterImg = ms.img;
+  battleState.monsterElement = ms.element || 'none';
+  // Sprint 7: 重置 DoT 計數（新怪物進場）
+  battleState.burnStacks = 0;
+  battleState.freezeStacks = 0;
+  battleState.poisonStacks = 0;
+  battleState.playerBurn = 0;
+  battleState.playerFreeze = 0;
+  battleState.playerPoison = 0;
 
   document.getElementById('battle-log').innerHTML = '';
   // Reset skills visibility when battle starts
@@ -2077,6 +2119,14 @@ function submitChoice(answer) {
       addLog(`🔵 MP+${mpRegen}${comboTag}`);
     }
     let dmg = battleState.playerATK;
+    // Sprint 7: 元素剋制（玩家元素 vs 怪物元素）
+    const playerEl = getPlayerElement();
+    const monsterEl = battleState.monsterElement || 'none';
+    const elemMult = getElementMultiplier(playerEl, monsterEl);
+    if (elemMult !== 1.0) {
+      dmg = Math.round(dmg * elemMult);
+      addLog(`${ELEMENTS[playerEl].icon} ${getElementStatus(playerEl, monsterEl)}！傷害 ×${elemMult}`);
+    }
     // Sprint 6 修補：assassin 大招「暗影步」設的 assassinUlt flag 真正觸發暴擊
     if (gameState.assassinUlt) {
       dmg *= 2; // 必暴擊（×2 baseline）+ 額外 +50% 傷害 = 共 ×3
@@ -2138,9 +2188,17 @@ function submitChoice(answer) {
     showComboMilestone();
     addLog(`✅ 回答正確！(${battleState.combo}連) 攻擊造成 ${dmg} 傷害！`);
     flashSprite('monster-sprite');
+    // Sprint 7: 玩家技能/普攻帶元素 debuff
+    applyElementalDebuffToMonster(playerEl);
 
     if (battleState.monsterHP > 0) {
-      nextQuestion();
+      // 先結算怪物 DoT
+      tickMonsterDoT();
+      if (battleState.monsterHP <= 0) {
+        checkBattleEnd();
+      } else {
+        nextQuestion();
+      }
     } else {
       checkBattleEnd();
     }
@@ -2172,6 +2230,16 @@ function submitChoice(answer) {
     if (mSprite && !wasEnraged) mSprite.classList.add('enraged');
     addLog(wasEnraged ? '😡 怪物持續激怒！反擊維持 +30%' : '😡 怪物被激怒了！反擊傷害 +30%，持續 2 回合');
     const bossFuryMod = battleState.stageData?.isBoss && battleState.bossPhase === 2 ? 1.2 : 1.0;
+    // Sprint 7: 怪物元素反擊玩家（剋制玩家元素時，30% 機率套對應 DoT）
+    const monsterEl = battleState.monsterElement || 'none';
+    const playerElForDef = getPlayerElement();
+    if (monsterEl !== 'none' && ELEMENT_ADVANTAGE[monsterEl] === playerElForDef && Math.random() < 0.3) {
+      // 怪物剋玩家元素
+      if (monsterEl === 'fire') battleState.playerBurn = Math.max(battleState.playerBurn, 3);
+      else if (monsterEl === 'water') battleState.playerFreeze = Math.max(battleState.playerFreeze, 2);
+      else if (monsterEl === 'earth') battleState.playerPoison = Math.max(battleState.playerPoison, 3);
+      addLog(`${ELEMENTS[monsterEl].icon} 怪物反擊時把 ${ELEMENTS[monsterEl].name}屬性傳染給你！`);
+    }
     const enragedAtk = Math.round(battleState.monsterATK * 1.3 * bossFuryMod);
     if (gameState.evadeNext) {
       gameState.evadeNext = false;
@@ -2309,6 +2377,103 @@ function bindUltimateKey() {
       }
     }
   });
+}
+
+// ==================== Sprint 7: 元素剋制 + DoT/CC ====================
+// 技能預設 element（無則 = playerElement 預設，預設 'fire' 由角色決定）
+const SKILL_ELEMENT = {
+  'fireball': 'fire', 'bloodlust': 'fire', 'shadow-bolt': 'fire',
+  'frost-nova': 'water', 'ice-storm': 'water',
+  'wild-growth': 'wind', 'heal-aura': 'wind',
+  'axe-throw': 'earth', 'poison-blade': 'earth', 'ground-smash': 'earth',
+  'shadow-strike': 'fire', 'multi-shot': 'wind', 'eagle-eye': 'wind',
+  'bone-shield': 'earth', 'death-coil': 'earth', 'soul-drain': 'earth',
+  'divine-shield': 'water', 'holy-strike': 'water',
+  'moonfire': 'fire', 'starfall': 'fire', 'nature-shield': 'earth',
+  'dark-reap': 'fire', 'void-blast': 'fire',
+  'shield-bash': 'earth', 'iron-fortress': 'earth', 'holy-shield': 'water',
+  'shadow-veil': 'wind', 'poison-arrow': 'earth',
+  'shield-bash': 'earth',
+};
+function getPlayerElement() {
+  // 角色預設元素（v1: 簡化 — 全部預設 fire，可由玩家在裝備 screen 換飾品）
+  return gameState.playerElement || 'fire';
+}
+function getSkillElement(skill) {
+  return SKILL_ELEMENT[skill] || getPlayerElement();
+}
+
+// 對怪物施加元素 DoT/CC（每個技能根據 element 給對應 debuff）
+function applyElementalDebuffToMonster(element) {
+  if (element === 'fire') {
+    battleState.burnStacks = 3;
+    addLog('🔥 怪物被燃燒（3 回合，每回合 5% MaxHP 傷害）');
+  } else if (element === 'water') {
+    battleState.freezeStacks = 2;
+    addLog('💧 怪物被冰凍（2 回合，50% 機率 skip 反擊）');
+  } else if (element === 'earth') {
+    battleState.poisonStacks = 3;
+    addLog('🌍 怪物被中毒（3 回合，每回合 6% MaxHP 傷害）');
+  }
+  // wind 沒有 DoT，但有命中率 -20% 效果（v1 簡化省略）
+}
+
+// DoT 結算（每回合開始時調用）
+function tickMonsterDoT() {
+  if (!battleState.battleActive) return;
+  let totalDmg = 0;
+  if (battleState.burnStacks > 0) {
+    const d = Math.round(battleState.monsterMaxHP * 0.05);
+    battleState.monsterHP = Math.max(0, battleState.monsterHP - d);
+    battleState.burnStacks--;
+    totalDmg += d;
+    addLog(`🔥 燃燒傷害：-${d} HP（剩餘 ${battleState.burnStacks} 回合）`);
+  }
+  if (battleState.poisonStacks > 0) {
+    const d = Math.round(battleState.monsterMaxHP * 0.06);
+    battleState.monsterHP = Math.max(0, battleState.monsterHP - d);
+    battleState.poisonStacks--;
+    totalDmg += d;
+    addLog(`🌍 中毒傷害：-${d} HP（剩餘 ${battleState.poisonStacks} 回合）`);
+  }
+  if (totalDmg > 0) {
+    showDmgNumber(totalDmg, false, false);
+    flashSprite('monster-sprite');
+  }
+  if (battleState.monsterHP <= 0) {
+    checkBattleEnd();
+  }
+}
+
+function tickPlayerDoT() {
+  if (!battleState.battleActive) return;
+  let totalDmg = 0;
+  if (battleState.playerBurn > 0) {
+    const d = Math.round(gameState.playerMaxHP * 0.05);
+    gameState.playerHP = Math.max(0, gameState.playerHP - d);
+    battleState.playerBurn--;
+    totalDmg += d;
+    addLog(`🔥 你被燃燒：-${d} HP（剩餘 ${battleState.playerBurn} 回合）`);
+  }
+  if (battleState.playerPoison > 0) {
+    const d = Math.round(gameState.playerMaxHP * 0.06);
+    gameState.playerHP = Math.max(0, gameState.playerHP - d);
+    battleState.playerPoison--;
+    totalDmg += d;
+    addLog(`🌍 你被中毒：-${d} HP（剩餘 ${battleState.playerPoison} 回合）`);
+  }
+  // 冰凍 50% 機率 skip 玩家回合
+  if (battleState.playerFreeze > 0) {
+    if (Math.random() < 0.5) {
+      battleState.playerFreeze--;
+      addLog(`💧 你被冰凍，跳過本回合！（剩餘 ${battleState.playerFreeze} 回合）`);
+      return true;  // 跳過
+    } else {
+      battleState.playerFreeze--;
+      addLog(`💧 你掙脫冰凍！（剩餘 ${battleState.playerFreeze} 回合）`);
+    }
+  }
+  return false;  // 不跳過
 }
 
 function useSkill(skill) {
@@ -2735,7 +2900,7 @@ function updateBattleUI() {
   }
   if (energyText) energyText.textContent = energy;
   if (energyHint) energyHint.style.display = energy >= 100 ? 'inline' : 'none';
-  document.getElementById('monster-hud-name').textContent = battleState.monsterName;
+  document.getElementById('monster-hud-name').innerHTML = `${battleState.monsterName} <span id="monster-element-icon" style="font-size:.8rem">${ELEMENTS[battleState.monsterElement]?.icon || ''}</span>`;
   document.getElementById('monster-hp-text').textContent = battleState.monsterHP;
   document.getElementById('monster-max-hp').textContent = battleState.monsterMaxHP;
   document.getElementById('monster-hp-bar').style.width = (battleState.monsterHP / battleState.monsterMaxHP * 100) + '%';
@@ -2856,6 +3021,14 @@ function spawnNextWave() {
   battleState.monsterATK = Math.round(ms.atk * monsterMod.atk);
   battleState.monsterName = ms.name;
   battleState.monsterImg = ms.img;
+  battleState.monsterElement = ms.element || 'none';
+  // Sprint 7: 重置 DoT 計數（新怪物進場）
+  battleState.burnStacks = 0;
+  battleState.freezeStacks = 0;
+  battleState.poisonStacks = 0;
+  battleState.playerBurn = 0;
+  battleState.playerFreeze = 0;
+  battleState.playerPoison = 0;
   // Sprint 3 #3: 新怪物進場重置激怒狀態（每隻怪物獨立激怒計數）
   battleState.enraged = 0;
   const mSpriteEl = document.getElementById('monster-sprite');
