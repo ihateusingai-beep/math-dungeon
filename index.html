@@ -1200,7 +1200,10 @@ let gameState = {
   poisonStacks: 0,
   poisonDamage: 0,
   sessionGold: 0,
-  sessionXP: 0
+  sessionXP: 0,
+  // Sprint 10: Skill Tree
+  skillPoints: 0,                                    // 可用技能點
+  skillLevels: {},                                   // { skillId: level } (0-3)
 };
 
 let battleState = {
@@ -1525,6 +1528,292 @@ const SKILL_DEFS = {
   'quick-shot': 6, 'poison-arrow': 12, 'multi-shot': 18, 'eagle-eye': 10
 };
 const DEFAULT_SKILL_COST = 15;
+
+// ==================== Sprint 10 #1: SKILL_TREE 資料結構 ====================
+// 每職業 = 現有 3-4 個 tier-0 基礎 + 3 個新 tier-2 終極。
+// 升級只改 MP cost（costs[level-1]），效果 v1 保持原 useSkill 邏輯。
+// 終極前置 = 同分支 tier-0 lv2。
+// v2（sprint 10b+）會擴展 effects 升級效果。
+const SKILL_TREE = {
+  knight: {
+    name: '聖殿騎士', icon: '🛡️', color: '#5eb3ff',
+    branches: { attack: '⚔️ 進攻', defense: '🛡️ 防禦' },  // 2 分支
+    skills: [
+      // 現有 tier-0
+      { id: 'shield-bash', name: '盾牌猛擊', branch: 'attack', icon: '🛡️', desc: '15 物理傷害',
+        costs: [8, 12, 18], effects: [{damage:15},{damage:25,stun:1},{damage:40,stun:2}] },
+      { id: 'iron-fortress', name: '鋼鐵壁壘', branch: 'defense', icon: '🛡️', desc: '75% 減傷 3 回合',
+        costs: [15, 20, 25], effects: [{reduction:0.5,turns:2},{reduction:0.75,turns:3},{reduction:0.85,turns:4}] },
+      { id: 'holy-shield', name: '聖光護盾', branch: 'defense', icon: '✨', desc: '無敵 4 回合',
+        costs: [15, 20, 25], effects: [{invincible:3},{invincible:4},{invincible:5,reflect:0.3}] },
+      // 新 tier-2 終極（3 個，knight 偏 defense 所以 2 個 defense 變體 + 1 attack 變體）
+      { id: 'divine-judgement', name: '神聖審判', branch: 'attack', tier: 2, icon: '⚖️', desc: '終極：60 聖光傷害 + 敵人 ATK -25% 2 回合',
+        costs: [30, 40, 50], prereq: 'shield-bash', effects: [{damage:25,type:'holy'},{damage:40,type:'holy',attackDown:0.15},{damage:60,type:'holy',attackDown:0.25,heal:30}] },
+      { id: 'aegis-of-light', name: '光輝庇護', branch: 'defense', tier: 2, icon: '🌟', desc: '終極：90% 減傷 5 回合 + 反射 50% 傷害',
+        costs: [30, 40, 50], prereq: 'iron-fortress', effects: [{reduction:0.7,turns:3,reflect:0.2},{reduction:0.8,turns:4,reflect:0.35},{reduction:0.9,turns:5,reflect:0.5}] },
+      { id: 'paladin-oath', name: '聖騎誓言', branch: 'defense', tier: 2, icon: '🛡️', desc: '終極：無敵 3 回合 + 結束時回滿 HP',
+        costs: [30, 40, 50], prereq: 'holy-shield', effects: [{invincible:2,healOnEnd:0.3},{invincible:2,healOnEnd:0.5},{invincible:3,healOnEnd:1.0}] },
+    ]
+  },
+  mage: {
+    name: '法師', icon: '🔥', color: '#ff6b35',
+    branches: { attack: '⚔️ 進攻', utility: '✨ 輔助' },
+    skills: [
+      { id: 'fireball', name: '火球術', branch: 'attack', icon: '🔥', desc: '40 魔法傷害',
+        costs: [15, 22, 30], effects: [{damage:40},{damage:60,burn:3},{damage:90,burn:5}] },
+      { id: 'frost-nova', name: '冰凍術', branch: 'attack', icon: '❄️', desc: '20 傷害 + 冰凍 2 回合',
+        costs: [12, 18, 25], effects: [{damage:20,freeze:1},{damage:35,freeze:2},{damage:50,freeze:3}] },
+      { id: 'heal', name: '治療術', branch: 'utility', icon: '💚', desc: '回復 30 HP',
+        costs: [20, 28, 35], effects: [{heal:30},{heal:50},{heal:80,partyHeal:0.3}] },
+      // 3 終極
+      { id: 'meteor-storm', name: '隕石風暴', branch: 'attack', tier: 2, icon: '☄️', desc: '終極：全敵人 100 傷害 + 燃燒 5 回合',
+        costs: [35, 45, 55], prereq: 'fireball', effects: [{damage:60,aoe:1,burn:3},{damage:80,aoe:1,burn:4},{damage:100,aoe:1,burn:5}] },
+      { id: 'absolute-zero', name: '絕對零度', branch: 'attack', tier: 2, icon: '🧊', desc: '終極：80 傷害 + 冰封 5 回合（怪物 skip 反擊）',
+        costs: [35, 45, 55], prereq: 'frost-nova', effects: [{damage:50,freeze:3},{damage:65,freeze:4},{damage:80,freeze:5}] },
+      { id: 'arcane-bloom', name: '奧術綻放', branch: 'utility', tier: 2, icon: '🌸', desc: '終極：全隊回滿 HP + 30% 攻擊力 buff 3 回合',
+        costs: [35, 45, 55], prereq: 'heal', effects: [{heal:0.5,partyAtkUp:0.2,turns:2},{heal:0.8,partyAtkUp:0.25,turns:3},{heal:1.0,partyAtkUp:0.3,turns:3}] },
+    ]
+  },
+  berserker: {
+    name: '狂戰士', icon: '🪓', color: '#c0392b',
+    branches: { attack: '⚔️ 進攻' },  // 單一分支 × 3 變體
+    skills: [
+      { id: 'bloodlust', name: '嗜血打擊', branch: 'attack', icon: '🩸', desc: '25 傷害 + 吸血 15',
+        costs: [10, 15, 20], effects: [{damage:25,lifesteal:15},{damage:40,lifesteal:25},{damage:60,lifesteal:40}] },
+      { id: 'berserk-rage', name: '狂暴狀態', branch: 'attack', icon: '💢', desc: '下 2 攻擊 ×2',
+        costs: [15, 22, 30], effects: [{stacks:2,mult:2},{stacks:3,mult:2},{stacks:4,mult:2.5}] },
+      { id: 'critical', name: '暴擊之刃', branch: 'attack', icon: '⚡', desc: '下次 ×3',
+        costs: [10, 15, 20], effects: [{mult:3,stacks:1},{mult:4,stacks:1},{mult:5,stacks:1}] },
+      // 3 attack 變體終極
+      { id: 'carnage', name: '大屠殺', branch: 'attack', tier: 2, icon: '🩸', desc: '終極：3 連擊 ×60 傷害',
+        costs: [30, 40, 50], prereq: 'bloodlust', effects: [{hits:2,damage:50},{hits:3,damage:60},{hits:3,damage:80}] },
+      { id: 'unstoppable-rage', name: '無盡狂暴', branch: 'attack', tier: 2, icon: '🔥', desc: '終極：5 回合 ×3 攻擊 + 反射 30% 傷害',
+        costs: [30, 40, 50], prereq: 'berserk-rage', effects: [{stacks:3,mult:2.5,reflect:0.15},{stacks:4,mult:2.5,reflect:0.2},{stacks:5,mult:3,reflect:0.3}] },
+      { id: 'apex-strike', name: '極致打擊', branch: 'attack', tier: 2, icon: '⚔️', desc: '終極：100 傷害 + 100% 暴擊',
+        costs: [30, 40, 50], prereq: 'critical', effects: [{damage:70,mult:3},{damage:85,mult:3},{damage:100,mult:3.5}] },
+    ]
+  },
+  assassin: {
+    name: '暗影刺客', icon: '🗡️', color: '#7d3c98',
+    branches: { attack: '⚔️ 進攻', utility: '✨ 輔助' },
+    skills: [
+      { id: 'shadow-strike', name: '影襲', branch: 'attack', icon: '🗡️', desc: '35 傷害',
+        costs: [10, 15, 20], effects: [{damage:35},{damage:55,crit:0.3},{damage:80,crit:0.5}] },
+      { id: 'smoke-bomb', name: '煙霧彈', branch: 'utility', icon: '💨', desc: '迴避下次攻擊',
+        costs: [12, 18, 25], effects: [{evade:1},{evade:1,atkUp:0.2,turns:2},{evade:2,atkUp:0.3,turns:3}] },
+      { id: 'poison-blade', name: '淬毒刃', branch: 'attack', icon: '🧪', desc: '20 傷害 + 中毒 3 回合',
+        costs: [15, 22, 30], effects: [{damage:20,poison:8,turns:3},{damage:35,poison:12,turns:4},{damage:50,poison:18,turns:5}] },
+      // 3 終極
+      { id: 'shadow-master', name: '暗影大師', branch: 'attack', tier: 2, icon: '🌑', desc: '終極：必暴擊 + 100 傷害 + 中毒 5 回合',
+        costs: [30, 40, 50], prereq: 'shadow-strike', effects: [{damage:60,crit:1,poison:10,turns:3},{damage:80,crit:1,poison:15,turns:4},{damage:100,crit:1,poison:20,turns:5}] },
+      { id: 'assassination', name: '暗殺', branch: 'attack', tier: 2, icon: '🗡️', desc: '終極：怪物 30% MaxHP 直接斬殺（最少 80）',
+        costs: [30, 40, 50], prereq: 'poison-blade', effects: [{damage:80,execute:0.2},{damage:100,execute:0.3},{damage:120,execute:0.4}] },
+      { id: 'phantom-blade', name: '幻影之刃', branch: 'utility', tier: 2, icon: '👻', desc: '終極：迴避 3 次攻擊 + 每次反擊 50 傷害',
+        costs: [30, 40, 50], prereq: 'smoke-bomb', effects: [{evade:2,counterDmg:30},{evade:3,counterDmg:50},{evade:3,counterDmg:50,critCounter:1}] },
+    ]
+  },
+  necromancer: {
+    name: '死靈法師', icon: '💀', color: '#5e2c7a',
+    branches: { attack: '⚔️ 進攻', defense: '🛡️ 防禦', utility: '✨ 輔助' },
+    skills: [
+      { id: 'death-coil', name: '死亡纏繞', branch: 'attack', icon: '🌀', desc: '25 傷害 + 中毒 3 回合',
+        costs: [15, 22, 30], effects: [{damage:25,poison:5,turns:3},{damage:40,poison:8,turns:4},{damage:60,poison:12,turns:5}] },
+      { id: 'soul-drain', name: '靈魂吸取', branch: 'attack', icon: '💜', desc: '30 傷害 + 吸 15 HP/MP',
+        costs: [18, 25, 33], effects: [{damage:30,lifesteal:15,mpsteal:10},{damage:50,lifesteal:25,mpsteal:20},{damage:70,lifesteal:40,mpsteal:30}] },
+      { id: 'bone-shield', name: '白骨盾', branch: 'defense', icon: '🦴', desc: '50% 減傷 2 回合',
+        costs: [12, 18, 25], effects: [{reduction:0.5,turns:2},{reduction:0.6,turns:3},{reduction:0.7,turns:4}] },
+      { id: 'summon-minion', name: '召喚僕從', branch: 'utility', icon: '👤', desc: '下次攻擊 +20 傷害',
+        costs: [25, 35, 45], effects: [{bonus:20,stacks:1},{bonus:35,stacks:1},{bonus:50,stacks:1,partyBuff:0.15}] },
+      // 3 終極
+      { id: 'army-of-dead', name: '亡者大軍', branch: 'attack', tier: 2, icon: '💀', desc: '終極：3 連擊 50 傷害 + 中毒 5 回合',
+        costs: [35, 45, 55], prereq: 'death-coil', effects: [{hits:3,damage:35,poison:8,turns:3},{hits:3,damage:45,poison:12,turns:4},{hits:3,damage:50,poison:15,turns:5}] },
+      { id: 'spectral-form', name: '幽靈型態', branch: 'defense', tier: 2, icon: '👻', desc: '終極：無敵 3 回合 + 反射 50% 魔法',
+        costs: [35, 45, 55], prereq: 'bone-shield', effects: [{invincible:2,reflectMagic:0.3},{invincible:3,reflectMagic:0.4},{invincible:3,reflectMagic:0.5}] },
+      { id: 'lich-lord', name: '巫妖之王', branch: 'utility', tier: 2, icon: '👑', desc: '終極：召喚 2 隻僕從 + 全隊 +30% 攻擊',
+        costs: [35, 45, 55], prereq: 'summon-minion', effects: [{bonus:25,partyAtk:0.2,turns:3},{bonus:30,partyAtk:0.25,turns:4},{bonus:30,partyAtk:0.3,turns:5,partyCrit:0.1}] },
+    ]
+  },
+  paladin: {
+    name: '聖堂武士', icon: '🛡️', color: '#f1c40f',
+    branches: { attack: '⚔️ 進攻', defense: '🛡️ 防禦', utility: '✨ 輔助' },
+    skills: [
+      { id: 'holy-strike', name: '神聖打擊', branch: 'attack', icon: '✨', desc: '20 傷害 + 反傷 3',
+        costs: [12, 18, 25], effects: [{damage:20,reflect:3},{damage:35,reflect:6},{damage:50,reflect:10}] },
+      { id: 'divine-shield', name: '神聖庇護', branch: 'defense', icon: '🛡️', desc: '無敵 1 回合',
+        costs: [10, 15, 20], effects: [{invincible:1},{invincible:2},{invincible:3}] },
+      { id: 'heal-aura', name: '治療光環', branch: 'utility', icon: '💚', desc: '25 HP + 持續回血',
+        costs: [20, 28, 35], effects: [{heal:25,hot:3,turns:3},{heal:40,hot:5,turns:4},{heal:60,hot:8,turns:5}] },
+      { id: 'hammer-judgement', name: '錘子審判', branch: 'attack', icon: '⚖️', desc: '35 傷害 + 敵人 ATK -5',
+        costs: [18, 25, 33], effects: [{damage:35,attackDown:5,turns:2},{damage:55,attackDown:10,turns:3},{damage:80,attackDown:15,turns:4}] },
+      // 3 終極
+      { id: 'holy-avenger', name: '神聖復仇者', branch: 'attack', tier: 2, icon: '⚔️', desc: '終極：80 聖光傷害 + 暈眩 2 回合',
+        costs: [35, 45, 55], prereq: 'holy-strike', effects: [{damage:50,type:'holy',stun:1},{damage:65,type:'holy',stun:2},{damage:80,type:'holy',stun:2,executeLowHp:0.1}] },
+      { id: 'divine-fortress', name: '神聖堡壘', branch: 'defense', tier: 2, icon: '🏰', desc: '終極：85% 減傷 5 回合 + 反傷 50%',
+        costs: [35, 45, 55], prereq: 'divine-shield', effects: [{reduction:0.7,turns:3,reflect:0.3},{reduction:0.8,turns:4,reflect:0.4},{reduction:0.85,turns:5,reflect:0.5}] },
+      { id: 'salvation', name: '救贖', branch: 'utility', tier: 2, icon: '🌟', desc: '終極：全隊回滿 HP + 無敵 2 回合',
+        costs: [35, 45, 55], prereq: 'heal-aura', effects: [{heal:0.5,partyInvincible:1,turns:1},{heal:0.8,partyInvincible:1,turns:2},{heal:1.0,partyInvincible:2,turns:2}] },
+    ]
+  },
+  druid: {
+    name: '德魯伊', icon: '🌙', color: '#27ae60',
+    branches: { attack: '⚔️ 進攻', defense: '🛡️ 防禦', utility: '✨ 輔助' },
+    skills: [
+      { id: 'moonfire', name: '月火術', branch: 'attack', icon: '🌙', desc: '22 傷害 + 燃燒 3 回合',
+        costs: [14, 20, 28], effects: [{damage:22,burn:4,turns:3},{damage:35,burn:6,turns:4},{damage:50,burn:10,turns:5}] },
+      { id: 'starfall', name: '星落術', branch: 'attack', icon: '⭐', desc: '40 傷害',
+        costs: [22, 30, 40], effects: [{damage:40},{damage:60,stun:1},{damage:85,stun:2}] },
+      { id: 'nature-shield', name: '自然護盾', branch: 'defense', icon: '🌿', desc: '75% 減傷 2 回合',
+        costs: [15, 22, 30], effects: [{reduction:0.75,turns:2},{reduction:0.8,turns:3},{reduction:0.9,turns:3,regen:5}] },
+      { id: 'wild-growth', name: '野性生長', branch: 'utility', icon: '🌱', desc: '20 HP + 持續回血',
+        costs: [10, 15, 20], effects: [{heal:20,hot:3,turns:3},{heal:35,hot:5,turns:4},{heal:50,hot:8,turns:5}] },
+      // 3 終極
+      { id: 'eclipse', name: '蝕月', branch: 'attack', tier: 2, icon: '🌑', desc: '終極：60 暗影傷害 + 全敵 ATK -30% 3 回合',
+        costs: [35, 45, 55], prereq: 'moonfire', effects: [{damage:40,type:'shadow',attackDown:0.2,turns:2},{damage:50,type:'shadow',attackDown:0.25,turns:3},{damage:60,type:'shadow',attackDown:0.3,turns:3}] },
+      { id: 'ancestral-barrier', name: '先祖屏障', branch: 'defense', tier: 2, icon: '🛡️', desc: '終極：90% 減傷 4 回合 + 持續回血 8 HP',
+        costs: [35, 45, 55], prereq: 'nature-shield', effects: [{reduction:0.8,turns:3,hot:5},{reduction:0.85,turns:4,hot:6},{reduction:0.9,turns:4,hot:8}] },
+      { id: 'genesis', name: '創世紀', branch: 'utility', tier: 2, icon: '🌳', desc: '終極：全隊回滿 HP + 攻擊力 +40% 3 回合',
+        costs: [35, 45, 55], prereq: 'wild-growth', effects: [{heal:0.5,partyAtk:0.25,turns:2},{heal:0.8,partyAtk:0.3,turns:3},{heal:1.0,partyAtk:0.4,turns:3}] },
+    ]
+  },
+  viking: {
+    name: '維京戰士', icon: '🪓', color: '#7f8c8d',
+    branches: { attack: '⚔️ 進攻', utility: '✨ 輔助' },
+    skills: [
+      { id: 'axe-throw', name: '斧頭投擲', branch: 'attack', icon: '🪓', desc: '18 傷害 + 流血 2 回合',
+        costs: [8, 12, 18], effects: [{damage:18,bleed:3,turns:2},{damage:30,bleed:5,turns:3},{damage:45,bleed:8,turns:4}] },
+      { id: 'blood-rage', name: '血腥狂暴', branch: 'attack', icon: '🩸', desc: '下 2 攻擊 ×1.5 + 吸血 50%',
+        costs: [15, 22, 30], effects: [{mult:1.5,lifesteal:0.5,turns:2},{mult:1.5,lifesteal:0.6,turns:3},{mult:1.7,lifesteal:0.7,turns:3}] },
+      { id: 'ground-smash', name: '大地粉碎', branch: 'attack', icon: '🪨', desc: '30 傷害',
+        costs: [18, 25, 33], effects: [{damage:30},{damage:50,stun:1},{damage:75,stun:2}] },
+      { id: 'battle-cry', name: '戰鬥怒吼', branch: 'utility', icon: '📢', desc: '下 3 攻擊 +5',
+        costs: [10, 15, 20], effects: [{atkUp:5,stacks:3},{atkUp:8,stacks:4},{atkUp:12,stacks:5}] },
+      // 3 attack 變體 + 1 utility 終極
+      { id: 'ragnarok', name: '諸神黃昏', branch: 'attack', tier: 2, icon: '🪓', desc: '終極：100 傷害 + 暈眩 2 + 流血 5 回合',
+        costs: [35, 45, 55], prereq: 'axe-throw', effects: [{damage:60,bleed:8,turns:3},{damage:80,bleed:10,turns:4},{damage:100,bleed:12,turns:5}] },
+      { id: 'berserker-storm', name: '狂戰風暴', branch: 'attack', tier: 2, icon: '🌪️', desc: '終極：3 連擊 40 傷害 + 吸血 50%',
+        costs: [35, 45, 55], prereq: 'blood-rage', effects: [{hits:3,damage:30,lifesteal:0.4},{hits:3,damage:40,lifesteal:0.5},{hits:3,damage:50,lifesteal:0.5}] },
+      { id: 'valhalla-call', name: '英靈殿召喚', branch: 'utility', tier: 2, icon: '⚔️', desc: '終極：全隊 +30% 攻擊 4 回合 + 死亡時復活一次',
+        costs: [35, 45, 55], prereq: 'battle-cry', effects: [{partyAtk:0.2,turns:3,revive:false},{partyAtk:0.25,turns:4,revive:0.5},{partyAtk:0.3,turns:4,revive:1.0}] },
+    ]
+  },
+  shadow: {
+    name: '暗影惡魔獵人', icon: '🌑', color: '#2c3e50',
+    branches: { attack: '⚔️ 進攻', utility: '✨ 輔助' },
+    skills: [
+      { id: 'shadow-bolt', name: '暗影彈', branch: 'attack', icon: '🌑', desc: '20 傷害',
+        costs: [8, 12, 18], effects: [{damage:20},{damage:35,type:'shadow'},{damage:50,type:'shadow',manaBurn:5}] },
+      { id: 'dark-reap', name: '暗影收割', branch: 'attack', icon: '⚫', desc: '30 傷害 + 吸 10 MP',
+        costs: [14, 20, 28], effects: [{damage:30,mpsteal:10},{damage:50,mpsteal:15},{damage:70,mpsteal:25}] },
+      { id: 'void-blast', name: '虛空衝擊', branch: 'attack', icon: '🌀', desc: '45 傷害',
+        costs: [22, 30, 40], effects: [{damage:45},{damage:65,type:'void'},{damage:90,type:'void',ignoreDef:0.5}] },
+      { id: 'shadow-veil', name: '暗影面紗', branch: 'utility', icon: '👁️', desc: '迴避下次',
+        costs: [12, 18, 25], effects: [{evade:1},{evade:1,critUp:0.3,turns:2},{evade:2,critUp:0.4,turns:3}] },
+      // 3 attack 變體 + 1 utility 終極
+      { id: 'chaos-bolt', name: '混沌箭', branch: 'attack', tier: 2, icon: '🌀', desc: '終極：3 屬性傷害（物/魔/暗）80 + 燃燒 5 回合',
+        costs: [35, 45, 55], prereq: 'shadow-bolt', effects: [{damage:50,types:['physical','magic','shadow']},{damage:65,types:['physical','magic','shadow']},{damage:80,types:['physical','magic','shadow'],burn:10,turns:3}] },
+      { id: 'soul-rend', name: '靈魂撕裂', branch: 'attack', tier: 2, icon: '👻', desc: '終極：吸 60% 傷害為 HP + 沉默 2 回合',
+        costs: [35, 45, 55], prereq: 'dark-reap', effects: [{damage:50,lifesteal:0.4,silence:1},{damage:70,lifesteal:0.5,silence:2},{damage:90,lifesteal:0.6,silence:2,ignoreDef:0.3}] },
+      { id: 'demon-form', name: '惡魔型態', branch: 'utility', tier: 2, icon: '😈', desc: '終極：3 回合 +50% 攻擊 + 反射 30% 傷害',
+        costs: [35, 45, 55], prereq: 'shadow-veil', effects: [{partyAtk:0.3,turns:2,reflect:0.2},{partyAtk:0.4,turns:3,reflect:0.25},{partyAtk:0.5,turns:3,reflect:0.3,ignoreDef:0.2}] },
+    ]
+  },
+  ranger: {
+    name: '森林之王', icon: '🏹', color: '#16a085',
+    branches: { attack: '⚔️ 進攻', utility: '✨ 輔助' },
+    skills: [
+      { id: 'quick-shot', name: '快速射擊', branch: 'attack', icon: '🏹', desc: '15 傷害',
+        costs: [6, 10, 15], effects: [{damage:15},{damage:25,extraHit:0.3},{damage:40,extraHit:0.5}] },
+      { id: 'poison-arrow', name: '毒箭', branch: 'attack', icon: '🧪', desc: '18 傷害 + 中毒 2 回合',
+        costs: [12, 18, 25], effects: [{damage:18,poison:5,turns:2},{damage:30,poison:8,turns:3},{damage:45,poison:12,turns:4}] },
+      { id: 'multi-shot', name: '多重射擊', branch: 'attack', icon: '🌟', desc: '3 × 12 傷害',
+        costs: [18, 25, 33], effects: [{hits:3,damage:12},{hits:3,damage:18},{hits:4,damage:22}] },
+      { id: 'eagle-eye', name: '鷹眼', branch: 'utility', icon: '🦅', desc: '下次 +8 傷害 + 暴擊',
+        costs: [10, 15, 20], effects: [{bonus:8,crit:0.3,stacks:1},{bonus:12,crit:0.4,stacks:1},{bonus:18,crit:0.5,stacks:1}] },
+      // 3 attack 變體 + 1 utility 終極
+      { id: 'arrow-rain', name: '箭雨', branch: 'attack', tier: 2, icon: '🌧️', desc: '終極：5 連擊各 25 傷害 + 流血 3 回合',
+        costs: [35, 45, 55], prereq: 'multi-shot', effects: [{hits:5,damage:20,bleed:5,turns:2},{hits:5,damage:25,bleed:5,turns:3},{hits:5,damage:30,bleed:5,turns:3}] },
+      { id: 'piercing-shot', name: '穿甲箭', branch: 'attack', tier: 2, icon: '🎯', desc: '終極：100 傷害 + 無視 50% 防禦',
+        costs: [35, 45, 55], prereq: 'poison-arrow', effects: [{damage:70,ignoreDef:0.3},{damage:85,ignoreDef:0.4},{damage:100,ignoreDef:0.5}] },
+      { id: 'hunters-mark', name: '獵人印記', branch: 'utility', tier: 2, icon: '🎯', desc: '終極：下 5 攻擊 100% 暴擊 + +50% 傷害',
+        costs: [35, 45, 55], prereq: 'eagle-eye', effects: [{stacks:3,crit:1,bonus:0.3},{stacks:4,crit:1,bonus:0.4},{stacks:5,crit:1,bonus:0.5}] },
+    ]
+  },
+};
+
+// 兼容性 helper：從 SKILL_TREE 取單個技能的 MP cost（按 level）
+function getSkillMpCost(skillId, level) {
+  const char = gameState.character;
+  if (!char || !SKILL_TREE[char]) return DEFAULT_SKILL_COST;
+  const skill = SKILL_TREE[char].skills.find(s => s.id === skillId);
+  if (!skill) return SKILL_DEFS[skillId] || DEFAULT_SKILL_COST;
+  const lvl = level || gameState.skillLevels[skillId] || 0;
+  if (lvl === 0) return skill.costs[0];  // 未解鎖仍用 lv1 cost（UI 隱藏）
+  return skill.costs[lvl - 1] || skill.costs[0];
+}
+
+// 終極前置檢查
+function canUnlockUltimate(skillId) {
+  const char = gameState.character;
+  if (!char || !SKILL_TREE[char]) return false;
+  const skill = SKILL_TREE[char].skills.find(s => s.id === skillId);
+  if (!skill || !skill.prereq) return true;
+  return (gameState.skillLevels[skill.prereq] || 0) >= 2;
+}
+
+// 升級技能（+1 級；終極需前置 lv2）
+// 戰鬥中/外皆可，會扣 skillPoints。
+// 升級到 lv1 = 解鎖（戰鬥中可見），lv2/3 = 強化（MP cost 上升，效果更強）。
+function upgradeSkill(skillId) {
+  const char = gameState.character;
+  if (!char || !SKILL_TREE[char]) return false;
+  const skill = SKILL_TREE[char].skills.find(s => s.id === skillId);
+  if (!skill) return false;
+  const currentLevel = gameState.skillLevels[skillId] || 0;
+  if (currentLevel >= 3) {
+    addLog(`❌ ${skill.name} 已是最高等級 Lv.3`);
+    return false;
+  }
+  if (currentLevel === 0 && skill.prereq) {
+    // 終極 lv1 = 解鎖，需前置 lv2
+    if ((gameState.skillLevels[skill.prereq] || 0) < 2) {
+      addLog(`❌ 解鎖 ${skill.name} 需要先升 ${skill.prereq} 到 Lv.2`);
+      return false;
+    }
+  }
+  if ((gameState.skillPoints || 0) < 1) {
+    addLog(`❌ 技能點不足（需要 1 點，目前 ${gameState.skillPoints || 0}）`);
+    return false;
+  }
+  gameState.skillPoints -= 1;
+  gameState.skillLevels[skillId] = currentLevel + 1;
+  const newLevel = currentLevel + 1;
+  const newCost = skill.costs[newLevel - 1];
+  if (newLevel === 1) {
+    addLog(`✨ 解鎖 ${skill.icon} ${skill.name} Lv.1（MP ${newCost}）`);
+  } else {
+    addLog(`⬆️ 升級 ${skill.icon} ${skill.name} Lv.${newLevel}（MP ${newCost}，剩 ${gameState.skillPoints} 點）`);
+  }
+  saveProgress();
+  return true;
+}
+
+// 重置所有技能（花 100 gold）
+function resetAllSkills() {
+  if ((gameState.gold || 0) < 100) {
+    addLog(`❌ 金幣不足（需要 100，目前 ${gameState.gold || 0}）`);
+    return false;
+  }
+  let total = 0;
+  for (const id in gameState.skillLevels) {
+    total += gameState.skillLevels[id];
+    delete gameState.skillLevels[id];
+  }
+  gameState.skillPoints = (gameState.skillPoints || 0) + total;
+  gameState.gold -= 100;
+  addLog(`🔄 重置所有技能（-${total} skill level，退還 ${total} 點，花 100 gold）`);
+  saveProgress();
+  return true;
+}
 
 
 // P1-3: reset all per-battle buff/debuff stacks + shield flags to defaults.
@@ -2565,7 +2854,14 @@ function tickPlayerDoT() {
 function useSkill(skill) {
   if (!battleState.battleActive) return;
   const char = gameState.character;
-  const cost = SKILL_DEFS[skill] != null ? SKILL_DEFS[skill] : DEFAULT_SKILL_COST;
+  // Sprint 10: 技能必須解鎖（lv >= 1）才能用
+  const level = gameState.skillLevels[skill] || 0;
+  if (level === 0) {
+    addLog(`❌ ${skill} 尚未解鎖（去技能樹升級）`);
+    return;
+  }
+  // Sprint 10: 動態 MP cost（按等級取 SKILL_TREE.costs[level-1]）
+  const cost = getSkillMpCost(skill, level);
   if (battleState.playerMP < cost) {
     addLog(`❌ MP不足！需要 ${cost} MP`);
     return;
@@ -2907,10 +3203,41 @@ function updateSkillButtons() {
   });
 
   // Check MP and apply disabled state only to visible buttons
+  // Sprint 10: 加上「未解鎖（lv 0）→ 隱藏 + 解鎖 → 顯示 + 更新 cost」
   document.querySelectorAll(`.${char}-only`).forEach(btn => {
-    const skillKey = btn.classList[1]; // second class is the skill key
-    const cost = SKILL_DEFS[skillKey] != null ? SKILL_DEFS[skillKey] : 0;
+    // Sprint 10 fix: 用 data-skill attribute 拿 skill key（classList[1] 是 icon 類名）
+    const skillKey = btn.dataset.skill;
+    if (!skillKey) return;
+    // Sprint 10: 未解鎖就 hide
+    const level = gameState.skillLevels[skillKey] || 0;
+    if (level === 0) {
+      btn.style.display = 'none';
+      return;
+    }
+    // Sprint 10: 動態 cost（按等級）
+    const cost = getSkillMpCost(skillKey, level);
+    const costEl = btn.querySelector('.sk-cost');
+    if (costEl) {
+      const origText = costEl.dataset.origText || costEl.textContent;
+      costEl.dataset.origText = origText;
+      // 替換 cost 為當前等級的 cost（保持其他文字不變）
+      costEl.textContent = origText.replace(/\d+MP/, cost + 'MP');
+    }
     btn.classList.toggle('disabled', battleState.playerMP < cost);
+    // 等級徽章
+    let lvlBadge = btn.querySelector('.sk-lvl-badge');
+    if (level > 1) {
+      if (!lvlBadge) {
+        lvlBadge = document.createElement('span');
+        lvlBadge.className = 'sk-lvl-badge';
+        lvlBadge.style.cssText = 'position:absolute;top:2px;right:2px;background:var(--gold);color:#000;font-size:.6rem;padding:1px 4px;border-radius:4px;font-weight:700;';
+        btn.style.position = 'relative';
+        btn.appendChild(lvlBadge);
+      }
+      lvlBadge.textContent = 'Lv' + level;
+    } else if (lvlBadge) {
+      lvlBadge.remove();
+    }
   });
 }
 
@@ -3202,6 +3529,11 @@ function showBattleResult(victory) {
     battleState.playerMaxMP = gameState.playerMaxMP;
     addLog(`🎉 等級提升！現在是 Lv.${gameState.level}！`);
     playSound('levelUp');
+    // Sprint 10: 每 3 級 +1 skill point
+    if (gameState.level % 3 === 0) {
+      gameState.skillPoints = (gameState.skillPoints || 0) + 1;
+      addLog(`🌟 獲得 1 技能點！（共 ${gameState.skillPoints} 點）`);
+    }
     // Sprint 4 #2: 覺醒觸發（Lv.30 自動覺醒，任務簡化為「達 Lv.30 即可」）
     if (gameState.level >= 30 && !gameState.awakened) {
       triggerAwakening();
@@ -3287,7 +3619,10 @@ function saveProgress() {
       equipped: gameState.equipped || { weapon: null, armor: null, accessory: null },
       inventory: Array.isArray(gameState.inventory) ? gameState.inventory : [],
       // Sprint 6: 藥水庫存（買了沒用）
-      potionStock: (typeof gameState.potionStock === 'object' && gameState.potionStock) ? gameState.potionStock : {}
+      potionStock: (typeof gameState.potionStock === 'object' && gameState.potionStock) ? gameState.potionStock : {},
+      // Sprint 10: Skill Tree
+      skillPoints: gameState.skillPoints || 0,
+      skillLevels: (typeof gameState.skillLevels === 'object' && gameState.skillLevels) ? gameState.skillLevels : {},
     };
     localStorage.setItem(SAVE_KEY, JSON.stringify(data));
   } catch(e) {}
@@ -3314,6 +3649,23 @@ function loadProgress() {
     gameState.equipped = (typeof data.equipped === 'object' && data.equipped) ? data.equipped : { weapon: null, armor: null, accessory: null };
     gameState.inventory = Array.isArray(data.inventory) ? data.inventory : [];
     gameState.potionStock = (typeof data.potionStock === 'object' && data.potionStock) ? data.potionStock : {};
+    // Sprint 10: Skill Tree 載入 + 兼容既有玩家
+    gameState.skillPoints = typeof data.skillPoints === 'number' ? data.skillPoints : 0;
+    gameState.skillLevels = (typeof data.skillLevels === 'object' && data.skillLevels) ? data.skillLevels : {};
+    // 兼容：第一次載入時，自動給「當前職業的所有 tier-0 技能」設 lv1
+    // （避免既有玩家開啟 skill tree 看到「所有技能都沒解鎖」）
+    if (gameState.character && SKILL_TREE[gameState.character]) {
+      const hasAnySkill = Object.keys(gameState.skillLevels).length > 0;
+      if (!hasAnySkill) {
+        // 第一次：自動解鎖所有 tier-0（沒 prereq 那些）
+        for (const skill of SKILL_TREE[gameState.character].skills) {
+          if (!skill.prereq && !skill.tier) {
+            gameState.skillLevels[skill.id] = 1;
+          }
+        }
+        addLog(`🌟 自動解鎖所有基礎技能（兼容模式）`);
+      }
+    }
     if (!gameState.character) { showNameScreen(); return; }
     // Sprint 5: 載入後重算屬性（level + 覺醒 + 裝備）
     if (typeof recomputePlayerStats === 'function') recomputePlayerStats();
