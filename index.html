@@ -51,6 +51,14 @@ html,body{height:100%;font-family:'Noto Sans TC',sans-serif;background:var(--bg)
 /* ============ UTILS ============ */
 .hidden{display:none!important}
 .flex-center{display:flex;align-items:center;justify-content:center}
+/* Sprint 13 #12: Screen 載入動畫（fade-in 200ms） */
+@keyframes screenFadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+section:not(.hidden):not(#home-screen) {
+  animation: screenFadeIn 200ms ease-out;
+}
 
 /* ============ SECTIONS ============ */
 section{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;transition:opacity .4s}
@@ -2144,6 +2152,10 @@ function sellItem(itemId) {
 }
 
 function startBattle() {
+  // Sprint 13 #11: 防止連點（按鈕 500ms 內 disable）
+  const startBtn = document.getElementById('confirm-start-btn');
+  if (startBtn && startBtn.disabled) return;
+  if (startBtn) { startBtn.disabled = true; setTimeout(() => { if (startBtn) startBtn.disabled = false; }, 800); }
   const s = currentStage;
   if (!s) return;
 
