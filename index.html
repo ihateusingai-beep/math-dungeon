@@ -114,6 +114,7 @@ section{position:fixed;inset:0;display:flex;flex-direction:column;align-items:ce
 
 /* ============ STAGE CONFIRM ============ */
 .confirm-box{background:var(--card);border-radius:24px;padding:32px;width:min(440px,95vw);text-align:center;border:2px solid var(--border)}
+.confirm-bg-preview{width:100%;height:120px;object-fit:cover;border-radius:12px;margin-bottom:14px;border:1px solid var(--border);box-shadow:0 2px 8px rgba(0,0,0,.3)}
 .confirm-stage-name{font-size:1.5rem;font-weight:700;color:var(--gold);margin-bottom:.5em}
 .confirm-info{display:flex;justify-content:center;gap:24px;margin:16px 0;font-size:.95rem;color:var(--text-dim)}
 .confirm-btn{margin-top:20px;padding:14px 40px;font-size:1.1rem;font-weight:700;border:none;border-radius:14px;cursor:pointer;transition:all .2s;touch-action:manipulation;background:linear-gradient(135deg,var(--primary),var(--secondary));color:#fff;box-shadow:0 4px 16px rgba(108,92,231,.4)}
@@ -627,12 +628,13 @@ section{position:fixed;inset:0;display:flex;flex-direction:column;align-items:ce
 
 <!-- ==================== STAGE CONFIRM ==================== -->
 <section id="stage-screen" class="hidden">
-  <button class="back-btn" onclick="showDiffScreen()">←</button>
+  <button class="back-btn" onclick="showDiffScreen()">← 難度選擇</button>
   <div class="confirm-box">
+    <img id="confirm-bg-preview" class="confirm-bg-preview" src="" alt="" style="display:none">
     <div class="screen-title">關卡確認</div>
     <div class="confirm-stage-name" id="confirm-stage-name"></div>
     <div class="confirm-info" id="confirm-info"></div>
-    <button class="confirm-btn" onclick="startBattle()">🚀 開始戰鬥！</button>
+    <button class="confirm-btn" id="confirm-start-btn" onclick="startBattle()">🚀 開始戰鬥！</button>
   </div>
 </section>
 
@@ -1432,10 +1434,41 @@ function renderStageConfirm() {
   const monsterHP = s.monsters.reduce((sum, m) => sum + (MONSTER_STATS[m]?.hp || 30), 0);
   const diffLabel = { easy: '🌱 初階 3選1', normal: '⚔️ 中階 4選1', hard: '💀 高階 數字輸入', boss: '👑 Boss 1.5x 強度' };
   const waveCount = s.isBoss ? s.monsters.length : 3;
+
+  // Sprint 11 #B: 背景圖 preview
+  const bgEl = document.getElementById('confirm-bg-preview');
+  if (bgEl) {
+    if (s.bg && BG_MAP[s.bg]) {
+      bgEl.src = BG_MAP[s.bg];
+      bgEl.alt = s.name + ' 背景';
+      bgEl.style.display = 'block';
+    } else {
+      bgEl.style.display = 'none';
+    }
+  }
+
+  // Sprint 11 #A: 題目數 + 推薦等級（基於難度粗略映射）
+  const qCount = (s.questions || []).length;
+  const recMap = { easy: 1, normal: 5, hard: 10, boss: 20 };
+  const recommendedLvl = recMap[s.difficulty] || 5;
+  const playerLvl = gameState.level || 1;
+  const lvlStatus = playerLvl >= recommendedLvl ? '✅ 適合' : '⚠️ 低於推薦';
+
+  // Sprint 11 #C: 最高歷史星（從 localStorage 拿）
+  const resultKey = `mathDungeon_battleResult_${s.id}`;
+  let bestStars = 0, bestAcc = 0;
+  try {
+    const stored = JSON.parse(localStorage.getItem(resultKey) || '{}');
+    bestStars = stored.stars || 0;
+    bestAcc = stored.lastAccuracy || 0;
+  } catch (e) {}
+  const starStr = bestStars > 0 ? `${'⭐'.repeat(bestStars)}${'☆'.repeat(5 - bestStars)}` : '☆☆☆☆☆';
+
   document.getElementById('confirm-info').innerHTML = `
-    <div>👹 ${s.isBoss ? '👑 ' : ''}${monsterNames} × ${waveCount} 波</div>
-    <div>❤️ 敵人 HP ${monsterHP}+/波</div>
-    <div>${diffLabel[currentDiff]}</div>
+    <div>📝 ${qCount} 題 │ 👹 ${s.isBoss ? '👑 ' : ''}${monsterNames} × ${waveCount} 波</div>
+    <div>📊 推薦 Lv.${recommendedLvl}（你 Lv.${playerLvl}）${lvlStatus}</div>
+    <div>${starStr} 最高 ${bestStars}/5 星${bestStars > 0 ? `（${bestAcc}% 命中）` : ''}</div>
+    <div>❤️ 敵人 HP ${monsterHP}+/波 │ ${diffLabel[currentDiff]}</div>
   `;
 }
 
