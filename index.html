@@ -1464,11 +1464,28 @@ function renderStageConfirm() {
   } catch (e) {}
   const starStr = bestStars > 0 ? `${'⭐'.repeat(bestStars)}${'☆'.repeat(5 - bestStars)}` : '☆☆☆☆☆';
 
+  // Sprint 12 #D: 戰鬥 modifier 摘要
+  const modList = [];
+  modList.push('🔥 激怒：答錯 ATK ×1.3（2 回合）');
+  if (s.isBoss) modList.push('👑 Boss 三階段：≤66% 狂暴化');
+  // 怪物元素
+  const sampleMonster = MONSTER_STATS[s.monsters[0]];
+  if (sampleMonster && sampleMonster.element && sampleMonster.element !== 'none' && typeof ELEMENTS !== 'undefined') {
+    const e = ELEMENTS[sampleMonster.element];
+    if (e) modList.push(`${e.icon} 怪物元素：${e.name}`);
+  }
+  modList.push(gameState.awakened ? '🌟 覺醒：屬性 ×1.5（已啟用）' : '🌟 覺醒：未啟用（Lv.30 解鎖）');
+  const modStr = modList.join(' · ');
+
   document.getElementById('confirm-info').innerHTML = `
     <div>📝 ${qCount} 題 │ 👹 ${s.isBoss ? '👑 ' : ''}${monsterNames} × ${waveCount} 波</div>
     <div>📊 推薦 Lv.${recommendedLvl}（你 Lv.${playerLvl}）${lvlStatus}</div>
     <div>${starStr} 最高 ${bestStars}/5 星${bestStars > 0 ? `（${bestAcc}% 命中）` : ''}</div>
     <div>❤️ 敵人 HP ${monsterHP}+/波 │ ${diffLabel[currentDiff]}</div>
+    <div style="margin-top:10px;padding-top:8px;border-top:1px dashed var(--border);font-size:.78rem;color:var(--text-dim);text-align:left;line-height:1.5">
+      <div style="color:var(--text);font-weight:600;margin-bottom:4px">⚙️ 戰鬥 modifier</div>
+      ${modStr}
+    </div>
   `;
 }
 
