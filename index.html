@@ -680,7 +680,7 @@ section{position:fixed;inset:0;display:flex;flex-direction:column;align-items:ce
     <div class="battle-field">
       <div class="battle-bg" id="battle-bg"></div>
       <img class="char-sprite" id="char-sprite" src="assets/images/knight-hero.png" alt="Hero">
-      <img class="monster-sprite" id="monster-sprite" src="assets/images/monsters/slime-green.png" alt="Monster">
+      <img class="monster-sprite" id="monster-sprite" src="assets/images/monsters/slime-green.png" alt="Monster" onerror="this.onerror=null;this.style.fontSize='6rem';this.style.textAlign='center';this.outerHTML='<div class=\"monster-sprite\" id=\"monster-sprite\" style=\"font-size:6rem;text-align:center;width:40%;aspect-ratio:1;display:flex;align-items:center;justify-content:center\">'+{slime:'🟢',wolf:'🐺',orc:'👹','skeleton-warrior':'💀','skeleton-mage':'🧙',dragon:'🐉','spire-golem':'🗿','mist-wraith':'👻','dusk-hawk':'🦅','bog-toad':'🐸','frost-lich':'❄️','lava-elemental':'🌋','shadow-aberration':'👁️'}[(battleState&&battleState.monsterKey)||'slime']+'</div>';">
     </div>
 
     <div class="battle-question">
@@ -1061,6 +1061,63 @@ const STAGES_DATA = {
         questions: [
           {q:"2 × 7 = ?",answer:14,choices:[12,14,16]},{q:"3 × 5 = ?",answer:15,choices:[12,15,18]},{q:"4 × 6 = ?",answer:24,choices:[20,22,24]},{q:"5 × 8 = ?",answer:40,choices:[35,40,45]},{q:"6 × 7 = ?",answer:42,choices:[36,42,48]},{q:"7 × 9 = ?",answer:63,choices:[56,63,70]},{q:"8 × 4 = ?",answer:32,choices:[28,30,32]},{q:"9 × 3 = ?",answer:27,choices:[24,27,30]},{q:"2 × 9 = ?",answer:18,choices:[16,18,20]},{q:"5 × 6 = ?",answer:30,choices:[25,30,35]}
         ]}
+    ]},
+    // Sprint 8: 7 個新場景 topic（每個 = 一個場景，3 難度）
+    "ruined-city": { name: "廢墟城市", stages: [
+      { id: "rc-easy", name: "廢墟城市·初", difficulty: "easy", enabled: true, monsters: ["spire-golem"], bg: "ruined_city",
+        questions: [{q:"2 × 1 = ?",answer:2,choices:[1,2,3]},{q:"2 × 2 = ?",answer:4,choices:[3,4,5]},{q:"2 × 3 = ?",answer:6,choices:[5,6,7]},{q:"2 × 4 = ?",answer:8,choices:[6,7,8]},{q:"2 × 5 = ?",answer:10,choices:[8,10,12]}]},
+      { id: "rc-normal", name: "廢墟城市·中", difficulty: "normal", enabled: true, monsters: ["spire-golem","mist-wraith"], bg: "ruined_city",
+        questions: [{q:"2 × 6 = ?",answer:12,choices:[10,12,14,16]},{q:"2 × 7 = ?",answer:14,choices:[12,14,16,18]},{q:"2 × 8 = ?",answer:16,choices:[14,16,18,20]},{q:"2 × 9 = ?",answer:18,choices:[16,18,20,22]},{q:"2 × 10 = ?",answer:20,choices:[18,20,22,24]}]},
+      { id: "rc-hard", name: "廢墟城市·終", difficulty: "hard", enabled: true, monsters: ["mist-wraith"], bg: "ruined_city",
+        questions: [{q:"3 × 1 = ?",answer:3},{q:"3 × 2 = ?",answer:6},{q:"3 × 3 = ?",answer:9},{q:"3 × 4 = ?",answer:12},{q:"3 × 5 = ?",answer:15}]}
+    ]},
+    "misty-plain": { name: "薄霧平原", stages: [
+      { id: "mp-easy", name: "薄霧平原·初", difficulty: "easy", enabled: true, monsters: ["mist-wraith"], bg: "misty_plain",
+        questions: [{q:"3 × 6 = ?",answer:18,choices:[16,18,20]},{q:"3 × 7 = ?",answer:21,choices:[19,21,23]},{q:"3 × 8 = ?",answer:24,choices:[22,24,26]},{q:"3 × 9 = ?",answer:27,choices:[25,27,29]},{q:"3 × 10 = ?",answer:30,choices:[28,30,32]}]},
+      { id: "mp-normal", name: "薄霧平原·中", difficulty: "normal", enabled: true, monsters: ["mist-wraith","dusk-hawk"], bg: "misty_plain",
+        questions: [{q:"4 × 1 = ?",answer:4,choices:[2,4,6,8]},{q:"4 × 2 = ?",answer:8,choices:[6,8,10,12]},{q:"4 × 3 = ?",answer:12,choices:[10,12,14,16]},{q:"4 × 4 = ?",answer:16,choices:[14,16,18,20]},{q:"4 × 5 = ?",answer:20,choices:[18,20,22,24]}]},
+      { id: "mp-hard", name: "薄霧平原·終", difficulty: "hard", enabled: true, monsters: ["dusk-hawk"], bg: "misty_plain",
+        questions: [{q:"4 × 6 = ?",answer:24},{q:"4 × 7 = ?",answer:28},{q:"4 × 8 = ?",answer:32},{q:"4 × 9 = ?",answer:36},{q:"4 × 10 = ?",answer:40}]}
+    ]},
+    "dusk-mountains": { name: "黃昏山脈", stages: [
+      { id: "dm-easy", name: "黃昏山脈·初", difficulty: "easy", enabled: true, monsters: ["dusk-hawk"], bg: "dusk_mountains",
+        questions: [{q:"5 × 1 = ?",answer:5,choices:[3,5,7]},{q:"5 × 2 = ?",answer:10,choices:[8,10,12]},{q:"5 × 3 = ?",answer:15,choices:[13,15,17]},{q:"5 × 4 = ?",answer:20,choices:[18,20,22]},{q:"5 × 5 = ?",answer:25,choices:[23,25,27]}]},
+      { id: "dm-normal", name: "黃昏山脈·中", difficulty: "normal", enabled: true, monsters: ["dusk-hawk","bog-toad"], bg: "dusk_mountains",
+        questions: [{q:"5 × 6 = ?",answer:30,choices:[28,30,32,34]},{q:"5 × 7 = ?",answer:35,choices:[33,35,37,39]},{q:"5 × 8 = ?",answer:40,choices:[38,40,42,44]},{q:"5 × 9 = ?",answer:45,choices:[43,45,47,49]},{q:"5 × 10 = ?",answer:50,choices:[48,50,52,54]}]},
+      { id: "dm-hard", name: "黃昏山脈·終", difficulty: "hard", enabled: true, monsters: ["bog-toad"], bg: "dusk_mountains",
+        questions: [{q:"6 × 1 = ?",answer:6},{q:"6 × 2 = ?",answer:12},{q:"6 × 3 = ?",answer:18},{q:"6 × 4 = ?",answer:24},{q:"6 × 5 = ?",answer:30}]}
+    ]},
+    "swamp": { name: "沼澤地", stages: [
+      { id: "sw-easy", name: "沼澤地·初", difficulty: "easy", enabled: true, monsters: ["bog-toad"], bg: "swamp",
+        questions: [{q:"6 × 6 = ?",answer:36,choices:[34,36,38]},{q:"6 × 7 = ?",answer:42,choices:[40,42,44]},{q:"6 × 8 = ?",answer:48,choices:[46,48,50]},{q:"6 × 9 = ?",answer:54,choices:[52,54,56]},{q:"6 × 10 = ?",answer:60,choices:[58,60,62]}]},
+      { id: "sw-normal", name: "沼澤地·中", difficulty: "normal", enabled: true, monsters: ["bog-toad","frost-lich"], bg: "swamp",
+        questions: [{q:"7 × 1 = ?",answer:7,choices:[5,7,9,11]},{q:"7 × 2 = ?",answer:14,choices:[12,14,16,18]},{q:"7 × 3 = ?",answer:21,choices:[19,21,23,25]},{q:"7 × 4 = ?",answer:28,choices:[26,28,30,32]},{q:"7 × 5 = ?",answer:35,choices:[33,35,37,39]}]},
+      { id: "sw-hard", name: "沼澤地·終", difficulty: "hard", enabled: true, monsters: ["frost-lich"], bg: "swamp",
+        questions: [{q:"7 × 6 = ?",answer:42},{q:"7 × 7 = ?",answer:49},{q:"7 × 8 = ?",answer:56},{q:"7 × 9 = ?",answer:63},{q:"7 × 10 = ?",answer:70}]}
+    ]},
+    "snow": { name: "雪山", stages: [
+      { id: "sn-easy", name: "雪山·初", difficulty: "easy", enabled: true, monsters: ["frost-lich"], bg: "snow",
+        questions: [{q:"8 × 1 = ?",answer:8,choices:[6,8,10]},{q:"8 × 2 = ?",answer:16,choices:[14,16,18]},{q:"8 × 3 = ?",answer:24,choices:[22,24,26]},{q:"8 × 4 = ?",answer:32,choices:[30,32,34]},{q:"8 × 5 = ?",answer:40,choices:[38,40,42]}]},
+      { id: "sn-normal", name: "雪山·中", difficulty: "normal", enabled: true, monsters: ["frost-lich","lava-elemental"], bg: "snow",
+        questions: [{q:"8 × 6 = ?",answer:48,choices:[46,48,50,52]},{q:"8 × 7 = ?",answer:56,choices:[54,56,58,60]},{q:"8 × 8 = ?",answer:64,choices:[62,64,66,68]},{q:"8 × 9 = ?",answer:72,choices:[70,72,74,76]},{q:"8 × 10 = ?",answer:80,choices:[78,80,82,84]}]},
+      { id: "sn-hard", name: "雪山·終", difficulty: "hard", enabled: true, monsters: ["lava-elemental"], bg: "snow",
+        questions: [{q:"9 × 1 = ?",answer:9},{q:"9 × 2 = ?",answer:18},{q:"9 × 3 = ?",answer:27},{q:"9 × 4 = ?",answer:36},{q:"9 × 5 = ?",answer:45}]}
+    ]},
+    "volcano": { name: "火山", stages: [
+      { id: "vl-easy", name: "火山·初", difficulty: "easy", enabled: true, monsters: ["lava-elemental"], bg: "volcano",
+        questions: [{q:"9 × 6 = ?",answer:54,choices:[52,54,56]},{q:"9 × 7 = ?",answer:63,choices:[61,63,65]},{q:"9 × 8 = ?",answer:72,choices:[70,72,74]},{q:"9 × 9 = ?",answer:81,choices:[79,81,83]},{q:"9 × 10 = ?",answer:90,choices:[88,90,92]}]},
+      { id: "vl-normal", name: "火山·中", difficulty: "normal", enabled: true, monsters: ["lava-elemental","shadow-aberration"], bg: "volcano",
+        questions: [{q:"7 × 6 = ?",answer:42,choices:[40,42,44,46]},{q:"7 × 7 = ?",answer:49,choices:[47,49,51,53]},{q:"7 × 8 = ?",answer:56,choices:[54,56,58,60]},{q:"7 × 9 = ?",answer:63,choices:[61,63,65,67]},{q:"7 × 10 = ?",answer:70,choices:[68,70,72,74]}]},
+      { id: "vl-hard", name: "火山·終", difficulty: "hard", enabled: true, monsters: ["shadow-aberration"], bg: "volcano",
+        questions: [{q:"8 × 6 = ?",answer:48},{q:"8 × 7 = ?",answer:56},{q:"8 × 8 = ?",answer:64},{q:"8 × 9 = ?",answer:72},{q:"8 × 10 = ?",answer:80}]}
+    ]},
+    "deep-dungeon": { name: "地下城深層", stages: [
+      { id: "dd-easy", name: "地下城深層·初", difficulty: "easy", enabled: true, monsters: ["shadow-aberration"], bg: "deep_dungeon",
+        questions: [{q:"6 × 7 = ?",answer:42,choices:[40,42,44]},{q:"6 × 8 = ?",answer:48,choices:[46,48,50]},{q:"6 × 9 = ?",answer:54,choices:[52,54,56]},{q:"6 × 10 = ?",answer:60,choices:[58,60,62]},{q:"7 × 6 = ?",answer:42,choices:[40,42,44]}]},
+      { id: "dd-normal", name: "地下城深層·中", difficulty: "normal", enabled: true, monsters: ["shadow-aberration"], bg: "deep_dungeon",
+        questions: [{q:"8 × 6 = ?",answer:48,choices:[46,48,50,52]},{q:"8 × 7 = ?",answer:56,choices:[54,56,58,60]},{q:"9 × 6 = ?",answer:54,choices:[52,54,56,58]},{q:"9 × 7 = ?",answer:63,choices:[61,63,65,67]},{q:"9 × 8 = ?",answer:72,choices:[70,72,74,76]}]},
+      { id: "dd-hard", name: "地下城深層·終", difficulty: "hard", enabled: true, monsters: ["shadow-aberration"], bg: "deep_dungeon",
+        questions: [{q:"8 × 8 = ?",answer:64},{q:"9 × 9 = ?",answer:81},{q:"7 × 8 = ?",answer:56},{q:"8 × 9 = ?",answer:72},{q:"9 × 8 = ?",answer:72}]}
     ]}
   }
 };
@@ -1099,13 +1156,29 @@ const MONSTER_STATS = {
   "skeleton-warrior":{ name: "骸骨戰士",   hp: 35, atk: 12, element: 'none',  img: "assets/images/monsters/skeleton-warrior.png" },
   "skeleton-mage":   { name: "骸骨法師",   hp: 28, atk: 16, element: 'fire',  img: "assets/images/monsters/skeleton-mage.png" },
   "dragon":          { name: "巨龍",       hp: 50, atk: 20, element: 'fire',  img: "assets/images/monsters/dragon.png" },
+  // Sprint 8: 7 個新場景的對應怪物
+  "spire-golem":     { name: "尖塔石魔",   hp: 65, atk: 22, element: 'earth', img: "assets/images/monsters/spire-golem.png" },
+  "mist-wraith":     { name: "薄霧幽靈",   hp: 45, atk: 16, element: 'wind',  img: "assets/images/monsters/mist-wraith.png" },
+  "dusk-hawk":       { name: "暮色獵鷹",   hp: 40, atk: 18, element: 'wind',  img: "assets/images/monsters/dusk-hawk.png" },
+  "bog-toad":        { name: "沼澤蟾蜍",   hp: 55, atk: 17, element: 'earth', img: "assets/images/monsters/bog-toad.png" },
+  "frost-lich":      { name: "冰霜巫妖",   hp: 70, atk: 24, element: 'water', img: "assets/images/monsters/frost-lich.png" },
+  "lava-elemental":  { name: "熔岩元素",   hp: 80, atk: 28, element: 'fire',  img: "assets/images/monsters/lava-elemental.png" },
+  "shadow-aberration":{ name: "暗影畸體",  hp: 90, atk: 32, element: 'none',  img: "assets/images/monsters/shadow-aberration.png" },
 };
 
 // ==================== BACKGROUND MAP ====================
 const BG_MAP = {
   forest: "assets/images/bg-forest.jpeg",
   castle: "assets/images/bg-castle.jpeg",
-  boss_room: "assets/images/backgrounds/boss_room.png"
+  boss_room: "assets/images/backgrounds/boss_room.png",
+  // Sprint 8: 7 個新場景
+  ruined_city: "assets/images/backgrounds/bg-ruined-city.png",
+  misty_plain: "assets/images/backgrounds/bg-misty-plain.png",
+  dusk_mountains: "assets/images/backgrounds/bg-dusk-mountains.png",
+  swamp: "assets/images/backgrounds/bg-swamp.png",
+  snow: "assets/images/backgrounds/bg-snow.png",
+  volcano: "assets/images/backgrounds/bg-volcano.png",
+  deep_dungeon: "assets/images/backgrounds/bg-deep-dungeon.png",
 };
 
 // ==================== GAME STATE ====================
@@ -1306,18 +1379,30 @@ function renderTopicScreen() {
   document.getElementById('topic-title').textContent = '📚 ' + domain.name;
 
   let html = '';
+  // Sprint 8: 排序 — 數字 topic（"2"-"9"）先、然後 "boss"、然後新場景 topic（ruined-city 等）
+  const SCENE_KEYS = new Set(['ruined-city','misty-plain','dusk-mountains','swamp','snow','volcano','deep-dungeon']);
   const topicOrder = Object.keys(domain).filter(k => k !== 'name').sort((a, b) => {
     if (a === 'boss') return 1;
     if (b === 'boss') return -1;
-    return parseInt(a) - parseInt(b);
+    const aIsNum = /^\d+$/.test(a), bIsNum = /^\d+$/.test(b);
+    if (aIsNum && bIsNum) return parseInt(a) - parseInt(b);
+    if (aIsNum) return -1;  // 數字排前
+    if (bIsNum) return 1;
+    // 兩個都是字串（場景）→ 保持原序
+    return 0;
   });
   topicOrder.forEach(key => {
     const val = domain[key];
     const topicData = val;
     const stageCount = topicData.stages.filter(s => s.enabled).length;
     if (stageCount === 0) return;
+    // 顯示名稱：boss / 數字 / 場景 topic
+    let displayName;
+    if (key === 'boss') displayName = '👑 乘法Boss關';
+    else if (/^\d+$/.test(key)) displayName = key + '的乘法';
+    else displayName = (topicData.name || key);  // 場景 topic 用 STAGES_DATA 內的 name
     html += `<button class="topic-btn" onclick="selectTopic('${key}')">
-      <span class="t-num">${key === 'boss' ? '👑 乘法Boss關' : key + '的乘法'}</span>
+      <span class="t-num">${displayName}</span>
       <span style="color:var(--text-dim);font-size:.85rem">${stageCount}個難度</span>
       <span class="t-arrow">選擇 →</span>
     </button>`;
@@ -1768,6 +1853,7 @@ function startBattle() {
   battleState.monsterATK = Math.round(ms.atk * monsterMod.atk);
   battleState.monsterName = ms.name;
   battleState.monsterImg = ms.img;
+  battleState.monsterKey = monsterKey;
   battleState.monsterElement = ms.element || 'none';
   // Sprint 7: 重置 DoT 計數（新怪物進場）
   battleState.burnStacks = 0;
@@ -3021,6 +3107,7 @@ function spawnNextWave() {
   battleState.monsterATK = Math.round(ms.atk * monsterMod.atk);
   battleState.monsterName = ms.name;
   battleState.monsterImg = ms.img;
+  battleState.monsterKey = monsterKey;
   battleState.monsterElement = ms.element || 'none';
   // Sprint 7: 重置 DoT 計數（新怪物進場）
   battleState.burnStacks = 0;
