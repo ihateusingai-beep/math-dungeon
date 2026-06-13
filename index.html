@@ -75,7 +75,10 @@ section{position:fixed;inset:0;display:flex;flex-direction:column;align-items:ce
 .home-left{flex:1 1 280px;min-width:240px;text-align:center}
 .home-right{flex:1 1 320px;min-width:280px;display:flex;flex-direction:column;gap:18px}
 .home-section{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:16px;padding:14px 12px;display:flex;flex-direction:column;gap:10px}
-.home-section-title{font-size:.85rem;color:var(--gold);font-weight:700;text-align:left;padding-left:6px;letter-spacing:.5px}
+.home-section-title{font-size:1rem;color:var(--gold);font-weight:700;text-align:left;padding:4px 8px;letter-spacing:.5px;background:rgba(255,212,112,.08);border-left:3px solid var(--gold);border-radius:4px;margin-bottom:2px}
+.home-hero-img{width:100%;max-width:360px;aspect-ratio:1;border-radius:18px;margin-top:18px;box-shadow:0 8px 28px rgba(0,0,0,.5);border:2px solid var(--border);object-fit:cover}
+.home-btn:disabled, .home-btn[aria-disabled="true"]{opacity:.4;cursor:not-allowed;filter:grayscale(60%);transform:none!important;box-shadow:none}
+.home-btn:disabled:hover, .home-btn[aria-disabled="true"]:hover{transform:none;box-shadow:none}
 
 /* 標題縮小避免裁切（之前 clamp(2.5rem,8vw,5rem) 在 mobile 太大） */
 .home-logo{font-size:clamp(2rem,6vw,3.5rem);text-align:center;margin-bottom:.3em;line-height:1.2}
@@ -392,12 +395,13 @@ section{position:fixed;inset:0;display:flex;flex-direction:column;align-items:ce
     <div class="home-left">
       <div class="home-logo">⚔️ <span>數學地城</span> RPG</div>
       <div class="home-motto">在奇幻世界中學習乘法！</div>
+      <img class="home-hero-img" src="assets/images/hero-warrior.png" alt="數學戰士" onerror="this.style.display='none'">
     </div>
     <div class="home-right">
       <div class="home-section">
         <div class="home-section-title">🗡️ 冒險</div>
         <button class="home-btn" onclick="showNameScreen(); playBgm('battle')">🎮 開始冒險</button>
-        <button class="home-btn" style="background:linear-gradient(135deg,#2d2d44,#3d3d5c)" onclick="loadProgress()">📖 繼續遊戲</button>
+        <button class="home-btn" id="home-continue-btn" style="background:linear-gradient(135deg,#2d2d44,#3d3d5c)" onclick="loadProgress()">📖 繼續遊戲</button>
         <button class="home-btn" style="background:linear-gradient(135deg,#00b894,#00cec9)" onclick="showPracticeSelectScreen()">🧮 溫習乘法</button>
       </div>
       <div class="home-section">
@@ -4170,6 +4174,15 @@ function updateComboDisplay() {
 window.addEventListener('DOMContentLoaded', () => {
   // Sprint 4 #1: 綁定 E 鍵觸發大招
   bindUltimateKey();
+  // Sprint 15: 「繼續遊戲」按鈕根據有沒有存檔自動 disable
+  try {
+    const continueBtn = document.getElementById('home-continue-btn');
+    if (continueBtn) {
+      const hasSave = !!localStorage.getItem(SAVE_KEY);
+      continueBtn.disabled = !hasSave;
+      if (!hasSave) continueBtn.title = '無存檔';
+    }
+  } catch (e) {}
   // Show home screen by default
 });
 </script>
