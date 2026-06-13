@@ -86,17 +86,18 @@ section('1. 結構：5 個 tab panel + 5 個 tab button');
   const { window } = buildJsdom();
   const panels = window.document.querySelectorAll('.dash-panel');
   const tabs = window.document.querySelectorAll('.dash-tab');
-  check('有 5 個 .dash-panel', panels.length === 5, `got ${panels.length}`);
-  check('有 5 個 .dash-tab', tabs.length === 5, `got ${tabs.length}`);
-  const expectedPanels = ['overview','battle','practice','weak','curve'];
-  const expectedTabs = ['overview','battle','practice','weak','curve'];
+  // Sprint 18 加咗 achievement tab → 5 → 6
+  check('有 6 個 .dash-panel', panels.length === 6, `got ${panels.length}`);
+  check('有 6 個 .dash-tab', tabs.length === 6, `got ${tabs.length}`);
+  const expectedPanels = ['overview','battle','practice','weak','curve','achievement'];
+  const expectedTabs = ['overview','battle','practice','weak','curve','achievement'];
   const panelsOk = expectedPanels.every((p, i) => panels[i] && panels[i].dataset.panel === p);
-  check('panels 順序：overview/battle/practice/weak/curve', panelsOk, 'panel order wrong');
+  check('panels 順序：overview/battle/practice/weak/curve/achievement', panelsOk, 'panel order wrong');
   const tabsOk = expectedTabs.every((t, i) => tabs[i] && tabs[i].dataset.tab === t);
   check('tabs 順序同上', tabsOk, 'tab order wrong');
-  // 5 個 tab icon
+  // 6 個 tab icon
   const icons = window.document.querySelectorAll('.dash-tab-icon');
-  check('每個 tab 有 icon', icons.length === 5, `got ${icons.length}`);
+  check('每個 tab 有 icon', icons.length === 6, `got ${icons.length}`);
 }
 
 section('2. 空數據：showDashboardScreen() 唔會 throw');
@@ -110,9 +111,9 @@ section('2. 空數據：showDashboardScreen() 唔會 throw');
   } catch (e) {
     check('空數據 showDashboardScreen 正常執行', false, e.message);
   }
-  // 5 個 panel 都應該有 hero banner
+  // 6 個 panel 都應該有 hero banner（Sprint 18 加咗 achievement）
   const heroes = window.document.querySelectorAll('.dash-hero');
-  check('每個 panel 都有 hero banner（5 個）', heroes.length === 5, `got ${heroes.length}`);
+  check('每個 panel 都有 hero banner（6 個）', heroes.length === 6, `got ${heroes.length}`);
   // 預設 tab = overview
   const activePanel = window.document.querySelector('.dash-panel.active');
   check('預設 active panel = overview', activePanel && activePanel.dataset.panel === 'overview',
