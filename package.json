@@ -1,7 +1,7 @@
 {
   "private": true,
   "scripts": {
-    "test": "node tests/smoke-spec-gaps.js && node tests/sprint17-dashboard-ui.js"
+    "test": "node tests/smoke-spec-gaps.js && node tests/sprint17-dashboard-ui.js && node tests/sprint18-achievement-engine.js"
   },
   "devDependencies": {
     "jsdom": "^29.1.1"
