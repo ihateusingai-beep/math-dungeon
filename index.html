@@ -117,7 +117,8 @@ section{position:fixed;inset:0;display:flex;flex-direction:column;align-items:ce
 .domain-desc{font-size:.8rem;color:var(--text-dim)}
 
 /* ============ TOPIC LIST ============ */
-.topic-list{display:flex;flex-direction:column;gap:12px;width:min(500px,95vw);margin-top:1em}
+.topic-list{display:grid;grid-template-columns:1fr;gap:12px;width:min(960px,95vw);margin-top:1em}
+@media (min-width:640px){.topic-list{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .topic-btn{background:var(--card);border:2px solid var(--border);border-radius:16px;padding:18px 24px;text-align:left;cursor:pointer;font-size:1.05rem;color:var(--text);transition:all .2s;display:flex;align-items:center;gap:12px;touch-action:manipulation}
 .topic-btn:hover{background:#3d3d5c;border-color:var(--secondary)}
 .topic-btn .t-num{font-size:1.4rem;font-weight:900;color:var(--gold);min-width:40px}
