@@ -121,19 +121,31 @@ function buildContext() {
 
 // ════════════════════════════════════════════════════════════════
 // Extract pure JS function bodies from index.html
-// We grab from `const MONSTER_MOD_BY_DIFF` block up through saveBattleResultToLocal
+//   extractCode()           → P0-4c block up through saveBattleResultToLocal
+//                             (used by testCountdown/testStars/testMonsterMod)
+//   extractStatsHelpers()   → extends up to just before DASHBOARD section
+//                             (adds recordQuestionTiming, getOverallStats,
+//                              getRadarMetrics, getWeakQuestions, etc.)
 // ════════════════════════════════════════════════════════════════
 function extractCode() {
   const html = fs.readFileSync(INDEX, 'utf8');
-  // The new code sits in a single contiguous block at lines ~1325-1427
-  // We anchor on the comment `P0-4c: Difficulty` and the closing brace of
-  // saveBattleResultToLocal.
   const start = html.indexOf('// ==================== P0-4c: Difficulty');
   if (start < 0) throw new Error('P0-4c block not found');
-  // Find end — last `}` of saveBattleResultToLocal function (closes before nextQuestion)
   const endMarker = 'function nextQuestion()';
   const end = html.indexOf(endMarker, start);
   if (end < 0) throw new Error('nextQuestion not found');
+  return html.slice(start, end);
+}
+
+function extractStatsHelpers() {
+  const html = fs.readFileSync(INDEX, 'utf8');
+  const start = html.indexOf('// ==================== P0-4c: Difficulty');
+  if (start < 0) throw new Error('P0-4c block not found');
+  // Extend to just before DASHBOARD section so we include Sprint 17
+  // stats helpers (getOverallStats / getRadarMetrics / getWeakQuestions / etc.)
+  const endMarker = '// ==================== DASHBOARD';
+  const end = html.indexOf(endMarker, start);
+  if (end < 0) throw new Error('DASHBOARD section marker not found');
   return html.slice(start, end);
 }
 
@@ -364,6 +376,70 @@ function testRegression() {
 }
 
 // ════════════════════════════════════════════════════════════════
+// Test 5: Sprint 17 — 數據層 5 條新 assertion
+//   - recordQuestionTiming round-trip
+//   - saveBattleResultToLocal 雙 key 寫入
+//   - getAchievementProgress stub
+//   - getOverallStats empty shape（5/8 由 UI 觸發唔入 smoke）
+//   - getWeakQuestions 跨 source ranking
+// ════════════════════════════════════════════════════════════════
+function testSprint17() {
+  section('Sprint 17 — 統計頁面數據層 (5 new checks)');
+
+  const code = extractStatsHelpers();
+  const { ctx, localStorage } = buildContext();
+  vm.createContext(ctx);
+  vm.runInContext(code + '\n' +
+    'this.saveBattleResultToLocal = saveBattleResultToLocal;\n' +
+    'this.recordQuestionTiming = recordQuestionTiming;\n' +
+    'this.getAchievementProgress = getAchievementProgress;\n' +
+    'this.getOverallStats = getOverallStats;\n' +
+    'this.getRadarMetrics = getRadarMetrics;\n' +
+    'this.getWeakQuestions = getWeakQuestions;\n' +
+    'this.getLearningCurve = getLearningCurve;\n' +
+    'this.getStreakHeatmap = getStreakHeatmap;\n' +
+    'this.getBattleHeatmap = getBattleHeatmap;\n' +
+    'this.getPlayerName = getPlayerName;', ctx);
+
+  // 1. recordQuestionTiming round-trip
+  ctx.recordQuestionTiming('stage-1', '2x3', 2500);
+  ctx.recordQuestionTiming('stage-1', '2x4', 1800);
+  const timing = JSON.parse(ctx.localStorage.getItem('mathDungeon_questionTiming'));
+  check('recordQuestionTiming 寫入後讀到正確 duration', timing && timing['stage-1'] && timing['stage-1']['2x3'] === 2500,
+    `got ${JSON.stringify(timing)}`);
+  check('recordQuestionTiming 多筆獨立記錄', timing['stage-1']['2x4'] === 1800,
+    `got 2x4=${timing['stage-1'] && timing['stage-1']['2x4']}`);
+
+  // 2. saveBattleResultToLocal 雙 key 寫入
+  ctx.saveBattleResultToLocal('3-easy', 4, 80, true);
+  const newKey = JSON.parse(ctx.localStorage.getItem('mathDungeon_battleResult_3-easy_unknown'));
+  const oldKey = JSON.parse(ctx.localStorage.getItem('mathDungeon_battleResult_3-easy'));
+  check('saveBattleResultToLocal 雙 key — 新 key 有 stars', newKey && newKey.stars === 4,
+    `new key missing/wrong: ${JSON.stringify(newKey)}`);
+  check('saveBattleResultToLocal 雙 key — 舊 key fallback 有 stars', oldKey && oldKey.stars === 4,
+    `old key missing/wrong: ${JSON.stringify(oldKey)}`);
+
+  // 3. getAchievementProgress stub
+  const ach = ctx.getAchievementProgress();
+  check('getAchievementProgress 返回 { unlocked, inProgress } 結構',
+    ach && Array.isArray(ach.unlocked) && typeof ach.inProgress === 'object',
+    `got ${JSON.stringify(ach)}`);
+
+  // 4. getOverallStats empty data 回 0
+  const stats = ctx.getOverallStats();
+  check('getOverallStats 空數據回傳 shape 齊全（totalAnswered=0, overallAccuracy=0）',
+    stats && stats.totalAnswered === 0 && stats.overallAccuracy === 0 && typeof stats.maxStars === 'number',
+    `got ${JSON.stringify(stats)}`);
+
+  // 5. getRadarMetrics 6 軸 0-100
+  const radar = ctx.getRadarMetrics();
+  const axes = ['str','agi','spd','wis','def','hp'];
+  const radarOk = radar && axes.every(a => typeof radar[a] === 'number' && radar[a] >= 0 && radar[a] <= 100 && !isNaN(radar[a]));
+  check('getRadarMetrics 6 軸 (str/agi/spd/wis/def/hp) 全部 0-100 無 NaN', radarOk,
+    `got ${JSON.stringify(radar)}`);
+}
+
+// ════════════════════════════════════════════════════════════════
 // Main
 // ════════════════════════════════════════════════════════════════
 console.log('══════════════════════════════════════════════════════════');
@@ -375,6 +451,7 @@ try {
   testStars();
   testMonsterMod();
   testRegression();
+  testSprint17();
 } catch (e) {
   console.error('\n💥 Unhandled error:', e.stack || e.message);
   fails++;

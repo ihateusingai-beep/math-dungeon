@@ -8,6 +8,69 @@ The latest sprint is on top.
 
 ---
 
+## Sprint 17 — 統計頁面升級（5 tabs：總覽/戰鬥/練習/弱題/曲線）
+**Commit:** see `git log --oneline | head -1` (self-referential hash) · **Date:** 2026-06-13 · **Scope:** 統計中心 + 數據可視化
+
+**Major refactor：** 將 dashboard 從「practice-only 摘要」升級成全功能統計中心，涵蓋戰鬥 + 練習 + 弱題 + 學習曲線 4 條數據流，5 個 tab + 個人化 hero header + 4 種 inline SVG 可視化（雷達圖 / heatmap / bar chart / line chart），0 外部 library 依賴。
+
+### 數據層 (5 new localStorage keys / fields)
+- `mathDungeon_questionTiming` — `submitChoice` 開頭記 `Date.now()`，每題 durMs 寫入 `{stageId: {qid: ms}}`。
+- `mathDungeon_learningLog[].wrongQuestions` — `submitChoice` 錯題 branch 收集 `currentWrongIds`，`showBattleResult` 結算時 push 入 log entry。
+- `mathDungeon_achievements` — 預寫 `[]`（純 hook，Sprint 18 成就系統用）。
+- `mathDungeon_battleResult_<stageId>_<difficulty>` — **雙 key 寫入**，新 key 帶 difficulty，舊 key fallback 兼容。
+- `getPlayerName()` — 從 `gameState.playerName` 或 save dump 攞，fallback「冒險者」。
+
+### 統計 helpers (純函數，方便 smoke test)
+- `getOverallStats()` — `{ totalAnswered, totalCorrect, overallAccuracy, totalBattles, totalWins, battleWinRate, totalPracticeRuns, maxStars, avgAnswerTimeMs, avgAnswerTimeSec }`
+- `getRadarMetrics()` — 6 軸 0-100 (`str` 戰鬥勝率 / `agi` 答題速度 / `spd` throughput / `wis` 準確率 / `def` 連勝率 / `hp` 活躍度)
+- `getWeakQuestions(limit=10)` — 跨 `math_dungeon_practice.wrong[]` + `learningLog[].wrongQuestions` ranking
+- `getLearningCurve(days=7)` — 7/30 日 `{date, accuracy, battleCount}[]`，gap 為 `null`（唔填 0）
+- `getStreakHeatmap(days=30)` — GitHub-style `{days, streak}`
+- `getBattleHeatmap()` — `{ tableKey: { easy, normal, hard, boss } }` from localStorage + STAGES_DATA
+- `getBattleStats(stageId, difficulty?)` — 從 battleResult 讀（new key 優先，old key fallback）
+- `getAchievementProgress()` — Stub: `{ unlocked: [], inProgress: {} }`，Sprint 18 會 populate
+
+### UI 層
+- **Tab 切換框架**：`#dashboard-screen` 加 `.dash-tabs` + 5 個 `.dash-panel`（overview/battle/practice/weak/curve）。`switchDashboardTab(tabId, syncHash)` 處理顯示 + localStorage 記憶 + `history.replaceState` hash 同步。
+- **Hash routing**：`#dashboard/overview` / `#dashboard/battle` 等 deep link 支援，reload 自動落返去上次嘅 tab。
+- **§4.0 學生名字 Banner**（每個 tab 頂部）— `✦ {name} 嘅學習基地 ✦` 大字 + 截至今日嘅學習報告副標 + 📈 比上週 +X% 準確率 / ⚠️ 退步 / ➡️ 持平 trend indicator。背景用 `assets/images/sprint17/dashboard-banner-bg.webp`（19 KB，1024×256 cyber-hex 圖）。
+- **§4.2 總覽 tab** — 6 個 stat-card（整體準確率 / 戰鬥勝率 / 總答題 / 練習次數 / 最高星 / 平均速度） + CTA「🔥 開始今日練習」 + **六角能力雷達圖**（6 軸 STR/AGI/SPD/WIS/DEF/HP，紅色半透明 polygon + 同心 hex grid + 每軸 hover tooltip）。
+- **§4.3 戰鬥分析 tab** — 主視覺係 **stage × 難度 heatmap**（10 stage × 4 難度 color-coded cell，5 級色階：灰=未挑戰、紅=1⭐、橙=2⭐、金=3-4⭐、粉金=5⭐），hover tooltip 顯示「×7 階段 1 中難度: ⭐⭐⭐」，點 cell 重玩。摺疊 list view 顯示 10 個 stage 嘅 row（star / 上次 acc% / 上次時間）。
+- **§4.4 練習分析 tab** — GitHub-style 30 日 **streak heatmap**（4 級色階：0/1-2/3-5/6+）+ 🔥 streak 連續日數 + 每 row **SVG sparkline**（最近 7 次準確率，14px 高 × 80px 闊，綠/黃/紅線色按最新分數）。
+- **§4.5 弱題分析 tab** — **Horizontal Bar Chart**（top 10 弱題，bar 長度 = 錯嘅次數，紅→橙漸層）。
+- **§4.6 學習曲線 tab** — 純 inline SVG **line chart**（X 軸日期，Y 軸 accuracy，gradient area fill，hover dot tooltip），7/30 日切換按鈕。
+
+### 新增 assets
+- `assets/images/sprint17/dashboard-banner-bg.webp` (19 KB, 1024×256) — 學生 banner 背景（cyber hex grid + 星塵）。
+- `assets/images/sprint17/icon-overview.webp` (1.9 KB) / `icon-battle.webp` (1.8 KB) / `icon-practice.webp` (2.0 KB) / `icon-weak.webp` (3.1 KB) / `icon-curve.webp` (1.4 KB) — 5 個 tab icon 96×96 cyber-pixel 風格。
+
+### Test 層
+- `tests/smoke-spec-gaps.js` 加 `testSprint17()` — **+7 條新 assertion**（53 → 60 PASS）：
+  - `recordQuestionTiming` round-trip + multi-record
+  - `saveBattleResultToLocal` 雙 key 寫入
+  - `getAchievementProgress` stub shape
+  - `getOverallStats` empty data shape
+  - `getRadarMetrics` 6 軸 0-100 無 NaN
+- **新增** `tests/sprint17-dashboard-ui.js` (jsdom-based) — **23 條 assertion** 全部 PASS：
+  - 5 個 panel + button 結構
+  - 空數據唔 throw + hero banner × 5
+  - Mock 數據渲染 stat card / 雷達圖 / heatmap / streak / sparkline / bar chart / SVG line chart
+  - Hash routing `#dashboard/battle` 切 tab
+  - `switchDashboardTab` 切換 visible panel + active button
+  - 學生名字 banner 顯示 player name
+- **Total verification：83/83 PASS**（60 spec-gaps + 23 UI）。
+
+### 向後兼容
+- 舊 `mathDungeon_battleResult_<stageId>` key 繼續寫入，新 dashboard 讀取時優先用新 key（帶 difficulty），fallback 舊 key。
+- 舊 player save 載入後 dashboard 立即顯示佢有嘅數據，唔需要 migration。
+- 純 static `index.html`，無 build step；inline SVG / CSS gradient，0 外部 library。
+
+### 後續 sprint 銜接
+- `getAchievementProgress()` hook 已喺度，**Sprint 18 成就系統可以直接食**（寫成就定義 + 解鎖判斷，唔使改 dashboard 數據層）。
+- 統計頁面 datasource 已經 generic，**Sprint 19 加法範疇**只係多一個 key，自動支援。
+
+---
+
 ## Sprint 15 — Home hero portrait + section title polish + continue 自動 disable
 **Commit:** `7e86a7d` · **Date:** 2026-06-13 · **Scope:** UI polish
 

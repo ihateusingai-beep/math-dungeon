@@ -370,6 +370,126 @@ section{position:fixed;inset:0;display:flex;flex-direction:column;align-items:ce
 .result-star.filled.animated{animation:star-pop .5s ease-out}
 @keyframes star-pop{0%{transform:scale(.3) rotate(-20deg);opacity:0}60%{transform:scale(1.25) rotate(8deg);opacity:1}100%{transform:scale(1) rotate(0);opacity:1}}
 .result-stars-label{text-align:center;font-size:.9rem;color:var(--text-dim);margin-bottom:8px}
+
+/* ==================== Sprint 17: 統計頁面 tab 系統 ==================== */
+.dash-tabs{display:flex;gap:6px;justify-content:center;margin:1em auto .5em;width:min(640px,95vw);overflow-x:auto;padding:0 4px}
+.dash-tab{flex:1;min-width:80px;background:var(--card,#2a2a3e);border:2px solid transparent;border-radius:10px;padding:8px 6px 6px;cursor:pointer;color:var(--text-dim,#8888aa);font-size:.8rem;font-weight:600;display:flex;flex-direction:column;align-items:center;gap:2px;transition:all .2s;white-space:nowrap}
+.dash-tab:hover{background:rgba(91,200,245,.08);color:var(--text,#fff)}
+.dash-tab.active{background:linear-gradient(135deg,rgba(91,200,245,.18),rgba(255,143,179,.18));border-color:rgba(91,200,245,.5);color:var(--text,#fff);box-shadow:0 4px 12px rgba(91,200,245,.2)}
+.dash-tab-icon{width:32px;height:32px;display:block}
+.dash-panels{position:relative}
+.dash-panel{display:none;animation:fadeIn .2s ease-out}
+.dash-panel.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+
+/* 學生名字 banner */
+.dash-hero{position:relative;border-radius:16px;padding:20px 24px;margin-bottom:16px;background:linear-gradient(135deg,rgba(26,26,46,.9),rgba(22,33,62,.9)),url('assets/images/sprint17/dashboard-banner-bg.webp') center/cover no-repeat;border:1px solid rgba(91,200,245,.3);overflow:hidden;text-align:center}
+.dash-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center,transparent 0%,rgba(0,0,0,.4) 100%);pointer-events:none}
+.dash-hero-name{position:relative;font-size:1.6rem;font-weight:900;color:#fff;margin-bottom:4px;text-shadow:0 0 12px rgba(91,200,245,.6),0 2px 4px rgba(0,0,0,.6);letter-spacing:.05em}
+.dash-hero-name .dash-hero-name-text{color:var(--gold,#ffd470);text-shadow:0 0 12px rgba(255,212,112,.8),0 2px 4px rgba(0,0,0,.6)}
+.dash-hero-sub{position:relative;font-size:.85rem;color:rgba(255,255,255,.85);text-shadow:0 1px 2px rgba(0,0,0,.6)}
+.dash-hero-sub .trend-up{color:#2ecc71;font-weight:700;margin-left:6px}
+.dash-hero-sub .trend-flat{color:#fdcb6e;font-weight:700;margin-left:6px}
+.dash-hero-sub .trend-down{color:#e74c3c;font-weight:700;margin-left:6px}
+
+/* 總覽：6 個大卡 + 雷達圖 */
+.overview-grid{display:grid;grid-template-columns:1fr;gap:14px;margin-bottom:14px}
+@media(min-width:600px){.overview-grid{grid-template-columns:1fr 1fr}}
+.overview-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+@media(max-width:599px){.overview-cards{grid-template-columns:repeat(2,1fr)}}
+.stat-card{background:var(--card,#2a2a3e);border:1px solid rgba(91,200,245,.2);border-radius:12px;padding:14px 10px;text-align:center;transition:transform .2s,border-color .2s}
+.stat-card:hover{transform:translateY(-2px);border-color:rgba(91,200,245,.5)}
+.stat-card-icon{font-size:1.5rem;display:block;margin-bottom:4px}
+.stat-card-value{font-size:1.4rem;font-weight:900;color:var(--text,#fff);line-height:1.1;display:block;margin-bottom:2px}
+.stat-card-value.acc-good{color:#2ecc71}.stat-card-value.acc-mid{color:#fdcb6e}.stat-card-value.acc-bad{color:#e74c3c}
+.stat-card-label{font-size:.7rem;color:var(--text-dim,#8888aa);font-weight:600;display:block;letter-spacing:.05em}
+.stat-card-cta{grid-column:1/-1;background:linear-gradient(135deg,#ff8fb3,#5bc8f5);border:none;border-radius:12px;padding:12px;font-size:1rem;font-weight:800;color:#fff;cursor:pointer;box-shadow:0 4px 12px rgba(91,200,245,.3);transition:transform .15s}
+.stat-card-cta:hover{transform:scale(1.02)}
+.overview-radar{background:var(--card,#2a2a3e);border:1px solid rgba(91,200,245,.2);border-radius:16px;padding:14px;display:flex;align-items:center;justify-content:center}
+.radar-chart{width:100%;max-width:320px;height:auto;display:block;margin:0 auto}
+.radar-axis{stroke:rgba(91,200,245,.25);stroke-width:1}
+.radar-label{fill:rgba(255,255,255,.9);font-size:11px;font-weight:700;text-anchor:middle;dominant-baseline:middle;text-shadow:0 0 4px rgba(0,0,0,.6)}
+.radar-label-sub{fill:var(--text-dim,#8888aa);font-size:8px;text-anchor:middle;dominant-baseline:middle}
+.radar-grid{fill:none;stroke:rgba(91,200,245,.15);stroke-width:1}
+.radar-data{fill:rgba(231,76,60,.25);stroke:#e74c3c;stroke-width:2;transition:all .3s;animation:radar-grow 1s ease-out}
+.radar-dot{fill:#e74c3c;stroke:#fff;stroke-width:1.5;transition:r .3s}
+.radar-axis-tip{cursor:help}
+@keyframes radar-grow{from{transform:scale(0);transform-origin:200px 200px}to{transform:scale(1);transform-origin:200px 200px}}
+
+/* 戰鬥 heatmap */
+.battle-heatmap-wrap{background:var(--card,#2a2a3e);border:1px solid rgba(91,200,245,.2);border-radius:14px;padding:14px;margin-bottom:14px}
+.battle-heatmap{display:grid;grid-template-columns:60px repeat(4,1fr);gap:4px;font-size:.7rem}
+.battle-heatmap-header{font-weight:700;color:var(--text-dim,#8888aa);text-align:center;padding:6px 0;font-size:.7rem}
+.battle-heatmap-row-label{display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--text,#fff);background:rgba(91,200,245,.1);border-radius:6px;padding:6px 0}
+.battle-heatmap-cell{aspect-ratio:1.1;border-radius:6px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-weight:700;transition:transform .15s,box-shadow .15s;position:relative;border:1px solid transparent}
+.battle-heatmap-cell:hover{transform:scale(1.08);box-shadow:0 0 0 2px var(--gold,#ffd470);z-index:1}
+.battle-heatmap-cell.stars-0{background:rgba(255,255,255,.05);color:rgba(255,255,255,.3);border-color:rgba(255,255,255,.08)}
+.battle-heatmap-cell.stars-1{background:rgba(231,76,60,.3);color:#fff}
+.battle-heatmap-cell.stars-2{background:rgba(253,203,110,.3);color:#fff}
+.battle-heatmap-cell.stars-3{background:rgba(253,203,110,.55);color:#fff}
+.battle-heatmap-cell.stars-4{background:rgba(255,212,112,.7);color:#1a1a2e}
+.battle-heatmap-cell.stars-5{background:linear-gradient(135deg,#ffd470,#ff8fb3);color:#1a1a2e;box-shadow:0 0 8px rgba(255,212,112,.4)}
+.battle-heatmap-legend{display:flex;justify-content:center;gap:10px;margin-top:10px;font-size:.7rem;color:var(--text-dim,#8888aa);flex-wrap:wrap}
+.battle-heatmap-legend-swatch{display:inline-block;width:14px;height:14px;border-radius:3px;vertical-align:middle;margin-right:4px}
+
+/* 列表（摺疊）*/
+.battle-list-toggle{width:100%;background:var(--card,#2a2a3e);border:1px solid rgba(91,200,245,.2);border-radius:10px;padding:10px;color:var(--text-dim,#8888aa);font-size:.85rem;cursor:pointer;margin-bottom:8px;font-weight:600}
+.battle-list-toggle:hover{color:var(--text,#fff)}
+.battle-list-row{background:var(--card,#2a2a3e);border-radius:10px;padding:10px 14px;display:flex;align-items:center;gap:10px;margin-bottom:6px;cursor:pointer;font-size:.85rem;transition:transform .15s,border-color .2s;border:1px solid transparent}
+.battle-list-row:hover{transform:translateX(2px);border-color:rgba(91,200,245,.3)}
+.battle-list-row .stage-name{flex:1;color:var(--text,#fff);font-weight:700}
+.battle-list-row .stars-text{color:var(--text-dim,#8888aa);font-size:.75rem}
+
+/* 練習分析：streak heatmap + sparkline */
+.streak-heatmap-wrap{background:var(--card,#2a2a3e);border:1px solid rgba(91,200,245,.2);border-radius:14px;padding:14px;margin-bottom:14px}
+.streak-heatmap{display:grid;grid-template-columns:repeat(15,1fr);gap:3px;margin:10px auto;max-width:340px}
+@media(min-width:600px){.streak-heatmap{grid-template-columns:repeat(15,1fr)}}
+.streak-cell{aspect-ratio:1;border-radius:3px;background:rgba(255,255,255,.05)}
+.streak-cell.lvl-0{background:rgba(255,255,255,.05)}
+.streak-cell.lvl-1{background:rgba(46,204,113,.25)}
+.streak-cell.lvl-2{background:rgba(46,204,113,.5)}
+.streak-cell.lvl-3{background:rgba(46,204,113,.85)}
+.streak-cell.today{outline:2px solid var(--gold,#ffd470);outline-offset:1px}
+.streak-summary{display:flex;justify-content:space-around;margin-bottom:6px;font-size:.85rem}
+.streak-summary-item{text-align:center}
+.streak-summary-item .value{font-size:1.3rem;font-weight:900;color:var(--text,#fff);display:block}
+.streak-summary-item.streak-active .value{color:var(--gold,#ffd470);text-shadow:0 0 8px rgba(255,212,112,.5)}
+.practice-row{display:flex;align-items:center;gap:10px;background:var(--card,#2a2a3e);border-radius:10px;padding:10px 14px;margin-bottom:6px;cursor:pointer;transition:transform .15s}
+.practice-row:hover{transform:translateX(2px)}
+.practice-row .practice-name{flex:1;font-weight:800;color:var(--text,#fff)}
+.practice-row .practice-best{font-weight:700;color:var(--text,#fff);min-width:48px;text-align:right}
+.practice-row .practice-count{color:var(--text-dim,#8888aa);font-size:.7rem;min-width:48px;text-align:right}
+.practice-spark{display:block}
+
+/* 弱題 horizontal bar */
+.weak-bars{background:var(--card,#2a2a3e);border:1px solid rgba(91,200,245,.2);border-radius:14px;padding:14px}
+.weak-bar-row{display:grid;grid-template-columns:50px 1fr 80px;align-items:center;gap:8px;padding:6px 0;cursor:pointer;border-bottom:1px solid rgba(255,255,255,.04)}
+.weak-bar-row:last-child{border-bottom:none}
+.weak-bar-row:hover{background:rgba(91,200,245,.05)}
+.weak-bar-q{font-weight:800;color:var(--text,#fff);text-align:center}
+.weak-bar-track{height:18px;background:rgba(255,255,255,.05);border-radius:9px;overflow:hidden;position:relative}
+.weak-bar-fill{height:100%;border-radius:9px;transition:width .6s ease-out;background:linear-gradient(90deg,#e74c3c,#fdcb6e)}
+.weak-bar-meta{text-align:right;font-size:.75rem;color:var(--text-dim,#8888aa)}
+.weak-bar-meta .count-num{color:#e74c3c;font-weight:800;font-size:.9rem;display:block}
+
+/* 學習曲線 line chart */
+.curve-toggle{display:flex;gap:6px;justify-content:center;margin-bottom:10px}
+.curve-toggle button{background:var(--card,#2a2a3e);border:1px solid rgba(91,200,245,.2);border-radius:8px;padding:6px 16px;color:var(--text-dim,#8888aa);font-size:.85rem;cursor:pointer;font-weight:600;transition:all .2s}
+.curve-toggle button.active{background:linear-gradient(135deg,#5bc8f5,#ff8fb3);color:#fff;border-color:transparent}
+.curve-chart{background:var(--card,#2a2a3e);border:1px solid rgba(91,200,245,.2);border-radius:14px;padding:14px}
+.curve-svg{width:100%;height:200px;display:block}
+.curve-grid{stroke:rgba(91,200,245,.1);stroke-width:1}
+.curve-axis-label{fill:var(--text-dim,#8888aa);font-size:9px;text-anchor:middle}
+.curve-line{fill:none;stroke:#5bc8f5;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.curve-area{fill:url(#curve-grad);opacity:.4}
+.curve-dot{fill:#5bc8f5;stroke:#fff;stroke-width:1.5;cursor:pointer;transition:r .15s}
+.curve-dot:hover{r:5}
+.curve-tooltip{position:absolute;background:rgba(0,0,0,.85);color:#fff;padding:4px 8px;border-radius:6px;font-size:.7rem;pointer-events:none;white-space:nowrap;z-index:10}
+
+/* Empty state */
+.dash-empty{text-align:center;padding:3em 1em;color:var(--text-dim,#8888aa)}
+.dash-empty-icon{font-size:3rem;display:block;margin-bottom:.5em;opacity:.5}
+
 .result-stat{display:flex;justify-content:space-between;padding:10px 18px;background:rgba(30,30,60,.8);border-radius:10px;font-size:1.05rem;border:1px solid rgba(255,255,255,.08)}
 .result-stat span:first-child{color:var(--text-dim)}
 .result-stat span:last-child{font-weight:700}
@@ -652,7 +772,31 @@ section{position:fixed;inset:0;display:flex;flex-direction:column;align-items:ce
   <button class="back-btn" onclick="goHome()">✖</button>
   <div class="screen-title">📊 學習進度</div>
   <div class="screen-sub" id="dash-summary"></div>
-  <div style="width:min(600px,95vw);max-height:70vh;overflow-y:auto;margin-top:1em" id="dash-content"></div>
+  <!-- Sprint 17: Tab 切換 + 5 個 panel -->
+  <div class="dash-tabs" id="dash-tabs" role="tablist">
+    <button class="dash-tab active" data-tab="overview" role="tab">
+      <img src="assets/images/sprint17/icon-overview.webp" alt="" class="dash-tab-icon"><span>總覽</span>
+    </button>
+    <button class="dash-tab" data-tab="battle" role="tab">
+      <img src="assets/images/sprint17/icon-battle.webp" alt="" class="dash-tab-icon"><span>戰鬥</span>
+    </button>
+    <button class="dash-tab" data-tab="practice" role="tab">
+      <img src="assets/images/sprint17/icon-practice.webp" alt="" class="dash-tab-icon"><span>練習</span>
+    </button>
+    <button class="dash-tab" data-tab="weak" role="tab">
+      <img src="assets/images/sprint17/icon-weak.webp" alt="" class="dash-tab-icon"><span>弱題</span>
+    </button>
+    <button class="dash-tab" data-tab="curve" role="tab">
+      <img src="assets/images/sprint17/icon-curve.webp" alt="" class="dash-tab-icon"><span>曲線</span>
+    </button>
+  </div>
+  <div class="dash-panels" id="dash-panels" style="width:min(640px,95vw);max-height:68vh;overflow-y:auto;margin-top:1em">
+    <div class="dash-panel active" data-panel="overview" id="dash-panel-overview"></div>
+    <div class="dash-panel" data-panel="battle" id="dash-panel-battle"></div>
+    <div class="dash-panel" data-panel="practice" id="dash-panel-practice"></div>
+    <div class="dash-panel" data-panel="weak" id="dash-panel-weak"></div>
+    <div class="dash-panel" data-panel="curve" id="dash-panel-curve"></div>
+  </div>
 </section>
 
 <!-- ==================== TOPIC LIST ==================== -->
@@ -1300,6 +1444,8 @@ let battleState = {
   wrongCount: 0,
   totalDamage: 0,
   questionsAnswered: 0,
+  currentWrongIds: [], // Sprint 17 §5.1: 收集當場錯題，battle 結束 push 入 learningLog
+  qStartTs: 0,         // Sprint 17 §5.1: 當前題目顯示 timestamp（答題速度分析）
   waveIndex: 0,
   enemiesPerStage: 3,
   totalStageDamage: 0,
@@ -2243,6 +2389,7 @@ function startBattle() {
     wrongCount: 0,
     totalDamage: 0,
     questionsAnswered: 0,
+    currentWrongIds: [], // Sprint 17 §5.1: 收集當場錯題，battle 結束 push 入 learningLog
     waveIndex: 0,
     enemiesPerStage: s.isBoss ? s.monsters.length : 3,
     totalStageDamage: 0,
@@ -2478,15 +2625,64 @@ function renderBattleStars(stars) {
 
 function saveBattleResultToLocal(stageId, stars, accuracy, victory) {
   // SPEC §D 持久化：localStorage mathDungeon_battleResult_<stageId> 加 stars 字段
+  // Sprint 17: 雙 key 寫入 — 新 key 帶 difficulty，舊 key 保留做 fallback
   if (typeof stageId !== 'string' || !stageId) return;
-  const key = `mathDungeon_battleResult_${stageId}`;
+  // 從 battleState 安全提取 difficulty（vm test 環境冇全域 battleState）
+  let diff = 'unknown';
+  try {
+    if (typeof battleState !== 'undefined' && battleState && battleState.difficulty) {
+      diff = battleState.difficulty;
+    }
+  } catch(e) { diff = 'unknown'; }
+  const newKey = `mathDungeon_battleResult_${stageId}_${diff}`;
+  const oldKey = `mathDungeon_battleResult_${stageId}`;
+
+  function writeRecord(key) {
+    let data = {};
+    try { data = JSON.parse(localStorage.getItem(key) || '{}'); } catch(e) { data = {}; }
+    data.stars = Math.max(data.stars|0, stars|0); // 保留歷史最高星
+    data.lastAccuracy = accuracy|0;
+    data.lastVictory = !!victory;
+    data.lastPlayed = new Date().toLocaleString('zh-TW');
+    if (!data.difficulty) data.difficulty = diff; // 補條 difficulty 字段供 fallback 讀取
+    try { localStorage.setItem(key, JSON.stringify(data)); } catch(e) {}
+  }
+  // 雙寫：新 key（細緻）+ 舊 key（向後兼容舊 dashboard / 舊 test fixture）
+  writeRecord(newKey);
+  writeRecord(oldKey);
+}
+
+// Sprint 17 §5.1: 答題速度記錄（key 帶 stageId+questionId 區分每題）
+// 結構：mathDungeon_questionTiming = { [stageId]: { [qid]: durMs } }
+function recordQuestionTiming(stageId, qid, durMs) {
+  if (typeof stageId !== 'string' || !stageId) return;
+  if (typeof qid !== 'string' && typeof qid !== 'number') return;
+  if (typeof durMs !== 'number' || !isFinite(durMs) || durMs < 0) return;
+  const key = 'mathDungeon_questionTiming';
   let data = {};
   try { data = JSON.parse(localStorage.getItem(key) || '{}'); } catch(e) { data = {}; }
-  data.stars = Math.max(data.stars|0, stars|0); // 保留歷史最高星
-  data.lastAccuracy = accuracy|0;
-  data.lastVictory = !!victory;
-  data.lastPlayed = new Date().toLocaleString('zh-TW');
+  if (!data[stageId] || typeof data[stageId] !== 'object') data[stageId] = {};
+  data[stageId][String(qid)] = Math.round(durMs);
   try { localStorage.setItem(key, JSON.stringify(data)); } catch(e) {}
+}
+
+// Sprint 17 §5.1: 成就系統預留鉤子（Sprint 18 會用）
+// 純 stub，return 結構定咗畀 Sprint 18 直接食
+function getAchievementProgress() {
+  let unlocked = [];
+  try {
+    const raw = localStorage.getItem('mathDungeon_achievements');
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) unlocked = parsed;
+    }
+  } catch(e) { unlocked = []; }
+  return {
+    unlocked,                    // [{ id, unlockedAt }, ...]
+    inProgress: {                // 每個成就嘅 progress 0-1
+      // Sprint 18 會 populate 呢度
+    }
+  };
 }
 
 function nextQuestion() {
@@ -2504,6 +2700,8 @@ function nextQuestion() {
     else { q.a = 0; q.b = 0; }
   }
   battleState.qIndex++;
+  // Sprint 17 §5.1: 為下一題設 start timestamp（答題速度分析用）
+  battleState.qStartTs = Date.now();
   document.getElementById('question-text').textContent = battleState.currentQuestion.q;
   speakQuestion(battleState.currentQuestion.q);
   const totalQ = battleState.questions.length * battleState.enemiesPerStage;
@@ -2586,6 +2784,14 @@ function submitChoice(answer) {
   clearQuestionTimer();
   const correct = battleState.currentQuestion.answer;
   const diff = battleState.difficulty;
+  // Sprint 17 §5.1: 答題速度記錄（qStartTs 由 nextQuestion 設）
+  const _qStart = battleState.qStartTs || Date.now();
+  const _qDur = Date.now() - _qStart;
+  if (battleState.currentQuestion && battleState.stageData && battleState.stageData.id) {
+    const _qid = battleState.currentQuestion.q || `${battleState.currentQuestion.a}x${battleState.currentQuestion.b}`;
+    recordQuestionTiming(battleState.stageData.id, _qid, _qDur);
+  }
+  battleState.qStartTs = Date.now();
   playSound('click');
 
   if (diff === 'hard') numpadClear();
@@ -2714,6 +2920,11 @@ function submitChoice(answer) {
     showWrongFeedback();
     battleState.questionsAnswered++;
     battleState.combo = 0;
+    // Sprint 17 §5.1: 收集當場錯嘅 question id 畀 weak-questions 分析
+    if (!battleState.currentWrongIds) battleState.currentWrongIds = [];
+    if (battleState.currentQuestion && battleState.currentQuestion.q) {
+      battleState.currentWrongIds.push(battleState.currentQuestion.q);
+    }
     updateComboDisplay();
     // Sprint 4 #1: 答錯 -20 能量
     battleState.energy = Math.max(0, (battleState.energy || 0) - 20);
@@ -3672,7 +3883,8 @@ function showBattleResult(victory) {
     wrongCount: battleState.wrongCount,
     accuracy: accuracy,
     maxCombo: battleState.maxCombo,
-    totalDamage: battleState.totalDamage
+    totalDamage: battleState.totalDamage,
+    wrongQuestions: Array.isArray(battleState.currentWrongIds) ? battleState.currentWrongIds.slice() : []
   });
   localStorage.setItem(logKey, JSON.stringify(logData.slice(-50)));
 
@@ -4107,87 +4319,844 @@ function confirmExitPractice() {
   showPracticeSelectScreen();
 }
 
-// ==================== DASHBOARD ====================
-function showDashboardScreen() {
-  showScreen('dashboard-screen');
-  const data = getPracticeData();
-  const entries = Object.entries(data);
-  const total = entries.reduce((s,[,arr]) => s + arr.reduce((a,r) => a + r.total, 0), 0);
-  const totalCorrect = entries.reduce((s,[,arr]) => s + arr.reduce((a,r) => a + r.correct, 0), 0);
-  const overall = total > 0 ? Math.round(totalCorrect / total * 100) : 0;
+// ==================== Sprint 17: 統計頁面 helpers ====================
+// 全部純函數（除 localStorage read），方便 smoke test。
+// 數據源：mathDungeon_battleResult_*  +  math_dungeon_practice  +  mathDungeon_learningLog  +  mathDungeon_questionTiming
 
-  document.getElementById('dash-summary').textContent =
-    total > 0 ? `整體準確率：${overall}%（${totalCorrect} / ${total} 題）` : '暫無練習記錄';
+function _loadAllBattleResults() {
+  // 從 localStorage 撈晒所有 mathDungeon_battleResult_* key
+  const out = {};
+  try {
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (k && k.startsWith('mathDungeon_battleResult_')) {
+        try {
+          const v = JSON.parse(localStorage.getItem(k) || '{}');
+          out[k.replace('mathDungeon_battleResult_', '')] = v;
+        } catch(e) {}
+      }
+    }
+  } catch(e) {}
+  return out;
+}
 
-  const container = document.getElementById('dash-content');
-  if (entries.length === 0) {
-    container.innerHTML = '<div style="text-align:center;color:var(--text-dim);padding:2em">尚未有任何練習記錄<br><br>快去<a href="#" onclick="showPracticeSelectScreen();return false" style="color:var(--accent)">溫習乘法</a>吧！</div>';
-    return;
+function _loadLearningLog() {
+  try {
+    const raw = localStorage.getItem('mathDungeon_learningLog');
+    if (!raw) return [];
+    const data = JSON.parse(raw);
+    return Array.isArray(data) ? data : [];
+  } catch(e) { return []; }
+}
+
+function _loadQuestionTiming() {
+  try {
+    const raw = localStorage.getItem('mathDungeon_questionTiming');
+    if (!raw) return {};
+    const data = JSON.parse(raw);
+    return (data && typeof data === 'object') ? data : {};
+  } catch(e) { return {}; }
+}
+
+function getOverallStats() {
+  const battles = _loadAllBattleResults();
+  const log = _loadLearningLog();
+  const practice = getPracticeData();
+  const timing = _loadQuestionTiming();
+
+  // 戰鬥：所有 battleResult 嘅 accuracy / victory
+  let totalBattles = 0, totalWins = 0, totalAccSum = 0, totalAccCount = 0, maxStars = 0;
+  for (const v of Object.values(battles)) {
+    if (!v || typeof v !== 'object') continue;
+    totalBattles++;
+    if (v.lastVictory) totalWins++;
+    if (typeof v.lastAccuracy === 'number') { totalAccSum += v.lastAccuracy; totalAccCount++; }
+    if (typeof v.stars === 'number' && v.stars > maxStars) maxStars = v.stars;
   }
+  const battleWinRate = totalBattles > 0 ? Math.round(totalWins / totalBattles * 100) : 0;
+  const battleAvgAcc = totalAccCount > 0 ? Math.round(totalAccSum / totalAccCount) : 0;
 
-  const allWeak = {};
-  for (const [tableStr, records] of entries) {
-    if (!Array.isArray(records)) continue;
-    for (const rec of records) {
-      if (rec && rec.wrong && Array.isArray(rec.wrong)) rec.wrong.forEach(w => {
-        if (typeof w !== 'string') return;
-        const key = w.split('=')[0];
-        allWeak[key] = (allWeak[key] || 0) + 1;
-      });
+  // 練習：aggregate correct/total
+  let pTotal = 0, pCorrect = 0, pRuns = 0;
+  for (const arr of Object.values(practice || {})) {
+    if (!Array.isArray(arr)) continue;
+    for (const r of arr) {
+      if (r && typeof r === 'object' && typeof r.total === 'number') {
+        pTotal += r.total;
+        if (typeof r.correct === 'number') pCorrect += r.correct;
+        pRuns++;
+      }
     }
   }
 
-  let html = '<div style="display:flex;flex-direction:column;gap:12px">';
+  // learning log 答題數（battle + practice covered separately; 呢度取 log 嘅 questionsAnswered sum）
+  let logAnswered = 0;
+  for (const e of log) {
+    if (e && typeof e.correctCount === 'number' && typeof e.wrongCount === 'number') {
+      logAnswered += (e.correctCount + e.wrongCount);
+    }
+  }
+  const totalAnswered = pTotal + logAnswered;
+  const totalCorrect = pCorrect + (() => {
+    let s = 0;
+    for (const e of log) if (e && typeof e.correctCount === 'number') s += e.correctCount;
+    return s;
+  })();
+  const overallAccuracy = totalAnswered > 0 ? Math.round(totalCorrect / totalAnswered * 100) : 0;
 
-  // Mixed (table 0) first
-  if (data[0] && Array.isArray(data[0]) && data[0].length > 0) {
-    const recs = data[0];
-    const best = getBestScore(recs);
-    const recent = recs[recs.length - 1];
-    const stars = best >= 80 ? '⭐⭐⭐' : best >= 60 ? '⭐⭐' : best !== null && best >= 40 ? '⭐' : '';
-    const lastPct = recent ? Math.round(recent.correct / recent.total * 100) : null;
-    const color = best >= 80 ? '#2ecc71' : best >= 50 ? '#fdcb6e' : '#e74c3c';
-    html = `<div style="background:var(--card);border-radius:16px;padding:18px 24px;display:flex;align-items:center;gap:16px;cursor:pointer;margin-bottom:12px" onclick="startPractice(0)">
-      <div style="font-size:1.5rem;font-weight:900;color:${color};min-width:50px">🔀</div>
-      <div style="flex:1"><div style="height:10px;background:#1e1e2e;border-radius:5px;overflow:hidden"><div style="height:100%;width:${isFinite(best)?best:0}%;background:${color};border-radius:5px;transition:width .5s"></div></div></div>
-      <div style="font-size:1.1rem;font-weight:700;color:${color}">${best!==null?best+'%':'—'}</div>
-      <div style="font-size:.9rem;color:var(--text-dim)">${lastPct!==null?lastPct+'%':'—'}</div>
-      <div style="font-size:1.2rem">${stars}</div>
-      <div style="font-size:.8rem;color:var(--text-dim)">混合 ${recs.length}次</div>
-    </div>` + html;
+  // 答題速度（ms → sec，average across all timing entries）
+  let timingSum = 0, timingCount = 0;
+  for (const stage of Object.values(timing || {})) {
+    if (stage && typeof stage === 'object') {
+      for (const ms of Object.values(stage)) {
+        if (typeof ms === 'number' && isFinite(ms) && ms >= 0) {
+          timingSum += ms; timingCount++;
+        }
+      }
+    }
+  }
+  const avgAnswerTimeMs = timingCount > 0 ? timingSum / timingCount : 0;
+  const avgAnswerTimeSec = Math.round(avgAnswerTimeMs / 100) / 10; // 一位小數
+
+  return {
+    totalAnswered,
+    totalCorrect,
+    overallAccuracy,
+    totalBattles,
+    totalWins,
+    battleWinRate,
+    battleAvgAcc,
+    totalPracticeRuns: pRuns,
+    maxStars,
+    avgAnswerTimeMs,
+    avgAnswerTimeSec
+  };
+}
+
+function getRadarMetrics() {
+  // 6 軸能力圖，0-100 normalized
+  const stats = getOverallStats();
+  const log = _loadLearningLog();
+
+  // STR — 戰鬥勝率
+  const str = clamp100(stats.battleWinRate);
+
+  // AGI — 答題速度倒置（30 秒 = 100，越快越高）
+  let agi = 0;
+  if (stats.avgAnswerTimeMs > 0) {
+    const avgSec = stats.avgAnswerTimeMs / 1000;
+    agi = clamp100(Math.round(30 / avgSec * 100));
   }
 
-  for (const [tableStr, records] of entries) {
-    if (!Array.isArray(records)) continue;
+  // SPD — 答題 throughput（per-day rate）
+  let spd = 0;
+  if (stats.totalAnswered > 0) {
+    // 用學習日誌最早 + 最晚日期做 daysSinceStart
+    const dates = log
+      .map(e => (e && e.date) ? new Date(e.date) : null)
+      .filter(d => d && !isNaN(d.getTime()))
+      .map(d => d.getTime());
+    let days = 1;
+    if (dates.length > 0) {
+      const earliest = Math.min(...dates);
+      const latest = Math.max(...dates);
+      const span = Math.max(1, Math.round((latest - earliest) / (1000 * 60 * 60 * 24)) + 1);
+      days = span;
+    }
+    spd = clamp100(Math.round(stats.totalAnswered / days / 5 * 100)); // 日均 5 題 = 100
+  }
+
+  // WIS — 整體準確率
+  const wis = clamp100(stats.overallAccuracy);
+
+  // DEF — 連勝率（max combo 觀察）
+  let maxCombo = 0;
+  for (const e of log) if (e && typeof e.maxCombo === 'number' && e.maxCombo > maxCombo) maxCombo = e.maxCombo;
+  const def = clamp100(Math.round(maxCombo / 10 * 100));
+
+  // HP — 月活躍度
+  const distinctDays = new Set();
+  for (const e of log) {
+    if (e && e.date && typeof e.date === 'string') {
+      const day = e.date.split(',')[0].split(' ')[0]; // "2026/6/13"
+      if (day) distinctDays.add(day);
+    }
+  }
+  const hp = clamp100(Math.round(distinctDays.size / 30 * 100));
+
+  return { str, agi, spd, wis, def, hp };
+}
+
+function clamp100(n) {
+  if (!isFinite(n) || isNaN(n)) return 0;
+  return Math.max(0, Math.min(100, Math.round(n)));
+}
+
+function getBattleStats(stageId, difficulty) {
+  if (typeof stageId !== 'string' || !stageId) return null;
+  const battles = _loadAllBattleResults();
+  // 先查新 key（帶 difficulty），fallback 舊 key
+  if (difficulty) {
+    const newKey = `${stageId}_${difficulty}`;
+    if (battles[newKey]) return battles[newKey];
+  }
+  return battles[stageId] || null;
+}
+
+function getWeakQuestions(limit) {
+  limit = (typeof limit === 'number' && limit > 0) ? limit : 10;
+  const counts = {};
+
+  // 來源 1：practice 嘅 wrong[] 陣列
+  const practice = getPracticeData();
+  for (const arr of Object.values(practice || {})) {
+    if (!Array.isArray(arr)) continue;
+    for (const r of arr) {
+      if (r && Array.isArray(r.wrong)) {
+        for (const w of r.wrong) {
+          if (typeof w !== 'string') continue;
+          const key = w.split('=')[0].trim();
+          if (!key) continue;
+          counts[key] = counts[key] || { count: 0, source: 'practice' };
+          counts[key].count++;
+        }
+      }
+    }
+  }
+
+  // 來源 2：learning log 嘅 wrongQuestions[]
+  const log = _loadLearningLog();
+  for (const e of log) {
+    if (e && Array.isArray(e.wrongQuestions)) {
+      for (const wq of e.wrongQuestions) {
+        if (typeof wq !== 'string') continue;
+        // e.g. "7 × 8 = ?"
+        const key = wq.split('=')[0].trim();
+        if (!key) continue;
+        counts[key] = counts[key] || { count: 0, source: 'battle' };
+        counts[key].count++;
+      }
+    }
+  }
+
+  return Object.entries(counts)
+    .map(([q, v]) => ({ question: q, count: v.count, source: v.source }))
+    .sort((a, b) => b.count - a.count)
+    .slice(0, limit);
+}
+
+function getLearningCurve(days) {
+  days = (typeof days === 'number' && days > 0) ? days : 7;
+  const log = _loadLearningLog();
+  // 用 yyyy/m/d 作為 key
+  const dayMap = new Map(); // dayKey → { accSum, count, battles }
+  for (const e of log) {
+    if (!e || typeof e.accuracy !== 'number') continue;
+    const dStr = (e.date || '').split(',')[0].split(' ')[0];
+    if (!dStr) continue;
+    if (!dayMap.has(dStr)) dayMap.set(dStr, { accSum: 0, count: 0, battles: 0 });
+    const d = dayMap.get(dStr);
+    d.accSum += e.accuracy; d.count++; d.battles++;
+  }
+  // 構建 days 日 array（由舊到新）
+  const out = [];
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  for (let i = days - 1; i >= 0; i--) {
+    const d = new Date(today);
+    d.setDate(today.getDate() - i);
+    // 用 toLocaleDateString 對齊 zh-TW
+    const key = d.toLocaleDateString('zh-TW');
+    const entry = dayMap.get(key);
+    if (entry && entry.count > 0) {
+      out.push({
+        date: key,
+        accuracy: Math.round(entry.accSum / entry.count),
+        battleCount: entry.battles
+      });
+    } else {
+      out.push({ date: key, accuracy: null, battleCount: 0 });
+    }
+  }
+  return out;
+}
+
+function getStreakHeatmap(days) {
+  days = (typeof days === 'number' && days > 0) ? days : 30;
+  const log = _loadLearningLog();
+  const counts = new Map();
+  for (const e of log) {
+    if (!e || !e.date) continue;
+    const key = e.date.split(',')[0].split(' ')[0];
+    counts.set(key, (counts.get(key) || 0) + 1);
+  }
+  const out = [];
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  for (let i = days - 1; i >= 0; i--) {
+    const d = new Date(today);
+    d.setDate(today.getDate() - i);
+    const key = d.toLocaleDateString('zh-TW');
+    out.push({ date: key, count: counts.get(key) || 0 });
+  }
+  // streak（由最尾數起）
+  let streak = 0;
+  for (let i = out.length - 1; i >= 0; i--) {
+    if (out[i].count > 0) streak++;
+    else break;
+  }
+  return { days: out, streak };
+}
+
+function getBattleHeatmap() {
+  // 結構：{ [tableOrBossId]: { easy, normal, hard, boss } }
+  // 從 stages.json 嘅 multiplication table × easy/normal/hard/boss 取所有 stage id
+  // stage id 模式："2-easy" / "2-normal" / "2-hard" / "boss-final"（特殊）
+  const out = {};
+  try {
+    // 從 localStorage key 直接攞 stageId
+    const battles = _loadAllBattleResults();
+    for (const compositeId of Object.keys(battles)) {
+      // compositeId 形如 "2-easy" 或 "2-easy_easy"（新 key 帶 difficulty）— 解析
+      // 簡化：睇最後 "_<difficulty>" 結尾
+      const m = compositeId.match(/^(.+?)_(easy|normal|hard|boss)$/);
+      let stageId, diff;
+      if (m) { stageId = m[1]; diff = m[2]; }
+      else { stageId = compositeId; diff = battles[compositeId].difficulty || 'easy'; }
+      // 從 stageId 提取 table number（"2-easy" → "2"; "boss-final" → "boss"）
+      const tableMatch = stageId.match(/^(\d+|boss)/);
+      const tableKey = tableMatch ? tableMatch[1] : stageId;
+      if (!out[tableKey]) out[tableKey] = { easy: null, normal: null, hard: null, boss: null };
+      out[tableKey][diff] = battles[compositeId].stars || 0;
+    }
+    // 對於冇記錄嘅 stage 都要有 row — 用 stages.json 補
+    if (typeof STAGES_DATA !== 'undefined' && STAGES_DATA && STAGES_DATA.multiplication) {
+      for (const tableKey of Object.keys(STAGES_DATA.multiplication)) {
+        if (!out[tableKey]) out[tableKey] = { easy: null, normal: null, hard: null, boss: null };
+        // 如果舊 key 有 stars（fallback），補入去
+        const oldKey = tableKey;
+        if (battles[oldKey] && !out[tableKey].easy) {
+          out[tableKey].easy = battles[oldKey].stars;
+        }
+      }
+    }
+  } catch(e) {}
+  return out;
+}
+
+function getPlayerName() {
+  try {
+    if (typeof gameState !== 'undefined' && gameState && typeof gameState.playerName === 'string' && gameState.playerName.trim()) {
+      return gameState.playerName.trim();
+    }
+  } catch(e) {}
+  // fallback: localStorage dump
+  try {
+    const raw = localStorage.getItem('mathDungeon_playerName');
+    if (raw) return raw;
+    // 從 gameState 全 dump key 入面攞
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (k && k.startsWith('mathDungeon_') && k !== 'mathDungeon_learningLog' && k !== 'mathDungeon_questionTiming') {
+        try {
+          const d = JSON.parse(localStorage.getItem(k) || '{}');
+          if (d && typeof d === 'object' && typeof d.playerName === 'string' && d.playerName.trim()) {
+            return d.playerName.trim();
+          }
+        } catch(e) {}
+      }
+    }
+  } catch(e) {}
+  return '冒險者';
+}
+
+// ==================== DASHBOARD (Sprint 17 — 5 tab 統計頁面) ====================
+const DASHBOARD_TABS = ['overview','battle','practice','weak','curve'];
+let _dashTab = 'overview';
+let _dashCurveDays = 7;
+
+function showDashboardScreen() {
+  showScreen('dashboard-screen');
+  // 確保預寫新 keys（避免首次進入時冇嘢讀）
+  try {
+    if (!localStorage.getItem('mathDungeon_questionTiming')) {
+      localStorage.setItem('mathDungeon_questionTiming', '{}');
+    }
+    if (!localStorage.getItem('mathDungeon_achievements')) {
+      localStorage.setItem('mathDungeon_achievements', '[]');
+    }
+  } catch(e) {}
+  // 從 hash 同步 tab（deep link）
+  const hashMatch = (location.hash || '').match(/^#dashboard\/(overview|battle|practice|weak|curve)$/);
+  let targetTab = hashMatch ? hashMatch[1] : null;
+  if (!targetTab) {
+    try {
+      const saved = localStorage.getItem('dashboard_last_tab');
+      if (saved && DASHBOARD_TABS.includes(saved)) targetTab = saved;
+    } catch(e) {}
+  }
+  if (!targetTab) targetTab = 'overview';
+  _dashTab = targetTab;
+
+  // 渲染 5 個 panel + 切換到目標 tab
+  renderDashboardHero();
+  renderOverviewPanel();
+  renderBattlePanel();
+  renderPracticePanel();
+  renderWeakPanel();
+  renderCurvePanel();
+  switchDashboardTab(_dashTab, false);
+  // summary
+  const stats = getOverallStats();
+  const summaryEl = document.getElementById('dash-summary');
+  if (stats.totalAnswered > 0 || stats.totalBattles > 0) {
+    summaryEl.textContent = `整體：${stats.overallAccuracy}% 準確率 · ${stats.totalBattles} 場戰鬥 · ${stats.totalAnswered} 題`;
+  } else {
+    summaryEl.textContent = '暫無記錄 — 玩一場戰鬥或練習就會見到數據';
+  }
+  // bind tab clicks
+  document.querySelectorAll('.dash-tab').forEach(btn => {
+    btn.onclick = () => switchDashboardTab(btn.dataset.tab, true);
+  });
+  // bind curve toggle
+  document.querySelectorAll('.curve-toggle button').forEach(btn => {
+    btn.onclick = () => {
+      _dashCurveDays = parseInt(btn.dataset.days, 10) || 7;
+      document.querySelectorAll('.curve-toggle button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderCurvePanel();
+    };
+  });
+}
+
+function switchDashboardTab(tabId, syncHash) {
+  if (!DASHBOARD_TABS.includes(tabId)) tabId = 'overview';
+  _dashTab = tabId;
+  document.querySelectorAll('.dash-tab').forEach(b => b.classList.toggle('active', b.dataset.tab === tabId));
+  document.querySelectorAll('.dash-panel').forEach(p => p.classList.toggle('active', p.dataset.panel === tabId));
+  try { localStorage.setItem('dashboard_last_tab', tabId); } catch(e) {}
+  if (syncHash && history && history.replaceState) {
+    try { history.replaceState(null, '', '#dashboard/' + tabId); } catch(e) {}
+  }
+}
+
+// === §4.0 學生名字 Banner ===
+function renderDashboardHero() {
+  const name = getPlayerName();
+  const today = new Date().toLocaleDateString('zh-TW');
+  // 與上週比：7 日前 vs 7 日內 accuracy 差
+  const log = _loadLearningLog();
+  const now = Date.now();
+  const wk = 7 * 24 * 60 * 60 * 1000;
+  let last7Sum = 0, last7Count = 0, prev7Sum = 0, prev7Count = 0;
+  for (const e of log) {
+    if (!e || typeof e.accuracy !== 'number' || !e.date) continue;
+    const t = new Date(e.date).getTime();
+    if (isNaN(t)) continue;
+    if (now - t <= wk) { last7Sum += e.accuracy; last7Count++; }
+    else if (now - t <= wk * 2) { prev7Sum += e.accuracy; prev7Count++; }
+  }
+  let trendHtml = '';
+  if (last7Count > 0 && prev7Count > 0) {
+    const lastAvg = last7Sum / last7Count;
+    const prevAvg = prev7Sum / prev7Count;
+    const delta = Math.round(lastAvg - prevAvg);
+    if (delta > 3) trendHtml = `<span class="trend-up">📈 比上週 +${delta}% 準確率</span>`;
+    else if (delta < -3) trendHtml = `<span class="trend-down">⚠️ 比上週 ${delta}% 準確率</span>`;
+    else trendHtml = `<span class="trend-flat">➡️ 與上週持平</span>`;
+  } else if (last7Count > 0) {
+    trendHtml = `<span class="trend-up">🔥 本週已練習 ${last7Count} 場</span>`;
+  }
+  const heroHtml = `<div class="dash-hero">
+    <div class="dash-hero-name">✦ <span class="dash-hero-name-text">${name}</span> 嘅學習基地 ✦</div>
+    <div class="dash-hero-sub">截至 ${today} 嘅學習報告${trendHtml ? ' · ' + trendHtml : ''}</div>
+  </div>`;
+  // 插到 5 個 panel 最頂（每個 panel render 時 prepend，但共用同一份 → 寫入所有 panel header）
+  document.querySelectorAll('.dash-panel').forEach(p => {
+    p.insertAdjacentHTML('afterbegin', heroHtml);
+  });
+}
+
+// === §4.2 總覽 ===
+function renderOverviewPanel() {
+  const panel = document.getElementById('dash-panel-overview');
+  const stats = getOverallStats();
+  const radar = getRadarMetrics();
+
+  if (stats.totalAnswered === 0 && stats.totalBattles === 0) {
+    panel.insertAdjacentHTML('beforeend', emptyStateHtml('暫無數據', '快去挑戰第一場戰鬥！'));
+    return;
+  }
+
+  // 6 個大卡
+  const accClass = stats.overallAccuracy >= 80 ? 'acc-good' : stats.overallAccuracy >= 50 ? 'acc-mid' : 'acc-bad';
+  const wrClass = stats.battleWinRate >= 70 ? 'acc-good' : stats.battleWinRate >= 40 ? 'acc-mid' : 'acc-bad';
+  const avgTimeStr = stats.avgAnswerTimeMs > 0 ? stats.avgAnswerTimeSec + 's' : '—';
+  const cardsHtml = `<div class="overview-cards">
+    <div class="stat-card">
+      <span class="stat-card-icon">🎯</span>
+      <span class="stat-card-value ${accClass}">${stats.overallAccuracy}%</span>
+      <span class="stat-card-label">整體準確率</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-card-icon">⚔️</span>
+      <span class="stat-card-value ${wrClass}">${stats.battleWinRate}%</span>
+      <span class="stat-card-label">戰鬥勝率</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-card-icon">📝</span>
+      <span class="stat-card-value">${stats.totalAnswered}</span>
+      <span class="stat-card-label">總答題數</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-card-icon">📚</span>
+      <span class="stat-card-value">${stats.totalPracticeRuns}</span>
+      <span class="stat-card-label">練習次數</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-card-icon">⭐</span>
+      <span class="stat-card-value">${stats.maxStars}</span>
+      <span class="stat-card-label">最高星</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-card-icon">⏱️</span>
+      <span class="stat-card-value">${avgTimeStr}</span>
+      <span class="stat-card-label">平均速度</span>
+    </div>
+    <button class="stat-card-cta" onclick="showPracticeSelectScreen()">🔥 開始今日練習</button>
+  </div>`;
+
+  // 六角雷達圖（inline SVG）
+  const radarHtml = renderRadarSvg(radar);
+  panel.insertAdjacentHTML('beforeend', `<div class="overview-grid">${cardsHtml}<div class="overview-radar">${radarHtml}</div></div>`);
+}
+
+function renderRadarSvg(metrics) {
+  // 6 軸雷達圖，center 200,200，半徑 130
+  const cx = 200, cy = 200, R = 130;
+  const axes = [
+    { key: 'str', label: 'STR', desc: '戰鬥勝率' },
+    { key: 'agi', label: 'AGI', desc: '答題速度' },
+    { key: 'spd', label: 'SPD', desc: '答題量' },
+    { key: 'wis', label: 'WIS', desc: '準確率' },
+    { key: 'def', label: 'DEF', desc: '連勝率' },
+    { key: 'hp',  label: 'HP',  desc: '活躍度' }
+  ];
+  const N = axes.length;
+  // 軸角：12 點鐘方向起逆時鐘 → 0° 在頂
+  const angleOf = (i) => (-Math.PI / 2) + (i * 2 * Math.PI / N);
+  const pointAt = (i, r) => [cx + r * Math.cos(angleOf(i)), cy + r * Math.sin(angleOf(i))];
+
+  // 5 層 hex grid (20/40/60/80/100%)
+  let gridHtml = '';
+  for (let lvl = 1; lvl <= 5; lvl++) {
+    const r = R * lvl / 5;
+    const pts = axes.map((_, i) => pointAt(i, r).map(v => v.toFixed(1)).join(',')).join(' ');
+    gridHtml += `<polygon class="radar-grid" points="${pts}"/>`;
+  }
+  // 6 條軸 + labels
+  let axisHtml = '';
+  let labelHtml = '';
+  for (let i = 0; i < N; i++) {
+    const [x, y] = pointAt(i, R);
+    const [lx, ly] = pointAt(i, R + 22);
+    const [lxs, lys] = pointAt(i, R + 36);
+    axisHtml += `<line class="radar-axis" x1="${cx}" y1="${cy}" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}"/>`;
+    labelHtml += `<text class="radar-label" x="${lx.toFixed(1)}" y="${ly.toFixed(1)}">${axes[i].label}</text>`;
+    labelHtml += `<text class="radar-label-sub" x="${lxs.toFixed(1)}" y="${lys.toFixed(1)}">${axes[i].desc}</text>`;
+  }
+  // 數據 polygon
+  let dataPts = '', dotHtml = '';
+  for (let i = 0; i < N; i++) {
+    const v = Math.max(0, Math.min(100, metrics[axes[i].key] || 0));
+    const r = R * v / 100;
+    const [x, y] = pointAt(i, r);
+    dataPts += `${x.toFixed(1)},${y.toFixed(1)} `;
+    dotHtml += `<circle class="radar-dot" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="4"><title>${axes[i].label}: ${v}% (${axes[i].desc})</title></circle>`;
+  }
+  return `<svg viewBox="0 0 400 400" class="radar-chart" xmlns="http://www.w3.org/2000/svg">
+    ${gridHtml}
+    ${axisHtml}
+    <polygon class="radar-data" points="${dataPts.trim()}"/>
+    ${dotHtml}
+    ${labelHtml}
+  </svg>`;
+}
+
+// === §4.3 戰鬥分析 ===
+function renderBattlePanel() {
+  const panel = document.getElementById('dash-panel-battle');
+  const heatmap = getBattleHeatmap();
+  if (Object.keys(heatmap).length === 0) {
+    panel.insertAdjacentHTML('beforeend', emptyStateHtml('尚未挑戰過戰鬥', '快去主堡挑戰你的第一場！'));
+    return;
+  }
+  // 攞所有 stage id for list view fallback
+  let allStages = [];
+  try {
+    if (typeof STAGES_DATA !== 'undefined' && STAGES_DATA.multiplication) {
+      for (const tableKey of Object.keys(STAGES_DATA.multiplication)) {
+        const t = STAGES_DATA.multiplication[tableKey];
+        if (t && Array.isArray(t.stages)) for (const s of t.stages) allStages.push(s);
+      }
+    }
+  } catch(e) {}
+  // heatmap grid
+  const diffs = ['easy','normal','hard','boss'];
+  const diffLabels = { easy: '初', normal: '中', hard: '高', boss: 'Boss' };
+  const tableKeys = Object.keys(heatmap).sort((a, b) => {
+    // numeric table first, "boss" last
+    const aN = parseInt(a), bN = parseInt(b);
+    if (!isNaN(aN) && !isNaN(bN)) return aN - bN;
+    if (!isNaN(aN)) return -1;
+    if (!isNaN(bN)) return 1;
+    return 0;
+  });
+  let gridHtml = '<div class="battle-heatmap-header" style="grid-column:1/-1;text-align:center;color:var(--text-dim);font-size:.75rem;margin-bottom:6px">⭐ 點 = 最高星 · 灰 = 未挑戰</div>';
+  gridHtml += '<div class="battle-heatmap-header"></div>';
+  for (const d of diffs) gridHtml += `<div class="battle-heatmap-header">${diffLabels[d]}</div>`;
+  for (const tk of tableKeys) {
+    const displayLabel = isNaN(parseInt(tk)) ? 'Boss' : '×' + tk;
+    gridHtml += `<div class="battle-heatmap-row-label">${displayLabel}</div>`;
+    for (const d of diffs) {
+      const stars = heatmap[tk][d];
+      if (stars === null || stars === undefined) {
+        gridHtml += `<div class="battle-heatmap-cell stars-0" data-stage="${tk}" data-diff="${d}">—</div>`;
+      } else {
+        const starText = stars > 0 ? '⭐'.repeat(Math.min(5, stars)) : '—';
+        gridHtml += `<div class="battle-heatmap-cell stars-${stars}" data-stage="${tk}" data-diff="${d}" title="${displayLabel} ${diffLabels[d]}: ${stars} 星">${starText}</div>`;
+      }
+    }
+  }
+  panel.insertAdjacentHTML('beforeend', `<div class="battle-heatmap-wrap"><div class="battle-heatmap">${gridHtml}</div>
+    <div class="battle-heatmap-legend">
+      <span><span class="battle-heatmap-legend-swatch" style="background:rgba(255,255,255,.05)"></span>未挑戰</span>
+      <span><span class="battle-heatmap-legend-swatch" style="background:rgba(231,76,60,.3)"></span>1⭐</span>
+      <span><span class="battle-heatmap-legend-swatch" style="background:rgba(253,203,110,.3)"></span>2⭐</span>
+      <span><span class="battle-heatmap-legend-swatch" style="background:rgba(253,203,110,.55)"></span>3⭐</span>
+      <span><span class="battle-heatmap-legend-swatch" style="background:rgba(255,212,112,.7)"></span>4⭐</span>
+      <span><span class="battle-heatmap-legend-swatch" style="background:linear-gradient(135deg,#ffd470,#ff8fb3)"></span>5⭐</span>
+    </div></div>`);
+  // 摺疊 list
+  let listHtml = '';
+  for (const s of allStages) {
+    const result = getBattleStats(s.id);
+    const stars = result && typeof result.stars === 'number' ? result.stars : 0;
+    const acc = result && typeof result.lastAccuracy === 'number' ? result.lastAccuracy : null;
+    const vic = result && result.lastVictory;
+    const played = result && result.lastPlayed;
+    const starsStr = '⭐'.repeat(stars) || '<span style="color:var(--text-dim)">未挑戰</span>';
+    const accStr = acc !== null ? `${acc}% ${vic ? '✅' : '❌'}` : '—';
+    const playedStr = played ? played.split(',')[0] : '—';
+    listHtml += `<div class="battle-list-row" onclick="showStageFromDashboard('${s.id}')">
+      <div class="stage-name">${s.name || s.id}</div>
+      <div class="stars-text">${starsStr}</div>
+      <div class="stars-text">${accStr}</div>
+      <div class="stars-text">${playedStr}</div>
+    </div>`;
+  }
+  panel.insertAdjacentHTML('beforeend', `<button class="battle-list-toggle" onclick="this.nextElementSibling.classList.toggle('hidden');this.textContent=this.nextElementSibling.classList.contains('hidden')?'📋 展開詳細記錄':'📋 收起詳細記錄'">📋 展開詳細記錄</button><div class="hidden">${listHtml}</div>`);
+}
+
+function showStageFromDashboard(stageId) {
+  // 簡化：直接由 stage id 推 topic → show topic screen
+  // stage id 格式：2-easy / 2-normal / 2-hard / boss-final
+  const m = stageId.match(/^(\d+|boss)/);
+  if (!m) return;
+  const tableKey = m[1];
+  // 用 showTopicScreen 顯示
+  try {
+    if (typeof showTopicScreen === 'function') showTopicScreen();
+    // 自動點擊對應 table — 簡化：直接轉去 diff screen
+    setTimeout(() => {
+      if (typeof currentDomain !== 'undefined') currentDomain = 'multiplication';
+    }, 100);
+  } catch(e) {}
+}
+
+// === §4.4 練習分析 ===
+function renderPracticePanel() {
+  const panel = document.getElementById('dash-panel-practice');
+  const data = getPracticeData();
+  const entries = Object.entries(data).filter(([,arr]) => Array.isArray(arr) && arr.length > 0);
+  if (entries.length === 0) {
+    panel.insertAdjacentHTML('beforeend', emptyStateHtml('尚未練習過', '快去練習模式！'));
+    return;
+  }
+  // Streak heatmap
+  const streak = getStreakHeatmap(30);
+  const today = new Date().toLocaleDateString('zh-TW');
+  const lvlOf = (c) => c === 0 ? 0 : c <= 2 ? 1 : c <= 5 ? 2 : 3;
+  const cellsHtml = streak.days.map(d => {
+    const lvl = lvlOf(d.count);
+    const isToday = d.date === today ? ' today' : '';
+    return `<div class="streak-cell lvl-${lvl}${isToday}" title="${d.date}: ${d.count} 次"></div>`;
+  }).join('');
+  const streakHtml = `<div class="streak-heatmap-wrap">
+    <div class="streak-summary">
+      <div class="streak-summary-item streak-active"><span class="value">🔥 ${streak.streak}</span><span class="stat-card-label">連續日數</span></div>
+      <div class="streak-summary-item"><span class="value">${streak.days.reduce((s,d)=>s+d.count,0)}</span><span class="stat-card-label">30日總場次</span></div>
+    </div>
+    <div class="streak-heatmap">${cellsHtml}</div>
+    <div class="battle-heatmap-legend" style="margin-top:6px">
+      <span>0</span><span><span class="battle-heatmap-legend-swatch" style="background:rgba(46,204,113,.25)"></span>1-2</span><span><span class="battle-heatmap-legend-swatch" style="background:rgba(46,204,113,.5)"></span>3-5</span><span><span class="battle-heatmap-legend-swatch" style="background:rgba(46,204,113,.85)"></span>6+</span>
+    </div>
+  </div>`;
+  panel.insertAdjacentHTML('beforeend', streakHtml);
+
+  // 每個 table row + sparkline
+  let rowsHtml = '';
+  for (const [tableStr, records] of entries.sort((a, b) => {
+    const ta = parseInt(a[0]), tb = parseInt(b[0]);
+    if (ta === 0) return -1; if (tb === 0) return 1;
+    return ta - tb;
+  })) {
     const table = parseInt(tableStr);
-    if (table === 0) continue;
     const best = getBestScore(records);
     const recent = records[records.length - 1];
-    const stars = best >= 80 ? '⭐⭐⭐' : best >= 60 ? '⭐⭐' : best !== null && best >= 40 ? '⭐' : '';
     const lastPct = recent ? Math.round(recent.correct / recent.total * 100) : null;
     const color = best >= 80 ? '#2ecc71' : best >= 50 ? '#fdcb6e' : '#e74c3c';
-    html += `<div style="background:var(--card);border-radius:16px;padding:18px 24px;display:flex;align-items:center;gap:16px;cursor:pointer" onclick="startPractice(${table})">
-      <div style="font-size:1.5rem;font-weight:900;color:${color};min-width:50px">×${table}</div>
-      <div style="flex:1"><div style="height:10px;background:#1e1e2e;border-radius:5px;overflow:hidden"><div style="height:100%;width:${isFinite(best)?best:0}%;background:${color};border-radius:5px;transition:width .5s"></div></div></div>
-      <div style="font-size:1.1rem;font-weight:700;color:${color}">${best!==null?best+'%':'—'}</div>
-      <div style="font-size:.9rem;color:var(--text-dim)">${lastPct!==null?lastPct+'%':'—'}</div>
-      <div style="font-size:1.2rem">${stars}</div>
-      <div style="font-size:.8rem;color:var(--text-dim)">${records.length}次</div>
+    const name = table === 0 ? '🔀 混合' : '×' + table;
+    // sparkline: 最近 7 次 accuracy
+    const last7 = records.slice(-7);
+    const sparkHtml = renderSparkline(last7.map(r => r.total > 0 ? Math.round(r.correct / r.total * 100) : 0));
+    const lastDate = recent && recent.date ? recent.date : '';
+    rowsHtml += `<div class="practice-row" onclick="startPractice(${table})">
+      <div class="practice-name">${name}</div>
+      <div class="practice-best" style="color:${color}">${best !== null ? best + '%' : '—'}</div>
+      <div class="practice-count">${records.length}次</div>
+      ${sparkHtml}
     </div>`;
   }
+  panel.insertAdjacentHTML('beforeend', rowsHtml);
+}
 
-  if (Object.keys(allWeak).length > 0) {
-    const weakList = Object.entries(allWeak).sort((a,b) => b[1]-a[1]).slice(0,5);
-    html += `<div style="margin-top:1.5em;background:var(--card);border-radius:16px;padding:18px 24px">
-      <div style="font-weight:700;margin-bottom:.8em;color:var(--accent)">⚠️ 常錯題目</div>
-      ${weakList.map(([q,c]) => `<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #3d3d5c">
-        <span>${q}</span><span style="color:var(--hp)">×${c}次</span>
-      </div>`).join('')}
+function renderSparkline(values) {
+  // SVG polyline, 14px 高 × 80px 闊
+  const w = 80, h = 14, pad = 1;
+  if (values.length === 0) return `<svg class="practice-spark" width="${w}" height="${h}"></svg>`;
+  const max = 100, min = 0;
+  const stepX = (w - pad * 2) / Math.max(1, values.length - 1);
+  const pts = values.map((v, i) => {
+    const x = pad + i * stepX;
+    const y = pad + (h - pad * 2) * (1 - (v - min) / (max - min));
+    return `${x.toFixed(1)},${y.toFixed(1)}`;
+  }).join(' ');
+  // 線色：根據最後一個值
+  const last = values[values.length - 1];
+  const color = last >= 80 ? '#2ecc71' : last >= 50 ? '#fdcb6e' : '#e74c3c';
+  return `<svg class="practice-spark" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
+    <polyline fill="none" stroke="${color}" stroke-width="1.5" points="${pts}"/>
+    ${values.map((v, i) => {
+      const x = pad + i * stepX;
+      const y = pad + (h - pad * 2) * (1 - (v - min) / (max - min));
+      return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="1.5" fill="${color}"/>`;
+    }).join('')}
+  </svg>`;
+}
+
+// === §4.5 弱題分析 ===
+function renderWeakPanel() {
+  const panel = document.getElementById('dash-panel-weak');
+  const weak = getWeakQuestions(10);
+  if (weak.length === 0) {
+    panel.insertAdjacentHTML('beforeend', emptyStateHtml('🎉 冇弱題！', '你嘅錯題會自動收集喺度。'));
+    return;
+  }
+  const maxCount = weak[0].count;
+  let rowsHtml = '';
+  for (const w of weak) {
+    const pct = Math.round(w.count / maxCount * 100);
+    rowsHtml += `<div class="weak-bar-row">
+      <div class="weak-bar-q">${w.question}</div>
+      <div class="weak-bar-track"><div class="weak-bar-fill" style="width:${pct}%"></div></div>
+      <div class="weak-bar-meta"><span class="count-num">${w.count}</span>次錯</div>
     </div>`;
   }
+  panel.insertAdjacentHTML('beforeend', `<div class="weak-bars">${rowsHtml}</div>`);
+}
 
-  html += '</div>';
-  container.innerHTML = html;
+// === §4.6 學習曲線 ===
+function renderCurvePanel() {
+  const panel = document.getElementById('dash-panel-curve');
+  // 確保 toggle button 喺度（先清除舊 toggle 同 svg 再 render）
+  const oldSvg = panel.querySelector('.curve-chart');
+  if (oldSvg) oldSvg.remove();
+  const oldToggle = panel.querySelector('.curve-toggle');
+  if (oldToggle) oldToggle.remove();
+  const oldEmpty = panel.querySelector('.dash-empty');
+  if (oldEmpty) oldEmpty.remove();
+  const curve = getLearningCurve(_dashCurveDays);
+  const hasData = curve.some(c => c.accuracy !== null);
+  if (!hasData) {
+    panel.insertAdjacentHTML('beforeend', emptyStateHtml('暫無曲線數據', '完成至少一場戰鬥或練習先有得畫。'));
+    return;
+  }
+  // toggle
+  const toggleHtml = `<div class="curve-toggle">
+    <button data-days="7" class="${_dashCurveDays === 7 ? 'active' : ''}">7 日</button>
+    <button data-days="30" class="${_dashCurveDays === 30 ? 'active' : ''}">30 日</button>
+  </div>`;
+  panel.insertAdjacentHTML('beforeend', toggleHtml);
+  // SVG line chart
+  const w = 600, h = 200, padL = 36, padR = 12, padT = 12, padB = 28;
+  const innerW = w - padL - padR, innerH = h - padT - padB;
+  const stepX = innerW / Math.max(1, curve.length - 1);
+  // grid + Y axis labels (0/50/100)
+  let gridHtml = '';
+  for (const yVal of [0, 25, 50, 75, 100]) {
+    const y = padT + innerH * (1 - yVal / 100);
+    gridHtml += `<line class="curve-grid" x1="${padL}" y1="${y.toFixed(1)}" x2="${w - padR}" y2="${y.toFixed(1)}"/>`;
+    gridHtml += `<text class="curve-axis-label" x="${padL - 4}" y="${y.toFixed(1)}" text-anchor="end" dominant-baseline="middle">${yVal}%</text>`;
+  }
+  // data points
+  const pts = [];
+  const dots = [];
+  curve.forEach((c, i) => {
+    if (c.accuracy === null) return; // gap
+    const x = padL + i * stepX;
+    const y = padT + innerH * (1 - c.accuracy / 100);
+    pts.push({ x, y, ...c });
+    dots.push(`<circle class="curve-dot" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="3.5"><title>${c.date}: ${c.accuracy}% (${c.battleCount} 場)</title></circle>`);
+  });
+  // line + area path
+  let linePath = '';
+  let areaPath = '';
+  if (pts.length > 0) {
+    linePath = 'M ' + pts.map(p => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' L ');
+    // area path: line + close to baseline
+    const baseY = padT + innerH;
+    areaPath = linePath + ` L ${pts[pts.length - 1].x.toFixed(1)},${baseY} L ${pts[0].x.toFixed(1)},${baseY} Z`;
+  }
+  // X axis labels (every ~3rd)
+  let xLabelHtml = '';
+  const labelStep = Math.max(1, Math.floor(curve.length / 6));
+  curve.forEach((c, i) => {
+    if (i % labelStep !== 0 && i !== curve.length - 1) return;
+    const x = padL + i * stepX;
+    // 取 mm/dd
+    const m = c.date.match(/(\d+)\/(\d+)/);
+    const label = m ? `${parseInt(m[1])}/${parseInt(m[2])}` : c.date;
+    xLabelHtml += `<text class="curve-axis-label" x="${x.toFixed(1)}" y="${h - 8}">${label}</text>`;
+  });
+  const svgHtml = `<svg class="curve-svg" viewBox="0 0 ${w} ${h}" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+    <defs><linearGradient id="curve-grad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#5bc8f5" stop-opacity="0.5"/><stop offset="100%" stop-color="#5bc8f5" stop-opacity="0"/></linearGradient></defs>
+    ${gridHtml}
+    ${areaPath ? `<path class="curve-area" d="${areaPath}"/>` : ''}
+    ${linePath ? `<path class="curve-line" d="${linePath}"/>` : ''}
+    ${dots.join('')}
+    ${xLabelHtml}
+  </svg>`;
+  panel.insertAdjacentHTML('beforeend', `<div class="curve-chart">${svgHtml}</div>`);
+}
+
+// === Empty state helper ===
+function emptyStateHtml(title, sub) {
+  return `<div class="dash-empty">
+    <span class="dash-empty-icon">📭</span>
+    <div style="font-size:1rem;font-weight:700;margin-bottom:4px">${title}</div>
+    <div style="font-size:.85rem">${sub}</div>
+  </div>`;
 }
 
 // ==================== SOUND ENGINE ====================
