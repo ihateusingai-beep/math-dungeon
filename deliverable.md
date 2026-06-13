@@ -10,7 +10,7 @@ jsdom test 65 條 case。`npm test` 全綠 148/148（60 既有 + 23 sprint17 + 6
 ## Branch + Commit
 
 - **Branch**: `feat/sprint18-engine-v1`
-- **Final commit SHA**: `ba1a967` (含 deliverable.md + SHA refresh；engine 程式碼 commit 為 `77c48bf1bddf62af30f80e55bada63e8e9d343d0`)
+- **Engine code commit**: `77c48bf1bddf62af30f80e55bada63e8e9d343d0` (Sprint 18 A — 成就 engine)
 - **Pushed**: `origin/feat/sprint18-engine-v1` (new branch)
 - **Worktree**: `/private/tmp/sprint18-engine-v1` (isolated，避免同 Track B 撞)
 - **Track B branch**: `feat/sprint18-ui-v1` 同時存在，scope 完全唔 overlap
