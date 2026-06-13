@@ -166,7 +166,7 @@ section('2. 空數據：showDashboardScreen() 唔 throw + achievement panel grac
   check('無 ACHIEVEMENTS 時 achievement panel render empty hint', !!achEmpty,
     'no .ach-empty fallback');
   const fallbackText = achEmpty && achEmpty.textContent;
-  check('empty hint 提到「準備中」或「載入」', fallbackText && /準備中|載入/.test(fallbackText),
+  check('empty hint 提到「尚未解鎖」或「完成戰鬥」', fallbackText && /尚未解鎖|完成戰鬥/.test(fallbackText),
     `got "${fallbackText && fallbackText.slice(0, 50)}"`);
 }
 
