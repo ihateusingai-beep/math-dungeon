@@ -537,6 +537,69 @@ section{position:fixed;inset:0;display:flex;flex-direction:column;align-items:ce
 .skill-btn::after{content:attr(data-desc);position:absolute;bottom:110%;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.95);color:var(--text);padding:8px 12px;border-radius:8px;font-size:.7rem;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .2s;z-index:100;border:1px solid var(--border);max-width:200px;white-space:normal;text-align:center}
 .skill-btn:hover::after{opacity:1}
 
+/* ═══════ Sprint 18 §4 — 成就系統（第 6 個 tab） ═══════ */
+/* Summary block */
+.ach-summary{text-align:center;padding:14px 12px;margin:0 auto 14px;max-width:380px;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:12px}
+.ach-summary-num{font-size:2.4rem;font-weight:900;line-height:1.1;margin-bottom:4px}
+.ach-summary-unlocked{color:var(--accent,#5bc8f5)}
+.ach-summary-divider{color:var(--text-dim,#8888aa);margin:0 4px;font-weight:600}
+.ach-summary-total{color:var(--text-dim,#8888aa);font-size:1.4rem}
+.ach-summary-label{font-size:.8rem;color:var(--text-dim,#8888aa);letter-spacing:.05em;margin-bottom:8px}
+.ach-summary-bar{height:8px;background:rgba(255,255,255,.1);border-radius:4px;overflow:hidden}
+.ach-summary-bar-fill{height:100%;background:linear-gradient(90deg,var(--xp,#fdcb6e),var(--accent,#5bc8f5));transition:width .3s}
+
+/* Filter chips */
+.ach-filter{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:0 0 14px;padding:0 4px}
+.ach-chip{padding:6px 14px;border-radius:20px;background:rgba(255,255,255,.06);border:1px solid var(--border);cursor:pointer;color:var(--text-dim,#8888aa);font-size:.78rem;font-weight:600;transition:all .15s}
+.ach-chip:hover{background:rgba(91,200,245,.12);color:var(--text,#fff)}
+.ach-chip.active{background:var(--accent,#5bc8f5);color:#fff;border-color:var(--accent,#5bc8f5);box-shadow:0 2px 8px rgba(91,200,245,.3)}
+
+/* Grid */
+.ach-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;padding:4px}
+
+/* Card */
+.ach-card{background:rgba(255,255,255,.04);border:2px solid var(--border);border-radius:12px;padding:14px;transition:transform .15s,box-shadow .15s;display:flex;flex-direction:column}
+.ach-card:hover{transform:translateY(-2px)}
+.ach-card.ach-unlocked{box-shadow:0 0 12px rgba(255,215,0,.18)}
+.ach-card.ach-locked{opacity:.7;filter:grayscale(.3)}
+.ach-card-icon{font-size:2.4rem;text-align:center;margin-bottom:8px;line-height:1}
+.ach-card-title{font-weight:700;text-align:center;margin-bottom:4px;font-size:.92rem;color:var(--text,#fff)}
+.ach-card-desc{font-size:.76rem;color:var(--text-dim,#8888aa);text-align:center;margin-bottom:8px;line-height:1.3;flex:1}
+.ach-card-meta{display:flex;justify-content:space-between;align-items:center;font-size:.68rem;margin-top:auto}
+.ach-card-tier{padding:2px 8px;border-radius:10px;font-weight:700;letter-spacing:.05em}
+.ach-card-date{color:var(--text-dim,#8888aa);font-size:.65rem}
+.tier-bronze{background:rgba(205,127,50,.18);color:#cd7f32;border:1px solid rgba(205,127,50,.4)}
+.tier-silver{background:rgba(192,192,192,.18);color:#c0c0c0;border:1px solid rgba(192,192,192,.4)}
+.tier-gold{background:rgba(255,215,0,.18);color:#ffd700;border:1px solid rgba(255,215,0,.4)}
+.tier-platinum{background:rgba(224,224,255,.18);color:#e0e0ff;border:1px solid rgba(224,224,255,.4)}
+
+/* Tier borders (4 種) */
+.ach-card[data-tier="bronze"]{border-color:#cd7f32}
+.ach-card[data-tier="silver"]{border-color:#c0c0c0}
+.ach-card[data-tier="gold"]{border-color:#ffd700}
+.ach-card[data-tier="platinum"]{border-color:#e0e0ff}
+
+/* Progress bar (locked cards) */
+.ach-card-progress{margin-top:8px}
+.ach-card-progress-bar{height:4px;background:rgba(255,255,255,.1);border-radius:2px;overflow:hidden}
+.ach-card-progress-fill{height:100%;background:var(--accent,#5bc8f5);transition:width .3s}
+.ach-card-progress-text{font-size:.7rem;color:var(--text-dim,#8888aa);margin-top:2px;text-align:right}
+
+/* Filter (spec §6 決策：JS toggle data-cat-active + CSS attribute selector) */
+.ach-filter[data-cat-active="battle"]~.ach-grid .ach-card:not([data-cat="battle"]){display:none}
+.ach-filter[data-cat-active="practice"]~.ach-grid .ach-card:not([data-cat="practice"]){display:none}
+.ach-filter[data-cat-active="weak"]~.ach-grid .ach-card:not([data-cat="weak"]){display:none}
+.ach-filter[data-cat-active="curve"]~.ach-grid .ach-card:not([data-cat="curve"]){display:none}
+.ach-filter[data-cat-active="streak"]~.ach-grid .ach-card:not([data-cat="streak"]){display:none}
+
+/* Empty state (spec §4.5) */
+.ach-empty{text-align:center;padding:40px 20px;color:var(--text-dim,#8888aa)}
+.ach-empty-icon{font-size:3.5rem;margin-bottom:12px;line-height:1}
+.ach-empty-text{font-size:1.05rem;font-weight:700;margin-bottom:6px;color:var(--text,#fff)}
+.ach-empty-hint{font-size:.85rem;margin-bottom:16px;line-height:1.4}
+.ach-empty-btn{padding:10px 22px;border-radius:10px;background:linear-gradient(135deg,#5bc8f5,#ff8fb3);border:none;color:#fff;font-weight:700;cursor:pointer;font-size:.9rem;box-shadow:0 4px 12px rgba(91,200,245,.3);transition:transform .15s}
+.ach-empty-btn:hover{transform:scale(1.04)}
+
 </style>
 </head>
 <body>
@@ -789,6 +852,9 @@ section{position:fixed;inset:0;display:flex;flex-direction:column;align-items:ce
     <button class="dash-tab" data-tab="curve" role="tab">
       <img src="assets/images/sprint17/icon-curve.webp" alt="" class="dash-tab-icon"><span>曲線</span>
     </button>
+    <button class="dash-tab" data-tab="achievement" role="tab">
+      <img src="assets/images/sprint18/icon-achievement.webp" alt="" class="dash-tab-icon"><span>成就</span>
+    </button>
   </div>
   <div class="dash-panels" id="dash-panels" style="width:min(640px,95vw);max-height:68vh;overflow-y:auto;margin-top:1em">
     <div class="dash-panel active" data-panel="overview" id="dash-panel-overview"></div>
@@ -796,6 +862,7 @@ section{position:fixed;inset:0;display:flex;flex-direction:column;align-items:ce
     <div class="dash-panel" data-panel="practice" id="dash-panel-practice"></div>
     <div class="dash-panel" data-panel="weak" id="dash-panel-weak"></div>
     <div class="dash-panel" data-panel="curve" id="dash-panel-curve"></div>
+    <div class="dash-panel" data-panel="achievement" id="dash-panel-achievement"></div>
   </div>
 </section>
 
@@ -4951,8 +5018,8 @@ function getPlayerName() {
   return '冒險者';
 }
 
-// ==================== DASHBOARD (Sprint 17 — 5 tab 統計頁面) ====================
-const DASHBOARD_TABS = ['overview','battle','practice','weak','curve'];
+// ==================== DASHBOARD (Sprint 17 — 5 tab 統計頁面, Sprint 18 加 achievement) ====================
+const DASHBOARD_TABS = ['overview','battle','practice','weak','curve','achievement'];
 let _dashTab = 'overview';
 let _dashCurveDays = 7;
 
@@ -4968,7 +5035,7 @@ function showDashboardScreen() {
     }
   } catch(e) {}
   // 從 hash 同步 tab（deep link）
-  const hashMatch = (location.hash || '').match(/^#dashboard\/(overview|battle|practice|weak|curve)$/);
+  const hashMatch = (location.hash || '').match(/^#dashboard\/(overview|battle|practice|weak|curve|achievement)$/);
   let targetTab = hashMatch ? hashMatch[1] : null;
   if (!targetTab) {
     try {
@@ -4986,6 +5053,7 @@ function showDashboardScreen() {
   renderPracticePanel();
   renderWeakPanel();
   renderCurvePanel();
+  renderAchievementPanel();
   switchDashboardTab(_dashTab, false);
   // summary
   const stats = getOverallStats();
@@ -5429,6 +5497,130 @@ function renderCurvePanel() {
     ${xLabelHtml}
   </svg>`;
   panel.insertAdjacentHTML('beforeend', `<div class="curve-chart">${svgHtml}</div>`);
+}
+
+// === §4.6 成就系統（Sprint 18 — 第 6 個 tab, grid + filter + empty state） ===
+// 注意：呢個 function 假設 Track A engine 已 commit ACHIEVEMENTS / getAchievementProgress。
+// 如果 ACHIEVEMENTS 仲未定義（Track A 未 merge），function 會 render 一個 info message 而唔 throw。
+function renderAchievementPanel() {
+  const panel = document.getElementById('dash-panel-achievement');
+  if (!panel) return;
+  // 確保冇舊 render（Sprint 17 嘅 renderCurvePanel 做法）
+  const oldGrid = panel.querySelector('.ach-grid');
+  if (oldGrid) oldGrid.remove();
+  const oldFilter = panel.querySelector('.ach-filter');
+  if (oldFilter) oldFilter.remove();
+  const oldSummary = panel.querySelector('.ach-summary');
+  if (oldSummary) oldSummary.remove();
+  const oldEmpty = panel.querySelector('.ach-empty');
+  if (oldEmpty) oldEmpty.remove();
+
+  // Fallback: ACHIEVEMENTS 仲未喺度（Track A 未 merge）
+  if (typeof ACHIEVEMENTS === 'undefined' || !Array.isArray(ACHIEVEMENTS) || ACHIEVEMENTS.length === 0) {
+    panel.insertAdjacentHTML('beforeend',
+      `<div class="ach-empty">
+        <div class="ach-empty-icon">🏆</div>
+        <div class="ach-empty-text">成就系統準備中</div>
+        <div class="ach-empty-hint">Sprint 18 engine 模組載入之後就會見到全部成就</div>
+      </div>`);
+    return;
+  }
+
+  const progress = getAchievementProgress();
+  const unlocked = Array.isArray(progress.unlocked) ? progress.unlocked : [];
+  const inProgress = progress.inProgress && typeof progress.inProgress === 'object' ? progress.inProgress : {};
+  const unlockedIds = new Set(unlocked.map(u => u.id));
+  const unlockedMap = {};
+  for (const u of unlocked) unlockedMap[u.id] = u.unlockedAt;
+  const total = ACHIEVEMENTS.length;
+  const unlockedCount = unlocked.length;
+  const pct = total > 0 ? Math.round(unlockedCount / total * 100) : 0;
+
+  // 0 解鎖 → 顯示 spec §4.5 嘅 empty state（無 grid / filter）
+  if (unlockedCount === 0) {
+    panel.insertAdjacentHTML('beforeend',
+      `<div class="ach-empty">
+        <div class="ach-empty-icon">🏆</div>
+        <div class="ach-empty-text">尚未解鎖任何成就</div>
+        <div class="ach-empty-hint">完成戰鬥同練習就會解鎖！</div>
+        <button class="ach-empty-btn" onclick="goHome()">🏠 回到主頁</button>
+      </div>`);
+    return;
+  }
+
+  // Summary block
+  const summaryHtml = `<div class="ach-summary">
+    <div class="ach-summary-num">
+      <span class="ach-summary-unlocked">${unlockedCount}</span>
+      <span class="ach-summary-divider">/</span>
+      <span class="ach-summary-total">${total}</span>
+    </div>
+    <div class="ach-summary-label">已解鎖成就</div>
+    <div class="ach-summary-bar"><div class="ach-summary-bar-fill" style="width:${pct}%"></div></div>
+  </div>`;
+  panel.insertAdjacentHTML('beforeend', summaryHtml);
+
+  // Filter chips（per spec §6 用 JS 簡單 toggle，唔同 CSS sibling 鬥智）
+  const categories = [
+    { key: 'all',       label: '全部',  icon: '' },
+    { key: 'battle',    label: '戰鬥',  icon: '⚔️' },
+    { key: 'practice',  label: '練習',  icon: '📚' },
+    { key: 'weak',      label: '弱題',  icon: '🎯' },
+    { key: 'curve',     label: '曲線',  icon: '📈' },
+    { key: 'streak',    label: '連勝',  icon: '🔥' }
+  ];
+  const chipsHtml = `<div class="ach-filter" data-cat-active="all">${categories.map(c =>
+    `<button class="ach-chip${c.key === 'all' ? ' active' : ''}" data-cat="${c.key}">${c.icon ? c.icon + ' ' : ''}${c.label}</button>`
+  ).join('')}</div>`;
+  panel.insertAdjacentHTML('beforeend', chipsHtml);
+
+  // Grid
+  let cardsHtml = '';
+  for (const a of ACHIEVEMENTS) {
+    const isUnlocked = unlockedIds.has(a.id);
+    const ip = inProgress[a.id] || {};
+    const prog = typeof ip.progress === 'number' ? Math.max(0, Math.min(1, ip.progress)) : 0;
+    const ctx = ip.ctx || '';
+    if (isUnlocked) {
+      const ts = unlockedMap[a.id] || '';
+      const datePart = ts ? `${ts} 解鎖` : '已解鎖';
+      cardsHtml += `<div class="ach-card ach-unlocked" data-id="${a.id}" data-cat="${a.category}" data-tier="${a.tier}">
+        <div class="ach-card-icon">${a.icon || '🏆'}</div>
+        <div class="ach-card-title">${a.title}</div>
+        <div class="ach-card-desc">${a.desc}</div>
+        <div class="ach-card-meta">
+          <span class="ach-card-tier tier-${a.tier}">${tierLabel(a.tier)}</span>
+          <span class="ach-card-date">${datePart}</span>
+        </div>
+      </div>`;
+    } else {
+      const pctNum = Math.round(prog * 100);
+      cardsHtml += `<div class="ach-card ach-locked" data-id="${a.id}" data-cat="${a.category}" data-tier="${a.tier}">
+        <div class="ach-card-icon">🔒</div>
+        <div class="ach-card-title">${a.title}</div>
+        <div class="ach-card-desc">${a.desc}</div>
+        <div class="ach-card-progress">
+          <div class="ach-card-progress-bar"><div class="ach-card-progress-fill" style="width:${pctNum}%"></div></div>
+          <div class="ach-card-progress-text">${ctx || pctNum + '%'}</div>
+        </div>
+      </div>`;
+    }
+  }
+  panel.insertAdjacentHTML('beforeend', `<div class="ach-grid">${cardsHtml}</div>`);
+
+  // Filter chip click → set data-cat-active on .ach-filter，CSS hides non-matching
+  panel.querySelectorAll('.ach-chip').forEach(btn => {
+    btn.onclick = () => {
+      const filter = panel.querySelector('.ach-filter');
+      const cat = btn.dataset.cat;
+      if (filter) filter.dataset.catActive = cat;
+      panel.querySelectorAll('.ach-chip').forEach(b => b.classList.toggle('active', b === btn));
+    };
+  });
+}
+
+function tierLabel(t) {
+  return ({ bronze: '銅', silver: '銀', gold: '金', platinum: '彩' })[t] || t || '';
 }
 
 // === Empty state helper ===
