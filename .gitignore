@@ -1,0 +1,12 @@
+# Mavis agent state
+.mavis/
+
+# OpenCode / editor state
+.opencode/
+
+# OS artifacts
+.DS_Store
+*.log
+
+# Dependency caches
+node_modules/
