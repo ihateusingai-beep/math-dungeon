@@ -68,11 +68,21 @@ section{position:fixed;inset:0;display:flex;flex-direction:column;align-items:ce
 .screen-sub{color:var(--text-dim);font-size:1.1rem;margin-bottom:2em;text-align:center}
 
 /* ============ HOME SCREEN ============ */
-#home-screen{background:linear-gradient(135deg,#1e1e2e 0%,#2d2d44 50%,#1e1e2e 100%)}
-.home-logo{font-size:clamp(2.5rem,8vw,5rem);text-align:center;margin-bottom:.3em}
+#home-screen{background:linear-gradient(135deg,#1e1e2e 0%,#2d2d44 50%,#1e1e2e 100%);overflow-y:auto}
+
+/* Sprint 14: Home 2-column layout + 3 區分組 */
+.home-layout{display:flex;align-items:center;justify-content:center;gap:clamp(20px,5vw,60px);min-height:100vh;max-width:1000px;margin:0 auto;padding:20px;flex-wrap:wrap}
+.home-left{flex:1 1 280px;min-width:240px;text-align:center}
+.home-right{flex:1 1 320px;min-width:280px;display:flex;flex-direction:column;gap:18px}
+.home-section{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:16px;padding:14px 12px;display:flex;flex-direction:column;gap:10px}
+.home-section-title{font-size:.85rem;color:var(--gold);font-weight:700;text-align:left;padding-left:6px;letter-spacing:.5px}
+
+/* 標題縮小避免裁切（之前 clamp(2.5rem,8vw,5rem) 在 mobile 太大） */
+.home-logo{font-size:clamp(2rem,6vw,3.5rem);text-align:center;margin-bottom:.3em;line-height:1.2}
 .home-logo span{background:linear-gradient(135deg,var(--gold),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:900}
+.home-motto{font-size:1rem;color:var(--text-dim);margin-bottom:8px}
 .home-motto{color:var(--text-dim);margin-bottom:3em;font-size:1.1rem}
-.home-btn{min-width:220px;padding:20px 40px;font-size:1.4rem;font-weight:700;border:none;border-radius:20px;cursor:pointer;transition:all .2s;margin:12px;background:linear-gradient(135deg,var(--primary),var(--secondary));color:#fff;box-shadow:0 6px 24px rgba(108,92,231,.5);touch-action:manipulation}
+.home-btn{min-width:0;width:100%;padding:14px 20px;font-size:1.1rem;font-weight:700;border:none;border-radius:14px;cursor:pointer;transition:all .2s;background:linear-gradient(135deg,var(--primary),var(--secondary));color:#fff;box-shadow:0 4px 16px rgba(108,92,231,.4);touch-action:manipulation}
 .home-btn:hover{transform:translateY(-2px);box-shadow:0 6px 28px rgba(108,92,231,.6)}
 .home-btn:active{transform:translateY(0)}
 
@@ -378,14 +388,26 @@ section{position:fixed;inset:0;display:flex;flex-direction:column;align-items:ce
 
 <!-- ==================== HOME SCREEN ==================== -->
 <section id="home-screen">
-  <div class="home-logo">⚔️ <span>數學地城</span> RPG</div>
-  <div class="home-motto">在奇幻世界中學習乘法！</div>
-  <button class="home-btn" onclick="showNameScreen(); playBgm('battle')">🎮 開始冒險</button>
-  <button class="home-btn" style="background:linear-gradient(135deg,#2d2d44,#3d3d5c)" onclick="loadProgress()">📖 繼續遊戲</button>
-  <button class="home-btn" style="background:linear-gradient(135deg,#00b894,#00cec9)" onclick="showPracticeSelectScreen()">🧮 溫習乘法</button>
-  <button class="home-btn" style="background:linear-gradient(135deg,#6c5ce7,#a29bfe)" onclick="showEquipScreen()">🎒 裝備</button>
-  <button class="home-btn" style="background:linear-gradient(135deg,#fdcb6e,#e17055)" onclick="showShopScreen()">🏪 商店</button>
-  <button class="home-btn" style="background:linear-gradient(135deg,#e17055,#d63031)" onclick="showDashboardScreen()">📊 學習進度</button>
+  <div class="home-layout">
+    <div class="home-left">
+      <div class="home-logo">⚔️ <span>數學地城</span> RPG</div>
+      <div class="home-motto">在奇幻世界中學習乘法！</div>
+    </div>
+    <div class="home-right">
+      <div class="home-section">
+        <div class="home-section-title">🗡️ 冒險</div>
+        <button class="home-btn" onclick="showNameScreen(); playBgm('battle')">🎮 開始冒險</button>
+        <button class="home-btn" style="background:linear-gradient(135deg,#2d2d44,#3d3d5c)" onclick="loadProgress()">📖 繼續遊戲</button>
+        <button class="home-btn" style="background:linear-gradient(135deg,#00b894,#00cec9)" onclick="showPracticeSelectScreen()">🧮 溫習乘法</button>
+      </div>
+      <div class="home-section">
+        <div class="home-section-title">📊 進度</div>
+        <button class="home-btn" style="background:linear-gradient(135deg,#6c5ce7,#a29bfe)" onclick="showEquipScreen()">🎒 裝備</button>
+        <button class="home-btn" style="background:linear-gradient(135deg,#fdcb6e,#e17055)" onclick="showShopScreen()">🏪 商店</button>
+        <button class="home-btn" style="background:linear-gradient(135deg,#e17055,#d63031)" onclick="showDashboardScreen()">📊 學習進度</button>
+      </div>
+    </div>
+  </div>
 </section>
 
 <!-- ==================== EQUIPMENT SCREEN ==================== -->
