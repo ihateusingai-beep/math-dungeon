@@ -2666,9 +2666,188 @@ function recordQuestionTiming(stageId, qid, durMs) {
   try { localStorage.setItem(key, JSON.stringify(data)); } catch(e) {}
 }
 
-// Sprint 17 §5.1: 成就系統預留鉤子（Sprint 18 會用）
-// 純 stub，return 結構定咗畀 Sprint 18 直接食
-function getAchievementProgress() {
+// Sprint 18 §2: 成就清單（22 個，5 類）
+// rule(ctx) 必須 return { progress: 0-1, ctx?: string }，解鎖由 checkAndUnlockAchievements() 統一做
+const ACHIEVEMENTS = [
+  // ── Battle（6）────────────────────────────────────────────
+  {
+    id: 'first_battle', category: 'battle', title: '初戰告捷', desc: '完成第一場戰鬥', icon: '⚔️', tier: 'bronze',
+    rule: ({battles}) => {
+      const n = battles ? Object.keys(battles).length : 0;
+      return { progress: n >= 1 ? 1 : 0, ctx: `${n}/1 場` };
+    }
+  },
+  {
+    id: 'ten_battles', category: 'battle', title: '十場征戰', desc: '完成 10 場戰鬥', icon: '⚔️', tier: 'silver',
+    rule: ({battles}) => {
+      const n = battles ? Object.keys(battles).length : 0;
+      return { progress: Math.min(n / 10, 1), ctx: `${Math.min(n,10)}/10 場` };
+    }
+  },
+  {
+    id: 'fifty_battles', category: 'battle', title: '沙場老將', desc: '完成 50 場戰鬥', icon: '⚔️', tier: 'gold',
+    rule: ({battles}) => {
+      const n = battles ? Object.keys(battles).length : 0;
+      return { progress: Math.min(n / 50, 1), ctx: `${Math.min(n,50)}/50 場` };
+    }
+  },
+  {
+    id: 'perfect_accuracy', category: 'battle', title: '神準無誤', desc: '任何一場達 100% 準確率', icon: '🎯', tier: 'silver',
+    rule: ({battles}) => {
+      const has = battles && Object.values(battles).some(v => v && v.lastAccuracy === 100);
+      return { progress: has ? 1 : 0, ctx: has ? '已達 100%' : '未達 100%' };
+    }
+  },
+  {
+    id: 'no_damage', category: 'battle', title: '銅牆鐵壁', desc: '任何一場 3 星完美通關（無錯）', icon: '🛡️', tier: 'gold',
+    // Pre-flight: 冇 HP 數據點（battleState 無 playerHp/minHp 欄位），fallback 用 stars===3
+    rule: ({battles}) => {
+      const has = battles && Object.values(battles).some(v => v && v.stars === 3);
+      return { progress: has ? 1 : 0, ctx: has ? '已 3 星' : '未 3 星' };
+    }
+  },
+  {
+    id: 'boss_slayer', category: 'battle', title: '魔王剋星', desc: '通關 boss stage', icon: '👑', tier: 'gold',
+    rule: ({battles}) => {
+      const has = battles && Object.entries(battles).some(([k, v]) =>
+        v && v.lastVictory && (k.startsWith('boss-') || k.includes('boss')));
+      return { progress: has ? 1 : 0, ctx: has ? '已通關' : '未通關' };
+    }
+  },
+
+  // ── Practice（5）──────────────────────────────────────────
+  {
+    id: 'first_practice', category: 'practice', title: '練習初體驗', desc: '完成第一次練習', icon: '📚', tier: 'bronze',
+    rule: ({stats}) => {
+      const n = (stats && stats.totalPracticeRuns) || 0;
+      return { progress: n >= 1 ? 1 : 0, ctx: `${n}/1 次` };
+    }
+  },
+  {
+    id: 'ten_practices', category: 'practice', title: '練習達人', desc: '完成 10 次練習', icon: '📚', tier: 'silver',
+    rule: ({stats}) => {
+      const n = (stats && stats.totalPracticeRuns) || 0;
+      return { progress: Math.min(n / 10, 1), ctx: `${Math.min(n,10)}/10 次` };
+    }
+  },
+  {
+    id: 'practice_streak_5', category: 'practice', title: '五日練習', desc: '連續 5 日有練習', icon: '📅', tier: 'silver',
+    rule: ({streak}) => {
+      const s = streak || 0;
+      return { progress: Math.min(s / 5, 1), ctx: `${Math.min(s,5)}/5 日` };
+    }
+  },
+  {
+    id: 'practice_ace', category: 'practice', title: '練習滿分', desc: '任何一次練習全部答對', icon: '💯', tier: 'silver',
+    rule: ({practice}) => {
+      let has = false;
+      for (const arr of Object.values(practice || {})) {
+        if (!Array.isArray(arr)) continue;
+        if (arr.some(r => r && typeof r.correct === 'number' && typeof r.total === 'number'
+                          && r.total > 0 && r.correct === r.total)) { has = true; break; }
+      }
+      return { progress: has ? 1 : 0, ctx: has ? '已拿滿分' : '未拿滿分' };
+    }
+  },
+  {
+    id: 'practice_volume_100', category: 'practice', title: '百題練習', desc: '累計練習答題 ≥ 100', icon: '📚', tier: 'gold',
+    rule: ({stats}) => {
+      const n = (stats && stats.totalAnswered) || 0;
+      return { progress: Math.min(n / 100, 1), ctx: `${Math.min(n,100)}/100 題` };
+    }
+  },
+
+  // ── Weak（4）──────────────────────────────────────────────
+  {
+    id: 'weak_aware', category: 'weak', title: '知己知彼', desc: '首次出現 1 個錯題記錄', icon: '🎯', tier: 'bronze',
+    rule: ({weak}) => {
+      const n = (weak || []).length;
+      return { progress: n >= 1 ? 1 : 0, ctx: `${n}/1 條` };
+    }
+  },
+  {
+    id: 'weak_collector', category: 'weak', title: '弱題收藏家', desc: '累積 5 個不同錯題', icon: '🎯', tier: 'silver',
+    rule: ({weak}) => {
+      const n = (weak || []).length;
+      return { progress: Math.min(n / 5, 1), ctx: `${Math.min(n,5)}/5 條` };
+    }
+  },
+  {
+    id: 'weak_master_3', category: 'weak', title: '弱題剋星', desc: '同一弱題錯 3 次以上', icon: '🎯', tier: 'gold',
+    rule: ({weak}) => {
+      const has = (weak || []).some(q => q && q.count >= 3);
+      return { progress: has ? 1 : 0, ctx: has ? '已找出 3 次錯題' : '未達 3 次' };
+    }
+  },
+  {
+    id: 'weak_clean_3', category: 'weak', title: '清白之身', desc: '連續 3 場戰鬥冇錯題', icon: '✨', tier: 'silver',
+    rule: ({log}) => {
+      const L = Array.isArray(log) ? log : [];
+      // 連續 3 條 log entry 全部 wrongCount===0
+      const tail = L.slice(-3);
+      const ok = tail.length === 3 && tail.every(e => e && e.wrongCount === 0);
+      return { progress: ok ? 1 : (tail.filter(e => e && e.wrongCount === 0).length / 3), ctx: ok ? '連 3 場' : `${tail.length}/3` };
+    }
+  },
+
+  // ── Curve（4）─────────────────────────────────────────────
+  {
+    id: 'curve_starter', category: 'curve', title: '起步紀錄', desc: '至少有 1 日有 battle 記錄', icon: '📈', tier: 'bronze',
+    rule: ({curve}) => {
+      const n = (curve || []).filter(d => d && d.battleCount > 0).length;
+      return { progress: n >= 1 ? 1 : 0, ctx: `${n}/1 日` };
+    }
+  },
+  {
+    id: 'curve_7_days', category: 'curve', title: '一週堅持', desc: '連續 7 日有練習', icon: '📈', tier: 'silver',
+    rule: ({streak}) => {
+      const s = streak || 0;
+      return { progress: Math.min(s / 7, 1), ctx: `${Math.min(s,7)}/7 日` };
+    }
+  },
+  {
+    id: 'curve_30_days', category: 'curve', title: '月度達人', desc: '連續 30 日有練習', icon: '📈', tier: 'gold',
+    rule: ({streak}) => {
+      const s = streak || 0;
+      return { progress: Math.min(s / 30, 1), ctx: `${Math.min(s,30)}/30 日` };
+    }
+  },
+  {
+    id: 'curve_perfect_90', category: 'curve', title: '穩定達人', desc: '最近 7 日平均準確率 ≥ 90%', icon: '📈', tier: 'silver',
+    rule: ({curve}) => {
+      const tail = (curve || []).slice(-7).filter(d => d && typeof d.accuracy === 'number');
+      if (tail.length === 0) return { progress: 0, ctx: '0/7 日' };
+      const avg = tail.reduce((s, d) => s + d.accuracy, 0) / tail.length;
+      return { progress: avg >= 90 ? 1 : (avg / 90), ctx: `${Math.round(avg)}% / 90%` };
+    }
+  },
+
+  // ── Streak（3）────────────────────────────────────────────
+  {
+    id: 'streak_3', category: 'streak', title: '三日連擊', desc: '連續 3 日有練習', icon: '🔥', tier: 'bronze',
+    rule: ({streak}) => {
+      const s = streak || 0;
+      return { progress: Math.min(s / 3, 1), ctx: `${Math.min(s,3)}/3 日` };
+    }
+  },
+  {
+    id: 'streak_14', category: 'streak', title: '雙週連擊', desc: '連續 14 日有練習', icon: '🔥', tier: 'gold',
+    rule: ({streak}) => {
+      const s = streak || 0;
+      return { progress: Math.min(s / 14, 1), ctx: `${Math.min(s,14)}/14 日` };
+    }
+  },
+  {
+    id: 'streak_100', category: 'streak', title: '百日傳說', desc: '連續 100 日有練習', icon: '🏆', tier: 'platinum',
+    rule: ({streak}) => {
+      const s = streak || 0;
+      return { progress: Math.min(s / 100, 1), ctx: `${Math.min(s,100)}/100 日` };
+    }
+  }
+];
+
+// 內部 helper：讀取解鎖列表（[{id, unlockedAt}, ...]），壞 JSON 回 []
+function _loadAchievements() {
   let unlocked = [];
   try {
     const raw = localStorage.getItem('mathDungeon_achievements');
@@ -2677,12 +2856,103 @@ function getAchievementProgress() {
       if (Array.isArray(parsed)) unlocked = parsed;
     }
   } catch(e) { unlocked = []; }
-  return {
-    unlocked,                    // [{ id, unlockedAt }, ...]
-    inProgress: {                // 每個成就嘅 progress 0-1
-      // Sprint 18 會 populate 呢度
-    }
+  return unlocked;
+}
+
+// Sprint 18 §1.2: getAchievementProgress() 完整版
+// return {unlocked: [...], inProgress: {id: {progress, ctx}}}
+function getAchievementProgress() {
+  const unlocked = _loadAchievements();
+  const inProgress = {};
+  // build context once
+  let stats, battles, log, practice, weak, curve, streak;
+  try { stats = getOverallStats(); } catch(e) { stats = {}; }
+  try { battles = _loadAllBattleResults(); } catch(e) { battles = {}; }
+  try { log = _loadLearningLog(); } catch(e) { log = []; }
+  try { practice = getPracticeData(); } catch(e) { practice = {}; }
+  try { weak = getWeakQuestions(50); } catch(e) { weak = []; }
+  try { curve = getLearningCurve(30); } catch(e) { curve = []; }
+  try { streak = getStreakHeatmap(30).streak; } catch(e) { streak = 0; }
+  const ctx = { stats, battles, log, practice, weak, curve, streak };
+  for (const a of ACHIEVEMENTS) {
+    if (unlocked.find(u => u.id === a.id)) continue;  // 已解鎖跳過
+    let r;
+    try { r = a.rule(ctx); } catch(e) { r = { progress: 0, ctx: '' }; }
+    inProgress[a.id] = {
+      progress: (r && typeof r.progress === 'number') ? r.progress : 0,
+      ctx: (r && r.ctx) || ''
+    };
+  }
+  return { unlocked, inProgress };
+}
+
+// Sprint 18 §3: 統一解鎖引擎
+// trigger: 'battle' | 'practice' | 'achievement-open' | 'manual'
+// payload: 對應 trigger 嘅 event payload
+function checkAndUnlockAchievements(trigger, payload) {
+  // derive-only trigger（'achievement-open'）唔寫 storage，避免重複觸發 toast
+  const WRITE_STORAGE = (trigger === 'battle' || trigger === 'practice' || trigger === 'manual');
+  const ctx = {
+    stats: getOverallStats(),
+    battles: _loadAllBattleResults(),
+    log: _loadLearningLog(),
+    practice: getPracticeData(),
+    weak: getWeakQuestions(50),
+    curve: getLearningCurve(30),
+    streak: getStreakHeatmap(30).streak,
+    trigger, payload
   };
+  const unlocked = _loadAchievements();
+  const unlockedIds = new Set(unlocked.map(u => u.id));
+  const newly = [];
+  for (const a of ACHIEVEMENTS) {
+    if (unlockedIds.has(a.id)) continue;
+    let r;
+    try { r = a.rule(ctx); } catch(e) { r = null; }
+    if (r && typeof r.progress === 'number' && r.progress >= 1) {
+      newly.push({id: a.id, unlockedAt: new Date().toLocaleString('zh-TW')});
+    }
+  }
+  if (newly.length === 0) return [];
+  if (WRITE_STORAGE) {
+    const merged = unlocked.concat(newly);
+    try { localStorage.setItem('mathDungeon_achievements', JSON.stringify(merged)); }
+    catch(e) { console.warn('achievement save failed', e); return []; }
+  }
+  // 通知 UI（無論 trigger 都 fire toast 一次 — tab open 嗰陣 derive 出新解鎖都會提示）
+  for (const u of newly) {
+    try { showAchievementToast(u.id); } catch(e) { console.warn('achievement toast failed', e); }
+  }
+  return newly;
+}
+
+// Sprint 18 §3.4: 視覺通知 — 簡單 DOM toast（Sprint 18 spec §3.4: cyan/pink 邊框，5s 消失）
+function showAchievementToast(id) {
+  const a = ACHIEVEMENTS.find(x => x.id === id);
+  if (!a) return;
+  // 用 DOM 直接建一個 toast，5s 後消失
+  let host = document.getElementById('achievement-toast-host');
+  if (!host) {
+    host = document.createElement('div');
+    host.id = 'achievement-toast-host';
+    host.style.cssText = 'position:fixed;top:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none;';
+    document.body.appendChild(host);
+  }
+  const t = document.createElement('div');
+  t.style.cssText = 'pointer-events:auto;min-width:240px;max-width:340px;padding:12px 16px;'
+    + 'background:linear-gradient(135deg,rgba(0,184,148,0.15),rgba(255,143,179,0.15));'
+    + 'border:2px solid #00b894;border-left:6px solid #ff8fb3;border-radius:10px;'
+    + 'color:#f5f0ff;font-family:inherit;box-shadow:0 4px 20px rgba(0,184,148,0.25);'
+    + 'animation:ach-slide-in .3s ease-out;';
+  t.innerHTML = `<div style="font-weight:bold;font-size:1rem;margin-bottom:4px;">🏆 解鎖成就：${a.title}</div>`
+    + `<div style="font-size:.85rem;color:#c0b8db;">${a.desc}</div>`;
+  host.appendChild(t);
+  setTimeout(() => {
+    t.style.transition = 'opacity .4s, transform .4s';
+    t.style.opacity = '0';
+    t.style.transform = 'translateX(20px)';
+    setTimeout(() => t.remove(), 450);
+  }, 5000);
 }
 
 function nextQuestion() {
@@ -3888,6 +4158,15 @@ function showBattleResult(victory) {
   });
   localStorage.setItem(logKey, JSON.stringify(logData.slice(-50)));
 
+  // Sprint 18 §3.5: 戰鬥結束觸發成就檢查
+  checkAndUnlockAchievements('battle', {
+    stageId: battleState.stageData?.id,
+    accuracy: accuracy,
+    correctCount: battleState.correctCount,
+    wrongCount: battleState.wrongCount,
+    maxCombo: battleState.maxCombo
+  });
+
   const title = document.getElementById('result-title');
   title.textContent = victory ? '🎉 勝利！' : '💀 戰敗...';
   if (victory) { stopBgm(); playBgm('victory'); }
@@ -4297,6 +4576,8 @@ function checkPracticeAnswer(selected, correct, q) {
 function showPracticeResult() {
   const { table, correct, wrong } = practiceState;
   savePracticeResult(table, correct, 10, wrong);
+  // Sprint 18 §3.5: 練習完成觸發成就檢查
+  checkAndUnlockAchievements('practice', { category: table, correct, total: 10 });
   showScreen('practice-result-screen');
   const stars = correct >= 9 ? '⭐⭐⭐' : correct >= 7 ? '⭐⭐' : correct >= 5 ? '⭐' : '💪';
   document.getElementById('practice-result-stars').textContent = stars;
