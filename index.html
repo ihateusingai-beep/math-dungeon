@@ -332,6 +332,37 @@ section{position:fixed;inset:0;display:flex;flex-direction:column;align-items:ce
 .result-title.defeat{color:var(--hp)}
 .result-stats{display:flex;flex-direction:column;gap:10px;margin:20px 0}
 
+/* Sprint 16: Reward reveal 視覺化 */
+.reward-reveal{display:flex;flex-direction:column;gap:14px;margin:18px 0}
+.reward-card{position:relative;display:flex;align-items:center;gap:14px;padding:16px 20px;background:linear-gradient(135deg,rgba(30,30,60,.85),rgba(20,20,40,.85));border:2px solid rgba(255,255,255,.1);border-radius:16px;overflow:hidden;opacity:0;transform:translateY(20px) scale(.92);transition:opacity .5s cubic-bezier(.34,1.56,.64,1),transform .5s cubic-bezier(.34,1.56,.64,1)}
+.reward-card.revealed{opacity:1;transform:translateY(0) scale(1)}
+.reward-card.levelup{border-color:var(--gold);box-shadow:0 0 24px rgba(255,212,112,.5);animation:reward-pulse 1.2s ease-in-out infinite}
+.reward-card.legendary{border-color:#ff8c00;box-shadow:0 0 32px rgba(255,140,0,.6);animation:reward-pulse 1s ease-in-out infinite}
+.reward-card.epic{border-color:#a855f7;box-shadow:0 0 20px rgba(168,85,247,.5)}
+.reward-card.rare{border-color:#3b82f6;box-shadow:0 0 16px rgba(59,130,246,.4)}
+.reward-icon{font-size:2.4rem;flex-shrink:0;display:flex;align-items:center;justify-content:center;width:56px;height:56px;background:rgba(255,255,255,.06);border-radius:14px}
+.reward-body{flex:1;text-align:left;min-width:0}
+.reward-label{font-size:.8rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:1px;margin-bottom:2px}
+.reward-value{font-size:1.6rem;font-weight:900;line-height:1.1;background:linear-gradient(135deg,var(--gold),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.reward-value.xp{background:linear-gradient(135deg,var(--xp),#a3e635);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.reward-value.gold{background:linear-gradient(135deg,var(--gold),#fde047);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.reward-value.item{font-size:1.1rem;-webkit-text-fill-color:initial;background:none;font-weight:800}
+.reward-sub{font-size:.78rem;color:var(--text-dim);margin-top:2px}
+/* 數字滾動時嘅閃光 */
+.reward-card.animating .reward-value{animation:value-flash .4s ease-out}
+.reward-card.animating{transform:translateY(0) scale(1.04)}
+@keyframes reward-pulse{0%,100%{box-shadow:0 0 24px rgba(255,212,112,.4)}50%{box-shadow:0 0 36px rgba(255,212,112,.8)}}
+@keyframes value-flash{0%{transform:scale(1)}40%{transform:scale(1.15)}100%{transform:scale(1)}}
+/* 掉落裝備名用稀有度色 */
+.reward-value.item.common{color:#9ca3af}
+.reward-value.item.uncommon{color:#22c55e}
+.reward-value.item.rare{color:#3b82f6}
+.reward-value.item.epic{color:#a855f7}
+.reward-value.item.legendary{color:#ff8c00;text-shadow:0 0 8px rgba(255,140,0,.5)}
+/* 升級 burst */
+.reward-burst{position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at center,rgba(255,212,112,.4),transparent 70%);opacity:0;animation:burst-out 1.2s ease-out forwards}
+@keyframes burst-out{0%{opacity:0;transform:scale(.5)}30%{opacity:1}100%{opacity:0;transform:scale(2.5)}}
+
 /* P0-4b: Battle stars rating */
 .result-stars{display:flex;justify-content:center;gap:8px;margin:16px 0 8px;font-size:2.4rem;line-height:1;letter-spacing:2px}
 .result-star{color:rgba(255,255,255,.18);transition:color .3s,transform .3s;display:inline-block}
@@ -3594,6 +3625,41 @@ function showBattleResult(victory) {
   const stars = victory ? computeBattleStars(accuracy, hpRatio, battleState.maxCombo || 0, avgTimeSec) : 0;
   const stageId = battleState.stageData?.id || 'unknown';
   saveBattleResultToLocal(stageId, stars, accuracy, victory);
+
+  // 預先計算掉落裝備（避免 reward 動畫期間改動 state）
+  const droppedItem = victory ? rollEquipmentDrop() : null;
+
+  // 戰鬥前快照（用於 count-up 差值）
+  const xpBefore = gameState.xp - xpGain;
+  const goldBefore = gameState.gold - goldGain;
+
+  // Level up check
+  const leveledUp = gameState.xp >= gameState.xpToNext;
+  if (leveledUp) {
+    gameState.level++;
+    gameState.xp -= gameState.xpToNext;
+    gameState.xpToNext = gameState.level * 100;
+    // Sprint 5: 用 recomputePlayerStats 統一計算（涵蓋覺醒 + 裝備加成）
+    recomputePlayerStats();
+    gameState.playerHP = gameState.playerMaxHP;
+    gameState.playerMP = gameState.playerMaxMP;
+    battleState.playerMaxHP = gameState.playerMaxHP;
+    battleState.playerMaxMP = gameState.playerMaxMP;
+    addLog(`🎉 等級提升！現在是 Lv.${gameState.level}！`);
+    // Sprint 10: 每 3 級 +1 skill point
+    if (gameState.level % 3 === 0) {
+      gameState.skillPoints = (gameState.skillPoints || 0) + 1;
+      addLog(`🌟 獲得 1 技能點！（共 ${gameState.skillPoints} 點）`);
+    }
+    // Sprint 4 #2: 覺醒觸發（Lv.30 自動覺醒，任務簡化為「達 Lv.30 即可」）
+    if (gameState.level >= 30 && !gameState.awakened) {
+      triggerAwakening();
+    }
+  }
+  if (droppedItem) addLog(`🎁 掉落裝備：${droppedItem.icon} <span style="color:${RARITY_COLORS[droppedItem.rarity]}">${droppedItem.name}</span>（${RARITY_LABELS[droppedItem.rarity]}）`);
+  saveProgress();
+
+  // 學習日誌
   const logKey = 'mathDungeon_learningLog';
   let logData = [];
   try { logData = JSON.parse(localStorage.getItem(logKey) || '[]'); if (!Array.isArray(logData)) logData = []; } catch(e) { logData = []; }
@@ -3608,33 +3674,7 @@ function showBattleResult(victory) {
     maxCombo: battleState.maxCombo,
     totalDamage: battleState.totalDamage
   });
-  localStorage.setItem(logKey, JSON.stringify(logData.slice(-50))); // 保留最近50場
-
-  // Level up check
-  if (gameState.xp >= gameState.xpToNext) {
-    gameState.level++;
-    gameState.xp -= gameState.xpToNext;
-    gameState.xpToNext = gameState.level * 100;
-    // Sprint 5: 用 recomputePlayerStats 統一計算（涵蓋覺醒 + 裝備加成）
-    recomputePlayerStats();
-    gameState.playerHP = gameState.playerMaxHP;
-    gameState.playerMP = gameState.playerMaxMP;
-    battleState.playerMaxHP = gameState.playerMaxHP;
-    battleState.playerMaxMP = gameState.playerMaxMP;
-    addLog(`🎉 等級提升！現在是 Lv.${gameState.level}！`);
-    playSound('levelUp');
-    // Sprint 10: 每 3 級 +1 skill point
-    if (gameState.level % 3 === 0) {
-      gameState.skillPoints = (gameState.skillPoints || 0) + 1;
-      addLog(`🌟 獲得 1 技能點！（共 ${gameState.skillPoints} 點）`);
-    }
-    // Sprint 4 #2: 覺醒觸發（Lv.30 自動覺醒，任務簡化為「達 Lv.30 即可」）
-    if (gameState.level >= 30 && !gameState.awakened) {
-      triggerAwakening();
-    }
-  }
-
-  saveProgress();
+  localStorage.setItem(logKey, JSON.stringify(logData.slice(-50)));
 
   const title = document.getElementById('result-title');
   title.textContent = victory ? '🎉 勝利！' : '💀 戰敗...';
@@ -3645,20 +3685,151 @@ function showBattleResult(victory) {
   // P0-4b: 5 星評級 UI（僅 victory 顯示，戰敗顯示「再接再厲」）
   const starsHtml = renderBattleStars(stars);
   document.getElementById('result-stats').innerHTML = starsHtml + `
-    <div class="result-stat"><span>獲得經驗</span><span style="color:var(--xp)">+${xpGain} XP</span></div>
-    <div class="result-stat"><span>升級進度</span><span>${gameState.xp}/${gameState.xpToNext}</span></div>
-    <div class="result-stat"><span>獲得金幣</span><span style="color:var(--gold)">+${goldGain} 💰</span></div>
     <div class="result-stat"><span>玩家等級</span><span>Lv.${gameState.level}</span></div>
-    <div class="result-stat"><span>總金幣</span><span>${gameState.gold} 💰</span></div>
     <div class="result-stat"><span>答對</span><span style="color:var(--xp)">${battleState.correctCount}/${battleState.questionsAnswered}</span></div>
     <div class="result-stat"><span>正確率</span><span style="color:var(--accent)">${accuracy}% ${feedback}</span></div>
     <div class="result-stat"><span>最高Combo</span><span style="color:var(--gold)">${battleState.maxCombo}連</span></div>
     <div class="result-stat"><span>總傷害</span><span style="color:var(--hp)">${battleState.totalDamage}</span></div>
-    <div class="result-stat" style="background:rgba(253,203,110,.15);border:1px solid var(--gold)"><span>本次獲得</span><span style="color:var(--gold)">💰+${gameState.sessionGold} | ✨+${gameState.sessionXP}XP</span></div>
   `;
 
+  // === Sprint 16: Reward reveal 視覺化 ===
+  // 將 reward reveal 區塊 prepend 到 result-stats 上面
+  const rewardHtml = buildRewardRevealHtml({ xpGain, goldGain, xpBefore, goldBefore, xpToNext: gameState.xpToNext, droppedItem, leveledUp, victory });
+  const rewardDiv = document.createElement('div');
+  rewardDiv.id = 'reward-reveal';
+  rewardDiv.className = 'reward-reveal';
+  rewardDiv.innerHTML = rewardHtml;
+  // 插到 result-stats 上面
+  const resultStats = document.getElementById('result-stats');
+  resultStats.parentNode.insertBefore(rewardDiv, resultStats);
+
   showScreen('battle-result');
-  if (victory) spawnVictoryCelebration();
+  if (victory) {
+    spawnVictoryCelebration();
+    playRewardRevealSequence({ xpGain, goldGain, xpBefore, goldBefore, droppedItem, leveledUp, victory });
+  } else {
+    // 戰敗仍然 reveal（淡入，無 fanfare）
+    document.querySelectorAll('#reward-reveal .reward-card').forEach((c, i) => {
+      setTimeout(() => c.classList.add('revealed'), 100 + i * 200);
+    });
+  }
+}
+
+function rollEquipmentDrop() {
+  const dropRoll = Math.random();
+  let dropRarity = null;
+  if (dropRoll < 0.30) dropRarity = 'common';
+  else if (dropRoll < 0.55) dropRarity = 'uncommon';
+  else if (dropRoll < 0.75) dropRarity = 'rare';
+  else if (dropRoll < 0.90) dropRarity = 'epic';
+  else dropRarity = 'legendary';
+  const pool = EQUIPMENT_DEFS.filter(e => e.rarity === dropRarity);
+  if (pool.length === 0) return null;
+  const item = pool[Math.floor(Math.random() * pool.length)];
+  if (!gameState.inventory) gameState.inventory = [];
+  gameState.inventory.push(item.id);
+  return item;
+}
+
+function buildRewardRevealHtml({ xpGain, goldGain, xpBefore, goldBefore, xpToNext, droppedItem, leveledUp, victory }) {
+  const cards = [];
+  cards.push(`
+    <div class="reward-card${leveledUp ? ' levelup' : ''}" data-reward="xp">
+      <div class="reward-icon">${leveledUp ? '🎉' : '✨'}</div>
+      <div class="reward-body">
+        <div class="reward-label">${leveledUp ? '等級提升！' : '獲得經驗'}</div>
+        <div class="reward-value xp" data-target="${xpGain}" data-prefix="+" data-suffix=" XP">+0 XP</div>
+        <div class="reward-sub">${xpBefore} → ${gameState.xp}/${xpToNext}${leveledUp ? ' (Lv.' + gameState.level + ')' : ''}</div>
+      </div>
+    </div>
+  `);
+  cards.push(`
+    <div class="reward-card" data-reward="gold">
+      <div class="reward-icon">💰</div>
+      <div class="reward-body">
+        <div class="reward-label">獲得金幣</div>
+        <div class="reward-value gold" data-target="${goldGain}" data-prefix="+" data-suffix=" 💰">+0 💰</div>
+        <div class="reward-sub">總金幣 ${gameState.gold} 💰</div>
+      </div>
+    </div>
+  `);
+  if (droppedItem) {
+    cards.push(`
+      <div class="reward-card ${droppedItem.rarity}" data-reward="item">
+        <div class="reward-icon">${droppedItem.icon}</div>
+        <div class="reward-body">
+          <div class="reward-label">🎁 掉落裝備</div>
+          <div class="reward-value item ${droppedItem.rarity}">${droppedItem.name}</div>
+          <div class="reward-sub">${RARITY_LABELS[droppedItem.rarity]}</div>
+        </div>
+      </div>
+    `);
+  }
+  return cards.join('');
+}
+
+function playRewardRevealSequence({ xpGain, goldGain, xpBefore, goldBefore, droppedItem, leveledUp, victory }) {
+  // Stage 1: XP card reveal (0ms)
+  setTimeout(() => {
+    document.querySelector('[data-reward="xp"]')?.classList.add('revealed');
+    playSound('itemGain');
+  }, 100);
+  // Stage 1b: XP 數字滾動 (400ms)
+  setTimeout(() => animateCountUp('[data-reward="xp"] .reward-value', xpGain, 600), 400);
+  // Stage 2: Gold card reveal (1100ms)
+  setTimeout(() => {
+    document.querySelector('[data-reward="gold"]')?.classList.add('revealed');
+    playSound('itemGain');
+  }, 1100);
+  // Stage 2b: Gold 數字滾動 (1500ms)
+  setTimeout(() => animateCountUp('[data-reward="gold"] .reward-value', goldGain, 600), 1500);
+  // Stage 3: 掉落（如果有）(2200ms)
+  if (droppedItem) {
+    setTimeout(() => {
+      const el = document.querySelector('[data-reward="item"]');
+      el?.classList.add('revealed');
+      // 傳說 / 史詩 加 burst 效果
+      if (droppedItem.rarity === 'legendary' || droppedItem.rarity === 'epic') {
+        const burst = document.createElement('div');
+        burst.className = 'reward-burst';
+        el?.appendChild(burst);
+        setTimeout(() => burst.remove(), 1200);
+        playSound('levelUp');
+      } else {
+        playSound('itemGain');
+      }
+    }, 2200);
+  }
+  // Stage 4: 升級 burst (3000ms)
+  if (leveledUp) {
+    setTimeout(() => {
+      playSound('levelUp');
+      const el = document.querySelector('[data-reward="xp"]');
+      const burst = document.createElement('div');
+      burst.className = 'reward-burst';
+      el?.appendChild(burst);
+      setTimeout(() => burst.remove(), 1200);
+    }, 3000);
+  }
+}
+
+function animateCountUp(selector, target, duration) {
+  const el = document.querySelector(selector);
+  if (!el) return;
+  const prefix = el.dataset.prefix || '';
+  const suffix = el.dataset.suffix || '';
+  el.classList.add('animating');
+  const start = performance.now();
+  function tick(now) {
+    const t = Math.min(1, (now - start) / duration);
+    // ease-out cubic
+    const eased = 1 - Math.pow(1 - t, 3);
+    const value = Math.round(target * eased);
+    el.textContent = prefix + value + suffix;
+    if (t < 1) requestAnimationFrame(tick);
+    else el.classList.remove('animating');
+  }
+  requestAnimationFrame(tick);
 }
 
 function spawnVictoryCelebration() {
