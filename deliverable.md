@@ -1,7 +1,7 @@
 # Sprint 18 Track B — 成就 UI 交付
 
 **Branch**: `feat/sprint18-ui-v1`
-**Final commit SHA**: `6795b76` (含 deliverable.md commit；code 改動主 commit 係 `f0318ab`)
+**Final commit SHA**: `6920412` (含 deliverable.md commit；code 改動主 commit 係 `f0318ab`)
 **Push**: ✅ `origin/feat/sprint18-ui-v1`
 
 ## Summary
@@ -113,7 +113,7 @@ Last 30 lines of npm test:
 - **既有 5 個 tab 唔破壞** — `sprint17-dashboard-ui.js` 23 條全部仍然 pass（除咗 4 條改 5→6
   structural assertion）。
 - **Worktree** — `/private/tmp/sprint18-ui-v1` 喺 `feat/sprint18-ui-v1` branch，code 改動 commit `f0318ab`，
-  deliverable.md commit `6795b76`，push 去 `origin/feat/sprint18-ui-v1`，冇 force-push，冇改 git config。
+  deliverable.md commit `6920412`，push 去 `origin/feat/sprint18-ui-v1`，冇 force-push，冇改 git config。
 
 ## Files summary for diff
 
